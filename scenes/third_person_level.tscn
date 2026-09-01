@@ -2,9 +2,6 @@
 
 [ext_resource type="PackedScene" uid="uid://dukmo46pyd73s" path="res://scenes/low_poly_character.tscn" id="1_4sa4f"]
 [ext_resource type="PackedScene" uid="uid://c2fevj44ripwv" path="res://blender/grocery_store_WB.glb" id="2_vucy8"]
-[ext_resource type="Script" uid="uid://cph4qxxug82j4" path="res://scripts/close_button.gd" id="3_4h61a"]
-[ext_resource type="FontFile" uid="uid://l4qtp4o8qy1x" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-Bold.ttf" id="3_fq5v8"]
-[ext_resource type="Texture2D" uid="uid://cgqhgw5g1pfgy" path="res://assets/materials/pointer.png" id="5_wkqjk"]
 [ext_resource type="PackedScene" uid="uid://dfa6glbhgltej" path="res://blender/DesertMap.glb" id="6_vch42"]
 [ext_resource type="PackedScene" uid="uid://u71xogfk53i" path="res://scenes/cart.tscn" id="7_rshu7"]
 
@@ -44,17 +41,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09771347, -78.44004, 11.56
 transform = Transform3D(-0.70081645, 0, -0.71334165, 0, 1, 0, 0.71334165, 0, -0.70081645, -15.62719, -78.44004, -11.915493)
 
 [node name="Skeleton3D" parent="Player2/low_poly_character/Armature" parent_id_path=PackedInt32Array(974124902, 1485995296) index="0" unique_id=972510031]
-bones/0/position = Vector3(0, 0.71140563, -0.015608445)
-bones/1/rotation = Quaternion(-0.020746024, -1.3443046e-19, -3.7747907e-18, 0.9997848)
-bones/3/rotation = Quaternion(0.1044509, 3.739038e-10, 2.1544095e-08, 0.99453014)
-bones/4/rotation = Quaternion(0.011390203, 0.088559225, 0.98314506, 0.15954107)
-bones/7/rotation = Quaternion(-0.011390203, 0.088559225, 0.98314506, -0.15954107)
-bones/10/rotation = Quaternion(0.027829241, -0.04498979, 0.9965045, 0.06465523)
-bones/11/rotation = Quaternion(0.21549907, 0.0025553962, 0.04414669, 0.9755023)
-bones/12/rotation = Quaternion(-0.6783229, 0.050981384, -0.02919587, 0.7324115)
-bones/13/rotation = Quaternion(-0.027829086, -0.04499358, 0.99650425, -0.06465632)
-bones/14/rotation = Quaternion(0.21549907, -0.0025553922, -0.044146687, 0.9755023)
-bones/15/rotation = Quaternion(-0.6783229, -0.050981395, 0.029195854, 0.7324115)
+bones/0/position = Vector3(0, 0.7033787, -0.015608448)
+bones/1/rotation = Quaternion(-0.029587239, 0, 0, 0.99956226)
+bones/3/rotation = Quaternion(0.0939062, -4.437673e-10, 2.6375007e-08, 0.9955811)
+bones/4/rotation = Quaternion(0.013247523, 0.08837811, 0.9800803, 0.17735964)
+bones/7/rotation = Quaternion(-0.013247523, 0.08837811, 0.9800803, -0.17735964)
+bones/10/rotation = Quaternion(0.02674438, -0.0670348, 0.9949058, 0.07038239)
+bones/11/rotation = Quaternion(0.26338464, 0.0025231182, 0.0539564, 0.9631775)
+bones/12/rotation = Quaternion(-0.69765556, 0.053946335, -0.034030747, 0.7135885)
+bones/13/rotation = Quaternion(-0.026744395, -0.067034796, 0.9949058, -0.070382394)
+bones/14/rotation = Quaternion(0.26338464, -0.002523119, -0.0539564, 0.9631775)
+bones/15/rotation = Quaternion(-0.69765556, -0.053946357, 0.034030735, 0.7135885)
 
 [node name="Lights" type="Node3D" parent="." unique_id=1671814403]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.140747, -73.9782, 0.0048942566)
@@ -156,46 +153,10 @@ transform = Transform3D(-4.200814e-08, -0.27642915, -0.96103436, 1, 1.0225072e-1
 light_color = Color(0.8431839, 0.8431839, 0.84318376, 1)
 light_energy = 5.063
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1806196495]
-
-[node name="CloseButton" type="Button" parent="CanvasLayer" unique_id=839783222]
-anchors_preset = -1
-anchor_left = 0.45885417
-anchor_top = 0.4726852
-anchor_right = 0.54114586
-anchor_bottom = 0.52731484
-offset_left = -105.0
-offset_top = -335.5
-offset_right = 105.0
-offset_bottom = -265.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.64705884, 0.06666667, 0.15686275, 1)
-theme_override_colors/font_pressed_color = Color(0.8959138, 0.13641584, 0.24106818, 1)
-theme_override_colors/font_hover_color = Color(0.89411765, 0.13725491, 0.23921569, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.89411765, 0.13725491, 0.23921569, 1)
-theme_override_colors/font_outline_color = Color(0.7750634, 0.7750634, 0.7750634, 1)
-theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("3_fq5v8")
-theme_override_font_sizes/font_size = 120
-text = " QUIT "
-flat = true
-script = ExtResource("3_4h61a")
-metadata/_edit_use_anchors_ = true
-
-[node name="VirtualCursor" type="TextureRect" parent="CanvasLayer" unique_id=1418956265]
-offset_right = 40.0
-offset_bottom = 40.0
-mouse_filter = 2
-texture = ExtResource("5_wkqjk")
-metadata/_edit_use_anchors_ = true
-
 [node name="DesertMap" parent="." unique_id=1603998708 instance=ExtResource("6_vch42")]
 transform = Transform3D(0.66920096, 0, -0.74308145, 0, 1, 0, 0.74308145, 0, 0.66920096, -8.054604, -78.51668, 3.674778)
 
 [node name="cart" parent="." unique_id=1753772008 instance=ExtResource("7_rshu7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7044783, -78.44004, -1.0121751)
-
-[connection signal="pressed" from="CanvasLayer/CloseButton" to="CanvasLayer/CloseButton" method="_on_pressed"]
 
 [editable path="Player2"]

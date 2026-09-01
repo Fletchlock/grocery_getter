@@ -32,10 +32,6 @@ var _target_zoom := 4.0
 @onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/Cube
 @onready var anim_tree = $AnimationTree
 @onready var _mesh_default_y : float = body_mesh.position.y 
-@onready var close_button: Button = $"../../CanvasLayer/CloseButton"
-
-# ADDED: Link your new UI texture node right here
-@onready var virtual_cursor: TextureRect = $"../../CanvasLayer/VirtualCursor"
 
 
 func _ready() -> void:
@@ -43,58 +39,16 @@ func _ready() -> void:
 	anim_tree.advance_expression_base_node = get_path()
 	anim_tree.active = true
 	
-	# Set up initial application interface state
-	close_button.visible = false
-	virtual_cursor.visible = false # Keep software pointer hidden until paused
-	
 	# Explicitly capture the mouse and force the system cursor to hide instantly
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	
-	# FIX: Warp the physical hardware mouse off-screen instantly on launch.
-	# This clears the phantom cursor leftover from clicking the editor's play button.
-	get_viewport().warp_mouse(Vector2(-100, -100))
-	
-	# Snap the software cursor data position to the initial viewport coordinates
-	virtual_cursor.global_position = get_viewport().get_mouse_position()
 	
 	# Capture the initial placement rotation from the level editor
 	_last_movement_direction = -global_transform.basis.z
 	body_mesh.rotation.y = 0.0
 
 
-
-func _input(event: InputEvent) -> void:
-	# Toggle mouse lock / UI state when pressing Escape or Gamepad Start
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("toggle_menu"):
-		get_viewport().set_input_as_handled()
-		
-		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			Input.mouse_mode = Input.MOUSE_MODE_HIDDEN 
-			close_button.visible = true
-			virtual_cursor.visible = true # Show custom cursor image
-		else:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-			close_button.visible = false
-			virtual_cursor.visible = false # Hide custom cursor image
-			
-	# Handle simulated cursor clicking via the Right Trigger while menu is open
-	if Input.mouse_mode == Input.MOUSE_MODE_HIDDEN and event.is_action_pressed("ui_click"):
-		var click_event := InputEventMouseButton.new()
-		click_event.button_index = MOUSE_BUTTON_LEFT
-		click_event.position = get_viewport().get_mouse_position()
-		click_event.pressed = true
-		Input.parse_input_event(click_event)
-		
-		var release_event := click_event.duplicate()
-		release_event.pressed = false
-		Input.parse_input_event(release_event)
-
-
 func _unhandled_input(event: InputEvent) -> void:
-	# Ignore tracking mouse movement inputs for camera controls when menu is active
-	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
-		return
-		
+
 	# Accumulate relative mouse motion values to process camera rotation later
 	var is_camera_motion := (
 		event is InputEventMouseMotion and
@@ -130,8 +84,6 @@ func _physics_process(delta: float) -> void:
 			
 			get_viewport().warp_mouse(new_mouse_pos)
 		
-		# UPDATED: Permanently snap your TextureRect visual image to follow Godot's cursor coordinates
-		virtual_cursor.global_position = get_viewport().get_mouse_position()
 	else:
 		# Process standard camera orbit manipulations when actively playing
 		if gamepad_look.length() > 0.05:
