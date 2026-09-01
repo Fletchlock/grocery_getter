@@ -44,17 +44,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09771347, -78.44004, 11.56
 transform = Transform3D(-0.70081645, 0, -0.71334165, 0, 1, 0, 0.71334165, 0, -0.70081645, -15.62719, -78.44004, -11.915493)
 
 [node name="Skeleton3D" parent="Player2/low_poly_character/Armature" parent_id_path=PackedInt32Array(974124902, 1485995296) index="0" unique_id=972510031]
-bones/0/position = Vector3(0, 0.7145784, -0.015608446)
-bones/1/rotation = Quaternion(-0.01725917, 0, 0, 0.99985105)
-bones/3/rotation = Quaternion(0.10860468, -5.4048477e-11, 2.6378682e-08, 0.9940851)
-bones/4/rotation = Quaternion(0.010654109, 0.08862278, 0.9842683, 0.15247455)
-bones/7/rotation = Quaternion(-0.010654109, 0.08862278, 0.9842683, -0.15247455)
-bones/10/rotation = Quaternion(0.028336301, -0.03466232, 0.9970706, 0.06201482)
-bones/11/rotation = Quaternion(0.1929873, 0.0025682296, 0.039534986, 0.9804011)
-bones/12/rotation = Quaternion(-0.6691679, 0.049597997, -0.026892934, 0.74096644)
-bones/13/rotation = Quaternion(-0.028336316, -0.034662317, 0.9970706, -0.06201482)
-bones/14/rotation = Quaternion(0.19298732, -0.0025682272, -0.039534993, 0.98040116)
-bones/15/rotation = Quaternion(-0.6691679, -0.04959802, 0.026892925, 0.74096644)
+bones/0/position = Vector3(0, 0.71140563, -0.015608445)
+bones/1/rotation = Quaternion(-0.020746024, -1.3443046e-19, -3.7747907e-18, 0.9997848)
+bones/3/rotation = Quaternion(0.1044509, 3.739038e-10, 2.1544095e-08, 0.99453014)
+bones/4/rotation = Quaternion(0.011390203, 0.088559225, 0.98314506, 0.15954107)
+bones/7/rotation = Quaternion(-0.011390203, 0.088559225, 0.98314506, -0.15954107)
+bones/10/rotation = Quaternion(0.027829241, -0.04498979, 0.9965045, 0.06465523)
+bones/11/rotation = Quaternion(0.21549907, 0.0025553962, 0.04414669, 0.9755023)
+bones/12/rotation = Quaternion(-0.6783229, 0.050981384, -0.02919587, 0.7324115)
+bones/13/rotation = Quaternion(-0.027829086, -0.04499358, 0.99650425, -0.06465632)
+bones/14/rotation = Quaternion(0.21549907, -0.0025553922, -0.044146687, 0.9755023)
+bones/15/rotation = Quaternion(-0.6783229, -0.050981395, 0.029195854, 0.7324115)
 
 [node name="Lights" type="Node3D" parent="." unique_id=1671814403]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.140747, -73.9782, 0.0048942566)
