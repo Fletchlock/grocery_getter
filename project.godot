@@ -11,10 +11,14 @@ config_version=5
 [application]
 
 config/name="Third Person"
-run/main_scene="uid://gcp374r23hjn"
+run/main_scene="uid://nj656xy5mg30"
 config/use_hidden_project_data_directory=false
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://assets/materials/icon.svg"
+
+[autoload]
+
+LevelManager="*uid://de4lom6ucbx61"
 
 [display]
 
