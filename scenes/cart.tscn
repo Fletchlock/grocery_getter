@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://u71xogfk53i"]
+
+[ext_resource type="PackedScene" uid="uid://5vi8odyy5nph" path="res://blender/cart.glb" id="1_0tgi4"]
+
+[node name="cart" unique_id=1247605086 instance=ExtResource("1_0tgi4")]
+
+[node name="Cart" parent="." index="0" unique_id=1339867078]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+
+[node name="@StaticBody3D@22249" parent="." index="1" unique_id=1663256411]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)

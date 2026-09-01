@@ -1,0 +1,26 @@
+[gd_resource type="AnimationLibrary" format=3 uid="uid://bdlrg1t411fjv"]
+
+[ext_resource type="Animation" uid="uid://cyhccw8t0q3b2" path="res://assets/animations/default.res" id="1_1sbmj"]
+[ext_resource type="Animation" uid="uid://bgf0opch2cuvt" path="res://assets/animations/falling.res" id="2_r5nx6"]
+[ext_resource type="Animation" uid="uid://b7t8lh64fgaxe" path="res://assets/animations/idle.res" id="3_q1qom"]
+[ext_resource type="Animation" uid="uid://rpgs3a3xjfcc" path="res://assets/animations/run.res" id="4_pqyqt"]
+
+[sub_resource type="Animation" id="Animation_1sbmj"]
+resource_name = "pelvis_compress"
+length = 0.2
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Armature/Skeleton3D:pelvis")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, -2, 0)
+
+[resource]
+_data = {
+&"default": ExtResource("1_1sbmj"),
+&"falling": ExtResource("2_r5nx6"),
+&"idle": ExtResource("3_q1qom"),
+&"pelvis_compress": SubResource("Animation_1sbmj"),
+&"run": ExtResource("4_pqyqt")
+}

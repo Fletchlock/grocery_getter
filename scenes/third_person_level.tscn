@@ -1,0 +1,201 @@
+[gd_scene format=3 uid="uid://gcp374r23hjn"]
+
+[ext_resource type="PackedScene" uid="uid://dukmo46pyd73s" path="res://scenes/low_poly_character.tscn" id="1_4sa4f"]
+[ext_resource type="PackedScene" uid="uid://c2fevj44ripwv" path="res://blender/grocery_store_WB.glb" id="2_vucy8"]
+[ext_resource type="Script" uid="uid://cph4qxxug82j4" path="res://scripts/close_button.gd" id="3_4h61a"]
+[ext_resource type="FontFile" uid="uid://l4qtp4o8qy1x" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-Bold.ttf" id="3_fq5v8"]
+[ext_resource type="Texture2D" uid="uid://cgqhgw5g1pfgy" path="res://assets/materials/pointer.png" id="5_wkqjk"]
+[ext_resource type="PackedScene" uid="uid://dfa6glbhgltej" path="res://blender/DesertMap.glb" id="6_vch42"]
+[ext_resource type="PackedScene" uid="uid://u71xogfk53i" path="res://scenes/cart.tscn" id="7_rshu7"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ta2qt"]
+sky_top_color = Color(0.2596472, 0.5435158, 0.9217843, 1)
+sky_horizon_color = Color(0.6676834, 0.675295, 0.6905171, 1)
+ground_bottom_color = Color(0.62714267, 0.5583314, 0.48313868, 1)
+ground_horizon_color = Color(0.5402897, 0.5486807, 0.56547105, 1)
+
+[sub_resource type="Sky" id="Sky_ltnn2"]
+sky_material = SubResource("ProceduralSkyMaterial_ta2qt")
+
+[sub_resource type="Environment" id="Environment_yliug"]
+background_mode = 2
+sky = SubResource("Sky_ltnn2")
+fog_light_energy = 0.37
+fog_sun_scatter = 0.21
+fog_sky_affect = 0.16
+fog_height = -436.59
+fog_height_density = 3.5969
+
+[node name="ThirdPersonLevel" type="Node3D" unique_id=1122241509]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1553420716]
+environment = SubResource("Environment_yliug")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1117029115]
+transform = Transform3D(0.026050938, -0.91726655, 0.39742103, -0.7718323, 0.23419398, 0.5911244, -0.63529235, -0.3221417, -0.701875, -38.945526, -57.970917, 5.3776684)
+light_energy = 0.85
+shadow_enabled = true
+shadow_bias = 0.05
+
+[node name="grocery_store_WB" parent="." unique_id=517880905 instance=ExtResource("2_vucy8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09771347, -78.44004, 11.561579)
+
+[node name="Player2" parent="." unique_id=974124902 instance=ExtResource("1_4sa4f")]
+transform = Transform3D(-0.70081645, 0, -0.71334165, 0, 1, 0, 0.71334165, 0, -0.70081645, -15.62719, -78.44004, -11.915493)
+
+[node name="Skeleton3D" parent="Player2/low_poly_character/Armature" parent_id_path=PackedInt32Array(974124902, 1485995296) index="0" unique_id=972510031]
+bones/0/position = Vector3(0, 0.7145784, -0.015608446)
+bones/1/rotation = Quaternion(-0.01725917, 0, 0, 0.99985105)
+bones/3/rotation = Quaternion(0.10860468, -5.4048477e-11, 2.6378682e-08, 0.9940851)
+bones/4/rotation = Quaternion(0.010654109, 0.08862278, 0.9842683, 0.15247455)
+bones/7/rotation = Quaternion(-0.010654109, 0.08862278, 0.9842683, -0.15247455)
+bones/10/rotation = Quaternion(0.028336301, -0.03466232, 0.9970706, 0.06201482)
+bones/11/rotation = Quaternion(0.1929873, 0.0025682296, 0.039534986, 0.9804011)
+bones/12/rotation = Quaternion(-0.6691679, 0.049597997, -0.026892934, 0.74096644)
+bones/13/rotation = Quaternion(-0.028336316, -0.034662317, 0.9970706, -0.06201482)
+bones/14/rotation = Quaternion(0.19298732, -0.0025682272, -0.039534993, 0.98040116)
+bones/15/rotation = Quaternion(-0.6691679, -0.04959802, 0.026892925, 0.74096644)
+
+[node name="Lights" type="Node3D" parent="." unique_id=1671814403]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.140747, -73.9782, 0.0048942566)
+
+[node name="AreaLight3D" type="AreaLight3D" parent="Lights" unique_id=238848380]
+transform = Transform3D(1, 0, 0, 0, -0.010555592, 0.9999443, 0, -0.9999443, -0.010555592, 73.57573, 7.610512, 11.6101055)
+light_color = Color(0.8431839, 0.8431839, 0.84318376, 1)
+light_energy = 5.063
+light_indirect_energy = 2.587
+light_volumetric_fog_energy = 0.0
+area_range = 20.671
+
+[node name="AreaLight3D2" type="AreaLight3D" parent="Lights" unique_id=217188269]
+transform = Transform3D(1, 0, 0, 0, -0.010555592, 0.9999443, 0, -0.9999443, -0.010555592, 47.971397, 7.610512, 11.6101055)
+light_color = Color(0.8431839, 0.8431839, 0.84318376, 1)
+light_energy = 5.063
+light_indirect_energy = 2.587
+light_volumetric_fog_energy = 0.0
+area_range = 20.671
+
+[node name="AreaLight3D3" type="AreaLight3D" parent="Lights" unique_id=975782055]
+transform = Transform3D(1, 0, 0, 0, -0.010555592, 0.9999443, 0, -0.9999443, -0.010555592, 73.57573, 7.610512, 24.966654)
+light_color = Color(0.8431839, 0.8431839, 0.84318376, 1)
+light_energy = 5.063
+light_indirect_energy = 2.587
+light_volumetric_fog_energy = 0.0
+area_range = 20.671
+
+[node name="AreaLight3D12" type="AreaLight3D" parent="Lights" unique_id=841345846]
+transform = Transform3D(1, 0, 0, 0, -0.010555592, 0.9999443, 0, -0.9999443, -0.010555592, 60.13572, 7.610512, 11.6101055)
+light_color = Color(0.8431839, 0.8431839, 0.84318376, 1)
+light_energy = 5.063
+light_indirect_energy = 2.587
+light_volumetric_fog_energy = 0.0
+area_range = 20.671
+
+[node name="AreaLight3D13" type="AreaLight3D" parent="Lights" unique_id=719806571]
+transform = Transform3D(1, 0, 0, 0, -0.010555592, 0.9999443, 0, -0.9999443, -0.010555592, 60.145874, 7.132347, 11.6101055)
+light_color = Color(0.8431839, 0.8431839, 0.84318376, 1)
+light_energy = 5.063
+light_indirect_energy = 2.587
+light_volumetric_fog_energy = 0.0
+area_range = 20.671
+
+[node name="AreaLight3D14" type="AreaLight3D" parent="Lights" unique_id=2087604844]
+transform = Transform3D(1, 0, 0, 0, -0.010555592, 0.9999443, 0, -0.9999443, -0.010555592, 60.13572, 7.610512, 24.966654)
+light_color = Color(0.8431839, 0.8431839, 0.84318376, 1)
+light_energy = 5.063
+light_indirect_energy = 2.587
+light_volumetric_fog_energy = 0.0
+area_range = 20.671
+
+[node name="AreaLight3D4" type="AreaLight3D" parent="Lights" unique_id=245768503]
+transform = Transform3D(1, 0, 0, 0, -0.010555592, 0.9999443, 0, -0.9999443, -0.010555592, 47.971397, 7.610512, 24.966654)
+light_color = Color(0.8431839, 0.8431839, 0.84318376, 1)
+light_energy = 5.063
+light_indirect_energy = 2.587
+light_volumetric_fog_energy = 0.0
+area_range = 20.671
+
+[node name="AreaLight3D5" type="AreaLight3D" parent="Lights" unique_id=1198978712]
+transform = Transform3D(1, 0, 0, 0, -0.010555592, 0.9999443, 0, -0.9999443, -0.010555592, 73.57573, 7.610512, -2.6953259)
+light_color = Color(0.8431839, 0.8431839, 0.84318376, 1)
+light_energy = 5.063
+light_indirect_energy = 2.587
+light_volumetric_fog_energy = 0.0
+area_range = 20.671
+
+[node name="AreaLight3D6" type="AreaLight3D" parent="Lights" unique_id=1221142363]
+transform = Transform3D(1, 0, 0, 0, -0.010555592, 0.9999443, 0, -0.9999443, -0.010555592, 47.971397, 7.610512, -2.6953259)
+light_color = Color(0.8431839, 0.8431839, 0.84318376, 1)
+light_energy = 5.063
+light_indirect_energy = 2.587
+light_volumetric_fog_energy = 0.0
+area_range = 20.671
+
+[node name="AreaLight3D7" type="AreaLight3D" parent="Lights" unique_id=649617389]
+transform = Transform3D(-4.200814e-08, -0.27642915, -0.96103436, 1, 1.0225072e-15, -4.371139e-08, 1.2083101e-08, -0.96103436, 0.27642915, 49.79068, -2.2640963, -3.1751232)
+light_color = Color(0.8431839, 0.8431839, 0.84318376, 1)
+light_energy = 5.063
+
+[node name="AreaLight3D8" type="AreaLight3D" parent="Lights" unique_id=2010464660]
+transform = Transform3D(-4.200814e-08, -0.27642915, -0.96103436, 1, 1.0225072e-15, -4.371139e-08, 1.2083101e-08, -0.96103436, 0.27642915, 54.80405, -2.2640963, -3.1751232)
+light_color = Color(0.8431839, 0.8431839, 0.84318376, 1)
+light_energy = 5.063
+
+[node name="AreaLight3D9" type="AreaLight3D" parent="Lights" unique_id=1577401436]
+transform = Transform3D(-4.200814e-08, -0.27642915, -0.96103436, 1, 1.0225072e-15, -4.371139e-08, 1.2083101e-08, -0.96103436, 0.27642915, 59.784832, -2.2640963, -3.1751232)
+light_color = Color(0.8431839, 0.8431839, 0.84318376, 1)
+light_energy = 5.063
+
+[node name="AreaLight3D10" type="AreaLight3D" parent="Lights" unique_id=2048103506]
+transform = Transform3D(-4.200814e-08, -0.27642915, -0.96103436, 1, 1.0225072e-15, -4.371139e-08, 1.2083101e-08, -0.96103436, 0.27642915, 64.81192, -2.2640963, -3.1751232)
+light_color = Color(0.8431839, 0.8431839, 0.84318376, 1)
+light_energy = 5.063
+
+[node name="AreaLight3D11" type="AreaLight3D" parent="Lights" unique_id=1639504807]
+transform = Transform3D(-4.200814e-08, -0.27642915, -0.96103436, 1, 1.0225072e-15, -4.371139e-08, 1.2083101e-08, -0.96103436, 0.27642915, 69.7927, -2.2640963, -3.1751232)
+light_color = Color(0.8431839, 0.8431839, 0.84318376, 1)
+light_energy = 5.063
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1806196495]
+
+[node name="CloseButton" type="Button" parent="CanvasLayer" unique_id=839783222]
+anchors_preset = -1
+anchor_left = 0.45885417
+anchor_top = 0.4726852
+anchor_right = 0.54114586
+anchor_bottom = 0.52731484
+offset_left = -105.0
+offset_top = -335.5
+offset_right = 105.0
+offset_bottom = -265.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.64705884, 0.06666667, 0.15686275, 1)
+theme_override_colors/font_pressed_color = Color(0.8959138, 0.13641584, 0.24106818, 1)
+theme_override_colors/font_hover_color = Color(0.89411765, 0.13725491, 0.23921569, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.89411765, 0.13725491, 0.23921569, 1)
+theme_override_colors/font_outline_color = Color(0.7750634, 0.7750634, 0.7750634, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("3_fq5v8")
+theme_override_font_sizes/font_size = 120
+text = " QUIT "
+flat = true
+script = ExtResource("3_4h61a")
+metadata/_edit_use_anchors_ = true
+
+[node name="VirtualCursor" type="TextureRect" parent="CanvasLayer" unique_id=1418956265]
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+texture = ExtResource("5_wkqjk")
+metadata/_edit_use_anchors_ = true
+
+[node name="DesertMap" parent="." unique_id=1603998708 instance=ExtResource("6_vch42")]
+transform = Transform3D(0.66920096, 0, -0.74308145, 0, 1, 0, 0.74308145, 0, 0.66920096, -8.054604, -78.51668, 3.674778)
+
+[node name="cart" parent="." unique_id=1753772008 instance=ExtResource("7_rshu7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7044783, -78.44004, -1.0121751)
+
+[connection signal="pressed" from="CanvasLayer/CloseButton" to="CanvasLayer/CloseButton" method="_on_pressed"]
+
+[editable path="Player2"]
