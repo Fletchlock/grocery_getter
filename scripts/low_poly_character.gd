@@ -26,6 +26,9 @@ var _gravity := -30.0
 var _was_airborne := false
 var _target_zoom := 4.0
 
+# Ref to player scene
+const PLAYER_SCENE = preload("res://scenes/low_poly_character.tscn")
+
 # === Node References ===
 @onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
 @onready var _camera_origin: Node3D = $SpringArmPivot

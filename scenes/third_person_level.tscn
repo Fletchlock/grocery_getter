@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://gcp374r23hjn"]
 
-[ext_resource type="PackedScene" uid="uid://dukmo46pyd73s" path="res://scenes/low_poly_character.tscn" id="1_4sa4f"]
+[ext_resource type="Script" uid="uid://cjabx1e5qvnvx" path="res://scripts/third_person_level.gd" id="1_vchc8"]
 [ext_resource type="PackedScene" uid="uid://c2fevj44ripwv" path="res://blender/grocery_store_WB.glb" id="2_vucy8"]
 [ext_resource type="PackedScene" uid="uid://dsj5b4t440epe" path="res://assets/models/thingy.glb" id="5_gctxs"]
 [ext_resource type="PackedScene" uid="uid://dfa6glbhgltej" path="res://blender/DesertMap.glb" id="6_vch42"]
@@ -26,6 +26,7 @@ fog_height = -436.59
 fog_height_density = 3.5969
 
 [node name="ThirdPersonLevel" type="Node3D" unique_id=1122241509]
+script = ExtResource("1_vchc8")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1553420716]
 environment = SubResource("Environment_yliug")
@@ -38,22 +39,6 @@ shadow_bias = 0.05
 
 [node name="grocery_store_WB" parent="." unique_id=517880905 instance=ExtResource("2_vucy8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09771347, -78.44004, 11.561579)
-
-[node name="Player2" parent="." unique_id=974124902 instance=ExtResource("1_4sa4f")]
-transform = Transform3D(-0.70081645, 0, -0.71334165, 0, 1, 0, 0.71334165, 0, -0.70081645, -15.62719, -78.44004, -11.915493)
-
-[node name="Skeleton3D" parent="Player2/low_poly_character/Armature" parent_id_path=PackedInt32Array(974124902, 1485995296) index="0" unique_id=972510031]
-bones/0/position = Vector3(0, 0.7078778, -0.015608446)
-bones/1/rotation = Quaternion(-0.024652205, 0, 0, 0.9996961)
-bones/3/rotation = Quaternion(0.09978675, -2.8792102e-10, 2.6377165e-08, 0.9950089)
-bones/4/rotation = Quaternion(0.0122114355, 0.08848278, 0.9818308, 0.16742171)
-bones/7/rotation = Quaternion(-0.0122114355, 0.08848278, 0.9818308, -0.16742171)
-bones/10/rotation = Quaternion(0.027322738, -0.05529662, 0.99582344, 0.06731703)
-bones/11/rotation = Quaternion(0.23792885, 0.0025411313, 0.048741598, 0.9700556)
-bones/12/rotation = Quaternion(-0.68740094, 0.052365635, -0.03147141, 0.72370386)
-bones/13/rotation = Quaternion(-0.027322752, -0.05529662, 0.99582344, -0.06731703)
-bones/14/rotation = Quaternion(0.23792885, -0.0025411309, -0.04874159, 0.9700556)
-bones/15/rotation = Quaternion(-0.68740094, -0.052365642, 0.031471398, 0.72370386)
 
 [node name="Lights" type="Node3D" parent="." unique_id=1671814403]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.140747, -73.9782, 0.0048942566)
@@ -170,4 +155,5 @@ transform = Transform3D(0.000544928, 0, 0.9999999, 0, 1, 0, -0.9999999, 0, 0.000
 [node name="thing" parent="." unique_id=1777229770 instance=ExtResource("6_vchc8")]
 transform = Transform3D(0.8609213, 0, -0.50873816, 0, 1, 0, 0.50873816, 0, 0.8609213, -14.214803, -78.44004, 28.855179)
 
-[editable path="Player2"]
+[node name="SpawnPoint" type="Marker3D" parent="." unique_id=1911317574]
+transform = Transform3D(-0.8612663, 0, 0.50815386, 0, 1, 0, -0.50815386, 0, -0.8612663, -23.63945, -78.44004, -12.447253)
