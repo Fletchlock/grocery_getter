@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://c2fevj44ripwv" path="res://blender/grocery_store_WB.glb" id="2_vucy8"]
 [ext_resource type="PackedScene" uid="uid://dsj5b4t440epe" path="res://assets/models/thingy.glb" id="5_gctxs"]
 [ext_resource type="PackedScene" uid="uid://dfa6glbhgltej" path="res://blender/DesertMap.glb" id="6_vch42"]
+[ext_resource type="PackedScene" uid="uid://danw5mnq1bkol" path="res://assets/models/thing.glb" id="6_vchc8"]
 [ext_resource type="PackedScene" uid="uid://u71xogfk53i" path="res://scenes/cart.tscn" id="7_rshu7"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ta2qt"]
@@ -42,17 +43,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09771347, -78.44004, 11.56
 transform = Transform3D(-0.70081645, 0, -0.71334165, 0, 1, 0, 0.71334165, 0, -0.70081645, -15.62719, -78.44004, -11.915493)
 
 [node name="Skeleton3D" parent="Player2/low_poly_character/Armature" parent_id_path=PackedInt32Array(974124902, 1485995296) index="0" unique_id=972510031]
-bones/0/position = Vector3(0, 0.7049245, -0.015608446)
-bones/1/rotation = Quaternion(-0.027864292, 0, 0, 0.99961174)
-bones/3/rotation = Quaternion(0.095944226, -3.8976344e-10, 2.637586e-08, 0.9953867)
-bones/4/rotation = Quaternion(0.01288593, 0.08841569, 0.980703, 0.17389184)
-bones/7/rotation = Quaternion(-0.01288593, 0.08841569, 0.980703, -0.17389184)
-bones/10/rotation = Quaternion(0.026939126, -0.063086905, 0.99523133, 0.06934712)
-bones/11/rotation = Quaternion(0.25482783, 0.0025293927, 0.052203484, 0.9655731)
-bones/12/rotation = Quaternion(-0.69420224, 0.053411875, -0.033170145, 0.7170288)
-bones/13/rotation = Quaternion(-0.026939137, -0.063086905, 0.99523133, -0.06934712)
-bones/14/rotation = Quaternion(0.25482783, -0.0025293923, -0.05220347, 0.96557295)
-bones/15/rotation = Quaternion(-0.69420224, -0.053411897, 0.033170134, 0.7170288)
+bones/0/position = Vector3(0, 0.7154406, -0.015608444)
+bones/1/rotation = Quaternion(-0.016367378, -1.3442723e-19, -3.7746998e-18, 0.99986607)
+bones/3/rotation = Quaternion(0.109734066, 4.7097115e-10, 2.193175e-08, 0.993961)
+bones/4/rotation = Quaternion(0.010452948, 0.088639356, 0.9845662, 0.15054287)
+bones/7/rotation = Quaternion(-0.010452948, 0.088639356, 0.9845662, -0.15054287)
+bones/10/rotation = Quaternion(0.028482392, -0.031686895, 0.9972122, 0.061258808)
+bones/11/rotation = Quaternion(0.18641932, 0.0025716913, 0.038189508, 0.9817244)
+bones/12/rotation = Quaternion(-0.6664882, 0.04919523, -0.026217457, 0.7434286)
+bones/13/rotation = Quaternion(-0.0284824, -0.031686895, 0.9972122, -0.06125881)
+bones/14/rotation = Quaternion(0.18641932, -0.0025716922, -0.038189508, 0.9817244)
+bones/15/rotation = Quaternion(-0.6664882, -0.049195252, 0.026217453, 0.7434286)
 
 [node name="Lights" type="Node3D" parent="." unique_id=1671814403]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.140747, -73.9782, 0.0048942566)
@@ -165,5 +166,8 @@ transform = Transform3D(0.5236613, 0, 0.8519265, 0, 1, 0, -0.8519265, 0, 0.52366
 
 [node name="thingy2" parent="." unique_id=833159308 instance=ExtResource("5_gctxs")]
 transform = Transform3D(0.000544928, 0, 0.9999999, 0, 1, 0, -0.9999999, 0, 0.000544928, 12.202269, -78.50697, 29.903433)
+
+[node name="thing" parent="." unique_id=1777229770 instance=ExtResource("6_vchc8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.214803, -78.44004, 28.855179)
 
 [editable path="Player2"]
