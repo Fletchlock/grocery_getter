@@ -21,6 +21,10 @@ config/icon="res://assets/materials/icon.svg"
 LevelManager="*uid://de4lom6ucbx61"
 GameManager="*uid://c5vmnkryo34dd"
 
+[debug]
+
+file_logging/enable_file_logging=true
+
 [display]
 
 window/size/viewport_width=1920
