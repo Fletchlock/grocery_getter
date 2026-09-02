@@ -41,17 +41,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09771347, -78.44004, 11.56
 transform = Transform3D(-0.70081645, 0, -0.71334165, 0, 1, 0, 0.71334165, 0, -0.70081645, -15.62719, -78.44004, -11.915493)
 
 [node name="Skeleton3D" parent="Player2/low_poly_character/Armature" parent_id_path=PackedInt32Array(974124902, 1485995296) index="0" unique_id=972510031]
-bones/0/position = Vector3(0, 0.7015695, -0.015608446)
-bones/1/rotation = Quaternion(-0.031512175, 0, 0, 0.9995034)
-bones/3/rotation = Quaternion(0.09154896, -5.062053e-10, 2.6373884e-08, 0.9958007)
-bones/4/rotation = Quaternion(0.013665196, 0.08833327, 0.97934544, 0.18136427)
-bones/7/rotation = Quaternion(-0.013665196, 0.08833327, 0.97934544, -0.18136427)
-bones/10/rotation = Quaternion(0.02652622, -0.07145, 0.9945213, 0.07154523)
-bones/11/rotation = Quaternion(0.27295595, 0.002515838, 0.055917174, 0.96039677)
-bones/12/rotation = Quaternion(-0.7014563, 0.054537315, -0.03497614, 0.70976144)
-bones/13/rotation = Quaternion(-0.026526239, -0.07145, 0.9945213, -0.07154523)
-bones/14/rotation = Quaternion(0.27295595, -0.0025158376, -0.055917166, 0.96039677)
-bones/15/rotation = Quaternion(-0.7014563, -0.054537326, 0.03497613, 0.70976144)
+bones/0/position = Vector3(0, 0.7134184, -0.015608446)
+bones/1/rotation = Quaternion(-0.018533522, 0, 0, 0.99982834)
+bones/3/rotation = Quaternion(0.107102886, -9.389838e-11, 2.6378569e-08, 0.994248)
+bones/4/rotation = Quaternion(0.010919733, 0.08860036, 0.9838689, 0.15502487)
+bones/7/rotation = Quaternion(-0.010919733, 0.08860036, 0.9838689, -0.15502487)
+bones/10/rotation = Quaternion(0.028144859, -0.038561452, 0.9968705, 0.0630085)
+bones/11/rotation = Quaternion(0.20149149, 0.002563551, 0.04127713, 0.97861683)
+bones/12/rotation = Quaternion(-0.67263156, 0.05011999, -0.027765268, 0.73775595)
+bones/13/rotation = Quaternion(-0.028144877, -0.038561456, 0.9968705, -0.06300851)
+bones/14/rotation = Quaternion(0.20149146, -0.0025635497, -0.041277133, 0.9786168)
+bones/15/rotation = Quaternion(-0.6726316, -0.05012001, 0.027765272, 0.73775595)
 
 [node name="Lights" type="Node3D" parent="." unique_id=1671814403]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.140747, -73.9782, 0.0048942566)
