@@ -43,17 +43,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09771347, -78.44004, 11.56
 transform = Transform3D(-0.70081645, 0, -0.71334165, 0, 1, 0, 0.71334165, 0, -0.70081645, -15.62719, -78.44004, -11.915493)
 
 [node name="Skeleton3D" parent="Player2/low_poly_character/Armature" parent_id_path=PackedInt32Array(974124902, 1485995296) index="0" unique_id=972510031]
-bones/0/position = Vector3(0, 0.707651, -0.015608446)
-bones/1/rotation = Quaternion(-0.02490637, 0, 0, 0.9996899)
-bones/3/rotation = Quaternion(0.09948467, -2.9592934e-10, 2.6377075e-08, 0.9950391)
-bones/4/rotation = Quaternion(0.01226476, 0.08847761, 0.9817433, 0.16793327)
-bones/7/rotation = Quaternion(-0.01226476, 0.08847761, 0.9817433, -0.16793327)
-bones/10/rotation = Quaternion(0.027291007, -0.055941164, 0.99577695, 0.06748407)
-bones/11/rotation = Quaternion(0.23931803, 0.002540199, 0.04902619, 0.9696994)
-bones/12/rotation = Quaternion(-0.6879618, 0.052451566, -0.031611826, 0.7231585)
-bones/13/rotation = Quaternion(-0.027291024, -0.055941164, 0.99577695, -0.06748408)
-bones/14/rotation = Quaternion(0.23931803, -0.0025401977, -0.049026184, 0.9696994)
-bones/15/rotation = Quaternion(-0.6879618, -0.052451577, 0.03161182, 0.7231585)
+bones/0/position = Vector3(0, 0.7078778, -0.015608446)
+bones/1/rotation = Quaternion(-0.024652205, 0, 0, 0.9996961)
+bones/3/rotation = Quaternion(0.09978675, -2.8792102e-10, 2.6377165e-08, 0.9950089)
+bones/4/rotation = Quaternion(0.0122114355, 0.08848278, 0.9818308, 0.16742171)
+bones/7/rotation = Quaternion(-0.0122114355, 0.08848278, 0.9818308, -0.16742171)
+bones/10/rotation = Quaternion(0.027322738, -0.05529662, 0.99582344, 0.06731703)
+bones/11/rotation = Quaternion(0.23792885, 0.0025411313, 0.048741598, 0.9700556)
+bones/12/rotation = Quaternion(-0.68740094, 0.052365635, -0.03147141, 0.72370386)
+bones/13/rotation = Quaternion(-0.027322752, -0.05529662, 0.99582344, -0.06731703)
+bones/14/rotation = Quaternion(0.23792885, -0.0025411309, -0.04874159, 0.9700556)
+bones/15/rotation = Quaternion(-0.68740094, -0.052365642, 0.031471398, 0.72370386)
 
 [node name="Lights" type="Node3D" parent="." unique_id=1671814403]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.140747, -73.9782, 0.0048942566)
@@ -168,6 +168,6 @@ transform = Transform3D(0.5236613, 0, 0.8519265, 0, 1, 0, -0.8519265, 0, 0.52366
 transform = Transform3D(0.000544928, 0, 0.9999999, 0, 1, 0, -0.9999999, 0, 0.000544928, 12.670887, -78.50697, 29.903433)
 
 [node name="thing" parent="." unique_id=1777229770 instance=ExtResource("6_vchc8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.214803, -78.44004, 28.855179)
+transform = Transform3D(0.8609213, 0, -0.50873816, 0, 1, 0, 0.50873816, 0, 0.8609213, -14.214803, -78.44004, 28.855179)
 
 [editable path="Player2"]
