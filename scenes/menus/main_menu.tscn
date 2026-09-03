@@ -29,6 +29,10 @@ layout_mode = 2
 layout_mode = 2
 text = "New Game"
 
+[node name="HostGameButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1826968477]
+layout_mode = 2
+text = "Host Game"
+
 [node name="OptionsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=697564445]
 layout_mode = 2
 text = "Options"
@@ -38,5 +42,6 @@ layout_mode = 2
 text = "Quit"
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/NewGameButton" to="." method="_on_new_game_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/HostGameButton" to="." method="_on_host_game_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

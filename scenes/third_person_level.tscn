@@ -155,5 +155,11 @@ transform = Transform3D(0.000544928, 0, 0.9999999, 0, 1, 0, -0.9999999, 0, 0.000
 [node name="thing" parent="." unique_id=1777229770 instance=ExtResource("6_vchc8")]
 transform = Transform3D(0.8609213, 0, -0.50873816, 0, 1, 0, 0.50873816, 0, 0.8609213, -14.214803, -78.44004, 28.855179)
 
-[node name="SpawnPoint" type="Marker3D" parent="." unique_id=1911317574]
-transform = Transform3D(-0.8612663, 0, 0.50815386, 0, 1, 0, -0.50815386, 0, -0.8612663, -23.63945, -78.44004, -12.447253)
+[node name="PlayerSpawnPoint" type="Marker3D" parent="." unique_id=1911317574]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.7715, -78.37909, -1.9731302)
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=725465429]
+_spawnable_scenes = PackedStringArray("<null>")
+spawn_path = NodePath("../Players")
+
+[node name="Players" type="Node3D" parent="." unique_id=651575800]

@@ -1,5 +1,5 @@
 extends CharacterBody3D
-# this is a test
+
 # === Configuration Properties ===
 @export_group("Camera")
 @export_range(0.0, 1.0) var mouse_sensitivity := 0.25
@@ -38,16 +38,29 @@ const PLAYER_SCENE = preload("res://scenes/low_poly_character.tscn")
 
 
 func _ready() -> void:
-	# Initialize the AnimationTree state link
+	print(
+		"PLAYER READY: ",
+		name,
+		" authority=",
+		get_multiplayer_authority(),
+		" local_id=",
+		multiplayer.get_unique_id()
+	)
+
+	
+	# Initialize the AnimationTree.
 	anim_tree.advance_expression_base_node = get_path()
 	anim_tree.active = true
-	
-	# Explicitly capture the mouse and force the system cursor to hide instantly
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	
-	# Capture the initial placement rotation from the level editor
+
+	# Capture the initial placement rotation from the level editor.
 	_last_movement_direction = -global_transform.basis.z
 	body_mesh.rotation.y = 0.0
+
+	# Only the locally controlled Player should capture
+	# the mouse.
+	if is_multiplayer_authority():
+		print("PLAYER ", name, ": I HAVE AUTHORITY")
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -71,6 +84,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	
+	# Only the Player who owns this node should process
+	# keyboard/controller input and movement.
+	if not is_multiplayer_authority():
+		return
+	
 	# --- 1. Camera View Tracking / UI Mouse Simulation ---
 	var gamepad_look := Input.get_vector("look_left", "look_right", "look_up", "look_down")
 	
