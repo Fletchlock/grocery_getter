@@ -162,7 +162,7 @@ func host_lobby() -> void:
 #       The unique Steam ID for the lobby.
 # ============================================================================
 
-func _on_lobby_created(connect: int, lobby_id: int) -> void:
+func _on_lobby_created(connected: int, lobby_id: int) -> void:
 
 	# ------------------------------------------------------------------------
 	# Check whether Steam successfully created the lobby.
@@ -173,7 +173,7 @@ func _on_lobby_created(connect: int, lobby_id: int) -> void:
 	# connection.
 	# ------------------------------------------------------------------------
 
-	if connect != Steam.RESULT_OK:
+	if connected != Steam.RESULT_OK:
 
 		print("Failed to create Steam lobby. Result: ", connect)
 
