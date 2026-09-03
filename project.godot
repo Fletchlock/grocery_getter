@@ -20,6 +20,7 @@ config/icon="res://assets/materials/icon.svg"
 
 LevelManager="*uid://de4lom6ucbx61"
 GameManager="*uid://c5vmnkryo34dd"
+NetworkManager="*uid://c7ssm32o68kop"
 
 [debug]
 
