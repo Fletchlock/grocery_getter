@@ -64,7 +64,9 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-
+	if not is_multiplayer_authority():
+		return
+	
 	# Accumulate relative mouse motion values to process camera rotation later
 	var is_camera_motion := (
 		event is InputEventMouseMotion and
