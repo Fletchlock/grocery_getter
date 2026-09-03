@@ -38,7 +38,16 @@ const PLAYER_SCENE = preload("res://scenes/low_poly_character.tscn")
 
 
 func _ready() -> void:
+	print(
+		"PLAYER READY: ",
+		name,
+		" authority=",
+		get_multiplayer_authority(),
+		" local_id=",
+		multiplayer.get_unique_id()
+	)
 
+	
 	# Initialize the AnimationTree.
 	anim_tree.advance_expression_base_node = get_path()
 	anim_tree.active = true
@@ -46,13 +55,11 @@ func _ready() -> void:
 	# Capture the initial placement rotation from the level editor.
 	_last_movement_direction = -global_transform.basis.z
 	body_mesh.rotation.y = 0.0
-	
-	
-func setup_local_player() -> void:
 
 	# Only the locally controlled Player should capture
 	# the mouse.
 	if is_multiplayer_authority():
+		print("PLAYER ", name, ": I HAVE AUTHORITY")
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
