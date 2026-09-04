@@ -67,3 +67,17 @@ func _spawn_player(data: Variant) -> Node:
 	)
 
 	return player 
+
+
+func remove_player(peer_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if players == null:
+		return
+
+	var player := players.get_node_or_null(str(peer_id))
+
+	if player:
+		print("SpawnManager: Removing player ", peer_id)
+		player.queue_free()
