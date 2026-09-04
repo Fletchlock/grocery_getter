@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b5txbhqm6m7s3"
-path.s3tc="res://godot/imported/DesertMap_ImphenziaPalette01-256-Gradient.png-75dc99523561faad638c734affeac655.s3tc.ctex"
+uid="uid://b31bu255a8c10"
+path.s3tc="res://godot/imported/thingy_DesertMap_ImphenziaPalette01-256-Gradient.png-0235c31be172f8c5db9e5f3b225e13b1.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -14,8 +14,8 @@ generator_parameters={
 
 [deps]
 
-source_file="res://blender/DesertMap_ImphenziaPalette01-256-Gradient.png"
-dest_files=["res://godot/imported/DesertMap_ImphenziaPalette01-256-Gradient.png-75dc99523561faad638c734affeac655.s3tc.ctex"]
+source_file="res://assets/materials/thingy_DesertMap_ImphenziaPalette01-256-Gradient.png"
+dest_files=["res://godot/imported/thingy_DesertMap_ImphenziaPalette01-256-Gradient.png-0235c31be172f8c5db9e5f3b225e13b1.s3tc.ctex"]
 
 [params]
 

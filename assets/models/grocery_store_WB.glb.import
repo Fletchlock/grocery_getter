@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dfa6glbhgltej"
-path="res://godot/imported/DesertMap.glb-3a10ec75cd588db13bf5e3b32c0da1e1.scn"
+uid="uid://c2fevj44ripwv"
+path="res://godot/imported/grocery_store_WB.glb-b06112ca68b17e4bce5d6615db7fc00d.scn"
 
 [deps]
 
-source_file="res://blender/DesertMap.glb"
-dest_files=["res://godot/imported/DesertMap.glb-3a10ec75cd588db13bf5e3b32c0da1e1.scn"]
+source_file="res://assets/models/grocery_store_WB.glb"
+dest_files=["res://godot/imported/grocery_store_WB.glb-b06112ca68b17e4bce5d6615db7fc00d.scn"]
 
 [params]
 

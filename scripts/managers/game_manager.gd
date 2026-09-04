@@ -62,13 +62,13 @@ func _on_host_created() -> void:
 	# the networking foundation.
 
 	set_game_state(GameState.PLAYING)
-	LevelManager.load_level("res://scenes/third_person_level.tscn")
+	LevelManager.load_level("res://scenes/levels/third_person_level.tscn")
 
 
 func _on_lobby_joined(_lobby_id: int) -> void:
 	print("GameManager: Client joined lobby.")
 	set_game_state(GameState.PLAYING)
-	LevelManager.load_level("res://scenes/third_person_level.tscn")
+	LevelManager.load_level("res://scenes/levels/third_person_level.tscn")
 
 
 # SET GAME STATE

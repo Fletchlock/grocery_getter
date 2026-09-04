@@ -93,13 +93,9 @@ func _spawn_player(data: Variant) -> Node:
 	player.set_multiplayer_authority(peer_id)
 
 	# Position the player before it enters the tree.
-	player.global_transform = player_spawn_point.global_transform
+	player.global_transform.basis = player_spawn_point.global_transform.basis
+	player.position = players.to_local(player_spawn_point.global_position)
 
-	print(
-		"LEVEL: Created player ",
-		player.name,
-		" authority=",
-		player.get_multiplayer_authority()
-	)
+	#player.global_transform = player_spawn_point.global_transform
 
 	return player

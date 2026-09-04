@@ -3,7 +3,7 @@ extends Control
 func _on_new_game_button_pressed() -> void:
 	GameManager.set_game_state(GameManager.GameState.PLAYING)
 	queue_free()
-	LevelManager.load_level("res://scenes/third_person_level.tscn")
+	LevelManager.load_level("res://scenes/level/third_person_level.tscn")
 	
 	
 func _on_host_game_button_pressed() -> void:

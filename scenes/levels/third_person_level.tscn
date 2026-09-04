@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://gcp374r23hjn"]
 
-[ext_resource type="Script" uid="uid://cjabx1e5qvnvx" path="res://scripts/third_person_level.gd" id="1_vchc8"]
-[ext_resource type="PackedScene" uid="uid://c2fevj44ripwv" path="res://blender/grocery_store_WB.glb" id="2_vucy8"]
-[ext_resource type="PackedScene" uid="uid://dsj5b4t440epe" path="res://assets/models/thingy.glb" id="5_gctxs"]
-[ext_resource type="PackedScene" uid="uid://dfa6glbhgltej" path="res://blender/DesertMap.glb" id="6_vch42"]
-[ext_resource type="PackedScene" uid="uid://danw5mnq1bkol" path="res://assets/models/thing.glb" id="6_vchc8"]
-[ext_resource type="PackedScene" uid="uid://u71xogfk53i" path="res://scenes/cart.tscn" id="7_rshu7"]
+[ext_resource type="Script" uid="uid://cjabx1e5qvnvx" path="res://scripts/third_person_level.gd" id="1_c3yyn"]
+[ext_resource type="PackedScene" uid="uid://c2fevj44ripwv" path="res://assets/models/grocery_store_WB.glb" id="2_xoejs"]
+[ext_resource type="PackedScene" uid="uid://dfa6glbhgltej" path="res://assets/models/DesertMap.glb" id="3_ijfqo"]
+[ext_resource type="PackedScene" uid="uid://u71xogfk53i" path="res://scenes/cart.tscn" id="4_alulh"]
+[ext_resource type="PackedScene" uid="uid://dsj5b4t440epe" path="res://assets/models/thingy.glb" id="5_vhux3"]
+[ext_resource type="PackedScene" uid="uid://danw5mnq1bkol" path="res://assets/models/thing.glb" id="6_5i2ml"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ta2qt"]
 sky_top_color = Color(0.2596472, 0.5435158, 0.9217843, 1)
@@ -26,22 +26,22 @@ fog_height = -436.59
 fog_height_density = 3.5969
 
 [node name="ThirdPersonLevel" type="Node3D" unique_id=1122241509]
-script = ExtResource("1_vchc8")
+script = ExtResource("1_c3yyn")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1553420716]
 environment = SubResource("Environment_yliug")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1117029115]
-transform = Transform3D(0.026050938, -0.91726655, 0.39742103, -0.7718323, 0.23419398, 0.5911244, -0.63529235, -0.3221417, -0.701875, -38.945526, -57.970917, 5.3776684)
+transform = Transform3D(0.026050938, -0.91726655, 0.397421, -0.7718323, 0.234194, 0.59112453, -0.63529235, -0.32214168, -0.701875, -28.14796, 19.092424, -2.28727)
 light_energy = 0.85
 shadow_enabled = true
 shadow_bias = 0.05
 
-[node name="grocery_store_WB" parent="." unique_id=517880905 instance=ExtResource("2_vucy8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09771347, -78.44004, 11.561579)
+[node name="grocery_store_WB" parent="." unique_id=517880905 instance=ExtResource("2_xoejs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.699852, -1.3766985, 3.8966403)
 
 [node name="Lights" type="Node3D" parent="." unique_id=1671814403]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60.140747, -73.9782, 0.0048942566)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49.34318, 3.0851393, -7.660044)
 
 [node name="AreaLight3D" type="AreaLight3D" parent="Lights" unique_id=238848380]
 transform = Transform3D(1, 0, 0, 0, -0.010555592, 0.9999443, 0, -0.9999443, -0.010555592, 73.57573, 7.610512, 11.6101055)
@@ -140,25 +140,26 @@ transform = Transform3D(-4.200814e-08, -0.27642915, -0.96103436, 1, 1.0225072e-1
 light_color = Color(0.8431839, 0.8431839, 0.84318376, 1)
 light_energy = 5.063
 
-[node name="DesertMap" parent="." unique_id=1603998708 instance=ExtResource("6_vch42")]
-transform = Transform3D(0.66920096, 0, -0.74308145, 0, 1, 0, 0.74308145, 0, 0.66920096, -8.054604, -78.51668, 3.674778)
+[node name="DesertMap" parent="." unique_id=1603998708 instance=ExtResource("3_ijfqo")]
+transform = Transform3D(0.66920096, 0, -0.74308145, 0, 1, 0, 0.74308145, 0, 0.66920096, 2.742962, -1.4533358, -3.9901605)
 
-[node name="cart" parent="." unique_id=1753772008 instance=ExtResource("7_rshu7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7044783, -78.44004, -1.0121751)
+[node name="cart" parent="." unique_id=1753772008 instance=ExtResource("4_alulh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.502044, -1.3766985, -8.677114)
 
-[node name="cart2" parent="." unique_id=1247605086 instance=ExtResource("7_rshu7")]
-transform = Transform3D(0.5236613, 0, 0.8519265, 0, 1, 0, -0.8519265, 0, 0.5236613, 13.658758, -78.44004, 0.09769988)
+[node name="cart2" parent="." unique_id=1247605086 instance=ExtResource("4_alulh")]
+transform = Transform3D(0.5236613, 0, 0.8519265, 0, 1, 0, -0.8519265, 0, 0.5236613, 24.456324, -1.3766985, -7.567239)
 
-[node name="thingy2" parent="." unique_id=833159308 instance=ExtResource("5_gctxs")]
-transform = Transform3D(0.000544928, 0, 0.9999999, 0, 1, 0, -0.9999999, 0, 0.000544928, 12.670887, -78.50697, 29.903433)
+[node name="thingy2" parent="." unique_id=833159308 instance=ExtResource("5_vhux3")]
+transform = Transform3D(0.000544928, 0, 0.9999999, 0, 1, 0, -0.9999999, 0, 0.000544928, 23.468452, -1.4436312, 22.238495)
 
-[node name="thing" parent="." unique_id=1777229770 instance=ExtResource("6_vchc8")]
-transform = Transform3D(0.8609213, 0, -0.50873816, 0, 1, 0, 0.50873816, 0, 0.8609213, -14.214803, -78.44004, 28.855179)
-
-[node name="PlayerSpawnPoint" type="Marker3D" parent="." unique_id=1911317574]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.7715, -78.37909, -1.9731302)
+[node name="thing" parent="." unique_id=1777229770 instance=ExtResource("6_5i2ml")]
+transform = Transform3D(0.8609213, 0, -0.50873816, 0, 1, 0, 0.50873816, 0, 0.8609213, -3.4172373, -1.3766985, 21.19024)
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=725465429]
 spawn_path = NodePath("../Players")
 
 [node name="Players" type="Node3D" parent="." unique_id=651575800]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65801, 2.5272193, 0)
+
+[node name="PlayerSpawnPoint" type="Marker3D" parent="." unique_id=2017813913]
+transform = Transform3D(-0.57943815, 0, -0.8150162, 0, 1, 0, 0.8150162, 0, -0.57943815, -4.132711, -1.3535142, -13.140913)

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ktluwdwwnc8a"]
 
-[ext_resource type="PackedScene" uid="uid://cu8pgbng1k58d" path="res://blender/low_poly_character_animated.glb" id="1_5efc0"]
+[ext_resource type="PackedScene" uid="uid://cu8pgbng1k58d" path="res://assets/models/low_poly_character_animated.glb" id="1_5efc0"]
 [ext_resource type="AnimationLibrary" uid="uid://bdlrg1t411fjv" path="res://assets/animations/low_poly_character_anims.tres" id="2_gw5k2"]
 
 [node name="low_poly_character_animated" unique_id=285043218 instance=ExtResource("1_5efc0")]
