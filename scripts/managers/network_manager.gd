@@ -19,6 +19,7 @@ func _ready() -> void:
 	Steam.lobby_chat_update.connect(_on_lobby_chat_update)
 	
 	multiplayer.peer_connected.connect(_on_peer_connected)
+	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 
 
 func _process(_delta: float) -> void:
@@ -38,13 +39,8 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 		return
 
 	print("Steam lobby created: ", lobby_id)
-	peer = SteamMultiplayerPeer.new()
-	
-	print("SteamMultiplayerPeer methods:")
-	for method in peer.get_method_list():
-		print(method.name)
 
-	
+	peer = SteamMultiplayerPeer.new()
 	peer.server_relay = true
 	peer.create_host()
 	multiplayer.multiplayer_peer = peer
@@ -85,17 +81,17 @@ func _on_peer_connected(peer_id: int) -> void:
 	LobbyManager.add_player(peer_id)
 
 
+func _on_peer_disconnected(peer_id: int) -> void:
+	print("NetworkManager: Peer disconnected: ", peer_id)
+
+	LobbyManager.remove_player(peer_id)
+	SpawnManager.remove_player(peer_id)
+
+
 func _on_lobby_chat_update(
 	_lobby_id: int,
-	changed_id: int,
+	_changed_id: int,
 	_making_change_id: int,
-	chat_state: int
+	_chat_state: int
 ) -> void:
-	print("NEW CALLBACK RUNNING")
-	print("Steam ID: ", changed_id)
-	print("Chat state: ", chat_state)
-
-	if chat_state == 2 and peer != null:
-		var peer_id: int = peer.get_peer_id_for_steam_id(changed_id)
-
-		print("Converted Steam ID ", changed_id, " to Peer ID ", peer_id)
+	pass

@@ -11,7 +11,9 @@ func add_player(peer_id: int) -> void:
 		return
 
 	players[peer_id] = {
-		"peer_id": peer_id
+		"peer_id": peer_id,
+		"character": "",
+		"ready": false
 	}
 
 	print("LobbyManager: Player added: ", peer_id)
