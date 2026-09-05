@@ -26,6 +26,7 @@ var _gravity := -30.0
 var _was_airborne := false
 var _target_zoom := 4.0
 
+
 # Ref to player scene
 const PLAYER_SCENE = preload("res://scenes/low_poly_character.tscn")
 
@@ -37,6 +38,7 @@ const PLAYER_SCENE = preload("res://scenes/low_poly_character.tscn")
 @onready var _mesh_default_y : float = body_mesh.position.y 
 @onready var grocery_red: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
 @onready var grocery_blue: MeshInstance3D = $Armature/Skeleton3D/GroceryBlue
+@onready var grocery_green: MeshInstance3D = $Armature/Skeleton3D/GroceryGreen
 
 
 func _ready() -> void:
@@ -62,6 +64,8 @@ func _ready() -> void:
 	if is_multiplayer_authority():
 		print("PLAYER ", name, ": I HAVE AUTHORITY")
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		
+	set_character(2)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -84,7 +88,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			_target_zoom += zoom_speed
 		
 		_target_zoom = clamp(_target_zoom, min_zoom, max_zoom)
-
+	
 
 func _physics_process(delta: float) -> void:
 	
@@ -163,6 +167,11 @@ func _physics_process(delta: float) -> void:
 	if body_mesh.position.y < _mesh_default_y:
 		body_mesh.position.y = move_toward(body_mesh.position.y, _mesh_default_y, 5.0 * delta)
 	
+	if Input.is_action_just_pressed("toggle_hat"):
+		var hat = body_mesh.get_node("Hat")
+		hat.visible = !hat.visible
+
+	
 	# --- 6. Execution ---
 	move_and_slide()
 
@@ -176,8 +185,15 @@ func _physics_process(delta: float) -> void:
 
 
 func set_character(character_id: int) -> void:
-	grocery_red.visible = character_id == 0
-	grocery_blue.visible = character_id == 1
+	var characters: Array[MeshInstance3D] = [
+		grocery_red,
+		grocery_blue,
+		grocery_green
+	]
 	
-	body_mesh = grocery_red if character_id == 0 else grocery_blue
+	for character in characters:
+		character.visible = false
+	
+	body_mesh = characters[character_id]
+	body_mesh.visible = true
 	_mesh_default_y = body_mesh.position.y

@@ -3,3 +3,42 @@
 [ext_resource type="PackedScene" uid="uid://cniedhcqolm7d" path="res://assets/models/grocery_character.glb" id="1_xppay"]
 
 [node name="grocery_character" unique_id=1492110551 instance=ExtResource("1_xppay")]
+
+[node name="Skeleton3D" parent="Armature" parent_id_path=PackedInt32Array(624682519) index="0" unique_id=1402712466]
+bones/0/rotation = Quaternion(0.025572155, 0, 0, 0.999673)
+bones/1/rotation = Quaternion(-0.0155516025, 0, 0, 0.99987906)
+bones/2/rotation = Quaternion(-0.13068068, 1.1818702e-07, -1.557835e-08, 0.9914245)
+bones/3/rotation = Quaternion(0.11064047, -2.8151821e-14, 2.637874e-08, 0.9938606)
+bones/4/rotation = Quaternion(0.022107521, 0.08499766, 0.9439818, 0.3180959)
+bones/5/rotation = Quaternion(-0.14423138, 0.00022060277, 0.03200793, 0.9890262)
+bones/6/rotation = Quaternion(-0.052163105, -0.031390984, 0.17021033, 0.98352534)
+bones/7/rotation = Quaternion(-0.022107521, 0.08499766, 0.9439818, -0.3180959)
+bones/8/rotation = Quaternion(-0.14423138, -0.00022060277, -0.03200793, 0.9890262)
+bones/9/rotation = Quaternion(-0.052163105, 0.031390984, -0.17021033, 0.98352534)
+bones/10/rotation = Quaternion(0.028598597, -0.029320708, 0.9973179, 0.060659077)
+bones/10/scale = Vector3(0.999983, 0.9999996, 0.9999952)
+bones/11/rotation = Quaternion(0.18132697, 0.0025742964, 0.0371463, 0.9827177)
+bones/12/rotation = Quaternion(-0.6644075, 0.0488832, -0.025692588, 0.7453274)
+bones/12/scale = Vector3(0.9999924, 0.9999991, 1.0000011)
+bones/13/rotation = Quaternion(-0.028598608, -0.029320704, 0.99731785, -0.06065907)
+bones/13/scale = Vector3(0.999983, 0.9999996, 0.9999952)
+bones/14/rotation = Quaternion(0.18132697, -0.0025742962, -0.037146296, 0.9827177)
+bones/15/rotation = Quaternion(-0.6644075, -0.048883215, 0.025692575, 0.7453274)
+bones/15/scale = Vector3(0.9999923, 0.99999905, 1.0000011)
+
+[node name="character_blue" parent="Armature/Skeleton3D" index="0" unique_id=1738956720]
+visible = false
+
+[node name="character_blue_hat" parent="Armature/Skeleton3D" index="1" unique_id=1282417801]
+visible = false
+cast_shadow = 0
+
+[node name="character_green__hat" parent="Armature/Skeleton3D" index="3" unique_id=731994395]
+cast_shadow = 0
+
+[node name="character_red" parent="Armature/Skeleton3D" index="4" unique_id=1883500456]
+visible = false
+
+[node name="character_red_hat" parent="Armature/Skeleton3D" index="5" unique_id=1958212141]
+visible = false
+cast_shadow = 0
