@@ -16,8 +16,14 @@ extends CharacterBody3D
 @export var jump_strength := 12.0
 @export var air_acceleration := 12.0
 
+@export_group("Network Replication")
+@export var network_anim_blend := 0.0
+@export var network_is_falling := false
+@export var network_is_grounded := true
+@export var network_hat_visible := true 
+
 @export_group("UI Navigation")
-@export var gamepad_cursor_speed := 800.0 
+@export var gamepad_cursor_speed := 800.0
 
 # === Internal State Variables ===
 var _camera_input_direction := Vector2.ZERO
@@ -25,7 +31,6 @@ var _last_movement_direction := Vector3.FORWARD
 var _gravity := -30.0
 var _was_airborne := false
 var _target_zoom := 4.0
-
 
 # Ref to player scene
 const PLAYER_SCENE = preload("res://scenes/low_poly_character.tscn")
@@ -97,6 +102,9 @@ func _physics_process(delta: float) -> void:
 	# Only the Player who owns this node should process
 	# keyboard/controller input and movement.
 	if not is_multiplayer_authority():
+		set_anim_tree()
+		var hat = body_mesh.get_node("Hat")
+		hat.visible = network_hat_visible
 		return
 	
 	# --- 1. Camera View Tracking / UI Mouse Simulation ---
@@ -150,14 +158,18 @@ func _physics_process(delta: float) -> void:
 	
 	# --- 4. Animation Blend Configuration ---
 	var horizontal_speed := Vector3(velocity.x, 0.0, velocity.z).length()
-	anim_tree.set("parameters/BlendSpace1D/blend_position", horizontal_speed / move_speed)
-	
+
+	# Store animation state for network replication.
+	network_anim_blend = horizontal_speed / move_speed
+	network_is_falling = not is_on_floor()
+	network_is_grounded = is_on_floor()
+
+	# Apply animation locally.
+	set_anim_tree()
+
 	var is_starting_jump := Input.is_action_just_pressed("jump") and is_on_floor()
 	if is_starting_jump:
 		velocity.y += jump_strength
-	
-	anim_tree.set("parameters/conditions/is_falling", not is_on_floor())
-	anim_tree.set("parameters/conditions/is_grounded", is_on_floor())
 		
 	# --- 5. Visual Impact Secondary Effects ---
 	if is_on_floor() and _was_airborne:
@@ -170,8 +182,9 @@ func _physics_process(delta: float) -> void:
 		body_mesh.position.y = move_toward(body_mesh.position.y, _mesh_default_y, 5.0 * delta)
 	
 	if Input.is_action_just_pressed("toggle_hat"):
+		network_hat_visible = !network_hat_visible
 		var hat = body_mesh.get_node("Hat")
-		hat.visible = !hat.visible
+		hat.visible = network_hat_visible
 
 	
 	# --- 6. Execution ---
@@ -200,3 +213,22 @@ func set_character(character_id: int) -> void:
 	body_mesh = characters[character_id]
 	body_mesh.visible = true
 	_mesh_default_y = body_mesh.position.y
+
+
+func set_anim_tree() -> void:
+	anim_tree.set(
+		"parameters/BlendSpace1D/blend_position",
+		network_anim_blend
+	)
+
+
+	anim_tree.set(
+		"parameters/conditions/is_falling",
+		network_is_falling
+	)
+
+
+	anim_tree.set(
+		"parameters/conditions/is_grounded",
+		network_is_grounded
+	)

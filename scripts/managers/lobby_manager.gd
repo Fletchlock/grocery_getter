@@ -48,11 +48,11 @@ func set_character(peer_id: int, character: String) -> void:
 	)
 	
 
-func set_ready(peer_id: int, is_ready: bool) -> void:
+func set_ready(peer_id: int, player_is_ready: bool) -> void:
 	if not players.has(peer_id):
 		return
 
-	players[peer_id]["ready"] = is_ready
+	players[peer_id]["ready"] = player_is_ready
 
 	print(
 		"LobbyManager: Player ",

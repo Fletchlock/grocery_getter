@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://u71xogfk53i" path="res://scenes/cart.tscn" id="4_alulh"]
 [ext_resource type="PackedScene" uid="uid://dsj5b4t440epe" path="res://assets/models/thingy.glb" id="5_vhux3"]
 [ext_resource type="PackedScene" uid="uid://danw5mnq1bkol" path="res://assets/models/thing.glb" id="6_5i2ml"]
+[ext_resource type="PackedScene" uid="uid://dp86rm7algq10" path="res://scenes/thing_platform.tscn" id="7_xoejs"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ta2qt"]
 sky_top_color = Color(0.2596472, 0.5435158, 0.9217843, 1)
@@ -162,3 +163,6 @@ spawn_path = NodePath("../Players")
 
 [node name="PlayerSpawnPoint" type="Marker3D" parent="." unique_id=2017813913]
 transform = Transform3D(-0.57943815, 0, -0.8150162, 0, 1, 0, 0.8150162, 0, -0.57943815, -2.909, -1.3652344, -6.776)
+
+[node name="Node3D" parent="." unique_id=1088224428 instance=ExtResource("7_xoejs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.146927, -1.3766971, -21.334187)
