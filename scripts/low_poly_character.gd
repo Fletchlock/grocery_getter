@@ -67,7 +67,7 @@ func _ready() -> void:
 		_camera.make_current()
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		
-	set_character(1)
+	set_character(0)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -183,7 +183,8 @@ func _physics_process(delta: float) -> void:
 
 	var local_movement_dir := global_transform.basis.inverse() * _last_movement_direction
 	var target_angle := Vector3.FORWARD.signed_angle_to(local_movement_dir, Vector3.UP)
-	body_mesh.rotation.y = lerp_angle(body_mesh.rotation.y, target_angle, rotation_speed * delta)
+	if is_multiplayer_authority():
+		body_mesh.rotation.y = lerp_angle(body_mesh.rotation.y, target_angle, rotation_speed * delta)
 
 
 func set_character(character_id: int) -> void:
