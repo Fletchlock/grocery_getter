@@ -31,8 +31,9 @@ var _target_zoom := 4.0
 const PLAYER_SCENE = preload("res://scenes/low_poly_character.tscn")
 
 # === Node References ===
-@onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
 @onready var _camera_origin: Node3D = $SpringArmPivot
+@onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
+@onready var _camera: Camera3D = $SpringArmPivot/SpringArm3D/Camera3D
 @onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
 @onready var anim_tree = $AnimationTree
 @onready var _mesh_default_y : float = body_mesh.position.y 
@@ -63,9 +64,10 @@ func _ready() -> void:
 	# the mouse.
 	if is_multiplayer_authority():
 		print("PLAYER ", name, ": I HAVE AUTHORITY")
+		_camera.make_current()
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		
-	set_character(2)
+	set_character(1)
 
 
 func _unhandled_input(event: InputEvent) -> void:
