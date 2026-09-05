@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://nj656xy5mg30"]
 
-[ext_resource type="Script" uid="uid://j3sysojbbku3" path="res://scenes/main/main.gd" id="1_u1xfj"]
+[ext_resource type="Script" uid="uid://j3sysojbbku3" path="res://scripts/main.gd" id="1_u1xfj"]
 
 [node name="Main" type="Node" unique_id=647332152]
 process_mode = 3

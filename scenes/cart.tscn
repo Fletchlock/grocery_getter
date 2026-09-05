@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://u71xogfk53i"]
 
-[ext_resource type="PackedScene" uid="uid://5vi8odyy5nph" path="res://blender/cart.glb" id="1_0tgi4"]
+[ext_resource type="PackedScene" uid="uid://5vi8odyy5nph" path="res://assets/models/cart.glb" id="1_0tgi4"]
 
 [node name="cart" unique_id=1247605086 instance=ExtResource("1_0tgi4")]
 
-[node name="Cart" parent="." index="0" unique_id=1106071859]
+[node name="Cart" parent="." index="0" unique_id=1889199032]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
 
-[node name="CollisionShape3D" parent="@StaticBody3D@19837" parent_id_path=PackedInt32Array(2035468366) index="0" unique_id=1434251385]
+[node name="CollisionShape3D" parent="@StaticBody3D@22533" parent_id_path=PackedInt32Array(1279132367) index="0" unique_id=23390770]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)

@@ -18,9 +18,11 @@ config/icon="res://assets/materials/icon.svg"
 
 [autoload]
 
-LevelManager="*uid://de4lom6ucbx61"
 GameManager="*uid://c5vmnkryo34dd"
 NetworkManager="*uid://c7ssm32o68kop"
+LobbyManager="*uid://bsjq7g6r35y0m"
+LevelManager="*uid://de4lom6ucbx61"
+SpawnManager="*uid://ban24s6ykfait"
 
 [debug]
 

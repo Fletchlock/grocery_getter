@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://dfa6glbhgltej"
-path="res://godot/imported/DesertMap.glb-3a10ec75cd588db13bf5e3b32c0da1e1.scn"
+path="res://godot/imported/DesertMap.glb-660b7faff370abab625f3e043db15e99.scn"
 
 [deps]
 
-source_file="res://blender/DesertMap.glb"
-dest_files=["res://godot/imported/DesertMap.glb-3a10ec75cd588db13bf5e3b32c0da1e1.scn"]
+source_file="res://assets/models/DesertMap.glb"
+dest_files=["res://godot/imported/DesertMap.glb-660b7faff370abab625f3e043db15e99.scn"]
 
 [params]
 
