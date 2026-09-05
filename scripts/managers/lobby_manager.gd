@@ -32,3 +32,46 @@ func remove_player(peer_id: int) -> void:
 
 func get_players() -> Dictionary:
 	return players
+	
+	
+func set_character(peer_id: int, character: String) -> void:
+	if not players.has(peer_id):
+		return
+
+	players[peer_id]["character"] = character
+
+	print(
+		"LobbyManager: Player ",
+		peer_id,
+		" selected character: ",
+		character
+	)
+	
+
+func set_ready(peer_id: int, is_ready: bool) -> void:
+	if not players.has(peer_id):
+		return
+
+	players[peer_id]["ready"] = is_ready
+
+	print(
+		"LobbyManager: Player ",
+		peer_id,
+		" ready: ",
+		ready
+	)
+
+
+func get_character(peer_id: int) -> String:
+	if not players.has(peer_id):
+		return ""
+
+	return players[peer_id]["character"]
+
+
+func is_ready(peer_id: int) -> bool:
+	if not players.has(peer_id):
+		return false
+
+	return players[peer_id]["ready"]
+	

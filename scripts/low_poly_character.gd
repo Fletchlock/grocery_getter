@@ -32,9 +32,11 @@ const PLAYER_SCENE = preload("res://scenes/low_poly_character.tscn")
 # === Node References ===
 @onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
 @onready var _camera_origin: Node3D = $SpringArmPivot
-@onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/Cube
+@onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
 @onready var anim_tree = $AnimationTree
 @onready var _mesh_default_y : float = body_mesh.position.y 
+@onready var grocery_red: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
+@onready var grocery_blue: MeshInstance3D = $Armature/Skeleton3D/GroceryBlue
 
 
 func _ready() -> void:
@@ -46,7 +48,6 @@ func _ready() -> void:
 		" local_id=",
 		multiplayer.get_unique_id()
 	)
-
 	
 	# Initialize the AnimationTree.
 	anim_tree.advance_expression_base_node = get_path()
@@ -172,3 +173,11 @@ func _physics_process(delta: float) -> void:
 	var local_movement_dir := global_transform.basis.inverse() * _last_movement_direction
 	var target_angle := Vector3.FORWARD.signed_angle_to(local_movement_dir, Vector3.UP)
 	body_mesh.rotation.y = lerp_angle(body_mesh.rotation.y, target_angle, rotation_speed * delta)
+
+
+func set_character(character_id: int) -> void:
+	grocery_red.visible = character_id == 0
+	grocery_blue.visible = character_id == 1
+	
+	body_mesh = grocery_red if character_id == 0 else grocery_blue
+	_mesh_default_y = body_mesh.position.y
