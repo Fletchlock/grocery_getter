@@ -26,13 +26,19 @@ func _ready() -> void:
 func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 	print("MAIN: Game state changed to: ", new_state)
 
+	if new_state == GameManager.GameState.LOBBY:
+		if is_instance_valid(main_menu):
+			main_menu.hide()
+
+		if not is_instance_valid(lobby):
+			open_lobby()
+
 	if new_state == GameManager.GameState.PLAYING:
 		if is_instance_valid(main_menu):
 			print("MAIN: Removing main menu")
 			main_menu.queue_free()
 			main_menu = null
-			
-	if new_state == GameManager.GameState.PLAYING:
+
 		if is_instance_valid(lobby):
 			print("MAIN: Removing lobby")
 			lobby.queue_free()
