@@ -21,6 +21,8 @@ func _ready() -> void:
 	
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+	multiplayer.connected_to_server.connect(_on_connected_to_server)
+	multiplayer.connection_failed.connect(_on_connection_failed)
 
 
 func _process(_delta: float) -> void:
@@ -62,7 +64,12 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 
 	# Host registers with the lobby
 	LobbyManager.add_player(multiplayer.get_unique_id())
+	
+	print("NetworkManager: Host peer status: ", peer.get_connection_status())
+	print("NetworkManager: Host Steam ID: ", Steam.getSteamID())
+	
 	host_created.emit()
+	
 
 
 func _on_lobby_joined(
@@ -83,14 +90,29 @@ func _on_lobby_joined(
 	if Steam.getLobbyOwner(lobby_id) == Steam.getSteamID():
 		return
 
+	var host_steam_id := Steam.getLobbyOwner(lobby_id)
+
+	print("NetworkManager: Lobby owner Steam ID: ", host_steam_id)
+	print("NetworkManager: My Steam ID: ", Steam.getSteamID())
+
 	peer = SteamMultiplayerPeer.new()
-	#peer.server_relay = true
-	peer.create_client(Steam.getLobbyOwner(lobby_id))
+	peer.server_relay = true
+
+	var client_result := peer.create_client(host_steam_id)
+
+	print("NetworkManager: create_client result: ", client_result)
+	print("NetworkManager: Peer status after create_client: ", peer.get_connection_status())
+
 	multiplayer.multiplayer_peer = peer
+
+	print("NetworkManager: Multiplayer peer assigned.")
+	print("NetworkManager: My multiplayer ID: ", multiplayer.get_unique_id())
+
 	lobby_joined.emit(lobby_id)
 
 
 func _on_join_requested(lobby_id: int, _steam_id: int) -> void:
+	print("STEAM INVITE RECEIVED! Lobby ID: ", lobby_id)
 	Steam.joinLobby(lobby_id)
 
 
@@ -113,6 +135,15 @@ func _on_lobby_chat_update(
 	_chat_state: int
 ) -> void:
 	pass
+
+
+func _on_connected_to_server() -> void:
+	print("NetworkManager: CONNECTED TO SERVER!")
+	print("NetworkManager: My peer ID: ", multiplayer.get_unique_id())
+
+
+func _on_connection_failed() -> void:
+	print("NetworkManager: CONNECTION FAILED!")
 
 
 func disconnect_from_lobby() -> void:
