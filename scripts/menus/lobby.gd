@@ -63,8 +63,7 @@ func _on_play_button_pressed() -> void:
 		print("Cannot start: not all players are ready.")
 		return
 
-	GameManager.set_game_state(GameManager.GameState.PLAYING)
-	LevelManager.load_level("res://scenes/levels/third_person_level.tscn")
+	GameManager.start_multiplayer_game()
 
 func _on_ready_button_pressed() -> void:
 	var my_peer_id := multiplayer.get_unique_id()

@@ -34,6 +34,13 @@ func spawn_player(peer_id: int) -> void:
 	if not multiplayer.is_server():
 		return
 
+	if players == null:
+		return
+
+	# Don't spawn a player that already exists.
+	if players.has_node(str(peer_id)):
+		return
+
 	print("SpawnManager: Spawning player for peer ", peer_id)
 	multiplayer_spawner.spawn(peer_id)
 

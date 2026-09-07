@@ -41,3 +41,10 @@ func load_level(level_path: String) -> void:
 
 	# Add the level to the Game node.
 	game.add_child(current_level)
+
+
+func unload_level() -> void:
+	if current_level:
+		print("LevelManager: Unloading current level.")
+		current_level.queue_free()
+		current_level = null

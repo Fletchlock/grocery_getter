@@ -2,6 +2,7 @@ extends Node
 
 signal host_created
 signal lobby_joined(lobby_id: int)
+signal host_disconnected
 
 const LOBBY_TYPE := Steam.LobbyType.LOBBY_TYPE_FRIENDS_ONLY
 const MAX_MEMBERS := 4
@@ -127,6 +128,11 @@ func _on_peer_disconnected(peer_id: int) -> void:
 
 	LobbyManager.remove_player(peer_id)
 	SpawnManager.remove_player(peer_id)
+	
+	#Peer 1 is always the host.
+	if peer_id == 1 and not multiplayer.is_server():
+		print("NewtorkManager: Host Disconnected!")
+		host_disconnected.emit()
 
 
 func _on_lobby_chat_update(
@@ -141,6 +147,8 @@ func _on_lobby_chat_update(
 func _on_connected_to_server() -> void:
 	print("NetworkManager: CONNECTED TO SERVER!")
 	print("NetworkManager: My peer ID: ", multiplayer.get_unique_id())
+
+	LobbyManager.add_player(multiplayer.get_unique_id())
 
 
 func _on_connection_failed() -> void:
