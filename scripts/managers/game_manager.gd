@@ -59,7 +59,7 @@ func _on_host_created() -> void:
 
 func _on_lobby_joined(_lobby_id: int) -> void:
 	print("GameManager: Client joined lobby.")
-	
+	set_game_state(GameState.LOBBY)
 
 func set_game_state(new_state: GameState) -> void:
 	current_state = new_state
