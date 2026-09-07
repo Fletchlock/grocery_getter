@@ -51,9 +51,9 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 		peer = null
 
 	peer = SteamMultiplayerPeer.new()
-	#peer.server_relay = true
+	peer.server_relay = true
 
-	var error := peer.create_host(1)
+	var error := peer.create_host()
 
 	if error != OK:
 		print("Failed to create Steam host. Error: ", error)
@@ -105,6 +105,7 @@ func _on_lobby_joined(
 
 	multiplayer.multiplayer_peer = peer
 
+	print("NetworkManager: Client peer status after assignment: ", peer.get_connection_status())
 	print("NetworkManager: Multiplayer peer assigned.")
 	print("NetworkManager: My multiplayer ID: ", multiplayer.get_unique_id())
 
