@@ -61,6 +61,32 @@ func _on_lobby_joined(_lobby_id: int) -> void:
 	print("GameManager: Client joined lobby.")
 	set_game_state(GameState.LOBBY)
 
+
+func start_multiplayer_game() -> void:
+	if not multiplayer.is_server():
+		return
+
+	print("GameManager: Starting multiplayer game.")
+
+	# Tell all clients to start the game.
+	start_multiplayer_game_rpc.rpc()
+
+	# Start the game locally for the host.
+	set_game_state(GameState.PLAYING)
+	LevelManager.load_level("res://scenes/levels/third_person_level.tscn")
+
+
+@rpc("authority", "reliable")
+func start_multiplayer_game_rpc() -> void:
+	# The host already started the game locally.
+	if multiplayer.is_server():
+		return
+
+	print("GameManager: Host started the game.")
+
+	set_game_state(GameState.PLAYING)
+	LevelManager.load_level("res://scenes/levels/third_person_level.tscn")
+
 func set_game_state(new_state: GameState) -> void:
 	current_state = new_state
 	game_state_changed.emit(new_state)

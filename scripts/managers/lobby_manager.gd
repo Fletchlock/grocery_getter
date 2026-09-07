@@ -19,7 +19,13 @@ func add_player(peer_id: int) -> void:
 	}
 
 	print("LobbyManager: Player added: ", peer_id)
+
 	lobby_player_added.emit(peer_id)
+	lobby_state_changed.emit()
+
+	# Host sends the complete lobby state to the newly connected player.
+	if multiplayer.is_server() and peer_id != multiplayer.get_unique_id():
+		sync_lobby_state.rpc_id(peer_id, players)
 
 
 func remove_player(peer_id: int) -> void:
@@ -150,4 +156,19 @@ func sync_player_state(peer_id: int, character: String, player_is_ready: bool) -
 	players[peer_id]["ready"] = player_is_ready
 
 	lobby_player_updated.emit(peer_id)
+	lobby_state_changed.emit()
+
+
+@rpc("authority", "reliable")
+func sync_lobby_state(player_state: Dictionary) -> void:
+	if multiplayer.is_server():
+		return
+
+	players = player_state.duplicate(true)
+
+	print("LobbyManager: Received lobby state from host.")
+
+	for peer_id in players:
+		lobby_player_updated.emit(peer_id)
+
 	lobby_state_changed.emit()
