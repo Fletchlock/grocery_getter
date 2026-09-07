@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://e1jjuwf1cbgw"]
+
+[ext_resource type="Script" uid="uid://dup55ocf8iies" path="res://scripts/test_steam_peer.gd" id="1_r1mjw"]
+
+[node name="TestSteamPeer" type="Node" unique_id=932844373]
+script = ExtResource("1_r1mjw")
