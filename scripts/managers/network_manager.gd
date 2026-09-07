@@ -7,6 +7,7 @@ const LOBBY_TYPE := Steam.LobbyType.LOBBY_TYPE_FRIENDS_ONLY
 const MAX_MEMBERS := 4
 
 var peer: SteamMultiplayerPeer
+var current_lobby_id: int = 0
 
 
 func _ready() -> void:
@@ -39,12 +40,27 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 		return
 
 	print("Steam lobby created: ", lobby_id)
+	
+	current_lobby_id = lobby_id
+
+	if peer != null:
+		print("NetworkManager: Existing peer found. Closing it.")
+		peer.close()
+		peer = null
 
 	peer = SteamMultiplayerPeer.new()
-	peer.server_relay = true
-	peer.create_host()
+	#peer.server_relay = true
+
+	var error := peer.create_host(1)
+
+	if error != OK:
+		print("Failed to create Steam host. Error: ", error)
+		peer = null
+		return
+
 	multiplayer.multiplayer_peer = peer
-	#Host registers with the lobby
+
+	# Host registers with the lobby
 	LobbyManager.add_player(multiplayer.get_unique_id())
 	host_created.emit()
 
@@ -61,12 +77,14 @@ func _on_lobby_joined(
 		return
 
 	print("Joined Steam lobby: ", lobby_id)
+	
+	current_lobby_id = lobby_id
 
 	if Steam.getLobbyOwner(lobby_id) == Steam.getSteamID():
 		return
 
 	peer = SteamMultiplayerPeer.new()
-	peer.server_relay = true
+	#peer.server_relay = true
 	peer.create_client(Steam.getLobbyOwner(lobby_id))
 	multiplayer.multiplayer_peer = peer
 	lobby_joined.emit(lobby_id)
@@ -95,3 +113,35 @@ func _on_lobby_chat_update(
 	_chat_state: int
 ) -> void:
 	pass
+
+
+func disconnect_from_lobby() -> void:
+	print("NetworkManager: Disconnecting from lobby")
+
+	if multiplayer.multiplayer_peer != null:
+		print(
+			"NetworkManager: Peer status before close: ",
+			multiplayer.multiplayer_peer.get_connection_status()
+		)
+
+		var old_peer = multiplayer.multiplayer_peer
+
+		old_peer.close()
+		
+		print(
+			"NetworkManager: Peer status after close: ",
+			old_peer.get_connection_status()
+			)
+
+		multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+		print("NetworkManager: Multiplayer peer replaced with OfflineMultiplayerPeer")
+		peer = null
+		old_peer = null
+
+	if current_lobby_id != 0:
+		Steam.leaveLobby(current_lobby_id)
+		print("Steam lobby removed: ", current_lobby_id)
+		current_lobby_id = 0
+
+	# Give Steam a frame to finish releasing the networking socket.
+	await get_tree().process_frame

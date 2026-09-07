@@ -1,8 +1,12 @@
 extends Node
 
 const MAIN_MENU := "res://scenes/menus/main_menu.tscn"
+const LOBBY := "res://scenes/menus/lobby.tscn"
 const PAUSE_MENU := "res://scenes/menus/pause_menu.tscn"
+
 var main_menu: Control
+var lobby: Control
+var lobby_browser: Control
 
 func _ready() -> void:
 	GameManager.game_state_changed.connect(_on_game_state_changed)
@@ -27,6 +31,12 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 			print("MAIN: Removing main menu")
 			main_menu.queue_free()
 			main_menu = null
+			
+	if new_state == GameManager.GameState.PLAYING:
+		if is_instance_valid(lobby):
+			print("MAIN: Removing lobby")
+			lobby.queue_free()
+			lobby = null
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -49,3 +59,43 @@ func _open_pause_menu() -> void:
 	GameManager.set_game_state(GameManager.GameState.PAUSED)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	get_tree().paused = true
+
+func open_lobby() -> void:
+
+	var lobby_scene := load(LOBBY) as PackedScene
+
+	if lobby_scene == null:
+
+		push_error("Could not load lobby")
+
+		return
+
+	lobby = lobby_scene.instantiate() as Control
+
+	$UI.add_child(lobby)
+
+	main_menu.hide()
+
+
+func close_lobby() -> void:
+	if is_instance_valid(lobby):
+		print("MAIN: Removing lobby")
+		lobby.queue_free()
+		lobby = null
+
+	if is_instance_valid(main_menu):
+		print("MAIN: Showing main menu")
+		main_menu.show()
+
+
+func open_lobby_browser() -> void:
+	var browser_scene := load("res://scenes/menus/lobby_browser.tscn") as PackedScene
+
+	if browser_scene == null:
+		push_error("Could not load lobby browser")
+		return
+
+	lobby_browser = browser_scene.instantiate() as Control
+	$UI.add_child(lobby_browser)
+
+	main_menu.hide()

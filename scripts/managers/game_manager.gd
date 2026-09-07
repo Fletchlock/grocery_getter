@@ -13,6 +13,7 @@ extends Node
 #     The game has ended.
 enum GameState {
 	MAIN_MENU,
+	LOBBY,
 	PLAYING,
 	PAUSED,
 	GAME_OVER
@@ -53,32 +54,13 @@ func _ready() -> void:
 # We are NOT spawning players here yet.
 # We're simply changing the overall game state.
 func _on_host_created() -> void:
-
 	print("GameManager: Host created.")
-
-	# Change the game state to PLAYING.
-	# We'll eventually change this flow so that the game enters a lobby
-	# state first. For now, we're keeping things simple while we build
-	# the networking foundation.
-
-	set_game_state(GameState.PLAYING)
-	LevelManager.load_level("res://scenes/levels/third_person_level.tscn")
 
 
 func _on_lobby_joined(_lobby_id: int) -> void:
 	print("GameManager: Client joined lobby.")
-	set_game_state(GameState.PLAYING)
-	LevelManager.load_level("res://scenes/levels/third_person_level.tscn")
+	
 
-
-# SET GAME STATE
-# This is our central function for changing the game's state.
-# Other systems can eventually call:
-#     GameManager.set_game_state(GameState.PAUSED)
-# or:
-#     GameManager.set_game_state(GameState.GAME_OVER)
-# Keeping the change in one function gives us a good place to add additional
-# behavior later.
 func set_game_state(new_state: GameState) -> void:
 	current_state = new_state
 	game_state_changed.emit(new_state)

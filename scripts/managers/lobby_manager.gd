@@ -2,6 +2,8 @@ extends Node
 
 signal lobby_player_added(peer_id: int)
 signal lobby_player_removed(peer_id: int)
+signal lobby_player_updated(peer_id: int)
+signal lobby_state_changed
 
 var players: Dictionary = {}
 
@@ -39,6 +41,11 @@ func set_character(peer_id: int, character: String) -> void:
 		return
 
 	players[peer_id]["character"] = character
+	lobby_player_updated.emit(peer_id)
+	lobby_state_changed.emit()
+	
+	if multiplayer.is_server():
+		sync_player_state.rpc(peer_id, character, players[peer_id]["ready"])
 
 	print(
 		"LobbyManager: Player ",
@@ -53,12 +60,17 @@ func set_ready(peer_id: int, player_is_ready: bool) -> void:
 		return
 
 	players[peer_id]["ready"] = player_is_ready
+	lobby_player_updated.emit(peer_id)
+	lobby_state_changed.emit()
+	
+	if multiplayer.is_server():
+		sync_player_state.rpc(peer_id, players[peer_id]["character"], player_is_ready)
 
 	print(
 		"LobbyManager: Player ",
 		peer_id,
 		" ready: ",
-		ready
+		player_is_ready
 	)
 
 
@@ -74,4 +86,68 @@ func is_ready(peer_id: int) -> bool:
 		return false
 
 	return players[peer_id]["ready"]
+
+# Called when the Host clicks Play from the lobby. The GameManager starts the game.
+func all_players_ready() -> bool:
+	if players.is_empty():
+		return false
+		
+	for player in players.values():
+		if not player["ready"]:
+			return false
+			
+	return true
 	
+# RPC Section **********
+
+#Host request character change (Select Character in Lobby UI)
+@rpc("any_peer", "reliable")
+func request_character_change(character: String) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var peer_id := multiplayer.get_remote_sender_id()
+
+	set_character(peer_id, character)
+
+
+#Client request Host character change
+func request_set_character(character: String) -> void:
+	if multiplayer.is_server():
+		set_character(multiplayer.get_unique_id(), character)
+		return
+
+	request_character_change.rpc_id(1, character)
+	
+	
+# Host request ready change (Ready up in lobby UI)
+@rpc("any_peer", "reliable")
+func request_ready_change(player_is_ready: bool) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var peer_id := multiplayer.get_remote_sender_id()
+
+	set_ready(peer_id, player_is_ready)
+	
+
+# Client request the Host change ready via rpc
+func request_set_ready(player_is_ready: bool) -> void:
+	if multiplayer.is_server():
+		set_ready(multiplayer.get_unique_id(), player_is_ready)
+		return
+		
+	request_ready_change.rpc_id(1, player_is_ready)
+
+
+# Host will call to have players receive the requested changes in state.
+@rpc("authority", "reliable")
+func sync_player_state(peer_id: int, character: String, player_is_ready: bool) -> void:
+	if not players.has(peer_id):
+		return
+
+	players[peer_id]["character"] = character
+	players[peer_id]["ready"] = player_is_ready
+
+	lobby_player_updated.emit(peer_id)
+	lobby_state_changed.emit()

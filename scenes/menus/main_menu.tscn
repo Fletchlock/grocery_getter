@@ -11,6 +11,25 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_xqga4")
 
+[node name="Title" type="Label" parent="." unique_id=1082852383]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -322.0
+offset_top = 25.0
+offset_right = 323.0
+offset_bottom = 149.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.04918272, 0.59938145, 0.9803706, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.47058824)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 90
+text = "Grocery Getter"
+
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=838868233]
 layout_mode = 1
 anchors_preset = -1
@@ -25,23 +44,57 @@ metadata/_edit_use_anchors_ = true
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=20587566]
 layout_mode = 2
 
-[node name="NewGameButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1031511336]
+[node name="Single Player" type="Label" parent="CenterContainer/VBoxContainer" unique_id=307960645]
 layout_mode = 2
-text = "New Game"
+theme_override_colors/font_color = Color(0.95739573, 0.38559994, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.47058824)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 51
+text = "Single Player"
+horizontal_alignment = 1
 
-[node name="HostGameButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1826968477]
+[node name="PlayButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1031511336]
 layout_mode = 2
-text = "Host Game"
+theme_override_font_sizes/font_size = 40
+text = "Play"
+
+[node name="Multiplayer" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1496286046]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95739573, 0.38559994, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.47058824)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 51
+text = "Multiplayer"
+horizontal_alignment = 1
+
+[node name="HostButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1826968477]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Host"
+
+[node name="JoinButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1494536901]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Join"
 
 [node name="OptionsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=697564445]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Options"
 
 [node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=313277346]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 text = "Quit"
 
-[connection signal="pressed" from="CenterContainer/VBoxContainer/NewGameButton" to="." method="_on_new_game_button_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/HostGameButton" to="." method="_on_host_game_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
