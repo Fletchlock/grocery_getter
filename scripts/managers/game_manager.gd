@@ -42,6 +42,7 @@ func _ready() -> void:
 	#     "When NetworkManager says host_created, call _on_host_created."
 	NetworkManager.host_created.connect(_on_host_created)
 	NetworkManager.lobby_joined.connect(_on_lobby_joined)
+	NetworkManager.host_disconnected.connect(_on_host_disconnected)
 
 
 # HOST CREATED
@@ -55,6 +56,16 @@ func _ready() -> void:
 # We're simply changing the overall game state.
 func _on_host_created() -> void:
 	print("GameManager: Host created.")
+	
+	
+func _on_host_disconnected() -> void:
+	print("GameManager: Host disconnected. Returning to main menu.")
+
+	LevelManager.unload_level()
+	LobbyManager.clear_players()
+	NetworkManager.disconnect_from_lobby()
+
+	set_game_state(GameState.MAIN_MENU)
 
 
 func _on_lobby_joined(_lobby_id: int) -> void:

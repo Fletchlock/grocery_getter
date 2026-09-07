@@ -10,24 +10,48 @@ var lobby_browser: Control
 
 func _ready() -> void:
 	GameManager.game_state_changed.connect(_on_game_state_changed)
-	
-	GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
-	
+
 	var menu_scene := load(MAIN_MENU) as PackedScene
-	
+
 	if menu_scene == null:
 		push_error("Could not load main menu")
 		return
-		
+
 	main_menu = menu_scene.instantiate() as Control
 	$UI.add_child(main_menu)
+
+	GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
 
 
 func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 	print("MAIN: Game state changed to: ", new_state)
 
+	if new_state == GameManager.GameState.MAIN_MENU:
+		print("MAIN: Returning to main menu.")
+		
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		
+		if is_instance_valid(lobby):
+			lobby.queue_free()
+			lobby = null
+
+		if not is_instance_valid(main_menu):
+			var menu_scene := load(MAIN_MENU) as PackedScene
+
+			if menu_scene == null:
+				push_error("Could not load main menu")
+				return
+
+			main_menu = menu_scene.instantiate() as Control
+			$UI.add_child(main_menu)
+
+		main_menu.show()
+
 	if new_state == GameManager.GameState.LOBBY:
+		print("MAIN: Opening lobby")
+
 		if is_instance_valid(main_menu):
+			print("MAIN: Hiding main menu")
 			main_menu.hide()
 
 		if not is_instance_valid(lobby):
@@ -79,8 +103,6 @@ func open_lobby() -> void:
 	lobby = lobby_scene.instantiate() as Control
 
 	$UI.add_child(lobby)
-
-	main_menu.hide()
 
 
 func close_lobby() -> void:

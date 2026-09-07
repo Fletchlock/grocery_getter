@@ -145,6 +145,10 @@ func _physics_process(delta: float) -> void:
 
 	# --- 2. Directional Movement Vectors ---
 	var raw_input := Input.get_vector("left", "right", "up", "down")
+	
+	if raw_input.length() > 0.1:
+		print("MOVEMENT INPUT: ", raw_input)
+	
 	var forward := Vector3.BACK.rotated(Vector3.UP, _camera_origin.global_rotation.y)
 	var right := forward.rotated(Vector3.UP, PI/2)
 	var move_direction := (forward * raw_input.y + right * raw_input.x).normalized()

@@ -59,6 +59,11 @@ func set_character(peer_id: int, character: String) -> void:
 		" selected character: ",
 		character
 	)
+
+
+func clear_players() -> void:
+	players.clear()
+	lobby_state_changed.emit()
 	
 
 func set_ready(peer_id: int, player_is_ready: bool) -> void:
