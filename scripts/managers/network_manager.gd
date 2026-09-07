@@ -142,6 +142,8 @@ func _on_connected_to_server() -> void:
 	print("NetworkManager: CONNECTED TO SERVER!")
 	print("NetworkManager: My peer ID: ", multiplayer.get_unique_id())
 
+	LobbyManager.add_player(multiplayer.get_unique_id())
+
 
 func _on_connection_failed() -> void:
 	print("NetworkManager: CONNECTION FAILED!")
