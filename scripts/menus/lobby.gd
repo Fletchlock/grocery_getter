@@ -1,6 +1,9 @@
 extends Control
 
-@onready var player_list: VBoxContainer = $PlayerList
+@onready var player_list: VBoxContainer = $CanvasLayer/PlayerList
+@onready var play_button: Button = $CanvasLayer/PlayButton
+@onready var ready_button: Button = $CanvasLayer/ReadyButton
+@onready var main_menu_button: Button = $CanvasLayer/MainMenuButton
 
 
 func _ready() -> void:
@@ -10,10 +13,10 @@ func _ready() -> void:
 	LobbyManager.lobby_state_changed.connect(_update_play_button)
 
 	if multiplayer.multiplayer_peer == null:
-		$PlayButton.hide()
+		play_button.hide()
 	else:
 		if not multiplayer.is_server():
-			$PlayButton.hide()
+			play_button.hide()
 		else:
 			_update_play_button()
 
@@ -32,7 +35,7 @@ func _update_play_button() -> void:
 	if not multiplayer.is_server():
 		return
 
-	$PlayButton.disabled = not LobbyManager.all_players_ready()
+	play_button.disabled = not LobbyManager.all_players_ready()
 
 
 func _refresh_player_list() -> void:
@@ -71,7 +74,7 @@ func _on_ready_button_pressed() -> void:
 
 	LobbyManager.request_set_ready(new_ready_state)
 	
-	$ReadyButton.text = "Unready" if new_ready_state else "Ready"
+	ready_button.text = "Unready" if new_ready_state else "Ready"
 
 
 func _on_main_menu_button_pressed() -> void:

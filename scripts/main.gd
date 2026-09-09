@@ -112,7 +112,6 @@ func open_lobby() -> void:
 		return
 
 	lobby = lobby_scene.instantiate() as Control
-
 	$UI.add_child(lobby)
 
 
