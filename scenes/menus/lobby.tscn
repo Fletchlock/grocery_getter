@@ -2,78 +2,134 @@
 
 [ext_resource type="Script" uid="uid://cd2y7021vwfqm" path="res://scripts/menus/lobby.gd" id="1_1gv48"]
 
+[sub_resource type="Environment" id="Environment_bt4ks"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_6aigx"]
+
 [node name="Lobby" type="Control" unique_id=1938277096]
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -111.0
-offset_top = -147.0
-offset_right = -111.0
-offset_bottom = -147.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_1gv48")
 
-[node name="PlayerList" type="VBoxContainer" parent="." unique_id=1954364984]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="SubViewportContainer" type="SubViewportContainer" parent="." unique_id=1187442363]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
 
-[node name="Players" type="Label" parent="PlayerList" unique_id=1307389534]
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=1015604292]
+size = Vector2i(1920, 1080)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport" unique_id=1839875564]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.0003548)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport" unique_id=228101620]
+environment = SubResource("Environment_bt4ks")
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport" unique_id=197713457]
+transform = Transform3D(1, 0, 0, 0, 0.99533665, 0.09646289, 0, -0.09646289, 0.99533665, 0, 2.071916, 1.4997816)
+current = true
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="SubViewportContainer/SubViewport" unique_id=1465622006]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.7556458)
+mesh = SubResource("BoxMesh_6aigx")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1903265211]
+
+[node name="PlayerList" type="VBoxContainer" parent="CanvasLayer" unique_id=1954364984]
+anchors_preset = -1
+anchor_right = 0.11875
+anchor_bottom = 0.17962962
+offset_left = 30.0
+offset_top = 30.0
+offset_right = 30.0
+offset_bottom = 30.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+metadata/_edit_use_anchors_ = true
+
+[node name="Players" type="Label" parent="CanvasLayer/PlayerList" unique_id=1307389534]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Players in lobby"
 
-[node name="Player 1" type="Label" parent="PlayerList" unique_id=1209552096]
+[node name="Player 1" type="Label" parent="CanvasLayer/PlayerList" unique_id=1209552096]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Player 1"
 
-[node name="Player 2" type="Label" parent="PlayerList" unique_id=1386522201]
+[node name="Player 2" type="Label" parent="CanvasLayer/PlayerList" unique_id=1386522201]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Player 2"
 
-[node name="Player 3" type="Label" parent="PlayerList" unique_id=566115723]
+[node name="Player 3" type="Label" parent="CanvasLayer/PlayerList" unique_id=566115723]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Player 3"
 
-[node name="Player 4" type="Label" parent="PlayerList" unique_id=598575100]
+[node name="Player 4" type="Label" parent="CanvasLayer/PlayerList" unique_id=598575100]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Player 4"
 
-[node name="PlayButton" type="Button" parent="." unique_id=1380952413]
-layout_mode = 0
-offset_left = 127.0
-offset_top = 199.0
-offset_right = 232.0
-offset_bottom = 235.0
+[node name="PlayButton" type="Button" parent="CanvasLayer" unique_id=1380952413]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -135.0
+offset_top = -73.0
+offset_right = -30.0
+offset_bottom = -30.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_font_sizes/font_size = 25
 text = "Play"
 
-[node name="ReadyButton" type="Button" parent="." unique_id=2025713875]
-layout_mode = 0
-offset_top = 199.0
-offset_right = 105.0
-offset_bottom = 235.0
+[node name="ReadyButton" type="Button" parent="CanvasLayer" unique_id=2025713875]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -41.0
+offset_top = -73.0
+offset_right = 41.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_font_sizes/font_size = 25
 text = "Ready
 "
 
-[node name="MainMenuButton" type="Button" parent="." unique_id=1792943070]
-layout_mode = 1
-offset_top = 256.0
-offset_right = 117.0
-offset_bottom = 292.0
+[node name="MainMenuButton" type="Button" parent="CanvasLayer" unique_id=1792943070]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = -73.0
+offset_right = 174.0
+offset_bottom = -30.0
+grow_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_font_sizes/font_size = 25
 text = "Main Menu
 "
 
-[connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
-[connection signal="pressed" from="ReadyButton" to="." method="_on_ready_button_pressed"]
-[connection signal="pressed" from="MainMenuButton" to="." method="_on_main_menu_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/ReadyButton" to="." method="_on_ready_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
