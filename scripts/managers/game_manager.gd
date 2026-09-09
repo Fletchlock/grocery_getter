@@ -101,3 +101,34 @@ func start_multiplayer_game_rpc() -> void:
 func set_game_state(new_state: GameState) -> void:
 	current_state = new_state
 	game_state_changed.emit(new_state)
+
+
+func return_to_main_menu() -> void:
+	print("GameManager: Returning to main menu.")
+
+	# Stop the current game
+	get_tree().paused = false
+
+	# Unload the current level
+	LevelManager.unload_level()
+
+	# Clear multiplayer player data
+	LobbyManager.clear_players()
+
+	# Disconnect from Steam lobby and multiplayer peer
+	await NetworkManager.disconnect_from_lobby()
+
+	# Return to main menu state
+	set_game_state(GameState.MAIN_MENU)
+
+
+func leave_lobby() -> void:
+	print("GameManager: Leaving lobby.")
+
+	get_tree().paused = false
+
+	LobbyManager.clear_players()
+
+	await NetworkManager.disconnect_from_lobby()
+
+	set_game_state(GameState.MAIN_MENU)

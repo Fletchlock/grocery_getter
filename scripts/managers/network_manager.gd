@@ -32,7 +32,15 @@ func _process(_delta: float) -> void:
 
 
 func host_lobby() -> void:
+	print("NetworkManager: Starting host process.")
 
+	# Make sure any previous lobby/network connection is completely closed.
+	if current_lobby_id != 0 or multiplayer.multiplayer_peer != null:
+		print("NetworkManager: Cleaning up previous lobby before hosting.")
+		await disconnect_from_lobby()
+
+	# Create the new Steam lobby.
+	print("NetworkManager: Creating new Steam lobby.")
 	Steam.createLobby(LOBBY_TYPE, MAX_MEMBERS)
 
 

@@ -77,8 +77,4 @@ func _on_ready_button_pressed() -> void:
 func _on_main_menu_button_pressed() -> void:
 	print("Lobby: Returning to Main Menu")
 
-	NetworkManager.disconnect_from_lobby()
-	
-	get_parent().get_parent().close_lobby()
-
-	GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
+	await GameManager.leave_lobby()
