@@ -14,6 +14,7 @@ func add_player(peer_id: int) -> void:
 
 	players[peer_id] = {
 		"peer_id": peer_id,
+		"name": "",
 		"character": "red",
 		"ready": false
 	}
@@ -40,6 +41,10 @@ func remove_player(peer_id: int) -> void:
 
 func get_players() -> Dictionary:
 	return players
+
+
+#func get_player_name(peer_id: int) -> String:
+	#return Steam.getFriendPersonaName(peer_id)
 	
 	
 func set_character(peer_id: int, character: String) -> void:
@@ -176,4 +181,44 @@ func sync_lobby_state(player_state: Dictionary) -> void:
 	for peer_id in players:
 		lobby_player_updated.emit(peer_id)
 
+	lobby_state_changed.emit()
+
+
+func set_player_name(peer_id: int, player_name: String) -> void:
+	if not players.has(peer_id):
+		return
+
+	players[peer_id]["name"] = player_name
+
+	lobby_player_updated.emit(peer_id)
+	lobby_state_changed.emit()
+
+	if multiplayer.is_server():
+		sync_player_name.rpc(peer_id, player_name)
+
+
+func get_player_name(peer_id: int) -> String:
+	if not players.has(peer_id):
+		return ""
+
+	return players[peer_id]["name"]
+
+
+@rpc("any_peer", "reliable")
+func request_set_player_name(player_name: String) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var peer_id := multiplayer.get_remote_sender_id()
+	set_player_name(peer_id, player_name)
+
+
+@rpc("authority", "reliable")
+func sync_player_name(peer_id: int, player_name: String) -> void:
+	if not players.has(peer_id):
+		return
+
+	players[peer_id]["name"] = player_name
+
+	lobby_player_updated.emit(peer_id)
 	lobby_state_changed.emit()
