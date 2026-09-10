@@ -72,7 +72,11 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 	multiplayer.multiplayer_peer = peer
 
 	# Host registers with the lobby
-	LobbyManager.add_player(multiplayer.get_unique_id())
+	var my_peer_id := multiplayer.get_unique_id()
+	LobbyManager.add_player(my_peer_id)
+	LobbyManager.set_player_name(my_peer_id, Steam.getFriendPersonaName(Steam.getSteamID()))
+	
+	debug_lobby_members()
 	
 	print("NetworkManager: Host peer status: ", peer.get_connection_status())
 	print("NetworkManager: Host Steam ID: ", Steam.getSteamID())
@@ -118,6 +122,8 @@ func _on_lobby_joined(
 	print("NetworkManager: Multiplayer peer assigned.")
 	print("NetworkManager: My multiplayer ID: ", multiplayer.get_unique_id())
 
+	debug_lobby_members()
+
 	lobby_joined.emit(lobby_id)
 
 
@@ -156,7 +162,12 @@ func _on_connected_to_server() -> void:
 	print("NetworkManager: CONNECTED TO SERVER!")
 	print("NetworkManager: My peer ID: ", multiplayer.get_unique_id())
 
-	LobbyManager.add_player(multiplayer.get_unique_id())
+	var my_peer_id := multiplayer.get_unique_id()
+
+	LobbyManager.add_player(my_peer_id)
+
+	var my_name := Steam.getFriendPersonaName(Steam.getSteamID())
+	LobbyManager.request_set_player_name.rpc_id(1, my_name)
 
 
 func _on_connection_failed() -> void:
@@ -193,3 +204,22 @@ func disconnect_from_lobby() -> void:
 
 	# Give Steam a frame to finish releasing the networking socket.
 	await get_tree().process_frame
+
+
+func debug_lobby_members() -> void:
+	print("=== STEAM LOBBY MEMBERS ===")
+
+	var member_count := Steam.getNumLobbyMembers(current_lobby_id)
+
+	for i in range(member_count):
+		var steam_id := Steam.getLobbyMemberByIndex(current_lobby_id, i)
+		var player_name := Steam.getFriendPersonaName(steam_id)
+
+		print(
+			"Member ",
+			i,
+			": Steam ID = ",
+			steam_id,
+			" Name = ",
+			player_name
+		)

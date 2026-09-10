@@ -60,8 +60,10 @@ func _refresh_player_list() -> void:
 
 		var player_label := player_list.get_child(player_index + 1) as Label
 
+		var player_name := LobbyManager.get_player_name(peer_id)
 		var ready_text := "Ready" if LobbyManager.is_ready(peer_id) else "Not Ready"
-		player_label.text = "Player " + str(peer_id) + " - " + ready_text
+		player_label.text = player_name + " - " + ready_text
+		#player_label.text = "Player " + str(peer_id) + " - " + ready_text
 		player_label.show()
 
 		player_index += 1
