@@ -3,15 +3,3 @@
 [ext_resource type="PackedScene" uid="uid://cniedhcqolm7d" path="res://assets/models/grocery_character.glb" id="1_xppay"]
 
 [node name="grocery_character" unique_id=1887025754 instance=ExtResource("1_xppay")]
-
-[node name="character_blue" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(1433055387) index="0" unique_id=288587354]
-visible = false
-
-[node name="character_blue_hat" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(1433055387) index="1" unique_id=2002953676]
-visible = false
-
-[node name="character_green" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(1433055387) index="2" unique_id=246770140]
-visible = false
-
-[node name="character_green__hat" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(1433055387) index="3" unique_id=1925829304]
-visible = false
