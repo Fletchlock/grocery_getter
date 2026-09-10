@@ -72,8 +72,15 @@ func _ready() -> void:
 		_camera.make_current()
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		
-	set_character(0)
+	var character := LobbyManager.get_character(get_multiplayer_authority())
 
+	match character:
+		"red":
+			set_character(0)
+		"blue":
+			set_character(1)
+		"green":
+			set_character(2)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():

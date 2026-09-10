@@ -1,8 +1,21 @@
 [gd_scene format=3 uid="uid://dmuwgtn8i7s7e"]
 
 [ext_resource type="Script" uid="uid://cd2y7021vwfqm" path="res://scripts/menus/lobby.gd" id="1_1gv48"]
+[ext_resource type="PackedScene" uid="uid://cw3d8fqn2nff0" path="res://scenes/grocery_character.tscn" id="2_bt4ks"]
+[ext_resource type="Script" uid="uid://h3uh444aun6j" path="res://scripts/player/lobby_character_display.gd" id="3_g7oat"]
 
-[sub_resource type="Environment" id="Environment_bt4ks"]
+[sub_resource type="Sky" id="Sky_hd853"]
+
+[sub_resource type="Environment" id="Environment_6aigx"]
+background_mode = 1
+background_color = Color(0.37815657, 0.46766895, 0.44203135, 1)
+sky = SubResource("Sky_hd853")
+ambient_light_source = 3
+ambient_light_color = Color(0.77828926, 0.8803898, 0.9256747, 1)
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_sq421"]
+exposure_multiplier = 1.238
+dof_blur_far_distance = 53.37
 
 [sub_resource type="BoxMesh" id="BoxMesh_6aigx"]
 
@@ -25,21 +38,129 @@ grow_vertical = 2
 stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=1015604292]
+handle_input_locally = false
 size = Vector2i(1920, 1080)
+render_target_update_mode = 4
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport" unique_id=1839875564]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.0003548)
+transform = Transform3D(0.94721025, 0.078106135, -0.31095353, 0, 0.969872, 0.24361502, 0.32061297, -0.23075464, 0.9186727, 4.1579533, 2.5029657, 1.0003548)
+light_color = Color(0.8709412, 0.8923224, 0.9034, 1)
+light_specular = 0.0
+light_bake_mode = 1
+shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport" unique_id=228101620]
-environment = SubResource("Environment_bt4ks")
+environment = SubResource("Environment_6aigx")
+camera_attributes = SubResource("CameraAttributesPractical_sq421")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport" unique_id=197713457]
 transform = Transform3D(1, 0, 0, 0, 0.99533665, 0.09646289, 0, -0.09646289, 0.99533665, 0, 2.071916, 1.4997816)
 current = true
 
 [node name="CSGMesh3D" type="CSGMesh3D" parent="SubViewportContainer/SubViewport" unique_id=1465622006]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.7556458)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -3.7556458)
 mesh = SubResource("BoxMesh_6aigx")
+
+[node name="CSGMesh3D4" type="CSGMesh3D" parent="SubViewportContainer/SubViewport" unique_id=1526881132]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -3.7556458)
+mesh = SubResource("BoxMesh_6aigx")
+
+[node name="CSGMesh3D2" type="CSGMesh3D" parent="SubViewportContainer/SubViewport" unique_id=409183176]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -3.7556458)
+mesh = SubResource("BoxMesh_6aigx")
+
+[node name="CSGMesh3D3" type="CSGMesh3D" parent="SubViewportContainer/SubViewport" unique_id=563304780]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -3.7556458)
+mesh = SubResource("BoxMesh_6aigx")
+
+[node name="player1" parent="SubViewportContainer/SubViewport" unique_id=1887025754 instance=ExtResource("2_bt4ks")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -2.998104, 0.5056862, -3.5480943)
+script = ExtResource("3_g7oat")
+
+[node name="character_blue" parent="SubViewportContainer/SubViewport/player1/Armature/Skeleton3D" parent_id_path=PackedInt32Array(1887025754, 2065990945) index="0" unique_id=1976115630]
+visible = false
+
+[node name="character_blue_hat" parent="SubViewportContainer/SubViewport/player1/Armature/Skeleton3D" parent_id_path=PackedInt32Array(1887025754, 2065990945) index="1" unique_id=1133821597]
+visible = false
+
+[node name="character_green" parent="SubViewportContainer/SubViewport/player1/Armature/Skeleton3D" parent_id_path=PackedInt32Array(1887025754, 2065990945) index="2" unique_id=2101653564]
+visible = false
+
+[node name="character_green__hat" parent="SubViewportContainer/SubViewport/player1/Armature/Skeleton3D" parent_id_path=PackedInt32Array(1887025754, 2065990945) index="3" unique_id=445020564]
+visible = false
+
+[node name="character_red" parent="SubViewportContainer/SubViewport/player1/Armature/Skeleton3D" parent_id_path=PackedInt32Array(1887025754, 2065990945) index="4" unique_id=1608125779]
+visible = false
+
+[node name="character_red_hat" parent="SubViewportContainer/SubViewport/player1/Armature/Skeleton3D" parent_id_path=PackedInt32Array(1887025754, 2065990945) index="5" unique_id=1947827633]
+visible = false
+
+[node name="Label3D" type="Label3D" parent="SubViewportContainer/SubViewport/player1" unique_id=642031383]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.5, 0)
+text = "Player 1"
+
+[node name="player2" parent="SubViewportContainer/SubViewport" unique_id=501442015 instance=ExtResource("2_bt4ks")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.9981041, 0.5056862, -3.5480943)
+visible = false
+script = ExtResource("3_g7oat")
+
+[node name="character_green" parent="SubViewportContainer/SubViewport/player2/Armature/Skeleton3D" parent_id_path=PackedInt32Array(501442015, 2065990945) index="2" unique_id=2101653564]
+visible = false
+
+[node name="character_green__hat" parent="SubViewportContainer/SubViewport/player2/Armature/Skeleton3D" parent_id_path=PackedInt32Array(501442015, 2065990945) index="3" unique_id=445020564]
+visible = false
+
+[node name="character_red" parent="SubViewportContainer/SubViewport/player2/Armature/Skeleton3D" parent_id_path=PackedInt32Array(501442015, 2065990945) index="4" unique_id=1608125779]
+visible = false
+
+[node name="character_red_hat" parent="SubViewportContainer/SubViewport/player2/Armature/Skeleton3D" parent_id_path=PackedInt32Array(501442015, 2065990945) index="5" unique_id=1947827633]
+visible = false
+
+[node name="Label3D" type="Label3D" parent="SubViewportContainer/SubViewport/player2" unique_id=679217613]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.5, 0)
+text = "Player 2"
+
+[node name="player3" parent="SubViewportContainer/SubViewport" unique_id=27016377 instance=ExtResource("2_bt4ks")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 1.0018959, 0.5056862, -3.5480943)
+visible = false
+script = ExtResource("3_g7oat")
+
+[node name="character_blue" parent="SubViewportContainer/SubViewport/player3/Armature/Skeleton3D" parent_id_path=PackedInt32Array(27016377, 2065990945) index="0" unique_id=1976115630]
+visible = false
+
+[node name="character_blue_hat" parent="SubViewportContainer/SubViewport/player3/Armature/Skeleton3D" parent_id_path=PackedInt32Array(27016377, 2065990945) index="1" unique_id=1133821597]
+visible = false
+
+[node name="character_red" parent="SubViewportContainer/SubViewport/player3/Armature/Skeleton3D" parent_id_path=PackedInt32Array(27016377, 2065990945) index="4" unique_id=1608125779]
+visible = false
+
+[node name="character_red_hat" parent="SubViewportContainer/SubViewport/player3/Armature/Skeleton3D" parent_id_path=PackedInt32Array(27016377, 2065990945) index="5" unique_id=1947827633]
+visible = false
+
+[node name="Label3D" type="Label3D" parent="SubViewportContainer/SubViewport/player3" unique_id=1838147927]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.5, 0)
+text = "Player 3"
+
+[node name="player4" parent="SubViewportContainer/SubViewport" unique_id=341715206 instance=ExtResource("2_bt4ks")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 3.001896, 0.5056862, -3.5480943)
+visible = false
+script = ExtResource("3_g7oat")
+
+[node name="character_blue" parent="SubViewportContainer/SubViewport/player4/Armature/Skeleton3D" parent_id_path=PackedInt32Array(341715206, 2065990945) index="0" unique_id=1976115630]
+visible = false
+
+[node name="character_blue_hat" parent="SubViewportContainer/SubViewport/player4/Armature/Skeleton3D" parent_id_path=PackedInt32Array(341715206, 2065990945) index="1" unique_id=1133821597]
+visible = false
+
+[node name="character_green" parent="SubViewportContainer/SubViewport/player4/Armature/Skeleton3D" parent_id_path=PackedInt32Array(341715206, 2065990945) index="2" unique_id=2101653564]
+visible = false
+
+[node name="character_green__hat" parent="SubViewportContainer/SubViewport/player4/Armature/Skeleton3D" parent_id_path=PackedInt32Array(341715206, 2065990945) index="3" unique_id=445020564]
+visible = false
+
+[node name="Label3D" type="Label3D" parent="SubViewportContainer/SubViewport/player4" unique_id=406561411]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.5, 0)
+text = "Player 4"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1903265211]
 
@@ -94,7 +215,7 @@ grow_horizontal = 0
 grow_vertical = 0
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 30
 text = "Play"
 
 [node name="ReadyButton" type="Button" parent="CanvasLayer" unique_id=2025713875]
@@ -111,7 +232,7 @@ grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 30
 text = "Ready
 "
 
@@ -126,10 +247,54 @@ offset_bottom = -30.0
 grow_vertical = 0
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 30
 text = "Main Menu
 "
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=576286034]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.43385416
+anchor_top = 0.8240741
+anchor_right = 0.56614584
+anchor_bottom = 0.9074074
+grow_horizontal = 2
+grow_vertical = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=355962569]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 30
+text = "Select Character"
+
+[node name="CharacterSelection" type="HBoxContainer" parent="VBoxContainer" unique_id=1060449813]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="RedButton" type="Button" parent="VBoxContainer/CharacterSelection" unique_id=188494757]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = " Red "
+
+[node name="GreenButton" type="Button" parent="VBoxContainer/CharacterSelection" unique_id=1246164382]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = " Green "
+
+[node name="BlueButton" type="Button" parent="VBoxContainer/CharacterSelection" unique_id=1001545074]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = " Blue "
 
 [connection signal="pressed" from="CanvasLayer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/ReadyButton" to="." method="_on_ready_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/CharacterSelection/RedButton" to="." method="_on_red_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/CharacterSelection/GreenButton" to="." method="_on_green_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/CharacterSelection/BlueButton" to="." method="_on_blue_button_pressed"]
+
+[editable path="SubViewportContainer/SubViewport/player1"]
+[editable path="SubViewportContainer/SubViewport/player2"]
+[editable path="SubViewportContainer/SubViewport/player3"]
+[editable path="SubViewportContainer/SubViewport/player4"]

@@ -5,6 +5,13 @@ extends Control
 @onready var ready_button: Button = $CanvasLayer/ReadyButton
 @onready var main_menu_button: Button = $CanvasLayer/MainMenuButton
 
+@onready var player_displays = [
+	$SubViewportContainer/SubViewport/player1,
+	$SubViewportContainer/SubViewport/player2,
+	$SubViewportContainer/SubViewport/player3,
+	$SubViewportContainer/SubViewport/player4	
+]
+
 
 func _ready() -> void:
 	LobbyManager.lobby_player_added.connect(_on_player_changed)
@@ -23,9 +30,11 @@ func _ready() -> void:
 	if multiplayer.multiplayer_peer != null:
 		_refresh_player_list()
 	
+	_update_character_displays()
 	
 func _on_player_changed(_peer_id: int) -> void:
 	_refresh_player_list()
+	_update_character_displays()
 	
 	
 func _update_play_button() -> void:
@@ -81,3 +90,30 @@ func _on_main_menu_button_pressed() -> void:
 	print("Lobby: Returning to Main Menu")
 
 	await GameManager.leave_lobby()
+
+
+func _on_red_button_pressed() -> void:
+	LobbyManager.request_set_character("red")
+
+
+func _on_green_button_pressed() -> void:
+	LobbyManager.request_set_character("green")
+
+
+func _on_blue_button_pressed() -> void:
+	LobbyManager.request_set_character("blue")
+
+
+func _update_character_displays() -> void:
+	var players := LobbyManager.get_players()
+
+	for i in range(4):
+		var display: Node3D = player_displays[i]
+
+		# Player slots are 1-based, peer IDs are not necessarily 1-4.
+		if i < players.size():
+			var peer_id = players.keys()[i]
+			display.visible = true
+			display.set_character(LobbyManager.get_character(peer_id))
+		else:
+			display.visible = false

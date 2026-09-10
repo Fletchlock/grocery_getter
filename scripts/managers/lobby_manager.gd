@@ -14,7 +14,7 @@ func add_player(peer_id: int) -> void:
 
 	players[peer_id] = {
 		"peer_id": peer_id,
-		"character": "",
+		"character": "red",
 		"ready": false
 	}
 
