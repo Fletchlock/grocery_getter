@@ -1,11 +1,13 @@
 [gd_resource type="AnimationLibrary" format=3 uid="uid://bdlrg1t411fjv"]
 
 [ext_resource type="Animation" uid="uid://bgf0opch2cuvt" path="res://assets/animations/falling.res" id="1_4yv5c"]
+[ext_resource type="Animation" uid="uid://cyhccw8t0q3b2" path="res://assets/animations/default.res" id="1_7wew1"]
 [ext_resource type="Animation" uid="uid://b7t8lh64fgaxe" path="res://assets/animations/idle.res" id="2_7wew1"]
 [ext_resource type="Animation" uid="uid://rpgs3a3xjfcc" path="res://assets/animations/run.res" id="3_bb0h6"]
 
 [resource]
 _data = {
+&"default": ExtResource("1_7wew1"),
 &"falling": ExtResource("1_4yv5c"),
 &"idle": ExtResource("2_7wew1"),
 &"run": ExtResource("3_bb0h6")

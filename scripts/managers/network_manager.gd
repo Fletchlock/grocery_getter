@@ -14,7 +14,7 @@ var current_lobby_id: int = 0
 func _ready() -> void:
 	
 	Steam.initRelayNetworkAccess()
-	
+
 	Steam.lobby_created.connect(_on_lobby_created)
 	Steam.lobby_joined.connect(_on_lobby_joined)
 	Steam.join_requested.connect(_on_join_requested)
@@ -27,7 +27,7 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-
+	
 	Steam.run_callbacks()
 
 
