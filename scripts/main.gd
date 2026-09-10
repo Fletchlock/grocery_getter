@@ -9,6 +9,7 @@ var lobby: Control
 var lobby_browser: Control
 
 func _ready() -> void:
+	
 	GameManager.game_state_changed.connect(_on_game_state_changed)
 
 	var menu_scene := load(MAIN_MENU) as PackedScene

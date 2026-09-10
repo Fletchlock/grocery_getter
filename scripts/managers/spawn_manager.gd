@@ -17,7 +17,7 @@ func setup_level(
 	spawn_points = points
 
 	multiplayer_spawner.spawn_function = _spawn_player
-	multiplayer.peer_connected.connect(_on_peer_connected)
+	#multiplayer.peer_connected.connect(_on_peer_connected)
 
 	print("SpawnManager: Level setup complete.")
 
