@@ -15,6 +15,7 @@ extends CharacterBody3D
 @export var rotation_speed := 12.0
 @export var jump_strength := 12.0
 @export var air_acceleration := 12.0
+@export var push_force: float = 2.0
 
 @export_group("Network Replication")
 @export var network_anim_blend := 0.0
@@ -205,6 +206,25 @@ func _physics_process(delta: float) -> void:
 	if is_multiplayer_authority():
 		body_mesh.rotation.y = lerp_angle(body_mesh.rotation.y, target_angle, rotation_speed * delta)
 
+	# --- 8. Check for collisions that occured during move_and_slide
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var collider = collision.get_collider()
+		
+		# 3. If the object we ran into is a RigidBody3D, push it
+		if collider is RigidBody3D:
+			# Calculate the direction from the collision normal (points outward from the box)
+			# We negate it to push INTO the box, then multiply by the player's horizontal speed
+			var push_dir = -collision.get_normal()
+			
+			# Optional: Zero out vertical push so walking on top doesn't break the physics
+			push_dir.y = 0.0 
+			
+			# Apply the impulse to the object's center
+			# We use the player's actual movement velocity to determine how fast it's pushed
+			var impulse = push_dir * velocity.length() * push_force
+			
+			collider.apply_central_impulse(impulse)
 
 func set_character(character_id: int) -> void:
 	var characters: Array[MeshInstance3D] = [
