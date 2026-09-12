@@ -105,14 +105,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	
 
 func _physics_process(delta: float) -> void:
-	
-	print(
-	"JOY: ",
-	Input.get_connected_joypads(),
-	" LEFT: ",
-	Input.get_vector("left", "right", "up", "down")
-	)
-	
+
 	# Only the Player who owns this node should process
 	# keyboard/controller input and movement.
 	if not is_multiplayer_authority():
@@ -199,9 +192,6 @@ func _physics_process(delta: float) -> void:
 		network_hat_visible = !network_hat_visible
 		var hat = body_mesh.get_node("Hat")
 		hat.visible = network_hat_visible
-
-	if Input.get_vector("left", "right", "up", "down").length() > 0.1:
-		print("GAMEPAD MOVEMENT INPUT DETECTED")
 	
 	# --- 6. Execution ---
 	move_and_slide()
