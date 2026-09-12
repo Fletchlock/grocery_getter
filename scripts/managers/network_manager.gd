@@ -3,8 +3,9 @@ extends Node
 signal host_created
 signal lobby_joined(lobby_id: int)
 signal host_disconnected
+signal lobby_search_finished
 
-const LOBBY_TYPE := Steam.LobbyType.LOBBY_TYPE_FRIENDS_ONLY
+const LOBBY_TYPE := Steam.LobbyType.LOBBY_TYPE_PUBLIC
 const MAX_MEMBERS := 4
 
 var peer: SteamMultiplayerPeer
@@ -47,7 +48,7 @@ func host_lobby() -> void:
 func _on_lobby_created(connected: int, lobby_id: int) -> void:
 
 	if connected != Steam.RESULT_OK:
-		print("Failed to create Steam lobby. Result: ", connect)
+		print("Failed to create Steam lobby. Result: ", connected)
 		return
 
 	print("Steam lobby created: ", lobby_id)
@@ -125,6 +126,44 @@ func _on_lobby_joined(
 	debug_lobby_members()
 
 	lobby_joined.emit(lobby_id)
+
+
+func find_and_join_lobby() -> void:
+	print("NetworkManager: Searching for available Steam lobbies.")
+
+	Steam.lobby_match_list.connect(_on_lobby_match_list, CONNECT_ONE_SHOT)
+	Steam.requestLobbyList()
+
+
+func _on_lobby_match_list(lobbies: Array) -> void:
+	print("NetworkManager: Found ", lobbies.size(), " Steam lobbies.")
+
+	if lobbies.is_empty():
+		print("NetworkManager: No available lobbies found.")
+		lobby_search_finished.emit()
+		return
+
+	for lobby_id in lobbies:
+		var member_count := Steam.getNumLobbyMembers(lobby_id)
+
+		print(
+			"NetworkManager: Lobby ",
+			lobby_id,
+			" has ",
+			member_count,
+			"/",
+			MAX_MEMBERS,
+			" members."
+		)
+
+		# Don't join a full lobby.
+		if member_count < MAX_MEMBERS:
+			print("NetworkManager: Joining lobby ", lobby_id)
+			Steam.joinLobby(lobby_id)
+			return
+
+	print("NetworkManager: All found lobbies are full.")
+	lobby_search_finished.emit()
 
 
 func _on_join_requested(lobby_id: int, _steam_id: int) -> void:
