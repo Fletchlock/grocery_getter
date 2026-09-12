@@ -173,9 +173,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.146927, -1.3766971, -24.8
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.074239, -1.4081692, -26.847939)
 
 [node name="push_cart" parent="." unique_id=1577398286 instance=ExtResource("9_alulh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5986004, -1.3766971, -19.408691)
-linear_damp = 0.25
-angular_damp = 1.0
+transform = Transform3D(-0.9185492, 0, 0.3953067, 0, 1, 0, -0.3953067, 0, -0.9185492, -0.5986004, -1.3766971, -19.408691)
+axis_lock_angular_x = false
+axis_lock_angular_y = false
+axis_lock_angular_z = false
+mass = 0.1
+linear_damp = 1.0
+angular_damp = 5.0
 
 [node name="push_cart2" parent="." unique_id=1676232172 instance=ExtResource("9_alulh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15278904, -1.452738, -26.040934)
+transform = Transform3D(-0.99461114, 0, 0.10367604, 0, 1, 0, -0.10367604, 0, -0.99461114, 0.15278904, -1.452738, -26.040934)

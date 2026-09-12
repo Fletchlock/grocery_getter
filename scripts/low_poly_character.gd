@@ -15,7 +15,7 @@ extends CharacterBody3D
 @export var rotation_speed := 12.0
 @export var jump_strength := 12.0
 @export var air_acceleration := 12.0
-@export var push_force: float = 5.0
+@export var push_force: float = 1.0
 
 @export_group("Network Replication")
 @export var network_anim_blend := 0.0
