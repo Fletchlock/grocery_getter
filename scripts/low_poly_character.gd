@@ -3,9 +3,9 @@ extends CharacterBody3D
 # === Configuration Properties ===
 @export_group("Camera")
 @export_range(0.0, 1.0) var mouse_sensitivity := 0.25
-@export var gamepad_sensitivty := 3.0 
+@export var gamepad_sensitivty := 3.0
 @export var zoom_speed := 1.0
-@export var gamepad_zoom_speed := 2.0 
+@export var gamepad_zoom_speed := 2.0
 @export var min_zoom := 2.0
 @export var max_zoom := 8.0
 
@@ -21,10 +21,15 @@ extends CharacterBody3D
 @export var network_anim_blend := 0.0
 @export var network_is_falling := false
 @export var network_is_grounded := true
-@export var network_hat_visible := true 
+@export var network_hat_visible := true
 
 @export_group("UI Navigation")
 @export var gamepad_cursor_speed := 800.0
+
+@export_group("Interaction")
+
+# Cart currently being pushed by this player.
+var pushing_cart: Node = null
 
 # === Internal State Variables ===
 var _camera_input_direction := Vector2.ZERO
@@ -40,12 +45,16 @@ const PLAYER_SCENE = preload("res://scenes/low_poly_character.tscn")
 @onready var _camera_origin: Node3D = $SpringArmPivot
 @onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
 @onready var _camera: Camera3D = $SpringArmPivot/SpringArm3D/Camera3D
+
 @onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
 @onready var anim_tree = $AnimationTree
-@onready var _mesh_default_y : float = body_mesh.position.y 
+@onready var _mesh_default_y: float = body_mesh.position.y
+
 @onready var grocery_red: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
 @onready var grocery_blue: MeshInstance3D = $Armature/Skeleton3D/GroceryBlue
 @onready var grocery_green: MeshInstance3D = $Armature/Skeleton3D/GroceryGreen
+
+@onready var push_point: Marker3D = $PushPoint
 
 
 func _ready() -> void:
@@ -57,7 +66,7 @@ func _ready() -> void:
 		" local_id=",
 		multiplayer.get_unique_id()
 	)
-	
+
 	# Initialize the AnimationTree.
 	anim_tree.advance_expression_base_node = get_path()
 	anim_tree.active = true
@@ -72,7 +81,7 @@ func _ready() -> void:
 		print("PLAYER ", name, ": I HAVE AUTHORITY")
 		_camera.make_current()
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-		
+
 	var character := LobbyManager.get_character(get_multiplayer_authority())
 
 	match character:
@@ -83,27 +92,30 @@ func _ready() -> void:
 		"green":
 			set_character(2)
 
+
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():
 		return
-	
-	# Accumulate relative mouse motion values to process camera rotation later
+
+	# Accumulate relative mouse motion values to process camera rotation later.
 	var is_camera_motion := (
-		event is InputEventMouseMotion and
-		Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
+		event is InputEventMouseMotion
+		and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
 	)
+
 	if is_camera_motion:
 		_camera_input_direction = event.screen_relative * mouse_sensitivity
-	
-	# Handle camera distance zooming via the mouse scroll wheel
+
+	# Handle camera distance zooming via the mouse scroll wheel.
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			_target_zoom -= zoom_speed
+
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			_target_zoom += zoom_speed
-		
+
 		_target_zoom = clamp(_target_zoom, min_zoom, max_zoom)
-	
+
 
 func _physics_process(delta: float) -> void:
 
@@ -111,61 +123,151 @@ func _physics_process(delta: float) -> void:
 	# keyboard/controller input and movement.
 	if not is_multiplayer_authority():
 		set_anim_tree()
+
 		var hat = body_mesh.get_node("Hat")
 		hat.visible = network_hat_visible
+
 		return
-	
+
+	# === Cart Interaction ===
+
+	if Input.is_action_just_pressed("interact"):
+		if pushing_cart == null:
+			try_start_pushing()
+		else:
+			stop_pushing()
+
 	# --- 1. Camera View Tracking / UI Mouse Simulation ---
-	var gamepad_look := Input.get_vector("look_left", "look_right", "look_up", "look_down")
-	
-	# BRANCH: If menu is open, right stick drives virtual cursor position instead of camera
+
+	var gamepad_look := Input.get_vector(
+		"look_left",
+		"look_right",
+		"look_up",
+		"look_down"
+	)
+
+	# BRANCH:
+	# If menu is open, right stick drives virtual cursor position
+	# instead of camera.
 	if Input.mouse_mode == Input.MOUSE_MODE_HIDDEN:
+
 		if gamepad_look.length() > 0.05:
 			var current_mouse_pos := get_viewport().get_mouse_position()
-			var new_mouse_pos := current_mouse_pos + (gamepad_look * gamepad_cursor_speed * delta)
-			
-			# Clamp the cursor coordinates within window boundaries
+			var new_mouse_pos := (
+				current_mouse_pos
+				+ gamepad_look * gamepad_cursor_speed * delta
+			)
+
+			# Clamp cursor coordinates within window boundaries.
 			var window_size := get_viewport().get_visible_rect().size
-			new_mouse_pos.x = clamp(new_mouse_pos.x, 0, window_size.x)
-			new_mouse_pos.y = clamp(new_mouse_pos.y, 0, window_size.y)
-			
+
+			new_mouse_pos.x = clamp(
+				new_mouse_pos.x,
+				0,
+				window_size.x
+			)
+
+			new_mouse_pos.y = clamp(
+				new_mouse_pos.y,
+				0,
+				window_size.y
+			)
+
 			get_viewport().warp_mouse(new_mouse_pos)
-		
+
 	else:
-		# Process standard camera orbit manipulations when actively playing
+		# Process standard camera orbit manipulations.
 		if gamepad_look.length() > 0.05:
-			_camera_input_direction += gamepad_look * gamepad_sensitivty
-			
-		_camera_origin.rotation.x -= _camera_input_direction.y * delta
-		_camera_origin.rotation.x = clamp(_camera_origin.rotation.x, -PI / 2.75, PI / 6.5)
-		_camera_origin.rotation.y -= _camera_input_direction.x * delta
+			_camera_input_direction += (
+				gamepad_look * gamepad_sensitivty
+			)
+
+		_camera_origin.rotation.x -= (
+			_camera_input_direction.y * delta
+		)
+
+		_camera_origin.rotation.x = clamp(
+			_camera_origin.rotation.x,
+			-PI / 2.75,
+			PI / 6.5
+		)
+
+		_camera_origin.rotation.y -= (
+			_camera_input_direction.x * delta
+		)
+
 		_camera_input_direction = Vector2.ZERO
 
-	# Handle D-pad camera zooming
+	# Handle D-pad camera zooming.
 	if Input.is_action_pressed("zoom_in"):
 		_target_zoom -= gamepad_zoom_speed * delta
+
 	elif Input.is_action_pressed("zoom_out"):
 		_target_zoom += gamepad_zoom_speed * delta
-	_target_zoom = clamp(_target_zoom, min_zoom, max_zoom)
 
-	# Smoothly interpolate the boom arm length toward the target zoom setting
-	_spring_arm.spring_length = lerp(_spring_arm.spring_length, _target_zoom, 8.0 * delta)
+	_target_zoom = clamp(
+		_target_zoom,
+		min_zoom,
+		max_zoom
+	)
+
+	# Smoothly interpolate the boom arm length.
+	_spring_arm.spring_length = lerp(
+		_spring_arm.spring_length,
+		_target_zoom,
+		8.0 * delta
+	)
 
 	# --- 2. Directional Movement Vectors ---
-	var raw_input := Input.get_vector("left", "right", "up", "down")
-	var forward := Vector3.BACK.rotated(Vector3.UP, _camera_origin.global_rotation.y)
-	var right := forward.rotated(Vector3.UP, PI/2)
-	var move_direction := (forward * raw_input.y + right * raw_input.x).normalized()
-	
+
+	var raw_input := Input.get_vector(
+		"left",
+		"right",
+		"up",
+		"down"
+	)
+
+	var forward := Vector3.BACK.rotated(
+		Vector3.UP,
+		_camera_origin.global_rotation.y
+	)
+
+	var right := forward.rotated(
+		Vector3.UP,
+		PI / 2
+	)
+
+	var move_direction := (
+		forward * raw_input.y
+		+ right * raw_input.x
+	).normalized()
+
 	# --- 3. Velocity and Kinematics ---
+
 	var y_velocity := velocity.y
+
 	velocity.y = 0.0
-	var current_acceleration := acceleration if is_on_floor() else air_acceleration
-	velocity = velocity.move_toward(move_direction * move_speed, current_acceleration * delta)
+
+	var current_acceleration := (
+		acceleration
+		if is_on_floor()
+		else air_acceleration
+	)
+
+	velocity = velocity.move_toward(
+		move_direction * move_speed,
+		current_acceleration * delta
+	)
+
 	velocity.y = y_velocity + _gravity * delta
-	
+
 	# --- 4. Animation Blend Configuration ---
-	var horizontal_speed := Vector3(velocity.x, 0.0, velocity.z).length()
+
+	var horizontal_speed := Vector3(
+		velocity.x,
+		0.0,
+		velocity.z
+	).length()
 
 	# Store animation state for network replication.
 	network_anim_blend = horizontal_speed / move_speed
@@ -175,58 +277,126 @@ func _physics_process(delta: float) -> void:
 	# Apply animation locally.
 	set_anim_tree()
 
-	var is_starting_jump := Input.is_action_just_pressed("jump") and is_on_floor()
+	var is_starting_jump := (
+		Input.is_action_just_pressed("jump")
+		and is_on_floor()
+	)
+
 	if is_starting_jump:
 		velocity.y += jump_strength
-		
+
 	# --- 5. Visual Impact Secondary Effects ---
+
 	if is_on_floor() and _was_airborne:
-		body_mesh.position.y = _mesh_default_y - 0.3 
+		body_mesh.position.y = _mesh_default_y - 0.3
 		_was_airborne = false
+
 	elif not is_on_floor():
 		_was_airborne = true
-		
+
 	if body_mesh.position.y < _mesh_default_y:
-		body_mesh.position.y = move_toward(body_mesh.position.y, _mesh_default_y, 5.0 * delta)
-	
+		body_mesh.position.y = move_toward(
+			body_mesh.position.y,
+			_mesh_default_y,
+			5.0 * delta
+		)
+
 	if Input.is_action_just_pressed("toggle_hat"):
 		network_hat_visible = !network_hat_visible
+
 		var hat = body_mesh.get_node("Hat")
 		hat.visible = network_hat_visible
-	
+
 	# --- 6. Execution ---
+
 	move_and_slide()
 
 	# --- 7. Mesh Rotation Alignment ---
+
 	if move_direction.length() > 0.2:
 		_last_movement_direction = move_direction
 
-	var local_movement_dir := global_transform.basis.inverse() * _last_movement_direction
-	var target_angle := Vector3.FORWARD.signed_angle_to(local_movement_dir, Vector3.UP)
-	if is_multiplayer_authority():
-		body_mesh.rotation.y = lerp_angle(body_mesh.rotation.y, target_angle, rotation_speed * delta)
+	var local_movement_dir := (
+		global_transform.basis.inverse()
+		* _last_movement_direction
+	)
 
-	# --- 8. Check for collisions that occured during move_and_slide
-	# Replace your previous loop with this inside _physics_process:
+	var target_angle := Vector3.FORWARD.signed_angle_to(
+		local_movement_dir,
+		Vector3.UP
+	)
+
+	if is_multiplayer_authority():
+		body_mesh.rotation.y = lerp_angle(
+			body_mesh.rotation.y,
+			target_angle,
+			rotation_speed * delta
+		)
+
+	# --- 8. RigidBody Collision Handling ---
+	#
+	# Normal rigid bodies can still be pushed by the player.
+	# Shopping carts are excluded because they have their own
+	# dedicated pushing system.
 
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
 		var collider = collision.get_collider()
-		
-		if collider is RigidBody3D:
-			# 1. Calculate direction
-			var push_dir = -collision.get_normal()
-			push_dir.y = 0.0 # Keep it flat on the ground
-			
-			# 2. Use a fixed force instead of multiplying by variable player velocity
-			# This prevents the explosive "flying" glitch
-			var target_force = push_dir * push_force * 10.0
-			
-			# 3. Apply a constant push force instead of an impulse
-			# We use collision.get_position() minus the collider's position 
-			# to push precisely where the player is touching it
-			var local_push_position = collision.get_position() - collider.global_position
-			collider.apply_force(target_force, local_push_position)
+
+		if collider is RigidBody3D and not collider.has_method("start_pushing"):
+			var push_dir := -collision.get_normal()
+			push_dir.y = 0.0
+
+			var target_force := push_dir * push_force * 10.0
+
+			var local_push_position: Vector3 = (
+				collision.get_position()
+				- collider.global_position
+			)
+
+			collider.apply_force(
+				target_force,
+				local_push_position
+			)
+
+
+func try_start_pushing() -> void:
+	var space_state := get_world_3d().direct_space_state
+
+	var from: Vector3 = push_point.global_position
+	var forward: Vector3 = -global_transform.basis.z
+	var to: Vector3 = from + forward * 1.5
+
+	var query := PhysicsRayQueryParameters3D.create(
+		from,
+		to
+	)
+
+	query.exclude = [self]
+
+	var result := space_state.intersect_ray(query)
+
+	if result.is_empty():
+		print("PLAYER: Nothing to interact with")
+		return
+
+	var collider = result["collider"]
+
+	print("PLAYER: Interaction hit ", collider.name)
+
+	if collider.has_method("start_pushing"):
+		pushing_cart = collider
+		collider.start_pushing(self)
+
+
+func stop_pushing() -> void:
+	if pushing_cart == null:
+		return
+
+	if pushing_cart.has_method("stop_pushing"):
+		pushing_cart.stop_pushing()
+
+	pushing_cart = null
 
 
 func set_character(character_id: int) -> void:
@@ -235,10 +405,10 @@ func set_character(character_id: int) -> void:
 		grocery_blue,
 		grocery_green
 	]
-	
+
 	for character in characters:
 		character.visible = false
-	
+
 	body_mesh = characters[character_id]
 	body_mesh.visible = true
 	_mesh_default_y = body_mesh.position.y
@@ -250,12 +420,10 @@ func set_anim_tree() -> void:
 		network_anim_blend
 	)
 
-
 	anim_tree.set(
 		"parameters/conditions/is_falling",
 		network_is_falling
 	)
-
 
 	anim_tree.set(
 		"parameters/conditions/is_grounded",

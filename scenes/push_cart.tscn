@@ -1,5 +1,7 @@
 [gd_scene format=4 uid="uid://djp7hmfm0m00m"]
 
+[ext_resource type="Script" uid="uid://bojdkseg653j6" path="res://scripts/push_cart.gd" id="1_i4yyv"]
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h6pph"]
 resource_name = "Material"
 cull_mode = 2
@@ -40,19 +42,40 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_ye3md")
 
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_i4yyv"]
+radius = 0.5802757
+height = 2.0913515
+
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_i4yyv"]
 points = PackedVector3Array(0.5802756, 1, 0.9999999, -0.5802757, 1, 0.9999999, 0.5802756, 0, 0.9999999, 0.5802756, 1, -1.0913516, -0.5802757, 0, 0.9999999, -0.5802757, 1, -1.0913516, 0.5802756, 0, -1.0000495, 0.5802756, 0.94175804, -1.0913516, -0.5802757, 0, -1.0000495, -0.5802757, 0.94175804, -1.0913516)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i4yyv"]
 
 [node name="push_cart" type="RigidBody3D" unique_id=1577398286]
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
+script = ExtResource("1_i4yyv")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1738071873]
 mesh = SubResource("ArrayMesh_ns5iv")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=935479043]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.38909328, 0.5, -0.045675874)
+shape = SubResource("CapsuleShape3D_i4yyv")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="." unique_id=631978117]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.4166395, 0.5, -0.045675874)
+shape = SubResource("CapsuleShape3D_i4yyv")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1340507425]
 shape = SubResource("ConvexPolygonShape3D_i4yyv")
 
 [node name="HandlePoint" type="Marker3D" parent="." unique_id=1156551631]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9674102, -1.0697544)
+
+[node name="InteractionArea" type="Area3D" parent="." unique_id=1729556404]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea" unique_id=746593780]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.93639827, -1.5201175)
+shape = SubResource("BoxShape3D_i4yyv")
