@@ -54,6 +54,7 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 	print("Steam lobby created: ", lobby_id)
 	
 	current_lobby_id = lobby_id
+	Steam.setLobbyData(current_lobby_id, "game", "grocery_getter")
 
 	if peer != null:
 		print("NetworkManager: Existing peer found. Closing it.")
@@ -129,9 +130,16 @@ func _on_lobby_joined(
 
 
 func find_and_join_lobby() -> void:
-	print("NetworkManager: Searching for available Steam lobbies.")
+	print("NetworkManager: Searching for Grocery Getter lobbies.")
 
 	Steam.lobby_match_list.connect(_on_lobby_match_list, CONNECT_ONE_SHOT)
+
+	Steam.addRequestLobbyListStringFilter(
+		"game",
+		"grocery_getter",
+		Steam.LobbyComparison.LOBBY_COMPARISON_EQUAL
+	)
+
 	Steam.requestLobbyList()
 
 
