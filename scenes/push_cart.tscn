@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" uid="uid://bojdkseg653j6" path="res://scripts/push_cart.gd" id="1_i4yyv"]
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_i4yyv"]
+friction = 0.05
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h6pph"]
 resource_name = "Material"
 cull_mode = 2
@@ -55,6 +58,11 @@ points = PackedVector3Array(0.5802756, 1, 0.9999999, -0.5802757, 1, 0.9999999, 0
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
+mass = 2.0
+physics_material_override = SubResource("PhysicsMaterial_i4yyv")
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, -1, 0)
+angular_damp = 2.0
 script = ExtResource("1_i4yyv")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1738071873]
@@ -72,10 +80,14 @@ shape = SubResource("CapsuleShape3D_i4yyv")
 shape = SubResource("ConvexPolygonShape3D_i4yyv")
 
 [node name="HandlePoint" type="Marker3D" parent="." unique_id=1156551631]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9674102, -1.0697544)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9804872, -1.0924605)
 
 [node name="InteractionArea" type="Area3D" parent="." unique_id=1729556404]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea" unique_id=746593780]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.93639827, -1.5201175)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4363026, -1.7283869)
 shape = SubResource("BoxShape3D_i4yyv")
+
+[node name="PushJoint" type="Generic6DOFJoint3D" parent="." unique_id=250600570]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95543945, -1.0814568)
+angular_limit_y/enabled = false
