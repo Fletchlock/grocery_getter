@@ -1,5 +1,20 @@
 extends CharacterBody3D
 
+# === Node References ===
+
+@onready var _camera_origin: Node3D = $SpringArmPivot
+@onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
+@onready var _camera: Camera3D = $SpringArmPivot/SpringArm3D/Camera3D
+
+@onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
+@onready var anim_tree = $AnimationTree
+@onready var _mesh_default_y: float = body_mesh.position.y
+
+@onready var grocery_red: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
+@onready var grocery_blue: MeshInstance3D = $Armature/Skeleton3D/GroceryBlue
+@onready var grocery_green: MeshInstance3D = $Armature/Skeleton3D/GroceryGreen
+
+
 # === Configuration Properties ===
 
 @export_group("Camera")
@@ -20,10 +35,20 @@ extends CharacterBody3D
 
 
 @export_group("Network Replication")
+@export var network_position := Vector3.ZERO
+@export var network_velocity := Vector3.ZERO
 @export var network_anim_blend := 0.0
 @export var network_is_falling := false
 @export var network_is_grounded := true
 @export var network_hat_visible := true
+
+var _network_position_history: Array[Dictionary] = []
+var _network_position_last_received := Vector3.ZERO
+var _network_velocity_last_received := Vector3.ZERO
+var _network_velocity_received_time := 0.0
+var _network_position_initialized := false
+
+const NETWORK_INTERPOLATION_DELAY := 0.05
 
 
 @export_group("UI Navigation")
@@ -44,21 +69,6 @@ var _target_zoom := 4.0
 const PLAYER_SCENE = preload(
 	"res://scenes/low_poly_character.tscn"
 )
-
-
-# === Node References ===
-
-@onready var _camera_origin: Node3D = $SpringArmPivot
-@onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
-@onready var _camera: Camera3D = $SpringArmPivot/SpringArm3D/Camera3D
-
-@onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
-@onready var anim_tree = $AnimationTree
-@onready var _mesh_default_y: float = body_mesh.position.y
-
-@onready var grocery_red: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
-@onready var grocery_blue: MeshInstance3D = $Armature/Skeleton3D/GroceryBlue
-@onready var grocery_green: MeshInstance3D = $Armature/Skeleton3D/GroceryGreen
 
 
 func _ready() -> void:
@@ -101,6 +111,14 @@ func _ready() -> void:
 		"green":
 			set_character(2)
 
+	_network_position_last_received = network_position
+	_network_velocity_last_received = network_velocity
+	_network_velocity_received_time = (
+		Time.get_ticks_usec() / 1000000.0
+	)
+
+	_network_position_initialized = false
+
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():
@@ -135,15 +153,51 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 
-	# Remote players only update their replicated animation state.
+	# ============================================================
+	# REMOTE PLAYER
+	# ============================================================
+
 	if not is_multiplayer_authority():
 		set_anim_tree()
 
 		var hat = body_mesh.get_node("Hat")
 		hat.visible = network_hat_visible
 
+		# Detect a new received network state.
+		if (
+			network_position != _network_position_last_received
+			or network_velocity != _network_velocity_last_received
+		):
+
+			var current_time := (
+				Time.get_ticks_usec() / 1000000.0
+			)
+
+			_network_position_history.append({
+				"time": current_time,
+				"position": network_position,
+				"velocity": network_velocity
+			})
+
+			_network_position_last_received = network_position
+			_network_velocity_last_received = network_velocity
+			_network_velocity_received_time = current_time
+
+			while _network_position_history.size() > 10:
+				_network_position_history.pop_front()
+
+			if not _network_position_initialized:
+				global_position = network_position
+				_network_position_initialized = true
+
+		_update_network_position()
+
 		return
 
+
+	# ============================================================
+	# LOCAL PLAYER
+	# ============================================================
 
 	# === 1. Camera View Tracking / UI Mouse Simulation ===
 
@@ -351,6 +405,9 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
+	network_position = global_position
+	network_velocity = velocity
+
 
 	# === 10. Mesh Rotation ===
 
@@ -406,4 +463,117 @@ func set_anim_tree() -> void:
 	anim_tree.set(
 		"parameters/conditions/is_grounded",
 		network_is_grounded
+	)
+
+
+func _update_network_position() -> void:
+
+	if _network_position_history.is_empty():
+		return
+
+
+	# ============================================================
+	# INTERPOLATION
+	# ============================================================
+
+	var render_time := (
+		Time.get_ticks_usec() / 1000000.0
+		- NETWORK_INTERPOLATION_DELAY
+	)
+
+	var older_snapshot: Dictionary
+	var newer_snapshot: Dictionary
+
+	for i in range(_network_position_history.size() - 1):
+
+		var a: Dictionary = _network_position_history[i]
+		var b: Dictionary = _network_position_history[i + 1]
+
+		if (
+			a["time"] <= render_time
+			and b["time"] >= render_time
+		):
+			older_snapshot = a
+			newer_snapshot = b
+			break
+
+
+	# ============================================================
+	# INTERPOLATE WHEN WE HAVE TWO SNAPSHOTS
+	# ============================================================
+
+	if not older_snapshot.is_empty():
+
+		var older_time: float = older_snapshot["time"]
+		var newer_time: float = newer_snapshot["time"]
+
+		var duration := newer_time - older_time
+
+		if duration > 0.0:
+
+			var weight := (
+				(render_time - older_time)
+				/ duration
+			)
+
+			weight = clamp(
+				weight,
+				0.0,
+				1.0
+			)
+
+			var older_position: Vector3 = (
+				older_snapshot["position"]
+			)
+
+			var newer_position: Vector3 = (
+				newer_snapshot["position"]
+			)
+
+			global_position = older_position.lerp(
+				newer_position,
+				weight
+			)
+
+			return
+
+
+	# ============================================================
+	# DEAD RECKONING
+	#
+	# If we don't have a pair of snapshots available, predict
+	# the remote player's position using its last received
+	# velocity.
+	# ============================================================
+
+	var latest_snapshot: Dictionary = (
+		_network_position_history[
+			_network_position_history.size() - 1
+		]
+	)
+
+	var latest_position: Vector3 = (
+		latest_snapshot["position"]
+	)
+
+	var latest_velocity: Vector3 = (
+		latest_snapshot["velocity"]
+	)
+
+	var current_time := (
+		Time.get_ticks_usec() / 1000000.0
+	)
+
+	var elapsed : float = (
+		current_time
+		- latest_snapshot["time"]
+	)
+
+	# Don't allow prediction to run indefinitely if packets
+	# stop arriving.
+	elapsed = min(elapsed, 0.25)
+
+	global_position = (
+		latest_position
+		+ latest_velocity * elapsed
 	)
