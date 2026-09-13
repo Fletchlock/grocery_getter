@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://danw5mnq1bkol" path="res://assets/models/thing.glb" id="6_5i2ml"]
 [ext_resource type="PackedScene" uid="uid://dp86rm7algq10" path="res://scenes/thing_platform.tscn" id="7_xoejs"]
 [ext_resource type="PackedScene" uid="uid://bd0ayyp7ow3n2" path="res://assets/models/raykin.glb" id="8_ijfqo"]
-[ext_resource type="PackedScene" uid="uid://djp7hmfm0m00m" path="res://scenes/push_cart.tscn" id="9_alulh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ta2qt"]
 sky_top_color = Color(0.2596472, 0.5435158, 0.9217843, 1)
@@ -171,15 +170,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.146927, -1.3766971, -24.8
 
 [node name="raykin2" parent="." unique_id=1413140257 instance=ExtResource("8_ijfqo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.074239, -1.4081692, -26.847939)
-
-[node name="push_cart" parent="." unique_id=1577398286 instance=ExtResource("9_alulh")]
-transform = Transform3D(-0.9185492, 0, 0.3953067, 0, 1, 0, -0.3953067, 0, -0.9185492, -0.5986004, -1.3766971, -19.408691)
-axis_lock_angular_x = false
-axis_lock_angular_y = false
-axis_lock_angular_z = false
-mass = 20.0
-linear_damp = 1.0
-angular_damp = 4.0
-
-[node name="push_cart2" parent="." unique_id=1676232172 instance=ExtResource("9_alulh")]
-transform = Transform3D(-0.99461114, 0, 0.10367604, 0, 1, 0, -0.10367604, 0, -0.99461114, 0.15278904, -1.452738, -26.040934)
