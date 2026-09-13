@@ -41,6 +41,7 @@ extends CharacterBody3D
 @export var network_is_falling := false
 @export var network_is_grounded := true
 @export var network_hat_visible := true
+@export var network_on_moving_platform := false
 
 var _network_position_history: Array[Dictionary] = []
 var _network_position_last_received := Vector3.ZERO
@@ -48,7 +49,8 @@ var _network_velocity_last_received := Vector3.ZERO
 var _network_velocity_received_time := 0.0
 var _network_position_initialized := false
 
-const NETWORK_INTERPOLATION_DELAY := 0.05
+const NORMAL_INTERPOLATION_DELAY := 0.06
+const PLATFORM_INTERPOLATION_DELAY := 0.0
 
 
 @export_group("UI Navigation")
@@ -408,6 +410,10 @@ func _physics_process(delta: float) -> void:
 	network_position = global_position
 	network_velocity = velocity
 
+	network_on_moving_platform = (
+		is_on_floor()
+		and get_platform_velocity().length() > 0.1
+	)
 
 	# === 10. Mesh Rotation ===
 
@@ -471,14 +477,14 @@ func _update_network_position() -> void:
 	if _network_position_history.is_empty():
 		return
 
+	var interpolation_delay := NORMAL_INTERPOLATION_DELAY
 
-	# ============================================================
-	# INTERPOLATION
-	# ============================================================
+	if network_on_moving_platform:
+		interpolation_delay = PLATFORM_INTERPOLATION_DELAY
 
 	var render_time := (
 		Time.get_ticks_usec() / 1000000.0
-		- NETWORK_INTERPOLATION_DELAY
+		- interpolation_delay
 	)
 
 	var older_snapshot: Dictionary
