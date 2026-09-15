@@ -501,33 +501,30 @@ radius = 0.35
 properties/0/path = NodePath(".:position")
 properties/0/spawn = false
 properties/0/replication_mode = 0
-properties/1/path = NodePath("Armature/Skeleton3D/GroceryRed:rotation")
+properties/1/path = NodePath(".:network_anim_blend")
 properties/1/spawn = true
 properties/1/replication_mode = 1
-properties/2/path = NodePath(".:network_anim_blend")
+properties/2/path = NodePath(".:network_is_falling")
 properties/2/spawn = true
 properties/2/replication_mode = 1
-properties/3/path = NodePath(".:network_is_falling")
+properties/3/path = NodePath(".:network_is_grounded")
 properties/3/spawn = true
 properties/3/replication_mode = 1
-properties/4/path = NodePath(".:network_is_grounded")
+properties/4/path = NodePath(".:network_hat_visible")
 properties/4/spawn = true
-properties/4/replication_mode = 1
-properties/5/path = NodePath(".:network_hat_visible")
+properties/4/replication_mode = 2
+properties/5/path = NodePath(".:network_position")
 properties/5/spawn = true
-properties/5/replication_mode = 2
-properties/6/path = NodePath("Armature/Skeleton3D/GroceryBlue:rotation")
+properties/5/replication_mode = 1
+properties/6/path = NodePath(".:network_on_moving_platform")
 properties/6/spawn = true
 properties/6/replication_mode = 1
-properties/7/path = NodePath("Armature/Skeleton3D/GroceryGreen:rotation")
+properties/7/path = NodePath("Armature:rotation")
 properties/7/spawn = true
 properties/7/replication_mode = 1
-properties/8/path = NodePath(".:network_position")
+properties/8/path = NodePath(".:network_is_pushing_cart")
 properties/8/spawn = true
 properties/8/replication_mode = 1
-properties/9/path = NodePath(".:network_on_moving_platform")
-properties/9/spawn = true
-properties/9/replication_mode = 1
 
 [node name="low_poly_character" type="CharacterBody3D" unique_id=51086098]
 process_mode = 1
@@ -663,12 +660,12 @@ shape = SubResource("SphereShape3D_fs7re")
 debug_color = Color(0.8745098, 0.24313726, 0.62352943, 0.78431374)
 
 [node name="LeftHandIK" type="SkeletonIK3D" parent="Armature/Skeleton3D" unique_id=1486074684]
-root_bone = &"spine"
+root_bone = &"upperarm.L"
 tip_bone = &"hand.L"
 magnet = Vector3(-0.2, -0.5, -0.2)
 
 [node name="RightHandIK" type="SkeletonIK3D" parent="Armature/Skeleton3D" unique_id=1170223618]
-root_bone = &"spine"
+root_bone = &"upperarm.R"
 tip_bone = &"hand.R"
 magnet = Vector3(-0.2, -0.2, -0.2)
 

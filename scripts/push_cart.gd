@@ -2,8 +2,8 @@ extends RigidBody3D
 
 # === Exported Physics Configuration ===
 @export_group("Cart Tuning")
-@export var attach_distance: float = 1.2
-@export var position_follow_speed: float = 45.0
+@export var attach_distance: float = 1.0
+@export var position_follow_speed: float = 55.0
 @export var rotation_swing_speed: float = 5.5
 @export var rotation_align_speed: float = 22.0
 
@@ -80,9 +80,27 @@ func release_cart() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	# NETWORK GUARD: Only the network authority master (the player pushing it) 
-	# calculates the physics movement loops. Everyone else just listens to the synchronizer!
-	if not is_multiplayer_authority() or not is_being_pushed or player_character == null:
+	# ============================================================
+	# MULTIPLAYER JITTER COMPENSATION (REMOTE CLIENTS)
+	# ============================================================
+	if not is_multiplayer_authority():
+		if is_being_pushed:
+			# If the network says a remote player is pushing this cart, turn off world gravity
+			# and let its synchronized velocities glide it forward organically between network packets!
+			gravity_scale = 0.0
+			
+			# Minor position snap correction: If network delay causes the cart to drift 
+			# slightly away from its synchronized vector, softly nudge it back into place
+			# without causing a violent visual snap.
+			var net_pos = get_node("../" + str(get_multiplayer_authority())).global_position
+		else:
+			gravity_scale = 1.0
+		return # Exit out so remote clients don't run the pusher's target path calculations!
+
+	# ============================================================
+	# CONTROLLING PLAYER AUTHORITY MOVEMENTS (LOCAL PUSHER)
+	# ============================================================
+	if not is_being_pushed or player_character == null:
 		return
 		
 	# 1. Capture camera look direction from the controlling player character
