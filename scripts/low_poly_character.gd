@@ -25,9 +25,6 @@ extends CharacterBody3D
 @onready var left_hand_ik: SkeletonIK3D = $Armature/Skeleton3D/LeftHandIK
 @onready var right_hand_ik: SkeletonIK3D = $Armature/Skeleton3D/RightHandIK
 
-#@onready var remote_transform_3d: RemoteTransform3D = $Armature/Skeleton3D/GroceryBlue/RemoteTransform3D
-#@onready var remote_transform_3d: RemoteTransform3D = $Armature/Skeleton3D/GroceryGreen/RemoteTransform3D
-
 
 	# Track carts that are close enough to grab
 var nearby_carts: Array[RigidBody3D] = []
@@ -62,6 +59,7 @@ var attached_cart: RigidBody3D = null
 @export var network_is_grounded := true
 @export var network_hat_visible := true
 @export var network_on_moving_platform := false
+@export var network_is_pushing_cart: bool = false
 
 var _network_position_history: Array[Dictionary] = []
 var _network_position_last_received := Vector3.ZERO
@@ -69,7 +67,7 @@ var _network_velocity_last_received := Vector3.ZERO
 var _network_velocity_received_time := 0.0
 var _network_position_initialized := false
 
-const NORMAL_INTERPOLATION_DELAY := 0.06
+const NORMAL_INTERPOLATION_DELAY := 0.07
 const PLATFORM_INTERPOLATION_DELAY := 0.0
 
 
@@ -222,13 +220,11 @@ func try_grab_cart() -> void:
 	attached_cart.linear_velocity = Vector3.ZERO
 	attached_cart.angular_velocity = Vector3.ZERO
 	
-	# Extract a forward direction from the camera origin
 	var forward_dir = -_camera_origin.global_transform.basis.z
 	forward_dir.y = 0.0 
 	forward_dir = forward_dir.normalized()
 	
-	# Safe property look up for your cart's attach distance variable
-	var distance_offset = 1.2
+	var distance_offset = 1.0
 	if "attach_distance" in attached_cart:
 		distance_offset = attached_cart.attach_distance
 		
@@ -238,24 +234,15 @@ func try_grab_cart() -> void:
 	var target_look = target_pos + forward_dir
 	attached_cart.look_at(target_look, Vector3.UP)
 	
-	# Force your complete armature container folder to match your camera forward look angle
 	armature_node.global_rotation.y = _camera_origin.global_rotation.y
 	
 	# ============================================================
-	# ORIGINAL SKELETONIK3D GRIP INITIALIZATION
+	# FIXED PATH-BASED NETWORK BROADCAST
 	# ============================================================
-	# Now that your cart node names match exactly, this lookup will connect!
-	var left_target = attached_cart.get_node_or_null("LeftHandTarget")
-	var right_target = attached_cart.get_node_or_null("RightHandTarget")
-	
-	if left_target and right_target:
-		# Map the absolute scene tree paths directly over to the solvers
-		left_hand_ik.target_node = left_target.get_path()
-		right_hand_ik.target_node = right_target.get_path()
-		
-		# Ignite the calculation engine to bend the arms forward
-		left_hand_ik.start()
-		right_hand_ik.start()
+	# Pass the precise NodePath of the grabbed cart over the network 
+	# so remote windows don't have to search for it!
+	var cart_path = attached_cart.get_path()
+	sync_ik_start.rpc(cart_path)
 	
 	attached_cart.grab_cart(self)
 
@@ -271,12 +258,52 @@ func try_release_cart() -> void:
 		# TERMINATE SKELETONIK3D OVERRIDES
 		# ============================================================
 		# Stop tracking the handle markers so arms return to idle/running loops
-		left_hand_ik.stop()
-		right_hand_ik.stop()
+		sync_ik_stop.rpc()
 		
 		attached_cart.release_cart()
 		attached_cart = null
 
+
+# Add these functions to your Player Script (e.g., right below try_release_cart)
+
+@rpc("any_peer", "call_local")
+func sync_ik_start(cart_node_path: NodePath) -> void:
+	network_is_pushing_cart = true
+	
+	# Look up the node directly using the received network path flag
+	var target_cart = get_node_or_null(cart_node_path) as RigidBody3D
+	
+	if target_cart and left_hand_ik and right_hand_ik:
+		var left_target = target_cart.get_node_or_null("LeftHandTarget")
+		var right_target = target_cart.get_node_or_null("RightHandTarget")
+		
+		if left_target and right_target:
+			left_hand_ik.target_node = left_target.get_path()
+			right_hand_ik.target_node = right_target.get_path()
+			
+			left_hand_ik.start()
+			right_hand_ik.start()
+
+
+@rpc("any_peer", "call_local")
+func sync_ik_stop() -> void:
+	network_is_pushing_cart = false
+	
+	if left_hand_ik and right_hand_ik:
+		left_hand_ik.stop()
+		right_hand_ik.stop()
+
+
+# Helper function to find the cart linked to this player
+func _find_active_push_cart() -> RigidBody3D:
+	var root_node = get_tree().root
+	var all_rigid_bodies = root_node.find_children("*", "RigidBody3D", true, false)
+	
+	for body in all_rigid_bodies:
+		if body.has_method("is_cart") and body.player_character == self:
+			return body as RigidBody3D
+			
+	return null
 
 
 
@@ -296,7 +323,6 @@ func _on_cart_detector_area_exited(area: Area3D) -> void:
 			try_release_cart()
 
 
-
 func _physics_process(delta: float) -> void:
 
 	# ============================================================
@@ -309,11 +335,14 @@ func _physics_process(delta: float) -> void:
 		var hat = body_mesh.get_node("Hat")
 		hat.visible = network_hat_visible
 
-		# Detect a new received network state.
+		# (All your previous conditional IK code is gone from here!)
+
+		# Detect a new received network state...
 		if (
 			network_position != _network_position_last_received
 			or network_velocity != _network_velocity_last_received
 		):
+
 
 			var current_time := (
 				Time.get_ticks_usec() / 1000000.0
@@ -496,7 +525,8 @@ func _physics_process(delta: float) -> void:
 
 	network_is_falling = not is_on_floor()
 	network_is_grounded = is_on_floor()
-
+	network_is_pushing_cart = (attached_cart != null)
+	
 	set_anim_tree()
 
 
@@ -615,6 +645,39 @@ func _physics_process(delta: float) -> void:
 		$Armature/Skeleton3D/CartDetector.global_position = desired_zone_position
 
 
+	# ============================================================
+	# SMOOTHED MULTIPLAYER SKELETAL IK JITTER FILTER
+	# ============================================================
+	# If we are a remote client viewing another player push a cart,
+	# we smoothly blend the local target paths to prevent network tick-rate 
+	# stutter from shaking the spine, neck, and head bones!
+	if not is_multiplayer_authority() and network_is_pushing_cart:
+		# Locate the local hand markers we spawned inside the player scene tree earlier
+		var local_left_marker = $Armature/Skeleton3D/GroceryRed/IK_LeftHandTarget
+		var local_right_marker = $Armature/Skeleton3D/GroceryRed/IK_RightHandTarget
+		
+		# Locate the real moving network cart handle nodes
+		var target_cart = _find_active_push_cart()
+		if target_cart and local_left_marker and local_right_marker:
+			var net_left_grip = target_cart.get_node_or_null("LeftHandTarget")
+			var net_right_grip = target_cart.get_node_or_null("RightHandTarget")
+			
+			if net_left_grip and net_right_grip:
+				# FIX: Instead of snapping instantly, we smoothly interpolate (lerp)
+				# the local target anchors toward the jittery network handle positions.
+				# 15.0 * delta serves as a dampening buffer, filtering out raw packet jumps!
+				local_left_marker.global_transform = local_left_marker.global_transform.interpolate_with(
+					net_left_grip.global_transform, 
+					15.0 * delta
+				)
+				local_right_marker.global_transform = local_right_marker.global_transform.interpolate_with(
+					net_right_grip.global_transform, 
+					15.0 * delta
+				)
+
+
+
+
 func set_character(character_id: int) -> void:
 
 	var characters: Array[MeshInstance3D] = [
@@ -657,7 +720,7 @@ func _update_network_position() -> void:
 
 	var interpolation_delay := NORMAL_INTERPOLATION_DELAY
 
-	if network_on_moving_platform:
+	if network_on_moving_platform or network_is_pushing_cart:
 		interpolation_delay = PLATFORM_INTERPOLATION_DELAY
 
 	var render_time := (
@@ -680,7 +743,6 @@ func _update_network_position() -> void:
 			older_snapshot = a
 			newer_snapshot = b
 			break
-
 
 	# ============================================================
 	# INTERPOLATE WHEN WE HAVE TWO SNAPSHOTS
@@ -720,7 +782,6 @@ func _update_network_position() -> void:
 			)
 
 			return
-
 
 	# ============================================================
 	# DEAD RECKONING

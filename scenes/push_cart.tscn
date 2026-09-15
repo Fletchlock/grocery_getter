@@ -142,6 +142,12 @@ properties/1/replication_mode = 1
 properties/2/path = NodePath(".:is_being_pushed")
 properties/2/spawn = true
 properties/2/replication_mode = 1
+properties/3/path = NodePath(".:linear_velocity")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath(".:angular_velocity")
+properties/4/spawn = true
+properties/4/replication_mode = 1
 
 [node name="push_cart" type="RigidBody3D" unique_id=1577398286]
 collision_mask = 7
@@ -205,7 +211,9 @@ shape = SubResource("BoxShape3D_6arrp")
 replication_config = SubResource("SceneReplicationConfig_i4yyv")
 
 [node name="LeftHandTarget" type="Node3D" parent="." unique_id=2067598042]
-transform = Transform3D(0.9999999, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0.45, 1.15, 0.514)
+transform = Transform3D(-0.0059417565, 0.090126835, 0.9959122, -0.99998224, -0.00053552125, -0.0059175733, 0, -0.9959298, 0.09012842, -0.45, 1.188098, 0.49607152)
+rotation_edit_mode = 2
 
 [node name="RightHandTarget" type="Node3D" parent="." unique_id=1644043477]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.15, 0.514)
+transform = Transform3D(0.067206666, -0.08992467, -0.9936783, 0.9977391, 0.006057232, 0.06693313, 0, -0.99593, 0.090128444, 0.45, 1.188098, 0.49607152)
+rotation_edit_mode = 2
