@@ -663,12 +663,12 @@ shape = SubResource("SphereShape3D_fs7re")
 debug_color = Color(0.8745098, 0.24313726, 0.62352943, 0.78431374)
 
 [node name="LeftHandIK" type="SkeletonIK3D" parent="Armature/Skeleton3D" unique_id=1486074684]
-root_bone = &"upperarm.L"
+root_bone = &"spine"
 tip_bone = &"hand.L"
 magnet = Vector3(-0.2, -0.5, -0.2)
 
 [node name="RightHandIK" type="SkeletonIK3D" parent="Armature/Skeleton3D" unique_id=1170223618]
-root_bone = &"upperarm.R"
+root_bone = &"spine"
 tip_bone = &"hand.R"
 magnet = Vector3(-0.2, -0.2, -0.2)
 
@@ -725,8 +725,9 @@ spring_length = 4.0
 
 [node name="Camera3D" type="Camera3D" parent="SpringArmPivot/SpringArm3D" unique_id=1210597275]
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=238298103]
+[node name="MultiplayerSyncronizer" type="MultiplayerSynchronizer" parent="." unique_id=238298103]
 replication_config = SubResource("SceneReplicationConfig_2jhue")
+public_visibility = false
 
 [connection signal="area_entered" from="Armature/Skeleton3D/CartDetector" to="." method="_on_cart_detector_area_entered"]
 [connection signal="area_exited" from="Armature/Skeleton3D/CartDetector" to="." method="_on_cart_detector_area_exited"]
