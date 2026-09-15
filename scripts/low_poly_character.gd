@@ -93,6 +93,15 @@ const PLAYER_SCENE = preload(
 )
 
 
+# Add this function directly ABOVE your func _ready() block!
+func _enter_tree() -> void:
+	# Convert your node's string name (e.g. "933642306") into its real integer peer ID 
+	# and claim network authority BEFORE any child nodes initialize!
+	if name.is_valid_int():
+		set_multiplayer_authority(name.to_int())
+
+
+
 func _ready() -> void:
 	print(
 		"PLAYER READY: ",
@@ -142,7 +151,28 @@ func _ready() -> void:
 		Time.get_ticks_usec() / 1000000.0
 	)
 
-	_network_position_initialized = false
+	# Inside your player script's _ready() function, at the very bottom:
+	_network_position_initialized = false # (Your current last line)
+
+	# --- FIXED MULTIPLAYER SYNCHRONIZER TIMING BUFFER ---
+	# We search through the entire character folder hierarchy dynamically, 
+	# completely preventing "null instance" layout crashes if paths change!
+	var sync_node: MultiplayerSynchronizer = null
+	
+	if has_node("MultiplayerSynchronizer"):
+		sync_node = $MultiplayerSynchronizer
+	else:
+		# Fallback: Loop through your child nodes to locate it dynamically
+		for child in get_children():
+			if child is MultiplayerSynchronizer:
+				sync_node = child
+				break
+				
+	# If found safely, initialize visibility states cleanly
+	if sync_node != null and is_multiplayer_authority():
+		sync_node.public_visibility = true
+
+
 
 
 func _unhandled_input(event: InputEvent) -> void:
