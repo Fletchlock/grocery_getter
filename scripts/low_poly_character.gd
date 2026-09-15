@@ -35,20 +35,20 @@ var attached_cart: RigidBody3D = null
 # === Configuration Properties ===
 
 @export_group("Camera")
-@export_range(0.0, 1.0) var mouse_sensitivity := 0.25
-@export var gamepad_sensitivty := 3.0
-@export var zoom_speed := 1.0
-@export var gamepad_zoom_speed := 2.0
-@export var min_zoom := 2.0
-@export var max_zoom := 8.0
+@export_range(0.0, 1.0) var mouse_sensitivity := 0.25 ## Mouse camera sensitivity.
+@export var gamepad_sensitivty := 3.0 ## Gamepad camera sensitivity.
+@export var zoom_speed := 1.0 ## Mouse camera zoom speed.
+@export var gamepad_zoom_speed := 2.0 ## Gamepad camera zoom speed.
+@export var min_zoom := 2.0 ## Minimum camera distance.
+@export var max_zoom := 8.0 ## Maximum camera distance.
 
 
 @export_group("Movement")
-@export var move_speed := 6.0
-@export var acceleration := 36.0
-@export var rotation_speed := 12.0
-@export var jump_strength := 12.0
-@export var air_acceleration := 12.0
+@export var move_speed := 6.0 ## Maximum movement speed.
+@export var acceleration := 36.0 ## Ground movement acceleration.
+@export var rotation_speed := 12.0 ## Character rotation speed.
+@export var jump_strength := 12.0 ## Initial upward force when jumping.
+@export var air_acceleration := 12.0 ## Movement acceleration while airborne.
 
 
 @export_group("Network Replication")
@@ -73,6 +73,30 @@ const PLATFORM_INTERPOLATION_DELAY := 0.0
 
 @export_group("UI Navigation")
 @export var gamepad_cursor_speed := 800.0
+
+
+@export_group("Blink")
+
+@export var blink_min_time: float = 2.5 ## Minimum time to wait before a blink.
+@export var blink_max_time: float = 6.5 ## Maximum time to wait before a blink.
+@export var blink_duration: float = 0.14 ## How long it takes for the eyes to close and reopen.
+@export var blink_min_value: float = 0.32 ## Shape key value when the eyes are normally open.
+@export var blink_max_value: float = 1.65 ## Shape key value when the eyes are fully closed.
+@export_range(0.0, 1.0) var double_blink_chance: float = 0.08 ## Chance of a second blink after a normal blink.
+@export var double_blink_delay: float = 0.10 ## Delay between the first and second blink.
+
+var blink_timer := 0.0
+var blink_progress := -1.0
+var double_blink_pending := false
+
+@export_group("Idle Look")
+@export var look_distance: float = 5.0 ## Maximum distance to look at another player.
+@export var look_speed: float = 5.0 ## Speed at which the head turns toward another player.
+@export_range(0.0, 180.0) var look_angle: float = 90.0 ## Maximum angle from forward that the character will look.
+
+@onready var look_at_modifier: LookAtModifier3D = $Armature/Skeleton3D/LookAtModifier3D
+
+var look_target: Node3D = null
 
 
 # === Internal State Variables ===
@@ -109,7 +133,9 @@ func _ready() -> void:
 		" local_id=",
 		multiplayer.get_unique_id()
 	)
-
+	
+	blink_timer = randf_range(blink_min_time, blink_max_time)
+	
 	# Initialize the AnimationTree.
 	anim_tree.advance_expression_base_node = get_path()
 	anim_tree.active = true
@@ -323,6 +349,38 @@ func _on_cart_detector_area_exited(area: Area3D) -> void:
 			try_release_cart()
 
 
+func _process(delta: float) -> void:
+	
+	if blink_progress < 0.0:
+		blink_timer -= delta
+
+		if blink_timer <= 0.0:
+			blink_progress = 0.0
+	else:
+		blink_progress += delta / blink_duration
+
+		var blink_amount: float = lerp(
+			blink_min_value,
+			blink_max_value,
+			1.0 - abs(blink_progress * 2.0 - 1.0)
+		)
+
+		body_mesh.set_blend_shape_value(0, blink_amount)
+
+		if blink_progress >= 1.0:
+			blink_progress = -1.0
+
+			if double_blink_pending:
+				double_blink_pending = false
+				blink_timer = randf_range(blink_min_time, blink_max_time)
+			elif randf() < double_blink_chance:
+				double_blink_pending = true
+				blink_timer = double_blink_delay
+			else:
+				blink_timer = randf_range(blink_min_time, blink_max_time)
+	
+	update_idle_look(delta)
+
 func _physics_process(delta: float) -> void:
 
 	# ============================================================
@@ -382,6 +440,11 @@ func _physics_process(delta: float) -> void:
 		"look_up",
 		"look_down"
 	)
+	
+	print(body_mesh.get_blend_shape_count())
+	for i in body_mesh.get_blend_shape_count():
+		print(i, body_mesh.mesh.get_blend_shape_name(i))
+	
 
 	# If a menu is open, the right stick controls the virtual mouse.
 	if Input.mouse_mode == Input.MOUSE_MODE_HIDDEN:
@@ -822,3 +885,63 @@ func _update_network_position() -> void:
 		latest_position
 		+ latest_velocity * elapsed
 	)
+
+
+func update_idle_look(delta: float) -> void:
+	var grounded: bool = network_is_grounded
+
+	if is_multiplayer_authority():
+		grounded = is_on_floor()
+
+	if not grounded:
+		look_target = null
+		look_at_modifier.influence = move_toward(
+			look_at_modifier.influence,
+			0.0,
+			look_speed * delta
+		)
+		return
+
+	look_target = find_nearest_player()
+
+	if look_target != null:
+		look_at_modifier.target_node = look_target.get_node("LookTarget").get_path()
+		look_at_modifier.influence = move_toward(
+			look_at_modifier.influence,
+			1.0,
+			look_speed * delta
+		)
+	else:
+		look_at_modifier.influence = move_toward(
+			look_at_modifier.influence,
+			0.0,
+			look_speed * delta
+		)
+
+
+func find_nearest_player() -> Node3D:
+	var nearest_player: Node3D = null
+	var nearest_distance: float = look_distance
+	var max_angle: float = deg_to_rad(look_angle)
+	var min_dot: float = cos(max_angle)
+
+	for player in get_parent().get_children():
+		if player == self or not player is CharacterBody3D:
+			continue
+
+		var to_player: Vector3 = player.global_position - global_position
+		var distance: float = to_player.length()
+
+		if distance >= nearest_distance:
+			continue
+
+		var direction: Vector3 = to_player.normalized()
+		var forward: Vector3 = -$Armature.global_transform.basis.z
+
+		if forward.dot(direction) < min_dot:
+			continue
+
+		nearest_distance = distance
+		nearest_player = player
+
+	return nearest_player
