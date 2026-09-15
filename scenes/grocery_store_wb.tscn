@@ -3,3 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://c2fevj44ripwv" path="res://assets/models/grocery_store_WB.glb" id="1_2hwxv"]
 
 [node name="grocery_store_WB" unique_id=1907441500 instance=ExtResource("1_2hwxv")]
+
+[node name="Shelves" parent="." index="1" unique_id=1990219030]
+collision_priority = 2.0

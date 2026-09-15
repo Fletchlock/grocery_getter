@@ -1,35 +1,116 @@
 extends RigidBody3D
 
-var pushing_player: CharacterBody3D = null
+# === Exported Physics Configuration ===
+@export_group("Cart Tuning")
+@export var attach_distance: float = 1.2
+@export var position_follow_speed: float = 45.0
+@export var rotation_swing_speed: float = 4.5
+@export var rotation_align_speed: float = 22.0
 
-@onready var push_joint: Generic6DOFJoint3D = $PushJoint
+# === Internal State Variables ===
+# @export this so the MultiplayerSynchronizer replicates the state toggle to other clients!
+@export var is_being_pushed: bool = false
+var player_character: CharacterBody3D = null
+
+# Caches to handle direction processing and tracking memory
+var last_valid_forward: Vector3 = Vector3.FORWARD
+var current_smoothed_forward: Vector3 = Vector3.FORWARD
 
 
-func start_pushing(player: CharacterBody3D) -> void:
-	if pushing_player != null:
+func is_cart() -> bool:
+	return true
+
+
+# This function must run on the SERVER side in a multiplayer match
+@rpc("any_peer", "call_local")
+func update_cart_authority(peer_id: int, state: bool) -> void:
+	set_multiplayer_authority(peer_id)
+	is_being_pushed = state
+	
+	if state == true:
+		gravity_scale = 0.0
+		
+		# What the cart IS to the world: 
+		# Turning off Layer 1 stops the active pusher from colliding with it
+		set_collision_layer_value(1, false)
+		
+		# What the cart CAN SCAN/COLLIDE WITH:
+		# Keep Box 1 checked so the cart still collides with walls, floors, 
+		# and all other non-pushing players naturally.
+		set_collision_mask_value(1, true)
+		
+		linear_velocity = Vector3.ZERO
+		angular_velocity = Vector3.ZERO
+	else:
+		# Restore standard physical presence in the world when dropped
+		gravity_scale = 1.0
+		
+		set_collision_layer_value(1, true)
+		set_collision_mask_value(1, true)
+		
+		linear_velocity = Vector3.ZERO
+		angular_velocity = Vector3.ZERO
+
+
+
+
+
+func grab_cart(player_node: CharacterBody3D) -> void:
+	player_character = player_node
+	
+	# Request the server to distribute multiplayer authority of this body to us
+	update_cart_authority.rpc(multiplayer.get_unique_id(), true)
+	
+	# Initialize direction caches based on camera heading on grab
+	var camera_pivot = player_character.get_node_or_null("SpringArmPivot")
+	if camera_pivot:
+		var camera_forward = Vector3.FORWARD.rotated(Vector3.UP, camera_pivot.global_rotation.y)
+		last_valid_forward = camera_forward.normalized()
+	else:
+		last_valid_forward = -player_character.global_transform.basis.z.normalized()
+		
+	current_smoothed_forward = last_valid_forward
+
+
+func release_cart() -> void:
+	player_character = null
+	
+	# Return authority back to the server (Peer ID 1) when dropped
+	update_cart_authority.rpc(1, false)
+
+
+func _physics_process(delta: float) -> void:
+	# NETWORK GUARD: Only the network authority master (the player pushing it) 
+	# calculates the physics movement loops. Everyone else just listens to the synchronizer!
+	if not is_multiplayer_authority() or not is_being_pushed or player_character == null:
 		return
-
-	var push_body := player.get_node_or_null("PushBody") as RigidBody3D
-
-	if push_body == null:
-		push_warning("SHOPPING CART: Player has no PushBody")
-		return
-
-	pushing_player = player
-
-	# Connect the joint to the dynamically spawned player's PushBody.
-	push_joint.node_a = push_joint.get_path_to(push_body)
-
-	# Connect the other side of the joint to this cart.
-	push_joint.node_b = push_joint.get_path_to(self)
-
-	print("SHOPPING CART: Joint connected to ", player.name)
-
-
-func stop_pushing() -> void:
-	push_joint.node_a = NodePath()
-	push_joint.node_b = NodePath()
-
-	pushing_player = null
-
-	print("SHOPPING CART: Joint disconnected")
+		
+	# 1. Capture camera look direction from the controlling player character
+	var camera_pivot = player_character.get_node_or_null("SpringArmPivot")
+	if camera_pivot:
+		var camera_yaw = camera_pivot.global_rotation.y
+		last_valid_forward = Vector3.FORWARD.rotated(Vector3.UP, camera_yaw).normalized()
+		
+	# 2. Smoothly calculate the rotation swing lag
+	current_smoothed_forward = current_smoothed_forward.lerp(
+		last_valid_forward, 
+		rotation_swing_speed * delta
+	).normalized()
+		
+	# 3. Position calculations (physics safe velocity translation)
+	var target_position = player_character.global_position + (current_smoothed_forward * attach_distance)
+	var distance_vector = target_position - global_position
+	
+	var desired_velocity = distance_vector * position_follow_speed
+	linear_velocity = linear_velocity.lerp(desired_velocity, 15.0 * delta)
+	
+	# 4. Final rotation matrix alignment
+	var target_look = global_position + current_smoothed_forward
+	var current_transform = global_transform
+	
+	if current_smoothed_forward.length_squared() > 0.001:
+		current_transform = current_transform.looking_at(target_look, Vector3.UP)
+		global_transform.basis = global_transform.basis.slerp(
+			current_transform.basis, 
+			rotation_align_speed * delta
+		)

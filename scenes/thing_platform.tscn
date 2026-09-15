@@ -89,6 +89,7 @@ transform = Transform3D(0.99999887, 0, 0, 0, 1, 0, 0, 0, 0.99999887, 14.685367, 
 
 [node name="Thing" type="MeshInstance3D" parent="ThingPlatform" unique_id=1808868787]
 transform = Transform3D(-0.99999857, 0, -8.7422634e-08, 0, 1, 0, 8.7422634e-08, 0, -0.99999857, -2.2204434e-16, 0.009017992, -0.034656797)
+layers = 16
 mesh = SubResource("ArrayMesh_wxf1m")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ThingPlatform" unique_id=940331410]

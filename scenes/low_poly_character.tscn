@@ -527,6 +527,8 @@ properties/9/path = NodePath(".:network_on_moving_platform")
 properties/9/spawn = true
 properties/9/replication_mode = 1
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_fs7re"]
+
 [node name="low_poly_character" type="CharacterBody3D" unique_id=51086098]
 process_mode = 1
 script = ExtResource("1_p8cxc")
@@ -705,3 +707,15 @@ spring_length = 4.0
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=238298103]
 replication_config = SubResource("SceneReplicationConfig_2jhue")
+
+[node name="CartDetector" type="Area3D" parent="." unique_id=1361617537]
+transform = Transform3D(1, 0, 0, 0, 1.0000006, 0, 0, 0, 1.0000006, 0, 0, 0)
+collision_layer = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CartDetector" unique_id=1065594774]
+transform = Transform3D(-2.6226834e-08, -0.6, 0, 0.6, -2.6226834e-08, 0, 0, 0, 0.6, 0, 0, 0)
+shape = SubResource("SphereShape3D_fs7re")
+debug_color = Color(0.8745098, 0.24313726, 0.62352943, 0.78431374)
+
+[connection signal="area_entered" from="CartDetector" to="." method="_on_cart_detector_area_entered"]
+[connection signal="area_exited" from="CartDetector" to="." method="_on_cart_detector_area_exited"]
