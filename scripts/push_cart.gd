@@ -4,7 +4,7 @@ extends RigidBody3D
 @export_group("Cart Tuning")
 @export var attach_distance: float = 1.2
 @export var position_follow_speed: float = 45.0
-@export var rotation_swing_speed: float = 4.5
+@export var rotation_swing_speed: float = 5.5
 @export var rotation_align_speed: float = 22.0
 
 # === Internal State Variables ===

@@ -203,3 +203,9 @@ shape = SubResource("BoxShape3D_6arrp")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=598911180]
 replication_config = SubResource("SceneReplicationConfig_i4yyv")
+
+[node name="LeftHandTarget" type="Node3D" parent="." unique_id=2067598042]
+transform = Transform3D(0.9999999, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0.45, 1.15, 0.514)
+
+[node name="RightHandTarget" type="Node3D" parent="." unique_id=1644043477]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.15, 0.514)

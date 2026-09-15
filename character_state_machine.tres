@@ -21,6 +21,20 @@ blend_point_1/node = SubResource("AnimationNodeAnimation_ry6uu")
 blend_point_1/pos = 1.0
 blend_point_1/name = &"low_poly_character_anims_run"
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3gk5t"]
+animation = &"low_poly_character_anims/pushing_loop"
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_3gk5t"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_y6qf7"]
+graph_offset = Vector2(-111.38113, -83.9269)
+nodes/output/position = Vector2(832, 64)
+nodes/PushBlend/node = SubResource("AnimationNodeBlend2_3gk5t")
+nodes/PushBlend/position = Vector2(496, 112)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_3gk5t")
+nodes/Animation/position = Vector2(80, 112)
+node_connections = [&"output", 0, &"PushBlend", &"PushBlend", 0, &"Animation"]
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_w60e8"]
 animation = &"low_poly_character_anims/falling"
 
@@ -50,8 +64,10 @@ advance_condition = &"is_grounded"
 [resource]
 states/BlendSpace1D/node = SubResource("AnimationNodeBlendSpace1D_w60e8")
 states/BlendSpace1D/position = Vector2(320.4, 199.2)
+states/BlendTree/node = SubResource("AnimationNodeBlendTree_y6qf7")
+states/BlendTree/position = Vector2(654.8, 66)
 states/FallingState/node = SubResource("AnimationNodeBlendTree_l2khc")
 states/FallingState/position = Vector2(660.4, 299.2)
 states/Start/position = Vector2(22.399994, 57.600002)
 transitions = ["Start", "BlendSpace1D", SubResource("AnimationNodeStateMachineTransition_vuxa7"), "BlendSpace1D", "FallingState", SubResource("AnimationNodeStateMachineTransition_l2khc"), "FallingState", "BlendSpace1D", SubResource("AnimationNodeStateMachineTransition_ry6uu")]
-graph_offset = Vector2(-200, -30)
+graph_offset = Vector2(-201, -74)
