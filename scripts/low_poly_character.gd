@@ -6,15 +6,24 @@ extends CharacterBody3D
 @onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
 @onready var _camera: Camera3D = $SpringArmPivot/SpringArm3D/Camera3D
 
+
+@onready var armature_node: Node3D = $Armature
+
 @onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
 @onready var anim_tree = $AnimationTree
-@onready var _mesh_default_y: float = body_mesh.position.y
+@onready var _mesh_default_y: float = $Armature.position.y
 
 @onready var grocery_red: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
 @onready var grocery_blue: MeshInstance3D = $Armature/Skeleton3D/GroceryBlue
 @onready var grocery_green: MeshInstance3D = $Armature/Skeleton3D/GroceryGreen
 
+
+
+
 # PushCart stuff
+# === Hand IK References ===
+@onready var left_hand_ik: SkeletonIK3D = $Armature/Skeleton3D/LeftHandIK
+@onready var right_hand_ik: SkeletonIK3D = $Armature/Skeleton3D/RightHandIK
 
 #@onready var remote_transform_3d: RemoteTransform3D = $Armature/Skeleton3D/GroceryBlue/RemoteTransform3D
 #@onready var remote_transform_3d: RemoteTransform3D = $Armature/Skeleton3D/GroceryGreen/RemoteTransform3D
@@ -100,7 +109,7 @@ func _ready() -> void:
 
 	# Capture the initial placement rotation from the level editor.
 	_last_movement_direction = -global_transform.basis.z
-	body_mesh.rotation.y = 0.0
+	grocery_red.rotation.y = 0.0
 
 	# Only the locally controlled player captures the mouse.
 	if is_multiplayer_authority():
@@ -188,30 +197,57 @@ func try_grab_cart() -> void:
 	forward_dir.y = 0.0 
 	forward_dir = forward_dir.normalized()
 	
-	var target_pos = global_position + (forward_dir * 1.8)
+	# Safe property look up for your cart's attach distance variable
+	var distance_offset = 1.2
+	if "attach_distance" in attached_cart:
+		distance_offset = attached_cart.attach_distance
+		
+	var target_pos = global_position + (forward_dir * distance_offset)
 	attached_cart.global_position = target_pos
 	
 	var target_look = target_pos + forward_dir
 	attached_cart.look_at(target_look, Vector3.UP)
 	
+	# Force your complete armature container folder to match your camera forward look angle
+	armature_node.global_rotation.y = _camera_origin.global_rotation.y
+	
+	# ============================================================
+	# ORIGINAL SKELETONIK3D GRIP INITIALIZATION
+	# ============================================================
+	# Now that your cart node names match exactly, this lookup will connect!
+	var left_target = attached_cart.get_node_or_null("LeftHandTarget")
+	var right_target = attached_cart.get_node_or_null("RightHandTarget")
+	
+	if left_target and right_target:
+		# Map the absolute scene tree paths directly over to the solvers
+		left_hand_ik.target_node = left_target.get_path()
+		right_hand_ik.target_node = right_target.get_path()
+		
+		# Ignite the calculation engine to bend the arms forward
+		left_hand_ik.start()
+		right_hand_ik.start()
+	
 	attached_cart.grab_cart(self)
 
 
-	
-	
 func try_release_cart() -> void:
 	if attached_cart:
-		# 1. FIX: Cache the camera's horizontal look vector right as we release
-		# This forces the character to maintain their current facing trajectory
 		var forward_dir = -_camera_origin.global_transform.basis.z
-		forward_dir.y = 0.0 # Flatten to prevent vertical tilt bugs
+		forward_dir.y = 0.0 
 		if forward_dir.length_squared() > 0.001:
 			_last_movement_direction = forward_dir.normalized()
 			
+		# ============================================================
+		# TERMINATE SKELETONIK3D OVERRIDES
+		# ============================================================
+		# Stop tracking the handle markers so arms return to idle/running loops
+		left_hand_ik.stop()
+		right_hand_ik.stop()
 		
-		# 2. Free the cart back to standard scene physics
 		attached_cart.release_cart()
 		attached_cart = null
+
+
 
 
 func _on_cart_detector_area_entered(area: Area3D) -> void:
@@ -493,10 +529,14 @@ func _physics_process(delta: float) -> void:
 		and get_platform_velocity().length() > 0.1
 	)
 
-	# === 10. Mesh Rotation (DRIFT FREE) ===
+	# === 10. Mesh Rotation ===
+
+	# Always keep the internal character skin bone mesh completely flat relative to its skeleton folder parent
+	if body_mesh:
+		body_mesh.rotation.y = 0.0
 
 	if attached_cart == null:
-		# NORMAL MODE: Rotate character mesh to face your travel direction (WASD)
+		# NORMAL MODE: Smoothly spin the entire armature node container folder to face your travel path (WASD)
 		if move_direction.length() > 0.2:
 			_last_movement_direction = move_direction
 
@@ -510,21 +550,15 @@ func _physics_process(delta: float) -> void:
 			Vector3.UP
 		)
 
-		body_mesh.rotation.y = lerp_angle(
-			body_mesh.rotation.y,
+		armature_node.rotation.y = lerp_angle(
+			armature_node.rotation.y,
 			target_angle,
 			rotation_speed * delta
 		)
 	else:
-		# CART STRAFE MODE: Force the mesh to face your camera origin's look angle.
-		# FIX: Extract ONLY the pure horizontal turn angle (Y-axis) from the camera,
-		# stripping out the pitch entirely so looking up/down never causes the model to drift!
+		# CART STRAFE MODE: Force the entire armature container folder to face your camera origin's look angle.
 		var camera_yaw := _camera_origin.global_rotation.y
-		
-		# Reconstruct a completely flat forward vector relative to world coordinates
 		var flat_camera_forward := Vector3.FORWARD.rotated(Vector3.UP, camera_yaw).normalized()
-		
-		# Convert it safely into your player's local space matrix
 		var local_camera_dir := global_transform.basis.inverse() * flat_camera_forward
 		
 		var target_camera_angle := Vector3.FORWARD.signed_angle_to(
@@ -532,33 +566,23 @@ func _physics_process(delta: float) -> void:
 			Vector3.UP
 		)
 		
-		body_mesh.rotation.y = lerp_angle(
-			body_mesh.rotation.y,
+		armature_node.rotation.y = lerp_angle(
+			armature_node.rotation.y,
 			target_camera_angle,
 			rotation_speed * delta
 		)
-		
+
 	# ============================================================
-	# UNIFIED VECTOR-DRIVEN INTERACTION ZONE POSITIONING
+	# DYNAMIC VECTOR-DRIVEN INTERACTION ZONE POSITIONING
 	# ============================================================
-	# Bypasses all node parent issues by extracting the real-time forward vector
-	# directly from the active visible character model mesh, in both modes!
-	if is_multiplayer_authority() and body_mesh != null:
-		# Extract the mesh's true global forward direction (-Z is forward in Godot)
-		var mesh_forward_dir = -body_mesh.global_transform.basis.z
-		mesh_forward_dir.y = 0.0 # Keep it perfectly flat on the ground plane
+	if is_multiplayer_authority():
+		# Reconstruct a flat forward vector relative to the armature's actual facing direction
+		var mesh_forward_dir = -armature_node.global_transform.basis.z
+		mesh_forward_dir.y = 0.0
 		mesh_forward_dir = mesh_forward_dir.normalized()
 		
-		# UNIFIED CALCULATION TRICK:
-		# 1. Project 1.0 meter forward along the mesh's active facing path vector
-		# 2. Add Vector3(0, 1.0, 0) to shift the checking sphere up to chest height
-		var desired_zone_position = global_position + (mesh_forward_dir * 0.5) + Vector3(0, 1.0, 0)
-		
-		# Force the detector to teleport directly to that calculated coordinate point
-		$CartDetector.global_position = desired_zone_position
-
-
-
+		var desired_zone_position = global_position + (mesh_forward_dir * 0.4) + Vector3(0, 1.0, 0)
+		$Armature/Skeleton3D/CartDetector.global_position = desired_zone_position
 
 
 func set_character(character_id: int) -> void:
