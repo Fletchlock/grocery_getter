@@ -14,6 +14,17 @@ extends CharacterBody3D
 @onready var grocery_blue: MeshInstance3D = $Armature/Skeleton3D/GroceryBlue
 @onready var grocery_green: MeshInstance3D = $Armature/Skeleton3D/GroceryGreen
 
+# PushCart stuff
+
+#@onready var remote_transform_3d: RemoteTransform3D = $Armature/Skeleton3D/GroceryBlue/RemoteTransform3D
+#@onready var remote_transform_3d: RemoteTransform3D = $Armature/Skeleton3D/GroceryGreen/RemoteTransform3D
+
+
+	# Track carts that are close enough to grab
+var nearby_carts: Array[RigidBody3D] = []
+	# Track the cart we are currently pushing
+var attached_cart: RigidBody3D = null
+
 
 # === Configuration Properties ===
 
@@ -106,12 +117,15 @@ func _ready() -> void:
 	match character:
 		"red":
 			set_character(0)
+			body_mesh = grocery_red
 
 		"blue":
 			set_character(1)
+			body_mesh = grocery_blue
 
 		"green":
 			set_character(2)
+			body_mesh = grocery_green
 
 	_network_position_last_received = network_position
 	_network_velocity_last_received = network_velocity
@@ -151,6 +165,70 @@ func _unhandled_input(event: InputEvent) -> void:
 			min_zoom,
 			max_zoom
 		)
+
+	#Cart handling code
+	if event.is_action_pressed("interact"): # Make sure "interact" is mapped in Input Map
+		if attached_cart == null:
+			try_grab_cart()
+		else:
+			try_release_cart()
+
+
+func try_grab_cart() -> void:
+	if nearby_carts.is_empty():
+		return
+		
+	attached_cart = nearby_carts[0]
+	
+	attached_cart.linear_velocity = Vector3.ZERO
+	attached_cart.angular_velocity = Vector3.ZERO
+	
+	# Extract a forward direction from the camera origin
+	var forward_dir = -_camera_origin.global_transform.basis.z
+	forward_dir.y = 0.0 
+	forward_dir = forward_dir.normalized()
+	
+	var target_pos = global_position + (forward_dir * 1.8)
+	attached_cart.global_position = target_pos
+	
+	var target_look = target_pos + forward_dir
+	attached_cart.look_at(target_look, Vector3.UP)
+	
+	attached_cart.grab_cart(self)
+
+
+	
+	
+func try_release_cart() -> void:
+	if attached_cart:
+		# 1. FIX: Cache the camera's horizontal look vector right as we release
+		# This forces the character to maintain their current facing trajectory
+		var forward_dir = -_camera_origin.global_transform.basis.z
+		forward_dir.y = 0.0 # Flatten to prevent vertical tilt bugs
+		if forward_dir.length_squared() > 0.001:
+			_last_movement_direction = forward_dir.normalized()
+			
+		
+		# 2. Free the cart back to standard scene physics
+		attached_cart.release_cart()
+		attached_cart = null
+
+
+func _on_cart_detector_area_entered(area: Area3D) -> void:
+	# Look up to the root of the cart to see if it's a valid push cart
+	var cart_body = area.get_parent()
+	if cart_body and cart_body.has_method("is_cart"):
+		if not nearby_carts.has(cart_body):
+			nearby_carts.append(cart_body)
+
+func _on_cart_detector_area_exited(area: Area3D) -> void:
+	var cart_body = area.get_parent()
+	if cart_body and cart_body.has_method("is_cart"):
+		nearby_carts.erase(cart_body)
+		
+		if attached_cart == cart_body:
+			try_release_cart()
+
 
 
 func _physics_process(delta: float) -> void:
@@ -415,26 +493,72 @@ func _physics_process(delta: float) -> void:
 		and get_platform_velocity().length() > 0.1
 	)
 
-	# === 10. Mesh Rotation ===
+	# === 10. Mesh Rotation (DRIFT FREE) ===
 
-	if move_direction.length() > 0.2:
-		_last_movement_direction = move_direction
+	if attached_cart == null:
+		# NORMAL MODE: Rotate character mesh to face your travel direction (WASD)
+		if move_direction.length() > 0.2:
+			_last_movement_direction = move_direction
 
-	var local_movement_dir := (
-		global_transform.basis.inverse()
-		* _last_movement_direction
-	)
+		var local_movement_dir := (
+			global_transform.basis.inverse()
+			* _last_movement_direction
+		)
 
-	var target_angle := Vector3.FORWARD.signed_angle_to(
-		local_movement_dir,
-		Vector3.UP
-	)
+		var target_angle := Vector3.FORWARD.signed_angle_to(
+			local_movement_dir,
+			Vector3.UP
+		)
 
-	body_mesh.rotation.y = lerp_angle(
-		body_mesh.rotation.y,
-		target_angle,
-		rotation_speed * delta
-	)
+		body_mesh.rotation.y = lerp_angle(
+			body_mesh.rotation.y,
+			target_angle,
+			rotation_speed * delta
+		)
+	else:
+		# CART STRAFE MODE: Force the mesh to face your camera origin's look angle.
+		# FIX: Extract ONLY the pure horizontal turn angle (Y-axis) from the camera,
+		# stripping out the pitch entirely so looking up/down never causes the model to drift!
+		var camera_yaw := _camera_origin.global_rotation.y
+		
+		# Reconstruct a completely flat forward vector relative to world coordinates
+		var flat_camera_forward := Vector3.FORWARD.rotated(Vector3.UP, camera_yaw).normalized()
+		
+		# Convert it safely into your player's local space matrix
+		var local_camera_dir := global_transform.basis.inverse() * flat_camera_forward
+		
+		var target_camera_angle := Vector3.FORWARD.signed_angle_to(
+			local_camera_dir,
+			Vector3.UP
+		)
+		
+		body_mesh.rotation.y = lerp_angle(
+			body_mesh.rotation.y,
+			target_camera_angle,
+			rotation_speed * delta
+		)
+		
+	# ============================================================
+	# UNIFIED VECTOR-DRIVEN INTERACTION ZONE POSITIONING
+	# ============================================================
+	# Bypasses all node parent issues by extracting the real-time forward vector
+	# directly from the active visible character model mesh, in both modes!
+	if is_multiplayer_authority() and body_mesh != null:
+		# Extract the mesh's true global forward direction (-Z is forward in Godot)
+		var mesh_forward_dir = -body_mesh.global_transform.basis.z
+		mesh_forward_dir.y = 0.0 # Keep it perfectly flat on the ground plane
+		mesh_forward_dir = mesh_forward_dir.normalized()
+		
+		# UNIFIED CALCULATION TRICK:
+		# 1. Project 1.0 meter forward along the mesh's active facing path vector
+		# 2. Add Vector3(0, 1.0, 0) to shift the checking sphere up to chest height
+		var desired_zone_position = global_position + (mesh_forward_dir * 0.5) + Vector3(0, 1.0, 0)
+		
+		# Force the detector to teleport directly to that calculated coordinate point
+		$CartDetector.global_position = desired_zone_position
+
+
+
 
 
 func set_character(character_id: int) -> void:

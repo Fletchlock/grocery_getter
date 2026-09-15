@@ -3,11 +3,11 @@
 [ext_resource type="Script" uid="uid://cjabx1e5qvnvx" path="res://scripts/third_person_level.gd" id="1_c3yyn"]
 [ext_resource type="PackedScene" uid="uid://c2fevj44ripwv" path="res://assets/models/grocery_store_WB.glb" id="2_xoejs"]
 [ext_resource type="PackedScene" uid="uid://dfa6glbhgltej" path="res://assets/models/DesertMap.glb" id="3_ijfqo"]
-[ext_resource type="PackedScene" uid="uid://u71xogfk53i" path="res://scenes/cart.tscn" id="4_alulh"]
 [ext_resource type="PackedScene" uid="uid://dsj5b4t440epe" path="res://assets/models/thingy.glb" id="5_vhux3"]
 [ext_resource type="PackedScene" uid="uid://danw5mnq1bkol" path="res://assets/models/thing.glb" id="6_5i2ml"]
 [ext_resource type="PackedScene" uid="uid://dp86rm7algq10" path="res://scenes/thing_platform.tscn" id="7_xoejs"]
 [ext_resource type="PackedScene" uid="uid://bd0ayyp7ow3n2" path="res://assets/models/raykin.glb" id="8_ijfqo"]
+[ext_resource type="PackedScene" uid="uid://djp7hmfm0m00m" path="res://scenes/push_cart.tscn" id="9_alulh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ta2qt"]
 sky_top_color = Color(0.2596472, 0.5435158, 0.9217843, 1)
@@ -145,12 +145,6 @@ light_energy = 5.063
 [node name="DesertMap" parent="." unique_id=1603998708 instance=ExtResource("3_ijfqo")]
 transform = Transform3D(0.66920096, 0, -0.74308145, 0, 1, 0, 0.74308145, 0, 0.66920096, 2.742962, -1.4533358, -3.9901605)
 
-[node name="cart" parent="." unique_id=1753772008 instance=ExtResource("4_alulh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.502044, -1.3766985, -8.677114)
-
-[node name="cart2" parent="." unique_id=1247605086 instance=ExtResource("4_alulh")]
-transform = Transform3D(0.5236613, 0, 0.8519265, 0, 1, 0, -0.8519265, 0, 0.5236613, 24.456324, -1.3766985, -7.567239)
-
 [node name="thingy2" parent="." unique_id=833159308 instance=ExtResource("5_vhux3")]
 transform = Transform3D(0.000544928, 0, 0.9999999, 0, 1, 0, -0.9999999, 0, 0.000544928, 23.468452, -1.4436312, 22.238495)
 
@@ -170,3 +164,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.146927, -1.3766971, -24.8
 
 [node name="raykin2" parent="." unique_id=1413140257 instance=ExtResource("8_ijfqo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.074239, -1.4081692, -26.847939)
+
+[node name="push_cart" parent="." unique_id=1577398286 instance=ExtResource("9_alulh")]
+transform = Transform3D(-0.7477981, 0, 0.6639262, 0, 1, 0, -0.6639262, 0, -0.7477981, -3.8373795, -1.3766973, -20.853441)
+
+[node name="push_cart2" parent="." unique_id=892892404 instance=ExtResource("9_alulh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.370967, -1.3766968, -7.6838665)
+
+[node name="push_cart3" parent="." unique_id=854260723 instance=ExtResource("9_alulh")]
+transform = Transform3D(-0.9071517, 0, -0.4208037, 0, 1, 0, 0.4208037, 0, -0.9071517, 24.618975, -1.376698, -7.0327644)
