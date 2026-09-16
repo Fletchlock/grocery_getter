@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://dp86rm7algq10" path="res://scenes/thing_platform.tscn" id="7_xoejs"]
 [ext_resource type="PackedScene" uid="uid://bd0ayyp7ow3n2" path="res://assets/models/raykin.glb" id="8_ijfqo"]
 [ext_resource type="PackedScene" uid="uid://djp7hmfm0m00m" path="res://scenes/push_cart.tscn" id="9_alulh"]
+[ext_resource type="PackedScene" uid="uid://c4g1plfy54h5y" path="res://scenes/objects/shack_tall_wide_right.tscn" id="9_vhux3"]
+[ext_resource type="PackedScene" uid="uid://c5rv2si7ox4uw" path="res://scenes/objects/shack_tall_stairs_l.tscn" id="10_vhux3"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ta2qt"]
 sky_top_color = Color(0.2596472, 0.5435158, 0.9217843, 1)
@@ -173,3 +175,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.370967, -1.3766968, -7.683
 
 [node name="push_cart3" parent="." unique_id=854260723 instance=ExtResource("9_alulh")]
 transform = Transform3D(-0.9071517, 0, -0.4208037, 0, 1, 0, 0.4208037, 0, -0.9071517, 24.618975, -1.376698, -7.0327644)
+
+[node name="shack_tall_wide_right" parent="." unique_id=477675682 instance=ExtResource("9_vhux3")]
+transform = Transform3D(0.91925335, 0, 0.77134514, 0, 1.2, 0, -0.77134514, 0, 0.91925335, 14.652511, -1.4046426, -58.237816)
+
+[node name="shack_tall_stairs_L" parent="." unique_id=221086531 instance=ExtResource("10_vhux3")]
+transform = Transform3D(-0.7713452, 0, 0.91925335, 0, 1.2, 0, -0.91925335, 0, -0.7713452, 18.544504, -1.4, -61.97122)
