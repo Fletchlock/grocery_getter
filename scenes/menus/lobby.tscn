@@ -4,10 +4,10 @@
 [ext_resource type="PackedScene" uid="uid://cw3d8fqn2nff0" path="res://scenes/grocery_character.tscn" id="2_bt4ks"]
 [ext_resource type="PackedScene" uid="uid://u71xogfk53i" path="res://scenes/cart.tscn" id="2_cbhut"]
 [ext_resource type="Script" uid="uid://h3uh444aun6j" path="res://scripts/player/lobby_character_display.gd" id="3_g7oat"]
-[ext_resource type="ArrayMesh" uid="uid://d277lapfreqpo" path="res://assets/models/grocery_character_Cube_007.res" id="5_4pru2"]
+[ext_resource type="ArrayMesh" uid="uid://bgjmtoa3m6eaf" path="res://assets/models/grocery_character_Cube_007.res" id="5_4pru2"]
 [ext_resource type="ArrayMesh" uid="uid://dag157raob0ta" path="res://assets/models/grocery_character_Cube_001.res" id="5_nl33y"]
-[ext_resource type="ArrayMesh" uid="uid://cfvoexyjvtrx2" path="res://assets/models/grocery_character_Cube_003.res" id="6_fv84f"]
-[ext_resource type="ArrayMesh" uid="uid://rv03w1y4gw12" path="res://assets/models/grocery_character_Cube_005.res" id="8_717b7"]
+[ext_resource type="ArrayMesh" uid="uid://cimpdt7mqlwtp" path="res://assets/models/grocery_character_Cube_003.res" id="6_fv84f"]
+[ext_resource type="ArrayMesh" uid="uid://b5oofn2bpewfm" path="res://assets/models/grocery_character_Cube_005.res" id="8_717b7"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cbhut"]
 sky_top_color = Color(0.18223205, 0.53926927, 0.85265213, 1)
