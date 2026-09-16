@@ -92,7 +92,7 @@ func _physics_process(delta: float) -> void:
 			# Minor position snap correction: If network delay causes the cart to drift 
 			# slightly away from its synchronized vector, softly nudge it back into place
 			# without causing a violent visual snap.
-			var net_pos = get_node("../" + str(get_multiplayer_authority())).global_position
+			#var net_pos = get_node("../" + str(get_multiplayer_authority())).global_position
 		else:
 			gravity_scale = 1.0
 		return # Exit out so remote clients don't run the pusher's target path calculations!
