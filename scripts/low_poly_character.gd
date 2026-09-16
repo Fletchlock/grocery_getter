@@ -16,6 +16,7 @@ extends CharacterBody3D
 @onready var grocery_red: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
 @onready var grocery_blue: MeshInstance3D = $Armature/Skeleton3D/GroceryBlue
 @onready var grocery_green: MeshInstance3D = $Armature/Skeleton3D/GroceryGreen
+@onready var skeleton: Skeleton3D = $Armature/Skeleton3D
 
 
 
@@ -25,11 +26,13 @@ extends CharacterBody3D
 @onready var left_hand_ik: SkeletonIK3D = $Armature/Skeleton3D/LeftHandIK
 @onready var right_hand_ik: SkeletonIK3D = $Armature/Skeleton3D/RightHandIK
 
-
+@export_group("Cart")
+@export var strafe_rotation := 35.0
 	# Track carts that are close enough to grab
 var nearby_carts: Array[RigidBody3D] = []
 	# Track the cart we are currently pushing
 var attached_cart: RigidBody3D = null
+
 
 
 # === Configuration Properties ===
@@ -547,11 +550,11 @@ func _physics_process(delta: float) -> void:
 		Vector3.UP,
 		PI / 2
 	)
-
 	var move_direction := (
-		forward * raw_input.y
-		+ right * raw_input.x
-	).normalized()
+			forward * raw_input.y
+			+ right * raw_input.x
+		).normalized()
+	
 
 
 	# === 4. Velocity and Kinematics ===
@@ -582,17 +585,27 @@ func _physics_process(delta: float) -> void:
 		velocity.z
 	).length()
 
-	network_anim_blend = (
-		horizontal_speed / move_speed
-	)
+	network_anim_blend = horizontal_speed / move_speed
 
+	if attached_cart != null and horizontal_speed > 0.1:
+		var armature_forward: Vector3 = -armature_node.global_transform.basis.z
+		var movement_direction: Vector3 = Vector3(
+			velocity.x,
+			0.0,
+			velocity.z
+		).normalized()
+
+		var forward_amount: float = armature_forward.dot(movement_direction)
+
+		if forward_amount < 0.0:
+			network_anim_blend = -network_anim_blend
+	
 	network_is_falling = not is_on_floor()
 	network_is_grounded = is_on_floor()
 	network_is_pushing_cart = (attached_cart != null)
 	
 	set_anim_tree()
-
-
+	
 	# === 6. Jump ===
 
 	var is_starting_jump := (
@@ -654,7 +667,7 @@ func _physics_process(delta: float) -> void:
 
 	# === 10. Mesh Rotation ===
 
-	# Always keep the internal character skin bone mesh completely flat relative to its skeleton folder parent
+# Always keep the internal character skin bone mesh completely flat relative to its skeleton folder parent
 	if body_mesh:
 		body_mesh.rotation.y = 0.0
 
@@ -663,12 +676,12 @@ func _physics_process(delta: float) -> void:
 		if move_direction.length() > 0.2:
 			_last_movement_direction = move_direction
 
-		var local_movement_dir := (
+		var local_movement_dir: Vector3 = (
 			global_transform.basis.inverse()
 			* _last_movement_direction
 		)
 
-		var target_angle := Vector3.FORWARD.signed_angle_to(
+		var target_angle: float = Vector3.FORWARD.signed_angle_to(
 			local_movement_dir,
 			Vector3.UP
 		)
@@ -678,22 +691,38 @@ func _physics_process(delta: float) -> void:
 			target_angle,
 			rotation_speed * delta
 		)
+
 	else:
-		# CART STRAFE MODE: Force the entire armature container folder to face your camera origin's look angle.
-		var camera_yaw := _camera_origin.global_rotation.y
-		var flat_camera_forward := Vector3.FORWARD.rotated(Vector3.UP, camera_yaw).normalized()
-		var local_camera_dir := global_transform.basis.inverse() * flat_camera_forward
-		
-		var target_camera_angle := Vector3.FORWARD.signed_angle_to(
+		# CART STRAFE MODE: Face the camera, with a 30-degree offset when strafing.
+		var camera_yaw: float = _camera_origin.global_rotation.y
+
+		var flat_camera_forward: Vector3 = Vector3.FORWARD.rotated(
+			Vector3.UP,
+			camera_yaw
+		).normalized()
+
+		var local_camera_dir: Vector3 = (
+			global_transform.basis.inverse() * flat_camera_forward
+		)
+
+		var target_camera_angle: float = Vector3.FORWARD.signed_angle_to(
 			local_camera_dir,
 			Vector3.UP
 		)
-		
+
+		var strafe_angle: float = 0.0
+
+		if raw_input.x != 0.0:
+			strafe_angle = -raw_input.x * deg_to_rad(strafe_rotation)
+
+		var target_angle: float = target_camera_angle + strafe_angle
+
 		armature_node.rotation.y = lerp_angle(
 			armature_node.rotation.y,
-			target_camera_angle,
+			target_angle,
 			rotation_speed * delta
 		)
+
 
 	# ============================================================
 	# DYNAMIC VECTOR-DRIVEN INTERACTION ZONE POSITIONING
@@ -759,7 +788,6 @@ func set_character(character_id: int) -> void:
 
 
 func set_anim_tree() -> void:
-
 	anim_tree.set(
 		"parameters/BlendSpace1D/blend_position",
 		network_anim_blend
