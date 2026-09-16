@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://c4g1plfy54h5y"]
+
+[ext_resource type="PackedScene" uid="uid://cwijn8stnnwc5" path="res://assets/models/shack_tall_wide_right.glb" id="1_tbhx5"]
+
+[node name="shack_tall_wide_right" unique_id=477675682 instance=ExtResource("1_tbhx5")]
