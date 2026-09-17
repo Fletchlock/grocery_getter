@@ -1,13 +1,9 @@
 [gd_scene format=3 uid="uid://dmuwgtn8i7s7e"]
 
 [ext_resource type="Script" uid="uid://cd2y7021vwfqm" path="res://scripts/menus/lobby.gd" id="1_1gv48"]
-[ext_resource type="PackedScene" uid="uid://cw3d8fqn2nff0" path="res://scenes/grocery_character.tscn" id="2_bt4ks"]
 [ext_resource type="PackedScene" uid="uid://u71xogfk53i" path="res://scenes/cart.tscn" id="2_cbhut"]
 [ext_resource type="Script" uid="uid://h3uh444aun6j" path="res://scripts/player/lobby_character_display.gd" id="3_g7oat"]
-[ext_resource type="ArrayMesh" uid="uid://bgjmtoa3m6eaf" path="res://assets/models/grocery_character_Cube_007.res" id="5_4pru2"]
-[ext_resource type="ArrayMesh" uid="uid://dag157raob0ta" path="res://assets/models/grocery_character_Cube_001.res" id="5_nl33y"]
-[ext_resource type="ArrayMesh" uid="uid://cimpdt7mqlwtp" path="res://assets/models/grocery_character_Cube_003.res" id="6_fv84f"]
-[ext_resource type="ArrayMesh" uid="uid://b5oofn2bpewfm" path="res://assets/models/grocery_character_Cube_005.res" id="8_717b7"]
+[ext_resource type="PackedScene" uid="uid://cvpqemsd1xgdg" path="res://scenes/menus/lobby_character.tscn" id="4_cbhut"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cbhut"]
 sky_top_color = Color(0.18223205, 0.53926927, 0.85265213, 1)
@@ -218,217 +214,43 @@ mesh = SubResource("BoxMesh_6aigx")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -3.7556458)
 mesh = SubResource("BoxMesh_6aigx")
 
-[node name="player1" parent="SubViewportContainer/SubViewport" unique_id=1887025754 instance=ExtResource("2_bt4ks")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -3, 0.506, -3.548)
-visible = false
+[node name="Player1" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=584775007]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -3, 0.5, -3.7)
 script = ExtResource("3_g7oat")
 
-[node name="Skeleton3D" parent="SubViewportContainer/SubViewport/player1/Armature" parent_id_path=PackedInt32Array(1887025754, 418994314) index="0" unique_id=110886057]
-bones/0/rotation = Quaternion(0.025572155, 0, 0, 0.999673)
-bones/1/rotation = Quaternion(-0.0155516025, 0, 0, 0.99987906)
-bones/2/rotation = Quaternion(-0.13068068, 1.1818702e-07, -1.557835e-08, 0.9914245)
-bones/3/rotation = Quaternion(0.11064047, -2.8151821e-14, 2.637874e-08, 0.9938606)
-bones/4/rotation = Quaternion(0.010300557, 0.088651694, 0.98478943, 0.14907962)
-bones/5/rotation = Quaternion(-0.14423136, 0.00022059966, 0.032007936, 0.9890262)
-bones/6/rotation = Quaternion(-0.0521631, -0.03139098, 0.17021033, 0.98352534)
-bones/7/rotation = Quaternion(-0.010300557, 0.088651694, 0.98478943, -0.14907962)
-bones/8/rotation = Quaternion(-0.14423136, -0.00022059966, -0.032007936, 0.9890262)
-bones/9/rotation = Quaternion(-0.0521631, 0.03139098, -0.17021033, 0.98352534)
-bones/10/rotation = Quaternion(0.028598597, -0.029320708, 0.9973179, 0.060659077)
-bones/10/scale = Vector3(0.999983, 0.9999996, 0.9999952)
-bones/11/rotation = Quaternion(0.18132697, 0.0025742964, 0.0371463, 0.9827177)
-bones/12/rotation = Quaternion(-0.6644075, 0.0488832, -0.025692588, 0.7453274)
-bones/12/scale = Vector3(0.9999924, 0.9999991, 1.0000011)
-bones/13/rotation = Quaternion(-0.028598608, -0.029320704, 0.99731785, -0.06065907)
-bones/13/scale = Vector3(0.999983, 0.9999996, 0.9999952)
-bones/14/rotation = Quaternion(0.18132697, -0.0025742962, -0.037146296, 0.9827177)
-bones/15/rotation = Quaternion(-0.6644075, -0.048883215, 0.025692575, 0.7453274)
-bones/15/scale = Vector3(0.9999923, 0.99999905, 1.0000011)
+[node name="LobbyCharacter" parent="SubViewportContainer/SubViewport/Player1" unique_id=1612602312 instance=ExtResource("4_cbhut")]
 
-[node name="character_blue" parent="SubViewportContainer/SubViewport/player1/Armature/Skeleton3D" index="0" unique_id=1226541086]
-visible = false
-mesh = ExtResource("5_4pru2")
-
-[node name="character_blue_hat" parent="SubViewportContainer/SubViewport/player1/Armature/Skeleton3D" index="1" unique_id=384664017]
-visible = false
-
-[node name="character_green" parent="SubViewportContainer/SubViewport/player1/Armature/Skeleton3D" index="2" unique_id=1661146120]
-visible = false
-mesh = ExtResource("6_fv84f")
-
-[node name="character_green__hat" parent="SubViewportContainer/SubViewport/player1/Armature/Skeleton3D" index="3" unique_id=636423265]
-visible = false
-
-[node name="character_red" parent="SubViewportContainer/SubViewport/player1/Armature/Skeleton3D" index="4" unique_id=20914356]
-visible = false
-mesh = ExtResource("5_nl33y")
-
-[node name="character_red_hat" parent="SubViewportContainer/SubViewport/player1/Armature/Skeleton3D" index="5" unique_id=208953588]
-visible = false
-
-[node name="AnimationPlayer" parent="SubViewportContainer/SubViewport/player1" index="1" unique_id=538537056]
-autoplay = &"idle"
-
-[node name="Label3D" type="Label3D" parent="SubViewportContainer/SubViewport/player1" unique_id=1607026584]
+[node name="PlayerNameLabel" type="Label3D" parent="SubViewportContainer/SubViewport/Player1" unique_id=1620203797]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.5, 0)
 text = "Player 1"
 
-[node name="player2" parent="SubViewportContainer/SubViewport" unique_id=501442015 instance=ExtResource("2_bt4ks")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.9981041, 0.5056862, -3.5480943)
-visible = false
+[node name="Player2" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=421643147]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -1, 0.5, -3.7)
 script = ExtResource("3_g7oat")
 
-[node name="Skeleton3D" parent="SubViewportContainer/SubViewport/player2/Armature" parent_id_path=PackedInt32Array(501442015, 418994314) index="0" unique_id=110886057]
-bones/0/rotation = Quaternion(0.025572155, 0, 0, 0.999673)
-bones/1/rotation = Quaternion(-0.0155516025, 0, 0, 0.99987906)
-bones/2/rotation = Quaternion(-0.13068068, 1.1818702e-07, -1.557835e-08, 0.9914245)
-bones/3/rotation = Quaternion(0.11064047, -2.8151821e-14, 2.637874e-08, 0.9938606)
-bones/4/rotation = Quaternion(0.010300557, 0.088651694, 0.98478943, 0.14907962)
-bones/5/rotation = Quaternion(-0.14423136, 0.00022059966, 0.032007936, 0.9890262)
-bones/6/rotation = Quaternion(-0.0521631, -0.03139098, 0.17021033, 0.98352534)
-bones/7/rotation = Quaternion(-0.010300557, 0.088651694, 0.98478943, -0.14907962)
-bones/8/rotation = Quaternion(-0.14423136, -0.00022059966, -0.032007936, 0.9890262)
-bones/9/rotation = Quaternion(-0.0521631, 0.03139098, -0.17021033, 0.98352534)
-bones/10/rotation = Quaternion(0.028598597, -0.029320708, 0.9973179, 0.060659077)
-bones/10/scale = Vector3(0.999983, 0.9999996, 0.9999952)
-bones/11/rotation = Quaternion(0.18132697, 0.0025742964, 0.0371463, 0.9827177)
-bones/12/rotation = Quaternion(-0.6644075, 0.0488832, -0.025692588, 0.7453274)
-bones/12/scale = Vector3(0.9999924, 0.9999991, 1.0000011)
-bones/13/rotation = Quaternion(-0.028598608, -0.029320704, 0.99731785, -0.06065907)
-bones/13/scale = Vector3(0.999983, 0.9999996, 0.9999952)
-bones/14/rotation = Quaternion(0.18132697, -0.0025742962, -0.037146296, 0.9827177)
-bones/15/rotation = Quaternion(-0.6644075, -0.048883215, 0.025692575, 0.7453274)
-bones/15/scale = Vector3(0.9999923, 0.99999905, 1.0000011)
+[node name="LobbyCharacter" parent="SubViewportContainer/SubViewport/Player2" unique_id=1242521985 instance=ExtResource("4_cbhut")]
 
-[node name="character_blue" parent="SubViewportContainer/SubViewport/player2/Armature/Skeleton3D" index="0" unique_id=1226541086]
-visible = false
-mesh = ExtResource("5_4pru2")
-
-[node name="character_blue_hat" parent="SubViewportContainer/SubViewport/player2/Armature/Skeleton3D" index="1" unique_id=384664017]
-visible = false
-mesh = ExtResource("8_717b7")
-
-[node name="character_green" parent="SubViewportContainer/SubViewport/player2/Armature/Skeleton3D" index="2" unique_id=1661146120]
-visible = false
-mesh = ExtResource("6_fv84f")
-
-[node name="character_green__hat" parent="SubViewportContainer/SubViewport/player2/Armature/Skeleton3D" index="3" unique_id=636423265]
-visible = false
-
-[node name="character_red" parent="SubViewportContainer/SubViewport/player2/Armature/Skeleton3D" index="4" unique_id=20914356]
-visible = false
-
-[node name="character_red_hat" parent="SubViewportContainer/SubViewport/player2/Armature/Skeleton3D" index="5" unique_id=208953588]
-visible = false
-
-[node name="AnimationPlayer" parent="SubViewportContainer/SubViewport/player2" index="1" unique_id=538537056]
-autoplay = &"idle"
-
-[node name="Label3D" type="Label3D" parent="SubViewportContainer/SubViewport/player2" unique_id=679217613]
+[node name="PlayerNameLabel" type="Label3D" parent="SubViewportContainer/SubViewport/Player2" unique_id=1346797050]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.5, 0)
 text = "Player 2"
 
-[node name="player3" parent="SubViewportContainer/SubViewport" unique_id=27016377 instance=ExtResource("2_bt4ks")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 1.0018959, 0.5056862, -3.5480943)
-visible = false
+[node name="Player3" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=376685257]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 1, 0.5, -3.7)
 script = ExtResource("3_g7oat")
 
-[node name="Skeleton3D" parent="SubViewportContainer/SubViewport/player3/Armature" parent_id_path=PackedInt32Array(27016377, 418994314) index="0" unique_id=110886057]
-bones/0/rotation = Quaternion(0.025572155, 0, 0, 0.999673)
-bones/1/rotation = Quaternion(-0.0155516025, 0, 0, 0.99987906)
-bones/2/rotation = Quaternion(-0.13068068, 1.1818702e-07, -1.557835e-08, 0.9914245)
-bones/3/rotation = Quaternion(0.11064047, -2.8151821e-14, 2.637874e-08, 0.9938606)
-bones/4/rotation = Quaternion(0.010300557, 0.088651694, 0.98478943, 0.14907962)
-bones/5/rotation = Quaternion(-0.14423136, 0.00022059966, 0.032007936, 0.9890262)
-bones/6/rotation = Quaternion(-0.0521631, -0.03139098, 0.17021033, 0.98352534)
-bones/7/rotation = Quaternion(-0.010300557, 0.088651694, 0.98478943, -0.14907962)
-bones/8/rotation = Quaternion(-0.14423136, -0.00022059966, -0.032007936, 0.9890262)
-bones/9/rotation = Quaternion(-0.0521631, 0.03139098, -0.17021033, 0.98352534)
-bones/10/rotation = Quaternion(0.028598597, -0.029320708, 0.9973179, 0.060659077)
-bones/10/scale = Vector3(0.999983, 0.9999996, 0.9999952)
-bones/11/rotation = Quaternion(0.18132697, 0.0025742964, 0.0371463, 0.9827177)
-bones/12/rotation = Quaternion(-0.6644075, 0.0488832, -0.025692588, 0.7453274)
-bones/12/scale = Vector3(0.9999924, 0.9999991, 1.0000011)
-bones/13/rotation = Quaternion(-0.028598608, -0.029320704, 0.99731785, -0.06065907)
-bones/13/scale = Vector3(0.999983, 0.9999996, 0.9999952)
-bones/14/rotation = Quaternion(0.18132697, -0.0025742962, -0.037146296, 0.9827177)
-bones/15/rotation = Quaternion(-0.6644075, -0.048883215, 0.025692575, 0.7453274)
-bones/15/scale = Vector3(0.9999923, 0.99999905, 1.0000011)
+[node name="LobbyCharacter" parent="SubViewportContainer/SubViewport/Player3" unique_id=817015640 instance=ExtResource("4_cbhut")]
 
-[node name="character_blue" parent="SubViewportContainer/SubViewport/player3/Armature/Skeleton3D" index="0" unique_id=1226541086]
-visible = false
-
-[node name="character_blue_hat" parent="SubViewportContainer/SubViewport/player3/Armature/Skeleton3D" index="1" unique_id=384664017]
-visible = false
-
-[node name="character_green" parent="SubViewportContainer/SubViewport/player3/Armature/Skeleton3D" index="2" unique_id=1661146120]
-visible = false
-
-[node name="character_green__hat" parent="SubViewportContainer/SubViewport/player3/Armature/Skeleton3D" index="3" unique_id=636423265]
-visible = false
-
-[node name="character_red" parent="SubViewportContainer/SubViewport/player3/Armature/Skeleton3D" index="4" unique_id=20914356]
-visible = false
-
-[node name="character_red_hat" parent="SubViewportContainer/SubViewport/player3/Armature/Skeleton3D" index="5" unique_id=208953588]
-visible = false
-
-[node name="AnimationPlayer" parent="SubViewportContainer/SubViewport/player3" index="1" unique_id=538537056]
-autoplay = &"idle"
-
-[node name="Label3D" type="Label3D" parent="SubViewportContainer/SubViewport/player3" unique_id=1838147927]
+[node name="PlayerNameLabel" type="Label3D" parent="SubViewportContainer/SubViewport/Player3" unique_id=180855959]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.5, 0)
 text = "Player 3"
 
-[node name="player4" parent="SubViewportContainer/SubViewport" unique_id=341715206 instance=ExtResource("2_bt4ks")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 3.001896, 0.5056862, -3.5480943)
-visible = false
+[node name="Player4" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=585442441]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 3, 0.5, -3.7)
 script = ExtResource("3_g7oat")
 
-[node name="Skeleton3D" parent="SubViewportContainer/SubViewport/player4/Armature" parent_id_path=PackedInt32Array(341715206, 418994314) index="0" unique_id=110886057]
-bones/0/rotation = Quaternion(0.025572155, 0, 0, 0.999673)
-bones/1/rotation = Quaternion(-0.0155516025, 0, 0, 0.99987906)
-bones/2/rotation = Quaternion(-0.13068068, 1.1818702e-07, -1.557835e-08, 0.9914245)
-bones/3/rotation = Quaternion(0.11064047, -2.8151821e-14, 2.637874e-08, 0.9938606)
-bones/4/rotation = Quaternion(0.010300557, 0.088651694, 0.98478943, 0.14907962)
-bones/5/rotation = Quaternion(-0.14423136, 0.00022059966, 0.032007936, 0.9890262)
-bones/6/rotation = Quaternion(-0.0521631, -0.03139098, 0.17021033, 0.98352534)
-bones/7/rotation = Quaternion(-0.010300557, 0.088651694, 0.98478943, -0.14907962)
-bones/8/rotation = Quaternion(-0.14423136, -0.00022059966, -0.032007936, 0.9890262)
-bones/9/rotation = Quaternion(-0.0521631, 0.03139098, -0.17021033, 0.98352534)
-bones/10/rotation = Quaternion(0.028598597, -0.029320708, 0.9973179, 0.060659077)
-bones/10/scale = Vector3(0.999983, 0.9999996, 0.9999952)
-bones/11/rotation = Quaternion(0.18132697, 0.0025742964, 0.0371463, 0.9827177)
-bones/12/rotation = Quaternion(-0.6644075, 0.0488832, -0.025692588, 0.7453274)
-bones/12/scale = Vector3(0.9999924, 0.9999991, 1.0000011)
-bones/13/rotation = Quaternion(-0.028598608, -0.029320704, 0.99731785, -0.06065907)
-bones/13/scale = Vector3(0.999983, 0.9999996, 0.9999952)
-bones/14/rotation = Quaternion(0.18132697, -0.0025742962, -0.037146296, 0.9827177)
-bones/15/rotation = Quaternion(-0.6644075, -0.048883215, 0.025692575, 0.7453274)
-bones/15/scale = Vector3(0.9999923, 0.99999905, 1.0000011)
+[node name="LobbyCharacter" parent="SubViewportContainer/SubViewport/Player4" unique_id=145185328 instance=ExtResource("4_cbhut")]
 
-[node name="character_blue" parent="SubViewportContainer/SubViewport/player4/Armature/Skeleton3D" index="0" unique_id=1226541086]
-visible = false
-
-[node name="character_blue_hat" parent="SubViewportContainer/SubViewport/player4/Armature/Skeleton3D" index="1" unique_id=384664017]
-visible = false
-
-[node name="character_green" parent="SubViewportContainer/SubViewport/player4/Armature/Skeleton3D" index="2" unique_id=1661146120]
-visible = false
-
-[node name="character_green__hat" parent="SubViewportContainer/SubViewport/player4/Armature/Skeleton3D" index="3" unique_id=636423265]
-visible = false
-
-[node name="character_red" parent="SubViewportContainer/SubViewport/player4/Armature/Skeleton3D" index="4" unique_id=20914356]
-visible = false
-
-[node name="character_red_hat" parent="SubViewportContainer/SubViewport/player4/Armature/Skeleton3D" index="5" unique_id=208953588]
-visible = false
-
-[node name="AnimationPlayer" parent="SubViewportContainer/SubViewport/player4" index="1" unique_id=538537056]
-autoplay = &"idle"
-
-[node name="Label3D" type="Label3D" parent="SubViewportContainer/SubViewport/player4" unique_id=406561411]
+[node name="PlayerNameLabel" type="Label3D" parent="SubViewportContainer/SubViewport/Player4" unique_id=2045366705]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.5, 0)
 text = "Player 4"
 
@@ -444,32 +266,97 @@ offset_right = 30.0
 offset_bottom = 30.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme_override_constants/separation = 20
 metadata/_edit_use_anchors_ = true
 
 [node name="Players" type="Label" parent="CanvasLayer/PlayerList" unique_id=1307389534]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
-text = "Players in lobby"
+text = "Players in lobby               "
 
 [node name="Player 1" type="Label" parent="CanvasLayer/PlayerList" unique_id=1209552096]
 layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(45, 0)
 theme_override_font_sizes/font_size = 24
 text = "Player 1"
 
+[node name="Avatar" type="TextureRect" parent="CanvasLayer/PlayerList/Player 1" unique_id=290819974]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -20.0
+offset_right = 40.0
+offset_bottom = 20.0
+grow_vertical = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(-45, 0)
+expand_mode = 1
+
 [node name="Player 2" type="Label" parent="CanvasLayer/PlayerList" unique_id=1386522201]
 layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(45, 0)
 theme_override_font_sizes/font_size = 24
 text = "Player 2"
 
+[node name="Avatar" type="TextureRect" parent="CanvasLayer/PlayerList/Player 2" unique_id=168738405]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -20.0
+offset_right = 40.0
+offset_bottom = 20.0
+grow_vertical = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(-45, 0)
+expand_mode = 1
+
 [node name="Player 3" type="Label" parent="CanvasLayer/PlayerList" unique_id=566115723]
 layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(45, 0)
 theme_override_font_sizes/font_size = 24
 text = "Player 3"
 
+[node name="Avatar" type="TextureRect" parent="CanvasLayer/PlayerList/Player 3" unique_id=1458826659]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -20.0
+offset_right = 40.0
+offset_bottom = 20.0
+grow_vertical = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(-45, 0)
+expand_mode = 1
+
 [node name="Player 4" type="Label" parent="CanvasLayer/PlayerList" unique_id=598575100]
 layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(45, 0)
 theme_override_font_sizes/font_size = 24
 text = "Player 4"
+
+[node name="Avatar" type="TextureRect" parent="CanvasLayer/PlayerList/Player 4" unique_id=785546445]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -20.0
+offset_right = 40.0
+offset_bottom = 20.0
+grow_vertical = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(-45, 0)
+expand_mode = 1
 
 [node name="PlayButton" type="Button" parent="CanvasLayer" unique_id=1380952413]
 anchors_preset = 3
@@ -524,23 +411,26 @@ text = "Main Menu
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=576286034]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.43385416
-anchor_top = 0.8240741
-anchor_right = 0.56614584
-anchor_bottom = 0.9074074
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -127.0
+offset_top = 30.0
+offset_right = 127.0
 grow_horizontal = 2
-grow_vertical = 0
-metadata/_edit_use_anchors_ = true
+grow_vertical = 2
 
 [node name="Label" type="Label" parent="VBoxContainer" unique_id=355962569]
 layout_mode = 2
 size_flags_horizontal = 4
+size_flags_vertical = 0
 theme_override_font_sizes/font_size = 30
 text = "Select Character"
 
 [node name="CharacterSelection" type="HBoxContainer" parent="VBoxContainer" unique_id=1060449813]
 layout_mode = 2
 size_flags_horizontal = 4
+size_flags_vertical = 0
 
 [node name="RedButton" type="Button" parent="VBoxContainer/CharacterSelection" unique_id=188494757]
 layout_mode = 2
@@ -564,7 +454,7 @@ text = " Blue "
 [connection signal="pressed" from="VBoxContainer/CharacterSelection/GreenButton" to="." method="_on_green_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/CharacterSelection/BlueButton" to="." method="_on_blue_button_pressed"]
 
-[editable path="SubViewportContainer/SubViewport/player1"]
-[editable path="SubViewportContainer/SubViewport/player2"]
-[editable path="SubViewportContainer/SubViewport/player3"]
-[editable path="SubViewportContainer/SubViewport/player4"]
+[editable path="SubViewportContainer/SubViewport/Player1/LobbyCharacter"]
+[editable path="SubViewportContainer/SubViewport/Player2/LobbyCharacter"]
+[editable path="SubViewportContainer/SubViewport/Player3/LobbyCharacter"]
+[editable path="SubViewportContainer/SubViewport/Player4/LobbyCharacter"]

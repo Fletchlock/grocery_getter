@@ -1,11 +1,11 @@
 extends Node3D
 
-@onready var character_blue: MeshInstance3D = $Armature/Skeleton3D/character_blue
-@onready var character_blue_hat: MeshInstance3D = $Armature/Skeleton3D/character_blue_hat
-@onready var character_green: MeshInstance3D = $Armature/Skeleton3D/character_green
-@onready var character_green_hat: MeshInstance3D = $Armature/Skeleton3D/character_green__hat
-@onready var character_red: MeshInstance3D = $Armature/Skeleton3D/character_red
-@onready var character_red_hat: MeshInstance3D = $Armature/Skeleton3D/character_red_hat
+@onready var character_blue: MeshInstance3D = $LobbyCharacter/Armature/Skeleton3D/GroceryBlue
+@onready var character_blue_hat: MeshInstance3D = $LobbyCharacter/Armature/Skeleton3D/GroceryBlue/Hat
+@onready var character_green: MeshInstance3D = $LobbyCharacter/Armature/Skeleton3D/GroceryGreen
+@onready var character_green_hat: MeshInstance3D = $LobbyCharacter/Armature/Skeleton3D/GroceryGreen/Hat
+@onready var character_red: MeshInstance3D = $LobbyCharacter/Armature/Skeleton3D/GroceryRed
+@onready var character_red_hat: MeshInstance3D = $LobbyCharacter/Armature/Skeleton3D/GroceryRed/Hat
 
 
 func _ready() -> void:

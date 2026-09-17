@@ -74,9 +74,16 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 	multiplayer.multiplayer_peer = peer
 
 	# Host registers with the lobby
-	var my_peer_id := multiplayer.get_unique_id()
+	var my_peer_id: int = multiplayer.get_unique_id()
+	var my_steam_id: int = Steam.getSteamID()
+	var my_name: String = Steam.getFriendPersonaName(my_steam_id)
+
 	LobbyManager.add_player(my_peer_id)
-	LobbyManager.set_player_name(my_peer_id, Steam.getFriendPersonaName(Steam.getSteamID()))
+	LobbyManager.set_player_name(
+		my_peer_id,
+		my_name,
+		my_steam_id
+	)
 	
 	debug_lobby_members()
 	
@@ -209,12 +216,16 @@ func _on_connected_to_server() -> void:
 	print("NetworkManager: CONNECTED TO SERVER!")
 	print("NetworkManager: My peer ID: ", multiplayer.get_unique_id())
 
-	var my_peer_id := multiplayer.get_unique_id()
+	var my_peer_id: int = multiplayer.get_unique_id()
+	var my_steam_id: int = Steam.getSteamID()
+	var my_name: String = Steam.getFriendPersonaName(my_steam_id)
 
 	LobbyManager.add_player(my_peer_id)
-
-	var my_name := Steam.getFriendPersonaName(Steam.getSteamID())
-	LobbyManager.request_set_player_name.rpc_id(1, my_name)
+	LobbyManager.request_set_player_name.rpc_id(
+		1,
+		my_name,
+		my_steam_id
+	)
 
 
 func _on_connection_failed() -> void:
