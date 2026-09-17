@@ -4,9 +4,88 @@ signal lobby_player_added(peer_id: int)
 signal lobby_player_removed(peer_id: int)
 signal lobby_player_updated(peer_id: int)
 signal lobby_state_changed
+signal player_avatar_loaded(peer_id: int, texture: Texture2D)
 
 var players: Dictionary = {}
+var player_avatars: Dictionary = {}
+var avatar_requests: Dictionary = {}
 
+
+func _ready() -> void:
+	Steam.avatar_loaded.connect(_on_avatar_loaded)
+
+
+func get_player_avatar(peer_id: int) -> Texture2D:
+	if player_avatars.has(peer_id):
+		return player_avatars[peer_id]
+
+	if avatar_requests.has(peer_id):
+		return null
+
+	var steam_id: int = get_player_steam_id(peer_id)
+
+	if steam_id == 0:
+		return null
+
+	print(
+		"REQUESTING AVATAR: Peer ",
+		peer_id,
+		" -> Steam ID ",
+		steam_id
+	)
+
+	avatar_requests[peer_id] = steam_id
+
+	Steam.getPlayerAvatar(
+		Steam.AVATAR_MEDIUM,
+		steam_id
+	)
+
+	return null
+
+
+func _on_avatar_loaded(
+	user_id: int,
+	avatar_size: int,
+	avatar_buffer: PackedByteArray
+) -> void:
+	print(
+		"AVATAR LOADED: ",
+		user_id,
+		" SIZE: ",
+		avatar_size,
+		" BUFFER: ",
+		avatar_buffer.size()
+	)
+
+	if avatar_buffer.is_empty():
+		return
+
+	var avatar_image: Image = Image.create_from_data(
+		avatar_size,
+		avatar_size,
+		false,
+		Image.FORMAT_RGBA8,
+		avatar_buffer
+	)
+
+	var avatar_texture: ImageTexture = ImageTexture.create_from_image(
+		avatar_image
+	)
+
+	for peer_id in avatar_requests:
+		var requested_steam_id: int = avatar_requests[peer_id]
+
+		if requested_steam_id == user_id:
+			player_avatars[peer_id] = avatar_texture
+			avatar_requests.erase(peer_id)
+
+			player_avatar_loaded.emit(
+				peer_id,
+				avatar_texture
+			)
+
+			return
 
 func add_player(peer_id: int) -> void:
 	if players.has(peer_id):
@@ -15,9 +94,13 @@ func add_player(peer_id: int) -> void:
 	players[peer_id] = {
 		"peer_id": peer_id,
 		"name": "",
+		"steam_id": 0,
 		"character": "red",
 		"ready": false
 	}
+
+	if peer_id == multiplayer.get_unique_id():
+		players[peer_id]["steam_id"] = Steam.getSteamID()
 
 	print("LobbyManager: Player added: ", peer_id)
 
@@ -184,17 +267,31 @@ func sync_lobby_state(player_state: Dictionary) -> void:
 	lobby_state_changed.emit()
 
 
-func set_player_name(peer_id: int, player_name: String) -> void:
+func set_player_name(
+	peer_id: int,
+	player_name: String,
+	steam_id: int
+) -> void:
 	if not players.has(peer_id):
 		return
 
 	players[peer_id]["name"] = player_name
+	players[peer_id]["steam_id"] = steam_id
 
 	lobby_player_updated.emit(peer_id)
 	lobby_state_changed.emit()
 
 	if multiplayer.is_server():
-		sync_player_name.rpc(peer_id, player_name)
+		sync_player_info.rpc(peer_id, player_name, steam_id)
+
+	print(
+		"LobbyManager: Player ",
+		peer_id,
+		" Name: ",
+		player_name,
+		" Steam ID: ",
+		steam_id
+	)
 
 
 func get_player_name(peer_id: int) -> String:
@@ -204,21 +301,37 @@ func get_player_name(peer_id: int) -> String:
 	return players[peer_id]["name"]
 
 
+func get_player_steam_id(peer_id: int) -> int:
+	if not players.has(peer_id):
+		return 0
+
+	return players[peer_id]["steam_id"]
+
+
 @rpc("any_peer", "reliable")
-func request_set_player_name(player_name: String) -> void:
+func request_set_player_name(
+	player_name: String,
+	steam_id: int
+) -> void:
 	if not multiplayer.is_server():
 		return
 
-	var peer_id := multiplayer.get_remote_sender_id()
-	set_player_name(peer_id, player_name)
+	var peer_id: int = multiplayer.get_remote_sender_id()
+
+	set_player_name(peer_id, player_name, steam_id)
 
 
 @rpc("authority", "reliable")
-func sync_player_name(peer_id: int, player_name: String) -> void:
+func sync_player_info(
+	peer_id: int,
+	player_name: String,
+	steam_id: int
+) -> void:
 	if not players.has(peer_id):
 		return
 
 	players[peer_id]["name"] = player_name
+	players[peer_id]["steam_id"] = steam_id
 
 	lobby_player_updated.emit(peer_id)
 	lobby_state_changed.emit()

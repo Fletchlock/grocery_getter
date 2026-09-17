@@ -48,8 +48,10 @@ func update_cart_authority(peer_id: int, state: bool) -> void:
 		set_collision_layer_value(1, true)
 		set_collision_mask_value(1, true)
 		
-		linear_velocity = Vector3.ZERO
-		angular_velocity = Vector3.ZERO
+		#With the below removed the cart will drift after release.
+		
+		#linear_velocity = Vector3.ZERO
+		#angular_velocity = Vector3.ZERO
 
 
 

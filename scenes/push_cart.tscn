@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bojdkseg653j6" path="res://scripts/push_cart.gd" id="1_i4yyv"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_i4yyv"]
-friction = 0.05
+friction = 0.15
 bounce = 0.15
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_03wl0"]
@@ -157,8 +157,9 @@ mass = 3.0
 physics_material_override = SubResource("PhysicsMaterial_i4yyv")
 center_of_mass_mode = 1
 center_of_mass = Vector3(0, -0.75, -0.25)
-linear_damp = 1.2
-angular_damp = 1.2
+max_contacts_reported = 4
+linear_damp = 0.6
+angular_damp = 0.58
 script = ExtResource("1_i4yyv")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1348594139]
