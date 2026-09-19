@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://bsbnaru4ssia1"]
+
+[ext_resource type="PackedScene" uid="uid://ca8mxlihjksew" path="res://assets/models/shelves/Shelf_2row_col.glb" id="1_xpyvs"]
+
+[node name="Shelf_2row_col2" unique_id=1844805547 instance=ExtResource("1_xpyvs")]

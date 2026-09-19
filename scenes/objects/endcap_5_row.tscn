@@ -2,4 +2,4 @@
 
 [ext_resource type="PackedScene" uid="uid://ck1pxla0tuuds" path="res://assets/models/shelves/Endcap_5row_col.glb" id="1_ykav7"]
 
-[node name="Endcap_5row_col2" unique_id=1466694663 instance=ExtResource("1_ykav7")]
+[node name="Endcap_5row_col2" unique_id=1411152408 instance=ExtResource("1_ykav7")]
