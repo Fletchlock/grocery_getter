@@ -12,6 +12,9 @@ extends RigidBody3D
 @export var is_being_pushed: bool = false
 var player_character: CharacterBody3D = null
 
+var cart_contents: Array[RigidBody3D] = []
+var content_transforms: Dictionary = {}
+
 # Caches to handle direction processing and tracking memory
 var last_valid_forward: Vector3 = Vector3.FORWARD
 var current_smoothed_forward: Vector3 = Vector3.FORWARD
@@ -54,30 +57,42 @@ func update_cart_authority(peer_id: int, state: bool) -> void:
 		#angular_velocity = Vector3.ZERO
 
 
-
-
-
 func grab_cart(player_node: CharacterBody3D) -> void:
 	player_character = player_node
-	
+
 	# Request the server to distribute multiplayer authority of this body to us
 	update_cart_authority.rpc(multiplayer.get_unique_id(), true)
 	
-	# Initialize direction caches based on camera heading on grab
-	var camera_pivot = player_character.get_node_or_null("SpringArmPivot")
-	if camera_pivot:
-		var camera_forward = Vector3.FORWARD.rotated(Vector3.UP, camera_pivot.global_rotation.y)
-		last_valid_forward = camera_forward.normalized()
-	else:
-		last_valid_forward = -player_character.global_transform.basis.z.normalized()
-		
+	# Preserve the cart's current facing direction when grabbed.
+	last_valid_forward = -global_transform.basis.z.normalized()
 	current_smoothed_forward = last_valid_forward
-
+	
+	for item: RigidBody3D in cart_contents:
+		if is_instance_valid(item):
+			var relative_transform: Transform3D = global_transform.affine_inverse() * item.global_transform
+			content_transforms[item] = relative_transform
+			
+			item.linear_velocity = Vector3.ZERO
+			item.angular_velocity = Vector3.ZERO
+			item.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
+			item.freeze = true
+			item.set_collision_mask_value(1, false)
+			
+			item.global_transform = global_transform * relative_transform
 
 func release_cart() -> void:
+	for item: RigidBody3D in cart_contents:
+		if is_instance_valid(item) and content_transforms.has(item):
+			item.global_transform = global_transform * content_transforms[item]
+			item.freeze = false
+			item.set_collision_mask_value(1, true)
+			item.linear_velocity = linear_velocity
+			item.angular_velocity = Vector3.ZERO
+
+	content_transforms.clear()
+	cart_contents.clear()
 	player_character = null
 	
-	# Return authority back to the server (Peer ID 1) when dropped
 	update_cart_authority.rpc(1, false)
 
 
@@ -123,7 +138,7 @@ func _physics_process(delta: float) -> void:
 	
 	var desired_velocity = distance_vector * position_follow_speed
 	linear_velocity = linear_velocity.lerp(desired_velocity, 15.0 * delta)
-	
+			
 	# 4. Final rotation matrix alignment
 	var target_look = global_position + current_smoothed_forward
 	var current_transform = global_transform
@@ -134,3 +149,24 @@ func _physics_process(delta: float) -> void:
 			current_transform.basis, 
 			rotation_align_speed * delta
 		)
+		
+	for item: RigidBody3D in cart_contents:
+		if is_instance_valid(item) and content_transforms.has(item):
+			var relative_transform: Transform3D = content_transforms[item]
+			item.global_transform = global_transform * relative_transform	
+
+
+func _on_contents_area_body_entered(body: Node3D) -> void:
+	if body is RigidBody3D:
+		var item: RigidBody3D = body
+		if not cart_contents.has(item):
+			cart_contents.append(item)
+
+
+func _on_contents_area_body_exited(body: Node3D) -> void:
+	if body is RigidBody3D:
+		var item: RigidBody3D = body
+		
+		if not is_being_pushed:
+			cart_contents.erase(item)
+			content_transforms.erase(item)

@@ -149,6 +149,9 @@ properties/4/path = NodePath(".:angular_velocity")
 properties/4/spawn = true
 properties/4/replication_mode = 1
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_bcy86"]
+size = Vector3(1.2148438, 1.0324249, 2.2912865)
+
 [node name="push_cart" type="RigidBody3D" unique_id=1577398286]
 collision_mask = 7
 axis_lock_angular_x = true
@@ -218,3 +221,16 @@ rotation_edit_mode = 2
 [node name="RightHandTarget" type="Node3D" parent="." unique_id=1644043477]
 transform = Transform3D(0.067206666, -0.08992467, -0.9936783, 0.9977391, 0.006057232, 0.06693313, 0, -0.99593, 0.090128444, 0.45, 1.188098, 0.49607152)
 rotation_edit_mode = 2
+
+[node name="ContentsArea" type="Area3D" parent="." unique_id=131051931]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7105986, -0.8416152)
+collision_layer = 2
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ContentsArea" unique_id=1472509003]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0007324219, 0.15293121, -0.038583755)
+shape = SubResource("BoxShape3D_bcy86")
+debug_color = Color(0.6677083, 0.4045921, 0.9830254, 1)
+
+[connection signal="body_entered" from="ContentsArea" to="." method="_on_contents_area_body_entered"]
+[connection signal="body_exited" from="ContentsArea" to="." method="_on_contents_area_body_exited"]
