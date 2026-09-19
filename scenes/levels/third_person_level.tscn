@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://dffkedylp1svl" path="res://scenes/objects/shelf_3_row.tscn" id="11_glxnp"]
 [ext_resource type="PackedScene" uid="uid://bcy1rccktr4im" path="res://scenes/objects/shelf_4_row.tscn" id="13_tcjw2"]
 [ext_resource type="PackedScene" uid="uid://bld3a6edc22ai" path="res://scenes/objects/shelf_5_row.tscn" id="14_t00v6"]
+[ext_resource type="PackedScene" uid="uid://b6m4rrokjf8os" path="res://scenes/lettuce.tscn" id="15_tcjw2"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ta2qt"]
 sky_top_color = Color(0.2596472, 0.5435158, 0.9217843, 1)
@@ -200,3 +201,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, -1.4071066, -36)
 
 [node name="Endcap_5row_col3" parent="." unique_id=2008729592 instance=ExtResource("11_5i2ml")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 30, -1.4028738, -40)
+
+[node name="Lettuce" parent="." unique_id=441378728 instance=ExtResource("15_tcjw2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.074593, 5.584892, -6.3362665)
+
+[node name="Lettuce2" parent="." unique_id=1009708463 instance=ExtResource("15_tcjw2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.3505, 5.2175417, -8.833531)
+
+[node name="Lettuce3" parent="." unique_id=1915510748 instance=ExtResource("15_tcjw2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.301793, 7.9570475, -20.05319)
