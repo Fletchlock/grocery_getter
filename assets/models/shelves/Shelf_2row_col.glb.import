@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dd6tc6u6mdtl3"
-path="res://godot/imported/Shelf_3row_col.glb-d7220391b516b803b3159c421cdc13db.scn"
+uid="uid://ca8mxlihjksew"
+path="res://godot/imported/Shelf_2row_col.glb-b3c507ef6aa48fd5f23e7879d6939272.scn"
 
 [deps]
 
-source_file="res://assets/models/shelves/Shelf_3row_col.glb"
-dest_files=["res://godot/imported/Shelf_3row_col.glb-d7220391b516b803b3159c421cdc13db.scn"]
+source_file="res://assets/models/shelves/Shelf_2row_col.glb"
+dest_files=["res://godot/imported/Shelf_2row_col.glb-b3c507ef6aa48fd5f23e7879d6939272.scn"]
 
 [params]
 
@@ -41,14 +41,14 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "meshes": {
-"Shelf_3row_col_Cube_010": {
+"Shelf_2row_col_Cube_024": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/shelves/Shelf_3row_col_Cube_010.res",
-"save_to_file/path": "uid://b034j4mnmvk7d"
+"save_to_file/fallback_path": "res://assets/models/shelves/Shelf_2row_col_Cube_024.res",
+"save_to_file/path": "uid://0iceuewhoj1m"
 }
 }
 }

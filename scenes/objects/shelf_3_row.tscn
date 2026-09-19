@@ -2,4 +2,4 @@
 
 [ext_resource type="PackedScene" uid="uid://dd6tc6u6mdtl3" path="res://assets/models/shelves/Shelf_3row_col.glb" id="1_plcdr"]
 
-[node name="Shelf_3row_col2" unique_id=1704922029 instance=ExtResource("1_plcdr")]
+[node name="Shelf_3row_col2" unique_id=163139714 instance=ExtResource("1_plcdr")]
