@@ -352,11 +352,14 @@ properties/6/path = NodePath(".:network_on_moving_platform")
 properties/6/spawn = true
 properties/6/replication_mode = 1
 properties/7/path = NodePath("Armature:rotation")
-properties/7/spawn = true
-properties/7/replication_mode = 1
+properties/7/spawn = false
+properties/7/replication_mode = 0
 properties/8/path = NodePath(".:network_is_pushing_cart")
 properties/8/spawn = true
 properties/8/replication_mode = 1
+properties/9/path = NodePath(".:network_rotation_y")
+properties/9/spawn = true
+properties/9/replication_mode = 1
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_qgfk6"]
 radius = 0.5971316
