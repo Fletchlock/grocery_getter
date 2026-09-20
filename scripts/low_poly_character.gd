@@ -5,10 +5,8 @@ extends CharacterBody3D
 @onready var _camera_origin: Node3D = $SpringArmPivot
 @onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
 @onready var _camera: Camera3D = $SpringArmPivot/SpringArm3D/Camera3D
-
-
 @onready var armature_node: Node3D = $Armature
-
+@onready var skeleton: Skeleton3D = $Armature/Skeleton3D
 @onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
 @onready var anim_tree = $AnimationTree
 @onready var _mesh_default_y: float = $Armature.position.y
@@ -16,7 +14,6 @@ extends CharacterBody3D
 @onready var grocery_red: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
 @onready var grocery_blue: MeshInstance3D = $Armature/Skeleton3D/GroceryBlue
 @onready var grocery_green: MeshInstance3D = $Armature/Skeleton3D/GroceryGreen
-@onready var skeleton: Skeleton3D = $Armature/Skeleton3D
 
 
 
@@ -32,8 +29,6 @@ extends CharacterBody3D
 var nearby_carts: Array[RigidBody3D] = []
 	# Track the cart we are currently pushing
 var attached_cart: RigidBody3D = null
-
-
 
 # === Configuration Properties ===
 
@@ -57,21 +52,23 @@ var attached_cart: RigidBody3D = null
 @export_group("Network Replication")
 @export var network_position := Vector3.ZERO
 @export var network_velocity := Vector3.ZERO
-@export var network_anim_blend := 0.0
-@export var network_is_falling := false
-@export var network_is_grounded := true
-@export var network_hat_visible := true
-@export var network_on_moving_platform := false
+@export var network_rotation_y : float = 0.0
+@export var network_anim_blend : float = 0.0
+@export var network_is_falling : bool = false
+@export var network_is_grounded : bool = true
+@export var network_hat_visible : bool = true
+@export var network_on_moving_platform : bool = false
 @export var network_is_pushing_cart: bool = false
 
 var _network_position_history: Array[Dictionary] = []
 var _network_position_last_received := Vector3.ZERO
 var _network_velocity_last_received := Vector3.ZERO
-var _network_velocity_received_time := 0.0
-var _network_position_initialized := false
+var _network_rotation_y_last_received : float = 0.0
+var _network_velocity_received_time : float = 0.0
+var _network_position_initialized : bool = false
 
 const NORMAL_INTERPOLATION_DELAY := 0.07
-const PLATFORM_INTERPOLATION_DELAY := 0.0
+const PLATFORM_INTERPOLATION_DELAY := 0.05
 
 
 @export_group("UI Navigation")
@@ -79,7 +76,6 @@ const PLATFORM_INTERPOLATION_DELAY := 0.0
 
 
 @export_group("Blink")
-
 @export var blink_min_time: float = 2.5 ## Minimum time to wait before a blink.
 @export var blink_max_time: float = 6.5 ## Maximum time to wait before a blink.
 @export var blink_duration: float = 0.14 ## How long it takes for the eyes to close and reopen.
@@ -98,12 +94,9 @@ var double_blink_pending := false
 @export_range(0.0, 180.0) var look_angle: float = 90.0 ## Maximum angle from forward that the character will look.
 
 @onready var look_at_modifier: LookAtModifier3D = $Armature/Skeleton3D/LookAtModifier3D
-
 var look_target: Node3D = null
 
-
 # === Internal State Variables ===
-
 var _camera_input_direction := Vector2.ZERO
 var _last_movement_direction := Vector3.FORWARD
 var _gravity := -30.0
@@ -112,19 +105,16 @@ var _target_zoom := 4.0
 
 
 # === Player Scene Reference ===
-
 const PLAYER_SCENE = preload(
 	"res://scenes/low_poly_character.tscn"
 )
 
 
-# Add this function directly ABOVE your func _ready() block!
 func _enter_tree() -> void:
 	# Convert your node's string name (e.g. "933642306") into its real integer peer ID 
 	# and claim network authority BEFORE any child nodes initialize!
 	if name.is_valid_int():
 		set_multiplayer_authority(name.to_int())
-
 
 
 func _ready() -> void:
@@ -174,11 +164,12 @@ func _ready() -> void:
 
 	_network_position_last_received = network_position
 	_network_velocity_last_received = network_velocity
+	_network_rotation_y_last_received = network_rotation_y
 	_network_velocity_received_time = (
 		Time.get_ticks_usec() / 1000000.0
 	)
 
-	# Inside your player script's _ready() function, at the very bottom:
+	# 
 	_network_position_initialized = false # (Your current last line)
 
 	# --- FIXED MULTIPLAYER SYNCHRONIZER TIMING BUFFER ---
@@ -397,11 +388,12 @@ func _physics_process(delta: float) -> void:
 		hat.visible = network_hat_visible
 
 		# (All your previous conditional IK code is gone from here!)
-
+		
 		# Detect a new received network state...
 		if (
 			network_position != _network_position_last_received
 			or network_velocity != _network_velocity_last_received
+			or network_rotation_y != _network_rotation_y_last_received
 		):
 
 
@@ -412,11 +404,13 @@ func _physics_process(delta: float) -> void:
 			_network_position_history.append({
 				"time": current_time,
 				"position": network_position,
-				"velocity": network_velocity
+				"velocity": network_velocity,
+				"rotation_y": network_rotation_y
 			})
 
 			_network_position_last_received = network_position
 			_network_velocity_last_received = network_velocity
+			_network_rotation_y_last_received = network_rotation_y
 			_network_velocity_received_time = current_time
 
 			while _network_position_history.size() > 10:
@@ -691,6 +685,7 @@ func _physics_process(delta: float) -> void:
 			target_angle,
 			rotation_speed * delta
 		)
+		
 
 	else:
 		# CART STRAFE MODE: Face the camera, with a 30-degree offset when strafing.
@@ -722,7 +717,9 @@ func _physics_process(delta: float) -> void:
 			target_angle,
 			rotation_speed * delta
 		)
-
+		
+		
+	network_rotation_y = armature_node.rotation.y
 
 	# ============================================================
 	# DYNAMIC VECTOR-DRIVEN INTERACTION ZONE POSITIONING
@@ -869,6 +866,15 @@ func _update_network_position() -> void:
 
 			global_position = older_position.lerp(
 				newer_position,
+				weight
+			)
+			
+			var older_rotation: float = older_snapshot["rotation_y"]
+			var newer_rotation: float = newer_snapshot["rotation_y"]
+
+			armature_node.rotation.y = lerp_angle(
+				older_rotation,
+				newer_rotation,
 				weight
 			)
 
