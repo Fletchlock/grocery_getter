@@ -368,7 +368,7 @@ radius = 0.5971316
 process_mode = 1
 script = ExtResource("1_p8cxc")
 look_distance = 4.0
-look_speed = 2.5
+look_speed = 1.5
 look_angle = 70.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2138151857]

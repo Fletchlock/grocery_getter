@@ -937,6 +937,7 @@ func update_idle_look(delta: float) -> void:
 		return
 
 	look_target = find_nearest_player()
+	
 
 	if look_target != null:
 		look_at_modifier.target_node = look_target.get_node("LookTarget").get_path()

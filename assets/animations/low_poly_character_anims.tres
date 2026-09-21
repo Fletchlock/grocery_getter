@@ -2,11 +2,17 @@
 
 [ext_resource type="Animation" uid="uid://bgf0opch2cuvt" path="res://assets/animations/falling.res" id="1_4yv5c"]
 [ext_resource type="Animation" uid="uid://cyhccw8t0q3b2" path="res://assets/animations/default.res" id="1_7wew1"]
+[ext_resource type="Animation" uid="uid://crq02wf4w4chm" path="res://assets/animations/Walk.res" id="1_a1w2e"]
 [ext_resource type="Animation" uid="uid://b7t8lh64fgaxe" path="res://assets/animations/idle.res" id="2_7wew1"]
+[ext_resource type="Animation" uid="uid://rnunm043uihh" path="res://assets/animations/crouch_idle.res" id="2_rihnw"]
+[ext_resource type="Animation" uid="uid://brcinhkmh1i1j" path="res://assets/animations/crouch_walk.res" id="3_5klam"]
 [ext_resource type="Animation" uid="uid://rpgs3a3xjfcc" path="res://assets/animations/run.res" id="3_bb0h6"]
 
 [resource]
 _data = {
+&"Walk": ExtResource("1_a1w2e"),
+&"crouch_idle": ExtResource("2_rihnw"),
+&"crouch_walk": ExtResource("3_5klam"),
 &"default": ExtResource("1_7wew1"),
 &"falling": ExtResource("1_4yv5c"),
 &"idle": ExtResource("2_7wew1"),

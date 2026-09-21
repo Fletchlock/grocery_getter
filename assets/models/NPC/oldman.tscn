@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://ciy4wuvt863o1"]
+
+[ext_resource type="PackedScene" uid="uid://d3go10hb77ilg" path="res://assets/models/NPC/oldman.glb" id="1_p3jaf"]
+
+[node name="oldman" unique_id=1791033651 instance=ExtResource("1_p3jaf")]
+
+[node name="Skeleton3D" parent="Armature" parent_id_path=PackedInt32Array(401933553) index="0" unique_id=560463339]
+bones/0/position = Vector3(0, 0.6747056, -0.015608443)
+bones/0/rotation = Quaternion(0.025572155, 0, 0, 0.999673)
+bones/1/rotation = Quaternion(-0.01680959, -0.08052987, -0.013109306, 0.9965242)
+bones/2/rotation = Quaternion(-0.14156935, 4.5963756e-05, 1.0266943e-07, 0.9899284)
+bones/3/rotation = Quaternion(0.11028568, 0.079335414, 0.010468821, 0.9906733)
+bones/4/position = Vector3(-0.27453867, 0.43729407, -0.003575268)
+bones/4/rotation = Quaternion(0.03783369, -0.2770973, 0.95673037, 0.0803297)
+bones/5/rotation = Quaternion(-0.34371322, -0.02984806, 0.03176173, 0.9380627)
+bones/6/rotation = Quaternion(-0.1141778, -0.02764738, 0.17057051, 0.9783174)
+bones/7/position = Vector3(0.27453855, 0.437294, -0.0035752503)
+bones/7/rotation = Quaternion(0.019215286, 0.36610258, 0.9263286, -0.086689144)
+bones/8/rotation = Quaternion(-0.17984349, 0.005078171, -0.03206537, 0.98315936)
+bones/9/rotation = Quaternion(-0.0843495, 0.02946478, -0.17047979, 0.981302)
+bones/10/rotation = Quaternion(0.022065327, 0.20652951, 0.9738261, 0.09231099)
+bones/10/scale = Vector3(0.99998313, 0.99999976, 0.9999947)
+bones/11/rotation = Quaternion(0.3164562, 0.002479155, 0.064828515, 0.94638616)
+bones/12/rotation = Quaternion(-0.73504, 0.049341332, -0.026085282, 0.67572284)
+bones/12/scale = Vector3(0.9999919, 1.0000014, 0.99999934)
+bones/13/rotation = Quaternion(-0.039512653, -0.3146876, 0.946807, -0.054468688)
+bones/13/scale = Vector3(0.9999831, 1.0000005, 0.99999475)
+bones/14/rotation = Quaternion(0.20978214, -0.002558791, -0.042975537, 0.9767999)
+bones/15/rotation = Quaternion(-0.62336254, -0.06955586, 0.019578531, 0.77858704)
+bones/15/scale = Vector3(0.99999154, 0.9999992, 1.0000023)
