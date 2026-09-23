@@ -105,9 +105,7 @@ var _target_zoom := 4.0
 
 
 # === Player Scene Reference ===
-const PLAYER_SCENE = preload(
-	"res://scenes/low_poly_character.tscn"
-)
+var PLAYER_SCENE = PackedScene
 
 
 func _enter_tree() -> void:
@@ -118,6 +116,10 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
+	PLAYER_SCENE = load(
+	"res://scenes/low_poly_character.tscn"
+	)
+	
 	print(
 		"PLAYER READY: ",
 		name,
