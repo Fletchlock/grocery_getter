@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://ns3ym0bst3do"]
+
+[ext_resource type="PackedScene" uid="uid://bben6qpke83a2" path="res://assets/models/shelves/Produce_4row.glb" id="1_f4iob"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_umdtr"]
+size = Vector3(1, 3, 3)
+
+[node name="Produce_4row" unique_id=1098757882 instance=ExtResource("1_f4iob")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Produce_Shelf" parent_id_path=PackedInt32Array(1214953840) index="0" unique_id=2069748346]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Produce_Shelf/StaticBody3D" index="0" unique_id=708710825]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.5, -1.5)
+shape = SubResource("BoxShape3D_umdtr")
