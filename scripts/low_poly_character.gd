@@ -366,7 +366,7 @@ func _process(delta: float) -> void:
 
 			if double_blink_pending:
 				double_blink_pending = false
-				blink_timer = randf_range(blink_min_time, blink_max_time)
+				blink_timer = randf_range(blink_min_time, blink_max_time) #this is line 369
 			elif randf() < double_blink_chance:
 				double_blink_pending = true
 				blink_timer = double_blink_delay

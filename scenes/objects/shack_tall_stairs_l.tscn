@@ -13,14 +13,14 @@ size = Vector3(1.2358694, 0.09301758, 1.3925343)
 
 [node name="shack_tall_stairs_L" unique_id=221086531 instance=ExtResource("1_mp0up")]
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="Shack_Tall_Stairs_L/StaticBody3D" parent_id_path=PackedInt32Array(195122315) index="1" unique_id=975250919]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Shack_Tall_Stairs_L/StaticBody3D" parent_id_path=PackedInt32Array(392248113) index="1" unique_id=975250919]
 transform = Transform3D(0.92476064, -0.38054934, 0, 0.38054934, 0.92476064, 0, 0, 0, 1, -1.0060508, 1.8640447, -0.00044250488)
 shape = SubResource("BoxShape3D_6aigx")
 
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="Shack_Tall_Stairs_L/StaticBody3D" parent_id_path=PackedInt32Array(195122315) index="2" unique_id=71516254]
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Shack_Tall_Stairs_L/StaticBody3D" parent_id_path=PackedInt32Array(392248113) index="2" unique_id=71516254]
 transform = Transform3D(0.9570909, -0.2897878, 0, 0.2897878, 0.9570909, 0, 0, 0, 1, -6.9157476, -0.0042220876, 0.030668259)
 shape = SubResource("BoxShape3D_hd853")
 
-[node name="CollisionShape3D4" type="CollisionShape3D" parent="Shack_Tall_Stairs_L/StaticBody3D" parent_id_path=PackedInt32Array(195122315) index="3" unique_id=950862482]
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Shack_Tall_Stairs_L/StaticBody3D" parent_id_path=PackedInt32Array(392248113) index="3" unique_id=950862482]
 transform = Transform3D(1, 0, 0, 0, 0.9736695, 0.22796439, 0, -0.22796439, 0.9736695, 4.4070573, 3.4523082, -2.1713934)
 shape = SubResource("BoxShape3D_mp0up")
