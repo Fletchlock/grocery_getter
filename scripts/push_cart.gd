@@ -120,11 +120,11 @@ func _physics_process(delta: float) -> void:
 	if not is_being_pushed or player_character == null:
 		return
 		
-	# 1. Capture camera look direction from the controlling player character
-	var camera_pivot = player_character.get_node_or_null("SpringArmPivot")
-	if camera_pivot:
-		var camera_yaw = camera_pivot.global_rotation.y
-		last_valid_forward = Vector3.FORWARD.rotated(Vector3.UP, camera_yaw).normalized()
+	# 1. Capture the controlling player's current camera direction.
+	var camera_forward: Vector3 = player_character.get_camera_forward()
+
+	if camera_forward.length_squared() > 0.001:
+		last_valid_forward = camera_forward.normalized()
 		
 	# 2. Smoothly calculate the rotation swing lag
 	current_smoothed_forward = current_smoothed_forward.lerp(

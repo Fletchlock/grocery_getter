@@ -2,9 +2,15 @@ extends CharacterBody3D
 
 # === Node References ===
 
-@onready var _camera_origin: Node3D = $SpringArmPivot
-@onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
-@onready var _camera: Camera3D = $SpringArmPivot/SpringArm3D/Camera3D
+@onready var _third_person_camera: Camera3D = $SpringArmPivot/SpringArm3D/Camera3D
+@onready var _first_person_camera: Camera3D = $FirstPersonCameraPivot/FirstPersonCamera
+@onready var _spring_arm_pivot: Node3D = $SpringArmPivot
+@onready var _first_person_pivot: Node3D = $FirstPersonCameraPivot
+@export var network_first_person: bool = false
+
+var _first_person: bool = true
+#var _third_person_root_rotation_y: float = 0.0
+
 @onready var armature_node: Node3D = $Armature
 @onready var skeleton: Skeleton3D = $Armature/Skeleton3D
 @onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
@@ -66,6 +72,7 @@ var _network_velocity_last_received := Vector3.ZERO
 var _network_rotation_y_last_received : float = 0.0
 var _network_velocity_received_time : float = 0.0
 var _network_position_initialized : bool = false
+var _network_first_person_last_received: bool = false
 
 const NORMAL_INTERPOLATION_DELAY := 0.07
 const PLATFORM_INTERPOLATION_DELAY := 0.05
@@ -127,6 +134,11 @@ func _ready() -> void:
 		multiplayer.get_unique_id()
 	)
 	
+	if is_multiplayer_authority():
+		
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		
+	
 	blink_timer = randf_range(blink_min_time, blink_max_time)
 	
 	# Initialize the AnimationTree.
@@ -135,15 +147,10 @@ func _ready() -> void:
 
 	# Capture the initial placement rotation from the level editor.
 	_last_movement_direction = -global_transform.basis.z
+	#_third_person_root_rotation_y = rotation.y
 	grocery_red.rotation.y = 0.0
 
-	# Only the locally controlled player captures the mouse.
-	if is_multiplayer_authority():
-		print("PLAYER ", name, ": I HAVE AUTHORITY")
-
-		_camera.make_current()
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-
+		
 	# Set the player's selected character.
 	var character := LobbyManager.get_character(
 		get_multiplayer_authority()
@@ -161,6 +168,9 @@ func _ready() -> void:
 		"green":
 			set_character(2)
 			body_mesh = grocery_green
+
+	if is_multiplayer_authority():
+		_set_perspective(true)
 
 	_network_position_last_received = network_position
 	_network_velocity_last_received = network_velocity
@@ -197,7 +207,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():
 		return
 
-	# Accumulate relative mouse motion for camera rotation.
+	if event.is_action_pressed("toggle_perspective"):
+		_toggle_perspective()
+		return
+
 	var is_camera_motion := (
 		event is InputEventMouseMotion
 		and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
@@ -207,85 +220,142 @@ func _unhandled_input(event: InputEvent) -> void:
 		_camera_input_direction = (
 			event.screen_relative * mouse_sensitivity
 		)
-
-	# Mouse wheel zoom.
-	if event is InputEventMouseButton and event.pressed:
-
-		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			_target_zoom -= zoom_speed
-
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			_target_zoom += zoom_speed
-
-		_target_zoom = clamp(
-			_target_zoom,
-			min_zoom,
-			max_zoom
+	# Accumulate relative mouse motion for camera rotation.
+	if (
+		event is InputEventMouseMotion
+		and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
+	):
+		_camera_input_direction = (
+			event.screen_relative * mouse_sensitivity
 		)
-
-	#Cart handling code
-	if event.is_action_pressed("interact"): # Make sure "interact" is mapped in Input Map
+	
+	
+	# Cart handling.
+	if event.is_action_pressed("interact"):
 		if attached_cart == null:
 			try_grab_cart()
 		else:
 			try_release_cart()
 
 
+func _toggle_perspective() -> void:
+	_set_perspective(not _first_person)
+
+
+func _set_perspective(first_person: bool) -> void:
+	_first_person = first_person
+
+	grocery_red.visible = false
+	grocery_blue.visible = false
+	grocery_green.visible = false
+
+	if _first_person:
+		# Transfer the current third-person camera yaw
+		# to the player root before switching to first person.
+		rotation.y = _spring_arm_pivot.global_rotation.y
+
+		# Keep the same vertical look angle.
+		_first_person_pivot.rotation.x = _spring_arm_pivot.rotation.x
+
+		_first_person_camera.make_current()
+
+	else:
+		# Transfer the first-person facing to the third-person camera.
+		_spring_arm_pivot.global_rotation.y = rotation.y
+
+		# Keep the same vertical look angle.
+		_spring_arm_pivot.rotation.x = _first_person_pivot.rotation.x
+
+		# Match the character's facing to the camera direction.
+		var camera_yaw: float = _spring_arm_pivot.global_rotation.y
+
+		var flat_camera_forward: Vector3 = (
+			Vector3.FORWARD.rotated(
+				Vector3.UP,
+				camera_yaw
+			).normalized()
+		)
+
+		_last_movement_direction = flat_camera_forward
+
+		var local_camera_dir: Vector3 = (
+			global_transform.basis.inverse()
+			* flat_camera_forward
+		)
+
+		var target_camera_angle: float = (
+			Vector3.FORWARD.signed_angle_to(
+				local_camera_dir,
+				Vector3.UP
+			)
+		)
+
+		armature_node.rotation.y = target_camera_angle
+
+		_third_person_camera.make_current()
+		body_mesh.visible = true
+
+	network_first_person = _first_person
+
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+
 func try_grab_cart() -> void:
 	if nearby_carts.is_empty():
 		return
-		
+
 	attached_cart = nearby_carts[0]
-	
+
 	attached_cart.linear_velocity = Vector3.ZERO
 	attached_cart.angular_velocity = Vector3.ZERO
-	
-	var forward_dir = -_camera_origin.global_transform.basis.z
-	forward_dir.y = 0.0 
-	forward_dir = forward_dir.normalized()
-	
-	var distance_offset = 1.0
+
+	var forward_dir: Vector3 = get_camera_forward()
+
+	if _first_person:
+		armature_node.global_rotation.y = global_rotation.y
+
+	var distance_offset: float = 1.0
+
 	if "attach_distance" in attached_cart:
 		distance_offset = attached_cart.attach_distance
-		
-	var target_pos = global_position + (forward_dir * distance_offset)
+
+	var target_pos: Vector3 = (
+		global_position
+		+ forward_dir * distance_offset
+	)
+
 	attached_cart.global_position = target_pos
-	
-	var target_look = target_pos + forward_dir
-	attached_cart.look_at(target_look, Vector3.UP)
-	
-	armature_node.global_rotation.y = _camera_origin.global_rotation.y
-	
-	# ============================================================
-	# FIXED PATH-BASED NETWORK BROADCAST
-	# ============================================================
-	# Pass the precise NodePath of the grabbed cart over the network 
-	# so remote windows don't have to search for it!
-	var cart_path = attached_cart.get_path()
+
+	var target_look: Vector3 = target_pos + forward_dir
+	attached_cart.look_at(
+		target_look,
+		Vector3.UP
+	)
+
+	var cart_path: NodePath = attached_cart.get_path()
+
 	sync_ik_start.rpc(cart_path)
-	
+
 	attached_cart.grab_cart(self)
 
 
 func try_release_cart() -> void:
 	if attached_cart:
-		var forward_dir = -_camera_origin.global_transform.basis.z
-		forward_dir.y = 0.0 
+		var forward_dir: Vector3 = get_camera_forward()
+
 		if forward_dir.length_squared() > 0.001:
-			_last_movement_direction = forward_dir.normalized()
-			
+			_last_movement_direction = forward_dir
+
 		# ============================================================
 		# TERMINATE SKELETONIK3D OVERRIDES
 		# ============================================================
-		# Stop tracking the handle markers so arms return to idle/running loops
+
 		sync_ik_stop.rpc()
-		
+
 		attached_cart.release_cart()
 		attached_cart = null
 
-
-# Add these functions to your Player Script (e.g., right below try_release_cart)
-
+# Cart RPCs
 @rpc("any_peer", "call_local")
 func sync_ik_start(cart_node_path: NodePath) -> void:
 	network_is_pushing_cart = true
@@ -344,7 +414,8 @@ func _on_cart_detector_area_exited(area: Area3D) -> void:
 
 
 func _process(delta: float) -> void:
-	
+
+	#Blink
 	if blink_progress < 0.0:
 		blink_timer -= delta
 
@@ -394,6 +465,7 @@ func _physics_process(delta: float) -> void:
 			network_position != _network_position_last_received
 			or network_velocity != _network_velocity_last_received
 			or network_rotation_y != _network_rotation_y_last_received
+			or network_first_person != _network_first_person_last_received
 		):
 
 
@@ -405,12 +477,14 @@ func _physics_process(delta: float) -> void:
 				"time": current_time,
 				"position": network_position,
 				"velocity": network_velocity,
-				"rotation_y": network_rotation_y
+				"rotation_y": network_rotation_y,
+				"first_person": network_first_person
 			})
 
 			_network_position_last_received = network_position
 			_network_velocity_last_received = network_velocity
 			_network_rotation_y_last_received = network_rotation_y
+			_network_first_person_last_received = network_first_person
 			_network_velocity_received_time = current_time
 
 			while _network_position_history.size() > 10:
@@ -429,43 +503,42 @@ func _physics_process(delta: float) -> void:
 	# LOCAL PLAYER
 	# ============================================================
 
-	# === 1. Camera View Tracking / UI Mouse Simulation ===
+	# === 1. Camera / Look ===
 
-	var gamepad_look := Input.get_vector(
+	var gamepad_look: Vector2 = Input.get_vector(
 		"look_left",
 		"look_right",
 		"look_up",
 		"look_down"
 	)
 
-	# If a menu is open, the right stick controls the virtual mouse.
 	if Input.mouse_mode == Input.MOUSE_MODE_HIDDEN:
 
 		if gamepad_look.length() > 0.05:
-			var current_mouse_pos := (
+			var current_mouse_pos: Vector2 = (
 				get_viewport().get_mouse_position()
 			)
 
-			var new_mouse_pos := (
+			var new_mouse_pos: Vector2 = (
 				current_mouse_pos
 				+ gamepad_look
 				* gamepad_cursor_speed
 				* delta
 			)
 
-			var window_size := (
+			var window_size: Vector2 = (
 				get_viewport().get_visible_rect().size
 			)
 
 			new_mouse_pos.x = clamp(
 				new_mouse_pos.x,
-				0,
+				0.0,
 				window_size.x
 			)
 
 			new_mouse_pos.y = clamp(
 				new_mouse_pos.y,
-				0,
+				0.0,
 				window_size.y
 			)
 
@@ -473,86 +546,89 @@ func _physics_process(delta: float) -> void:
 
 	else:
 
-		# Normal camera orbit.
 		if gamepad_look.length() > 0.05:
 			_camera_input_direction += (
-				gamepad_look * gamepad_sensitivty
+				gamepad_look
+				* gamepad_sensitivty
 			)
 
-		_camera_origin.rotation.x -= (
-			_camera_input_direction.y * delta
+	if _first_person:
+		rotation.y -= (
+			_camera_input_direction.x
+			* delta
 		)
 
-		_camera_origin.rotation.x = clamp(
-			_camera_origin.rotation.x,
+		_first_person_pivot.rotation.x -= (
+			_camera_input_direction.y
+			* delta
+		)
+
+		_first_person_pivot.rotation.x = clamp(
+			_first_person_pivot.rotation.x,
 			-PI / 2.75,
 			PI / 6.5
 		)
 
-		_camera_origin.rotation.y -= (
-			_camera_input_direction.x * delta
+	else:
+		_spring_arm_pivot.rotation.x -= (
+			_camera_input_direction.y
+			* delta
 		)
 
-		_camera_input_direction = Vector2.ZERO
-
-
-	# === 2. Camera Zoom ===
-
-	if Input.is_action_pressed("zoom_in"):
-		_target_zoom -= (
-			gamepad_zoom_speed * delta
+		_spring_arm_pivot.rotation.x = clamp(
+			_spring_arm_pivot.rotation.x,
+			-PI / 2.75,
+			PI / 6.5
 		)
 
-	elif Input.is_action_pressed("zoom_out"):
-		_target_zoom += (
-			gamepad_zoom_speed * delta
+		_spring_arm_pivot.rotation.y -= (
+			_camera_input_direction.x
+			* delta
 		)
 
-	_target_zoom = clamp(
-		_target_zoom,
-		min_zoom,
-		max_zoom
-	)
-
-	_spring_arm.spring_length = lerp(
-		_spring_arm.spring_length,
-		_target_zoom,
-		8.0 * delta
-	)
+	_camera_input_direction = Vector2.ZERO
 
 
-	# === 3. Directional Movement ===
+	# === 2. Directional Movement ===
 
-	var raw_input := Input.get_vector(
+	var raw_input: Vector2 = Input.get_vector(
 		"left",
 		"right",
 		"up",
 		"down"
 	)
 
-	var forward := Vector3.BACK.rotated(
+	# Movement is relative to the player's horizontal facing.
+	var camera_yaw: float
+
+	if _first_person:
+		camera_yaw = global_rotation.y
+	else:
+		camera_yaw = _spring_arm_pivot.global_rotation.y
+
+	var forward: Vector3 = Vector3.BACK.rotated(
 		Vector3.UP,
-		_camera_origin.global_rotation.y
+		camera_yaw
 	)
 
-	var right := forward.rotated(
+	var right: Vector3 = forward.rotated(
 		Vector3.UP,
-		PI / 2
+		PI / 2.0
 	)
-	var move_direction := (
-			forward * raw_input.y
-			+ right * raw_input.x
-		).normalized()
-	
+
+	var move_direction: Vector3 = (
+		forward * raw_input.y
+		+ right * raw_input.x
+	).normalized()
 
 
-	# === 4. Velocity and Kinematics ===
+	# === 3. Velocity and Kinematics ===
 
-	var y_velocity := velocity.y
+	var y_velocity: float = velocity.y
 
 	velocity.y = 0.0
 
-	var current_acceleration := (
+	var current_acceleration: float = (
 		acceleration
 		if is_on_floor()
 		else air_acceleration
@@ -566,9 +642,9 @@ func _physics_process(delta: float) -> void:
 	velocity.y = y_velocity + _gravity * delta
 
 
-	# === 5. Animation State ===
+	# === 4. Animation State ===
 
-	var horizontal_speed := Vector3(
+	var horizontal_speed: float = Vector3(
 		velocity.x,
 		0.0,
 		velocity.z
@@ -577,27 +653,35 @@ func _physics_process(delta: float) -> void:
 	network_anim_blend = horizontal_speed / move_speed
 
 	if attached_cart != null and horizontal_speed > 0.1:
-		var armature_forward: Vector3 = -armature_node.global_transform.basis.z
+		var armature_forward: Vector3 = (
+			-armature_node.global_transform.basis.z
+		)
+
 		var movement_direction: Vector3 = Vector3(
 			velocity.x,
 			0.0,
 			velocity.z
 		).normalized()
 
-		var forward_amount: float = armature_forward.dot(movement_direction)
+		var forward_amount: float = (
+			armature_forward.dot(movement_direction)
+		)
 
 		if forward_amount < 0.0:
 			network_anim_blend = -network_anim_blend
-	
+
 	network_is_falling = not is_on_floor()
 	network_is_grounded = is_on_floor()
-	network_is_pushing_cart = (attached_cart != null)
-	
-	set_anim_tree()
-	
-	# === 6. Jump ===
+	network_is_pushing_cart = (
+		attached_cart != null
+	)
 
-	var is_starting_jump := (
+	set_anim_tree()
+
+
+	# === 5. Jump ===
+
+	var is_starting_jump: bool = (
 		Input.is_action_just_pressed("jump")
 		and is_on_floor()
 	)
@@ -606,7 +690,7 @@ func _physics_process(delta: float) -> void:
 		velocity.y += jump_strength
 
 
-	# === 7. Landing / Visual Effects ===
+	# === 6. Landing / Visual Effects ===
 
 	if is_on_floor() and _was_airborne:
 
@@ -620,7 +704,6 @@ func _physics_process(delta: float) -> void:
 
 		_was_airborne = true
 
-
 	if body_mesh.position.y < _mesh_default_y:
 
 		body_mesh.position.y = move_toward(
@@ -630,7 +713,7 @@ func _physics_process(delta: float) -> void:
 		)
 
 
-	# === 8. Hat Toggle ===
+	# === 7. Hat Toggle ===
 
 	if Input.is_action_just_pressed("toggle_hat"):
 
@@ -638,11 +721,11 @@ func _physics_process(delta: float) -> void:
 			not network_hat_visible
 		)
 
-		var hat = body_mesh.get_node("Hat")
+		var hat: Node3D = body_mesh.get_node("Hat")
 		hat.visible = network_hat_visible
 
 
-	# === 9. Movement ===
+	# === 8. Movement ===
 
 	move_and_slide()
 
@@ -654,79 +737,111 @@ func _physics_process(delta: float) -> void:
 		and get_platform_velocity().length() > 0.1
 	)
 
-	# === 10. Mesh Rotation ===
 
-# Always keep the internal character skin bone mesh completely flat relative to its skeleton folder parent
-	if body_mesh:
-		body_mesh.rotation.y = 0.0
+	# === 9. Character Rotation ===
 
-	if attached_cart == null:
-		# NORMAL MODE: Smoothly spin the entire armature node container folder to face your travel path (WASD)
-		if move_direction.length() > 0.2:
-			_last_movement_direction = move_direction
-
-		var local_movement_dir: Vector3 = (
-			global_transform.basis.inverse()
-			* _last_movement_direction
-		)
-
-		var target_angle: float = Vector3.FORWARD.signed_angle_to(
-			local_movement_dir,
-			Vector3.UP
-		)
-
-		armature_node.rotation.y = lerp_angle(
-			armature_node.rotation.y,
-			target_angle,
-			rotation_speed * delta
-		)
-		
+	if _first_person:
+		network_rotation_y = rotation.y
 
 	else:
-		# CART STRAFE MODE: Face the camera, with a 30-degree offset when strafing.
-		var camera_yaw: float = _camera_origin.global_rotation.y
 
-		var flat_camera_forward: Vector3 = Vector3.FORWARD.rotated(
-			Vector3.UP,
-			camera_yaw
-		).normalized()
+		# Third person: preserve the original armature-based rotation.
+		if body_mesh:
+			body_mesh.rotation.y = 0.0
 
-		var local_camera_dir: Vector3 = (
-			global_transform.basis.inverse() * flat_camera_forward
-		)
+		if attached_cart == null:
 
-		var target_camera_angle: float = Vector3.FORWARD.signed_angle_to(
-			local_camera_dir,
-			Vector3.UP
-		)
+			if move_direction.length() > 0.2:
+				_last_movement_direction = move_direction
 
-		var strafe_angle: float = 0.0
+			var local_movement_dir: Vector3 = (
+				global_transform.basis.inverse()
+				* _last_movement_direction
+			)
 
-		if raw_input.x != 0.0:
-			strafe_angle = -raw_input.x * deg_to_rad(strafe_rotation)
+			var target_angle: float = Vector3.FORWARD.signed_angle_to(
+				local_movement_dir,
+				Vector3.UP
+			)
 
-		var target_angle: float = target_camera_angle + strafe_angle
+			armature_node.rotation.y = lerp_angle(
+				armature_node.rotation.y,
+				target_angle,
+				rotation_speed * delta
+			)
 
-		armature_node.rotation.y = lerp_angle(
-			armature_node.rotation.y,
-			target_angle,
-			rotation_speed * delta
-		)
-		
-		
-	network_rotation_y = armature_node.rotation.y
+		else:
+			
+			camera_yaw = _spring_arm_pivot.global_rotation.y
+			
+			var flat_camera_forward: Vector3 = (
+				Vector3.FORWARD.rotated(
+					Vector3.UP,
+					camera_yaw
+				).normalized()
+			)
+
+			var local_camera_dir: Vector3 = (
+				global_transform.basis.inverse()
+				* flat_camera_forward
+			)
+
+			var target_camera_angle: float = (
+				Vector3.FORWARD.signed_angle_to(
+					local_camera_dir,
+					Vector3.UP
+				)
+			)
+
+			var strafe_angle: float = 0.0
+
+			if raw_input.x != 0.0:
+				strafe_angle = (
+					-raw_input.x
+					* deg_to_rad(strafe_rotation)
+				)
+
+			var target_angle: float = (
+				target_camera_angle
+				+ strafe_angle
+			)
+
+			armature_node.rotation.y = lerp_angle(
+				armature_node.rotation.y,
+				target_angle,
+				rotation_speed * delta
+			)
+
+		network_rotation_y = armature_node.global_rotation.y
 
 	# ============================================================
 	# DYNAMIC VECTOR-DRIVEN INTERACTION ZONE POSITIONING
 	# ============================================================
+
 	if is_multiplayer_authority():
-		# Reconstruct a flat forward vector relative to the armature's actual facing direction
-		var mesh_forward_dir = -armature_node.global_transform.basis.z
+		var mesh_forward_dir: Vector3 = -global_transform.basis.z
 		mesh_forward_dir.y = 0.0
-		mesh_forward_dir = mesh_forward_dir.normalized()
-		
-		var desired_zone_position = global_position + (mesh_forward_dir * 0.4) + Vector3(0, 1.0, 0)
-		$Armature/Skeleton3D/CartDetector.global_position = desired_zone_position
+
+		if mesh_forward_dir.length_squared() > 0.001:
+			mesh_forward_dir = mesh_forward_dir.normalized()
+
+			var cart_detector: Area3D = (
+				$Armature/Skeleton3D/CartDetector
+			)
+
+			var detector_transform: Transform3D = Transform3D.IDENTITY
+
+			detector_transform.origin = (
+				global_position
+				+ mesh_forward_dir * 0.4
+				+ Vector3(0.0, 1.0, 0.0)
+			)
+
+			detector_transform.basis = Basis.from_euler(
+				Vector3(0.0, global_rotation.y, 0.0)
+			)
+
+			cart_detector.global_transform = detector_transform
 
 
 	# ============================================================
@@ -801,12 +916,12 @@ func _update_network_position() -> void:
 	if _network_position_history.is_empty():
 		return
 
-	var interpolation_delay := NORMAL_INTERPOLATION_DELAY
+	var interpolation_delay: float = NORMAL_INTERPOLATION_DELAY
 
 	if network_on_moving_platform or network_is_pushing_cart:
 		interpolation_delay = PLATFORM_INTERPOLATION_DELAY
 
-	var render_time := (
+	var render_time: float = (
 		Time.get_ticks_usec() / 1000000.0
 		- interpolation_delay
 	)
@@ -836,11 +951,11 @@ func _update_network_position() -> void:
 		var older_time: float = older_snapshot["time"]
 		var newer_time: float = newer_snapshot["time"]
 
-		var duration := newer_time - older_time
+		var duration: float = newer_time - older_time
 
 		if duration > 0.0:
 
-			var weight := (
+			var weight: float = (
 				(render_time - older_time)
 				/ duration
 			)
@@ -863,24 +978,35 @@ func _update_network_position() -> void:
 				newer_position,
 				weight
 			)
-			
-			var older_rotation: float = older_snapshot["rotation_y"]
-			var newer_rotation: float = newer_snapshot["rotation_y"]
 
-			armature_node.rotation.y = lerp_angle(
+			var older_rotation: float = (
+				older_snapshot["rotation_y"]
+			)
+
+			var newer_rotation: float = (
+				newer_snapshot["rotation_y"]
+			)
+
+			var interpolated_rotation: float = lerp_angle(
 				older_rotation,
 				newer_rotation,
 				weight
 			)
 
-			return
+			# Use the perspective state of the newer snapshot.
+			var interpolated_first_person: bool = (
+				newer_snapshot["first_person"]
+			)
+
+			if interpolated_first_person:
+				rotation.y = interpolated_rotation
+				armature_node.rotation.y = 0.0
+			else:
+				armature_node.global_rotation.y = interpolated_rotation
+				rotation.y = 0.0
 
 	# ============================================================
 	# DEAD RECKONING
-	#
-	# If we don't have a pair of snapshots available, predict
-	# the remote player's position using its last received
-	# velocity.
 	# ============================================================
 
 	var latest_snapshot: Dictionary = (
@@ -897,17 +1023,23 @@ func _update_network_position() -> void:
 		latest_snapshot["velocity"]
 	)
 
-	var current_time := (
+	var latest_rotation: float = (
+		latest_snapshot["rotation_y"]
+	)
+
+	var latest_first_person: bool = (
+		latest_snapshot["first_person"]
+	)
+
+	var current_time: float = (
 		Time.get_ticks_usec() / 1000000.0
 	)
 
-	var elapsed : float = (
+	var elapsed: float = (
 		current_time
 		- latest_snapshot["time"]
 	)
 
-	# Don't allow prediction to run indefinitely if packets
-	# stop arriving.
 	elapsed = min(elapsed, 0.25)
 
 	global_position = (
@@ -915,6 +1047,12 @@ func _update_network_position() -> void:
 		+ latest_velocity * elapsed
 	)
 
+	if latest_first_person:
+		rotation.y = latest_rotation
+		armature_node.rotation.y = 0.0
+	else:
+		armature_node.global_rotation.y = latest_rotation
+		rotation.y = 0.0
 
 func update_idle_look(delta: float) -> void:
 	var grounded: bool = network_is_grounded
@@ -975,3 +1113,20 @@ func find_nearest_player() -> Node3D:
 		nearest_player = player
 
 	return nearest_player
+
+
+func get_camera_forward() -> Vector3:
+	var active_camera: Camera3D
+
+	if _first_person:
+		active_camera = _first_person_camera
+	else:
+		active_camera = _third_person_camera
+
+	var forward_dir: Vector3 = -active_camera.global_transform.basis.z
+	forward_dir.y = 0.0
+
+	if forward_dir.length_squared() > 0.001:
+		forward_dir = forward_dir.normalized()
+
+	return forward_dir
