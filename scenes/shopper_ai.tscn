@@ -217,9 +217,9 @@ forward_axis = 5
 ease_type = 2
 use_angle_limitation = true
 symmetry_limitation = true
-primary_limit_angle = 6.2831855
+primary_limit_angle = 1.2217305
 primary_damp_threshold = 1.0
-secondary_limit_angle = 6.2831855
+secondary_limit_angle = 1.2217305
 secondary_damp_threshold = 1.0
 
 [node name="SkeletonIK3D" type="SkeletonIK3D" parent="Armature/Skeleton3D" unique_id=830012214]

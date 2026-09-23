@@ -137,7 +137,9 @@ func _physics_process(delta: float) -> void:
 	
 	update_animation()
 	
-	move_and_slide()
+	# ONLY call move_and_slide here for non-moving states (like standing idle)
+	if state not in [State.MOVING, State.SHOPPING, State.EXITING]:
+		move_and_slide()
 	
 	rotation.y = lerp_angle(rotation.y, target_rotation, rotation_speed * delta)
 
@@ -383,18 +385,18 @@ func _on_navigation_agent_3d_target_reached() -> void:
 
 
 
-func _on_navigation_agent_3d_velocity_computed(
-	safe_velocity: Vector3
-) -> void:
-	if (
-		state == State.MOVING
-		or state == State.SHOPPING
-		or state == State.EXITING
-	) and is_on_floor():
-		velocity = velocity.move_toward(
-			safe_velocity,
-			0.55
-		)
+func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
+	if state == State.MOVING or state == State.SHOPPING or state == State.EXITING:
+		# 1. Blend ONLY the horizontal movements (X and Z)
+		velocity.x = move_toward(velocity.x, safe_velocity.x, 0.55)
+		velocity.z = move_toward(velocity.z, safe_velocity.z, 0.55)
+		
+		# 2. DO NOT modify velocity.y here. Leave it alone so the 
+		# gravity applied in _physics_process can do its job.
+		
+		# 3. Call move_and_slide immediately after receiving the safe trajectory
+		move_and_slide()
+
 		
 		
 # ---------------------------------------------------------
@@ -472,7 +474,7 @@ func blink(delta: float) -> void:
 
 
 func update_idle_look(delta: float) -> void:
-	var grounded: bool = network_is_grounded
+	#var grounded: bool = network_is_grounded
 
 	#if is_multiplayer_authority():
 		#grounded = is_on_floor()
