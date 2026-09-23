@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://btvobd76c7v05"]
+
+[ext_resource type="PackedScene" uid="uid://5ia6oupterf7" path="res://assets/models/NPC/npc_shopper_02.glb" id="1_qg3i6"]
+
+[node name="npc_shopper_022" unique_id=583822251 instance=ExtResource("1_qg3i6")]
