@@ -140,6 +140,7 @@ func _physics_process(delta: float) -> void:
 	# ONLY call move_and_slide here for non-moving states (like standing idle)
 	if state not in [State.MOVING, State.SHOPPING, State.EXITING]:
 		move_and_slide()
+
 	
 	rotation.y = lerp_angle(rotation.y, target_rotation, rotation_speed * delta)
 
