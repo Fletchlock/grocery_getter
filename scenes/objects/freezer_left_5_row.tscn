@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://cmmgsv7wgnpms"]
+
+[ext_resource type="PackedScene" uid="uid://4408hred1v6g" path="res://assets/models/shelves/Freezer_Left_5row.glb" id="1_mpjvy"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_umdtr"]
+size = Vector3(1.1532593, 3, 3)
+
+[node name="Freezer_Left_5row2" unique_id=2056952461 instance=ExtResource("1_mpjvy")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Freezer_Left_5row" parent_id_path=PackedInt32Array(1906815125) index="0" unique_id=125499396]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Freezer_Left_5row/StaticBody3D" index="0" unique_id=911486562]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.57662964, 1.5, -1.5)
+shape = SubResource("BoxShape3D_umdtr")
