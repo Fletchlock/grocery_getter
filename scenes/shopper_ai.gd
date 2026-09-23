@@ -35,6 +35,7 @@ var target_rotation: float = 0.0
 
 # Animations
 var current_animation: StringName = &""
+@onready var skeleton_ik_node: SkeletonIK3D = $Armature/Skeleton3D/SkeletonIK3D
 
 # Blink
 @export_group("Blink")
@@ -87,6 +88,10 @@ var last_position: Vector3 = Vector3.ZERO
 
 
 func _ready() -> void:
+	add_to_group("shopper_ai")
+	
+	skeleton_ik_node.start()
+	
 	blink_timer = randf_range(blink_min_time, blink_max_time)
 
 	collect_shopping_points()
@@ -469,17 +474,17 @@ func blink(delta: float) -> void:
 func update_idle_look(delta: float) -> void:
 	var grounded: bool = network_is_grounded
 
-	if is_multiplayer_authority():
-		grounded = is_on_floor()
-
-	if not grounded:
-		look_target = null
-		look_at_modifier.influence = move_toward(
-			look_at_modifier.influence,
-			0.0,
-			look_speed * delta
-		)
-		return
+	#if is_multiplayer_authority():
+		#grounded = is_on_floor()
+#
+	#if not grounded:
+		#look_target = null
+		#look_at_modifier.influence = move_toward(
+			#look_at_modifier.influence,
+			#0.0,
+			#look_speed * delta
+		#)
+		#return
 
 	look_target = find_nearest_player()
 

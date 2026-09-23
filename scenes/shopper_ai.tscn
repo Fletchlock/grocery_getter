@@ -2,17 +2,11 @@
 
 [ext_resource type="Script" uid="uid://dgcmed1mohop" path="res://scenes/shopper_ai.gd" id="1_h2sg7"]
 [ext_resource type="ArrayMesh" uid="uid://d0uyecyq5s0kf" path="res://assets/models/NPC/oldman_Cube_008.res" id="2_h2sg7"]
-[ext_resource type="Texture2D" uid="uid://b30a6j51ono40" path="res://assets/models/NPC/oldman_DesertMap_ImphenziaPalette01-256-Gradient.png" id="2_ovupx"]
 [ext_resource type="AnimationLibrary" uid="uid://bdlrg1t411fjv" path="res://assets/animations/low_poly_character_anims.tres" id="3_nqtw5"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kpjcp"]
 radius = 0.25439453
 height = 1.8647461
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6aigx"]
-albedo_texture = ExtResource("2_ovupx")
-roughness = 0.9
-emission_energy_multiplier = 0.0
 
 [sub_resource type="Skin" id="Skin_nqtw5"]
 resource_name = "Skin"
@@ -66,6 +60,8 @@ bind/15/name = &"foot.R"
 bind/15/bone = -1
 bind/15/pose = Transform3D(-0.9912653, -0.13188432, -0.0032896977, 0.05094052, -0.35967278, -0.9316881, 0.12169454, -0.9237112, 0.3632487, 0.18645559, 0.066212416, 0.066198505)
 
+[sub_resource type="BoxMesh" id="BoxMesh_6aigx"]
+
 [node name="Shopper AI" type="CharacterBody3D" unique_id=810827079]
 script = ExtResource("1_h2sg7")
 shopping_min_points = 2
@@ -78,10 +74,10 @@ look_speed = 1.5
 path_desired_distance = 0.25
 target_desired_distance = 0.5
 avoidance_enabled = true
-radius = 0.6
+radius = 0.3
 neighbor_distance = 5.0
-max_neighbors = 8
-time_horizon_agents = 4.0
+max_neighbors = 9
+time_horizon_agents = 1.5
 debug_path_custom_color = Color(1, 0, 0, 1)
 
 [node name="BodyCollision" type="CollisionShape3D" parent="." unique_id=1289089239]
@@ -208,8 +204,7 @@ bones/15/position = Vector3(2.7062924e-08, 0.30160186, 9.313226e-10)
 bones/15/rotation = Quaternion(-0.62336254, -0.06955586, 0.019578531, 0.77858704)
 bones/15/scale = Vector3(0.99999154, 0.9999992, 1.0000023)
 
-[node name="npc_shopper_01" type="MeshInstance3D" parent="Armature/Skeleton3D" unique_id=853166923]
-material_override = SubResource("StandardMaterial3D_6aigx")
+[node name="npc_shopper_01" type="MeshInstance3D" parent="Armature/Skeleton3D" unique_id=1345172709]
 mesh = ExtResource("2_h2sg7")
 skin = SubResource("Skin_nqtw5")
 skeleton = NodePath("..")
@@ -226,6 +221,30 @@ primary_limit_angle = 6.2831855
 primary_damp_threshold = 1.0
 secondary_limit_angle = 6.2831855
 secondary_damp_threshold = 1.0
+
+[node name="SkeletonIK3D" type="SkeletonIK3D" parent="Armature/Skeleton3D" unique_id=830012214]
+influence = 0.75
+root_bone = &"upperarm.R"
+tip_bone = &"hand.R"
+use_magnet = true
+magnet = Vector3(0.35617018, 1.0018256, 0.08915652)
+target_node = NodePath("../Marker3D")
+min_distance = 0.05
+
+[node name="Marker3D" type="Marker3D" parent="Armature/Skeleton3D" unique_id=1501555069]
+transform = Transform3D(-0.9999999, 8.742276e-08, -1.7484552e-07, -8.742276e-08, -0.9999999, 1.4210855e-14, -1.7484552e-07, 7.642741e-15, 1, 0.4353044, 0.6851411, -0.03681519)
+
+[node name="Marker3D2" type="Marker3D" parent="Armature/Skeleton3D" unique_id=1782585285]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 1, 0.35617018, 1.0018256, 0.08915652)
+
+[node name="BoneAttachment3D" type="BoneAttachment3D" parent="Armature/Skeleton3D" unique_id=2097321840]
+transform = Transform3D(-0.93742144, -0.28298038, -0.20288587, 0.24046338, -0.9475438, 0.2105653, -0.25182903, 0.14860164, 0.9562946, 0.30684894, 0.7586796, 0.3967788)
+bone_name = "hand.R"
+bone_idx = 9
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="Armature/Skeleton3D/BoneAttachment3D" unique_id=1820326291]
+transform = Transform3D(0.24999008, 0.00047921296, 0.0021677874, -0.00048392266, 0.24999881, 0.0005479567, -0.0021666475, -0.0005520284, 0.24999008, 0.0010524392, 0.27430782, -0.0013411939)
+mesh = SubResource("BoxMesh_6aigx")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=733871888]
 libraries/low_poly_character_anims = ExtResource("3_nqtw5")

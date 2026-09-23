@@ -8,16 +8,19 @@ var total_shoppers_shopped: int = 0
 var stats_update_timer: float = 0.0
 
 @export_group("Shopper Spawning")
-@export var shopper_scene: PackedScene
+@export var shopper_scenes: Array[PackedScene]
 @export var max_shoppers: int = 10
 @export var spawn_interval_min: float = 10.0
 @export var spawn_interval_max: float = 30.0
 @export var spawn_point: Marker3D
 
+var shopper_scene_pool: Array[PackedScene] = []
 var spawn_timer: float = 0.0
 
 
 func _ready() -> void:
+	shopper_scene_pool = shopper_scenes.duplicate()
+	shopper_scene_pool.shuffle()
 	set_next_spawn_timer()
 
 
@@ -45,23 +48,20 @@ func set_next_spawn_timer() -> void:
 
 
 func get_active_shopper_count() -> int:
-	var count: int = 0
-
-	for child: Node in get_parent().get_children():
-		if not is_instance_valid(child):
-			continue
-
-		if child.scene_file_path == shopper_scene.resource_path:
-			count += 1
-
-	return count
+	return get_tree().get_nodes_in_group("shopper_ai").size()
 
 
 func spawn_shopper() -> void:
-	if shopper_scene == null:
-		return
+	if shopper_scene_pool.is_empty():
+		shopper_scene_pool = shopper_scenes.duplicate()
+		shopper_scene_pool.shuffle()
 
 	if spawn_point == null:
+		return
+
+	var shopper_scene: PackedScene = shopper_scene_pool.pop_back()
+
+	if shopper_scene == null:
 		return
 
 	var shopper: Node3D = shopper_scene.instantiate() as Node3D
@@ -71,10 +71,10 @@ func spawn_shopper() -> void:
 
 	get_parent().add_child(shopper)
 	shopper.global_position = spawn_point.global_position
-	
+
 	if shopper.has_signal("finished_shopping"):
 		shopper.finished_shopping.connect(_on_shopper_finished_shopping)
-		
+
 	update_stats_label()
 
 
