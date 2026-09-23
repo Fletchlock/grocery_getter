@@ -364,9 +364,12 @@ properties/9/replication_mode = 1
 [sub_resource type="SphereShape3D" id="SphereShape3D_qgfk6"]
 radius = 0.5971316
 
-[node name="low_poly_character" type="CharacterBody3D" unique_id=51086098]
+[node name="low_poly_character_fp" type="CharacterBody3D" unique_id=51086098]
 process_mode = 1
 script = ExtResource("1_grrh2")
+look_distance = 4.0
+look_speed = 1.5
+look_angle = 70.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2138151857]
 libraries/ = SubResource("AnimationLibrary_s7efu")

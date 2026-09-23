@@ -5,5 +5,5 @@
 
 [node name="grocery_character_blue" unique_id=484503333 instance=ExtResource("1_6wfby")]
 
-[node name="character_blue" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(254319671) index="0" unique_id=73541167]
+[node name="character_blue" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(1696372964) index="0" unique_id=1385729576]
 mesh = ExtResource("2_n6rg8")
