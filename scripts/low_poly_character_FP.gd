@@ -4,6 +4,8 @@ extends CharacterBody3D
 
 @onready var _third_person_camera: Camera3D = $SpringArmPivot/SpringArm3D/Camera3D
 @onready var _first_person_camera: Camera3D = $FirstPersonCameraPivot/FirstPersonCamera
+@onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
+
 @onready var _spring_arm_pivot: Node3D = $SpringArmPivot
 @onready var _first_person_pivot: Node3D = $FirstPersonCameraPivot
 @export var network_first_person: bool = false
@@ -28,6 +30,8 @@ var _first_person: bool = true
 # === Hand IK References ===
 @onready var left_hand_ik: SkeletonIK3D = $Armature/Skeleton3D/LeftHandIK
 @onready var right_hand_ik: SkeletonIK3D = $Armature/Skeleton3D/RightHandIK
+@onready var cart_detector: Area3D = $CartDetector
+
 
 @export_group("Cart")
 @export var strafe_rotation := 35.0
@@ -35,6 +39,7 @@ var _first_person: bool = true
 var nearby_carts: Array[RigidBody3D] = []
 	# Track the cart we are currently pushing
 var attached_cart: RigidBody3D = null
+
 
 # === Configuration Properties ===
 
@@ -113,7 +118,7 @@ var _target_zoom := 4.0
 
 # === Player Scene Reference ===
 const PLAYER_SCENE = preload(
-	"res://scenes/low_poly_character.tscn"
+	"res://scenes/low_poly_character_FP.tscn"
 )
 
 
@@ -220,6 +225,21 @@ func _unhandled_input(event: InputEvent) -> void:
 		_camera_input_direction = (
 			event.screen_relative * mouse_sensitivity
 		)
+		# Mouse wheel zoom.
+	if event is InputEventMouseButton and event.pressed and not _first_person:
+
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			_target_zoom -= zoom_speed
+
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			_target_zoom += zoom_speed
+
+		_target_zoom = clamp(
+			_target_zoom,
+			min_zoom,
+			max_zoom
+		)
+	
 	# Accumulate relative mouse motion for camera rotation.
 	if (
 		event is InputEventMouseMotion
@@ -588,6 +608,31 @@ func _physics_process(delta: float) -> void:
 
 	_camera_input_direction = Vector2.ZERO
 
+	# Camera Zoom for TPP
+	
+		
+	if Input.is_action_pressed("zoom_in"):
+		_target_zoom -= (
+			gamepad_zoom_speed * delta
+		)
+
+	elif Input.is_action_pressed("zoom_out"):
+		_target_zoom += (
+			gamepad_zoom_speed * delta
+		)
+
+	_target_zoom = clamp(
+		_target_zoom,
+		min_zoom,
+		max_zoom
+	)
+
+	_spring_arm.spring_length = lerp(
+		_spring_arm.spring_length,
+		_target_zoom,
+		8.0 * delta
+	)
+
 
 	# === 2. Directional Movement ===
 
@@ -815,33 +860,32 @@ func _physics_process(delta: float) -> void:
 		network_rotation_y = armature_node.global_rotation.y
 
 	# ============================================================
-	# DYNAMIC VECTOR-DRIVEN INTERACTION ZONE POSITIONING
+	# CART DETECTOR POSITIONING
 	# ============================================================
 
 	if is_multiplayer_authority():
-		var mesh_forward_dir: Vector3 = -global_transform.basis.z
-		mesh_forward_dir.y = 0.0
+		var detector_forward: Vector3
 
-		if mesh_forward_dir.length_squared() > 0.001:
-			mesh_forward_dir = mesh_forward_dir.normalized()
+		if _first_person:
+			detector_forward = -global_transform.basis.z
+		else:
+			detector_forward = -armature_node.global_transform.basis.z
 
-			var cart_detector: Area3D = (
-				$Armature/Skeleton3D/CartDetector
-			)
+		detector_forward.y = 0.0
 
-			var detector_transform: Transform3D = Transform3D.IDENTITY
+		if detector_forward.length_squared() > 0.001:
+			detector_forward = detector_forward.normalized()
 
-			detector_transform.origin = (
+			cart_detector.global_position = (
 				global_position
-				+ mesh_forward_dir * 0.4
+				+ detector_forward * 0.4
 				+ Vector3(0.0, 1.0, 0.0)
 			)
 
-			detector_transform.basis = Basis.from_euler(
-				Vector3(0.0, global_rotation.y, 0.0)
+			cart_detector.global_rotation.y = atan2(
+				-detector_forward.x,
+				-detector_forward.z
 			)
-
-			cart_detector.global_transform = detector_transform
 
 
 	# ============================================================

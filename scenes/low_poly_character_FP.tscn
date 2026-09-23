@@ -12,8 +12,6 @@
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_s7efu"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_fs7re"]
-
 [sub_resource type="Skin" id="Skin_svcki"]
 resource_name = "Skin"
 bind_count = 16
@@ -361,6 +359,8 @@ properties/9/path = NodePath(".:network_rotation_y")
 properties/9/spawn = true
 properties/9/replication_mode = 1
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_fs7re"]
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_qgfk6"]
 radius = 0.5971316
 
@@ -488,15 +488,6 @@ bones/15/position = Vector3(2.7062924e-08, 0.30160186, 9.313226e-10)
 bones/15/rotation = Quaternion(-0.6644075, -0.048883215, 0.025692575, 0.7453274)
 bones/15/scale = Vector3(0.9999923, 0.99999905, 1.0000011)
 
-[node name="CartDetector" type="Area3D" parent="Armature/Skeleton3D" unique_id=1361617537]
-transform = Transform3D(1, 0, 0, 0, 1.0000006, 0, 0, 0, 1.0000006, 0, 1.0618837, -0.39485192)
-collision_layer = 0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Armature/Skeleton3D/CartDetector" unique_id=1065594774]
-transform = Transform3D(-2.6226834e-08, -0.6, 0, 0.6, -2.6226834e-08, 0, 0, 0, 0.6, 0, 0, 0)
-shape = SubResource("SphereShape3D_fs7re")
-debug_color = Color(0.8745098, 0.24313726, 0.62352943, 0.78431374)
-
 [node name="LeftHandIK" type="SkeletonIK3D" parent="Armature/Skeleton3D" unique_id=1486074684]
 root_bone = &"upperarm.L"
 tip_bone = &"hand.L"
@@ -575,6 +566,15 @@ public_visibility = false
 [node name="LookTarget" type="Marker3D" parent="." unique_id=531166582]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4461434, 0)
 
+[node name="CartDetector" type="Area3D" parent="." unique_id=1361617537]
+transform = Transform3D(1, 0, 0, 0, 1.0000006, 0, 0, 0, 1.0000006, 0, 1.0618837, -0.39485192)
+collision_layer = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CartDetector" unique_id=1065594774]
+transform = Transform3D(-2.6226834e-08, -0.6, 0, 0.6, -2.6226834e-08, 0, 0, 0, 0.6, 0, 0, 0)
+shape = SubResource("SphereShape3D_fs7re")
+debug_color = Color(0.8745098, 0.24313726, 0.62352943, 0.78431374)
+
 [node name="CartPusher" type="RigidBody3D" parent="." unique_id=136002147]
 collision_layer = 2
 collision_mask = 2
@@ -591,5 +591,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7496549, 0)
 
 [node name="FirstPersonCamera" type="Camera3D" parent="FirstPersonCameraPivot" unique_id=2139662967]
 
-[connection signal="area_entered" from="Armature/Skeleton3D/CartDetector" to="." method="_on_cart_detector_area_entered"]
-[connection signal="area_exited" from="Armature/Skeleton3D/CartDetector" to="." method="_on_cart_detector_area_exited"]
+[connection signal="area_entered" from="CartDetector" to="." method="_on_cart_detector_area_entered"]
+[connection signal="area_exited" from="CartDetector" to="." method="_on_cart_detector_area_exited"]
