@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://cfqg5tq2dtv1f"]
 
+[ext_resource type="PackedScene" uid="uid://cpg08k3yexwhb" path="res://scenes/low_poly_character_FP.tscn" id="1_68t3w"]
 [ext_resource type="PackedScene" uid="uid://dffkedylp1svl" path="res://scenes/objects/shelf_3_row.tscn" id="2_68t3w"]
 [ext_resource type="PackedScene" uid="uid://djp7hmfm0m00m" path="res://scenes/push_cart.tscn" id="2_naru6"]
 [ext_resource type="PackedScene" uid="uid://bsbnaru4ssia1" path="res://scenes/objects/shelf_2_row.tscn" id="3_avg8w"]
@@ -27,6 +28,9 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 1, 1
 
 [node name="PlayerSpawnPoint" type="Marker3D" parent="." unique_id=1284349089]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 3)
+
+[node name="low_poly_character" parent="." unique_id=51086098 instance=ExtResource("1_68t3w")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 3)
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=498656213]
 

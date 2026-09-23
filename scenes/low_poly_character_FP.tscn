@@ -9,6 +9,7 @@
 [ext_resource type="ArrayMesh" uid="uid://cimpdt7mqlwtp" path="res://assets/models/grocery_character_Cube_003.res" id="7_ighfm"]
 [ext_resource type="ArrayMesh" uid="uid://cgeag6vla5v1k" path="res://assets/models/grocery_character_Cube_004.res" id="8_0vsmf"]
 [ext_resource type="AnimationNodeStateMachine" uid="uid://k24dl8h4178k" path="res://character_state_machine.tres" id="9_1nal2"]
+[ext_resource type="Script" uid="uid://bu6nohragxh0l" path="res://scripts/utilities/interact_raycast_3d.gd" id="10_iwhk0"]
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_s7efu"]
 
@@ -599,6 +600,11 @@ debug_color = Color(0.27058825, 0.56078434, 0.94509804, 0.9529412)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7496549, 0)
 
 [node name="FirstPersonCamera" type="Camera3D" parent="FirstPersonCameraPivot" unique_id=2139662967]
+
+[node name="InteractRaycast3D" type="RayCast3D" parent="FirstPersonCameraPivot/FirstPersonCamera" unique_id=1492090311]
+target_position = Vector3(0, 0, -2)
+collision_mask = 256
+script = ExtResource("10_iwhk0")
 
 [connection signal="area_entered" from="CartDetector" to="." method="_on_cart_detector_area_entered"]
 [connection signal="area_exited" from="CartDetector" to="." method="_on_cart_detector_area_exited"]

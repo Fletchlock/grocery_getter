@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://bcy1rccktr4im" path="res://scenes/objects/shelf_4_row.tscn" id="6_nxwu1"]
 [ext_resource type="PackedScene" uid="uid://bf8g2pgb7xltd" path="res://scenes/shopper_ai.tscn" id="7_c4on7"]
 [ext_resource type="PackedScene" uid="uid://cpg08k3yexwhb" path="res://scenes/low_poly_character_FP.tscn" id="8_hp4pk"]
+[ext_resource type="PackedScene" uid="uid://bkdaxq00go0qw" path="res://scenes/items/cereal_box_01.tscn" id="11_nxwu1"]
 [ext_resource type="Script" uid="uid://sm3yxjc2mmn8" path="res://scenes/levels/shopper_spawner.gd" id="15_fg0y7"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_c4on7"]
@@ -44,37 +45,13 @@ navigation_mesh = SubResource("NavigationMesh_c4on7")
 [node name="low_poly_character" parent="NavigationRegion3D" unique_id=51086098 instance=ExtResource("8_hp4pk")]
 transform = Transform3D(0.7099662, 0, 0.7042358, 0, 1, 0, -0.7042358, 0, 0.7099662, 19.715162, -7.2242875, 1.653523)
 
-[node name="Skeleton3D" parent="NavigationRegion3D/low_poly_character/Armature" parent_id_path=PackedInt32Array(51086098, 1485995296) index="0" unique_id=972510031]
-bones/0/position = Vector3(0, 0.6747056, -0.015608443)
-bones/1/rotation = Quaternion(-0.01680959, -0.08052987, -0.013109306, 0.9965242)
-bones/2/rotation = Quaternion(-0.14156935, 4.5963756e-05, 1.0266943e-07, 0.9899284)
-bones/3/rotation = Quaternion(0.11028568, 0.079335414, 0.010468821, 0.9906733)
-bones/4/position = Vector3(-0.27453867, 0.43729407, -0.003575268)
-bones/4/rotation = Quaternion(0.03783369, -0.2770973, 0.95673037, 0.0803297)
-bones/5/rotation = Quaternion(-0.34371322, -0.02984806, 0.03176173, 0.9380627)
-bones/6/rotation = Quaternion(-0.1141778, -0.02764738, 0.17057051, 0.9783174)
-bones/7/position = Vector3(0.27453855, 0.437294, -0.0035752503)
-bones/7/rotation = Quaternion(0.019215286, 0.36610258, 0.9263286, -0.086689144)
-bones/8/rotation = Quaternion(-0.17984349, 0.005078171, -0.03206537, 0.98315936)
-bones/9/rotation = Quaternion(-0.0843495, 0.02946478, -0.17047979, 0.981302)
-bones/10/rotation = Quaternion(0.022065327, 0.20652951, 0.9738261, 0.09231099)
-bones/10/scale = Vector3(0.99998313, 0.99999976, 0.9999947)
-bones/11/rotation = Quaternion(0.3164562, 0.002479155, 0.064828515, 0.94638616)
-bones/12/rotation = Quaternion(-0.73504, 0.049341332, -0.026085282, 0.67572284)
-bones/12/scale = Vector3(0.9999919, 1.0000014, 0.99999934)
-bones/13/rotation = Quaternion(-0.039512653, -0.3146876, 0.946807, -0.054468688)
-bones/13/scale = Vector3(0.9999831, 1.0000005, 0.99999475)
-bones/14/rotation = Quaternion(0.20978214, -0.002558791, -0.042975537, 0.9767999)
-bones/15/rotation = Quaternion(-0.62336254, -0.06955586, 0.019578531, 0.77858704)
-bones/15/scale = Vector3(0.99999154, 0.9999992, 1.0000023)
-
-[node name="GroceryBlue" parent="NavigationRegion3D/low_poly_character/Armature/Skeleton3D" index="3" unique_id=1076076089]
+[node name="GroceryBlue" parent="NavigationRegion3D/low_poly_character/Armature/Skeleton3D" parent_id_path=PackedInt32Array(51086098, 972510031) index="3" unique_id=1076076089]
 visible = false
 
 [node name="Hat" parent="NavigationRegion3D/low_poly_character/Armature/Skeleton3D/GroceryBlue" index="0" unique_id=32792588]
 visible = false
 
-[node name="GroceryGreen" parent="NavigationRegion3D/low_poly_character/Armature/Skeleton3D" index="4" unique_id=493722702]
+[node name="GroceryGreen" parent="NavigationRegion3D/low_poly_character/Armature/Skeleton3D" parent_id_path=PackedInt32Array(51086098, 972510031) index="4" unique_id=493722702]
 visible = false
 
 [node name="Hat" parent="NavigationRegion3D/low_poly_character/Armature/Skeleton3D/GroceryGreen" index="0" unique_id=1870604616]
@@ -637,6 +614,33 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0009348, -4.2243776, -3.497
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=181195230]
 spawn_path = NodePath("../PlayerSpawnPoint")
+
+[node name="cereal_box_01" parent="." unique_id=306727428 instance=ExtResource("11_nxwu1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.667506, -5.9794865, 3.1066165)
+
+[node name="cereal_box_02" parent="." unique_id=1515087907 instance=ExtResource("11_nxwu1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.097601, -5.449212, 3.1066165)
+
+[node name="cereal_box_07" parent="." unique_id=1858861481 instance=ExtResource("11_nxwu1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.667506, -5.449212, -2.4631257)
+
+[node name="cereal_box_08" parent="." unique_id=299084514 instance=ExtResource("11_nxwu1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.097601, -4.9188824, -2.4631257)
+
+[node name="cereal_box_03" parent="." unique_id=668208280 instance=ExtResource("11_nxwu1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.762922, -5.9794865, 3.1066165)
+
+[node name="cereal_box_04" parent="." unique_id=398263830 instance=ExtResource("11_nxwu1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.193017, -5.449212, 3.1066165)
+
+[node name="cereal_box_05" parent="." unique_id=131622010 instance=ExtResource("11_nxwu1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.762922, -6.5098724, -2.6575732)
+
+[node name="cereal_box_06" parent="." unique_id=1555499757 instance=ExtResource("11_nxwu1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.193017, -5.979543, -2.6575732)
+
+[node name="cereal_box_09" parent="." unique_id=435157751 instance=ExtResource("11_nxwu1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.193017, -7.0502043, -2.224659)
 
 [editable path="NavigationRegion3D/low_poly_character"]
 [editable path="NavigationRegion3D/Shelves/Endcap_5row_col2"]
