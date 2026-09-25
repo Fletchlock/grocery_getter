@@ -1,7 +1,6 @@
 extends CharacterBody3D
 
 # === Node References ===
-
 @onready var _third_person_camera: Camera3D = $SpringArmPivot/SpringArm3D/Camera3D
 @onready var _first_person_camera: Camera3D = $FirstPersonCameraPivot/FirstPersonCamera
 @onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
@@ -259,7 +258,28 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _toggle_perspective() -> void:
-	_set_perspective(not _first_person)
+	var target_first_person: bool = not _first_person
+
+	var tween: Tween = create_tween()
+
+	tween.tween_property(
+		TransitionManager.fade_rect,
+		"modulate:a",
+		1.0,
+		0.03
+	)
+
+	tween.tween_callback(
+		func() -> void:
+			_set_perspective(target_first_person)
+	)
+
+	tween.tween_property(
+		TransitionManager.fade_rect,
+		"modulate:a",
+		0.0,
+		0.03
+	)
 
 
 func _set_perspective(first_person: bool) -> void:
@@ -586,7 +606,7 @@ func _physics_process(delta: float) -> void:
 		_first_person_pivot.rotation.x = clamp(
 			_first_person_pivot.rotation.x,
 			-PI / 2.75,
-			PI / 6.5
+			PI / 2.75
 		)
 
 	else:
@@ -598,7 +618,7 @@ func _physics_process(delta: float) -> void:
 		_spring_arm_pivot.rotation.x = clamp(
 			_spring_arm_pivot.rotation.x,
 			-PI / 2.75,
-			PI / 6.5
+			PI / 4.5
 		)
 
 		_spring_arm_pivot.rotation.y -= (

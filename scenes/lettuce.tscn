@@ -4,7 +4,11 @@
 rough = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hd853"]
-albedo_color = Color(0.16059324, 0.7614221, 0, 1)
+albedo_color = Color(0.52708465, 0.9999998, 0.55427736, 1)
+emission_enabled = true
+emission = Color(0.5256097, 1, 0.50855064, 1)
+emission_energy_multiplier = 8.09
+refraction_enabled = true
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_6aigx"]
 

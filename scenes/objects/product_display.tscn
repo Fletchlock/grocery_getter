@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://fxtb45r4l7h2"]
+
+[ext_resource type="Script" uid="uid://chugr7tbfv0o" path="res://scenes/objects/product_display.gd" id="1_l5wtk"]
+[ext_resource type="Script" uid="uid://6qovou7ip4wx" path="res://scenes/objects/area_3d.gd" id="2_5pxkw"]
+[ext_resource type="ArrayMesh" uid="uid://ggirlp6ikgrt" path="res://assets/models/items/cereal_box_01_Cube.res" id="2_5rgkc"]
+[ext_resource type="Material" uid="uid://d3iscxpv066o5" path="res://assets/materials/outline_standard_material_3d.tres" id="3_cpcfy"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cpcfy"]
+resource_local_to_scene = true
+size = Vector3(2, 0.35, 0.4)
+
+[node name="ProductDisplay" type="Node3D" unique_id=1658817678]
+script = ExtResource("1_l5wtk")
+cereal_mesh = ExtResource("2_5rgkc")
+outline_material = ExtResource("3_cpcfy")
+horizontal_spacing = 0.4
+vertical_spacing = 0.2
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1400837386]
+collision_layer = 256
+script = ExtResource("2_5pxkw")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=211993197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 0.175, 0.1)
+shape = SubResource("BoxShape3D_cpcfy")
+debug_color = Color(1, 0.64920014, 0.42880207, 0.9882353)
+
+[node name="MeshOutline" type="Node3D" parent="Area3D" unique_id=334576936]
+visible = false
+
+[node name="ProductMarker" type="Marker3D" parent="." unique_id=1793950634]
+
+[node name="ProductGrid" type="Node3D" parent="." unique_id=704526395]
