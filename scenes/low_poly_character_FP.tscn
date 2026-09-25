@@ -503,14 +503,12 @@ tip_bone = &"hand.R"
 magnet = Vector3(-0.2, -0.2, -0.2)
 
 [node name="GroceryRed" type="MeshInstance3D" parent="Armature/Skeleton3D" unique_id=1109459962]
-visible = false
 mesh = ExtResource("3_8nyid")
 skin = SubResource("Skin_svcki")
 skeleton = NodePath("..")
 blend_shapes/Blink = -0.05233
 
 [node name="Hat" type="MeshInstance3D" parent="Armature/Skeleton3D/GroceryRed" unique_id=262191846]
-visible = false
 mesh = ExtResource("4_ly00s")
 skin = SubResource("Skin_hkr7c")
 skeleton = NodePath("../..")
@@ -523,7 +521,6 @@ skeleton = NodePath("..")
 blend_shapes/Blink = -0.08721
 
 [node name="Hat" type="MeshInstance3D" parent="Armature/Skeleton3D/GroceryBlue" unique_id=32792588]
-visible = false
 mesh = ExtResource("6_yx820")
 skin = SubResource("Skin_fs7re")
 skeleton = NodePath("../..")
@@ -536,7 +533,6 @@ skeleton = NodePath("..")
 blend_shapes/Blink = 0.0
 
 [node name="Hat" type="MeshInstance3D" parent="Armature/Skeleton3D/GroceryGreen" unique_id=1870604616]
-visible = false
 mesh = ExtResource("8_0vsmf")
 skin = SubResource("Skin_qgfk6")
 skeleton = NodePath("../..")
