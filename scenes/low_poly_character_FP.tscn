@@ -503,34 +503,40 @@ tip_bone = &"hand.R"
 magnet = Vector3(-0.2, -0.2, -0.2)
 
 [node name="GroceryRed" type="MeshInstance3D" parent="Armature/Skeleton3D" unique_id=1109459962]
+visible = false
 mesh = ExtResource("3_8nyid")
 skin = SubResource("Skin_svcki")
 skeleton = NodePath("..")
 blend_shapes/Blink = -0.05233
 
 [node name="Hat" type="MeshInstance3D" parent="Armature/Skeleton3D/GroceryRed" unique_id=262191846]
+visible = false
 mesh = ExtResource("4_ly00s")
 skin = SubResource("Skin_hkr7c")
 skeleton = NodePath("../..")
 
 [node name="GroceryBlue" type="MeshInstance3D" parent="Armature/Skeleton3D" unique_id=1076076089]
+visible = false
 mesh = ExtResource("5_duuo7")
 skin = SubResource("Skin_t7lsf")
 skeleton = NodePath("..")
 blend_shapes/Blink = -0.08721
 
 [node name="Hat" type="MeshInstance3D" parent="Armature/Skeleton3D/GroceryBlue" unique_id=32792588]
+visible = false
 mesh = ExtResource("6_yx820")
 skin = SubResource("Skin_fs7re")
 skeleton = NodePath("../..")
 
 [node name="GroceryGreen" type="MeshInstance3D" parent="Armature/Skeleton3D" unique_id=493722702]
+visible = false
 mesh = ExtResource("7_ighfm")
 skin = SubResource("Skin_njhnf")
 skeleton = NodePath("..")
 blend_shapes/Blink = 0.0
 
 [node name="Hat" type="MeshInstance3D" parent="Armature/Skeleton3D/GroceryGreen" unique_id=1870604616]
+visible = false
 mesh = ExtResource("8_0vsmf")
 skin = SubResource("Skin_qgfk6")
 skeleton = NodePath("../..")
@@ -568,6 +574,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.723, 0)
 spring_length = 4.0
 
 [node name="Camera3D" type="Camera3D" parent="SpringArmPivot/SpringArm3D" unique_id=1210597275]
+fov = 85.0
 
 [node name="MultiplayerSyncronizer" type="MultiplayerSynchronizer" parent="." unique_id=238298103]
 replication_config = SubResource("SceneReplicationConfig_2jhue")
@@ -597,14 +604,31 @@ shape = SubResource("SphereShape3D_qgfk6")
 debug_color = Color(0.27058825, 0.56078434, 0.94509804, 0.9529412)
 
 [node name="FirstPersonCameraPivot" type="Node3D" parent="." unique_id=362545282]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7496549, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.708, 0)
 
 [node name="FirstPersonCamera" type="Camera3D" parent="FirstPersonCameraPivot" unique_id=2139662967]
+fov = 85.0
 
-[node name="InteractRaycast3D" type="RayCast3D" parent="FirstPersonCameraPivot/FirstPersonCamera" unique_id=1492090311]
-target_position = Vector3(0, 0, -2)
+[node name="InteractRaycast3D" type="RayCast3D" parent="FirstPersonCameraPivot/FirstPersonCamera" unique_id=1492090311 node_paths=PackedStringArray("interact_raycast_3d", "interaction_prompt")]
+target_position = Vector3(0, 0, -1.6)
 collision_mask = 256
+collide_with_areas = true
 script = ExtResource("10_iwhk0")
+interact_raycast_3d = NodePath(".")
+interaction_prompt = NodePath("../../../InteractionPrompt")
+
+[node name="InteractionPrompt" type="Node3D" parent="." unique_id=1287054937]
+top_level = true
+
+[node name="Label3D" type="Label3D" parent="InteractionPrompt" unique_id=415452445]
+pixel_size = 0.002
+billboard = 1
+double_sided = false
+no_depth_test = true
+fixed_size = true
+modulate = Color(0.90374327, 0.95579904, 0.9998694, 1)
+font_size = 20
+outline_size = 8
 
 [connection signal="area_entered" from="CartDetector" to="." method="_on_cart_detector_area_entered"]
 [connection signal="area_exited" from="CartDetector" to="." method="_on_cart_detector_area_exited"]

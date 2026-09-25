@@ -56,7 +56,6 @@ func update_cart_authority(peer_id: int, state: bool) -> void:
 		#linear_velocity = Vector3.ZERO
 		#angular_velocity = Vector3.ZERO
 
-
 func grab_cart(player_node: CharacterBody3D) -> void:
 	player_character = player_node
 
@@ -170,3 +169,7 @@ func _on_contents_area_body_exited(body: Node3D) -> void:
 		if not is_being_pushed:
 			cart_contents.erase(item)
 			content_transforms.erase(item)
+
+
+func get_interaction_prompt() -> String:
+	return "[E] Grab cart"

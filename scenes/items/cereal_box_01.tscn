@@ -1,10 +1,7 @@
 [gd_scene format=4 uid="uid://bkdaxq00go0qw"]
 
-[ext_resource type="ArrayMesh" uid="uid://dias1sqb5kgvd" path="res://assets/models/items/cereal_box_01_Cube.res" id="1_h7nve"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nxwu1"]
-shading_mode = 0
-albedo_color = Color(0.9262361, 0.7420267, 3.85046e-07, 1)
+[ext_resource type="ArrayMesh" uid="uid://ggirlp6ikgrt" path="res://assets/models/items/cereal_box_01_Cube.res" id="1_h7nve"]
+[ext_resource type="Material" uid="uid://d3iscxpv066o5" path="res://assets/materials/outline_standard_material_3d.tres" id="2_yomg6"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_h7nve"]
 _surfaces = [{
@@ -30,7 +27,7 @@ mesh = ExtResource("1_h7nve")
 
 [node name="MeshOutline" type="MeshInstance3D" parent="." unique_id=2089611839]
 visible = false
-material_override = SubResource("StandardMaterial3D_nxwu1")
+material_override = ExtResource("2_yomg6")
 mesh = SubResource("ArrayMesh_h7nve")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1467759319]

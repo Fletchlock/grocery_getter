@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://bnrp3fpda0ylt"]
+
+[ext_resource type="Script" uid="uid://b1cqqj3spt2hu" path="res://scripts/managers/transition_manager.gd" id="1_xls6s"]
+
+[node name="TransitionManager" type="Node" unique_id=2010595620]
+script = ExtResource("1_xls6s")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=349541382]
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=1181937643]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.09426274, 0.055801153, 0.020692285, 1)
