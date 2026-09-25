@@ -1,0 +1,150 @@
+[gd_scene format=3 uid="uid://54bswnjg63f6"]
+
+[ext_resource type="PackedScene" uid="uid://b8ht2iep3r8rg" path="res://assets/models/buildings/StoreSmallGreybox.glb" id="1_daxh7"]
+
+[node name="StoreSmallGreybox" unique_id=253599967 instance=ExtResource("1_daxh7")]
+
+[node name="CollisionShape3D" parent="store_small/StaticBody3D" parent_id_path=PackedInt32Array(1940020636) index="0" unique_id=2066140441]
+debug_color = Color(0.7058824, 0.4745098, 0.35686275, 0.8235294)
+
+[node name="store_small_windows" parent="." index="1" unique_id=1155699965]
+cast_shadow = 0
+
+[node name="MainLight" type="OmniLight3D" parent="." index="2" unique_id=1812318711]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.48678732, 3.6443648, 3)
+light_color = Color(0.7224496, 0.7349338, 0.71229774, 1)
+light_energy = 0.3
+light_indirect_energy = 0.2
+light_specular = 0.0
+light_bake_mode = 1
+shadow_enabled = true
+distance_fade_enabled = true
+distance_fade_begin = 80.0
+omni_range = 7.0
+omni_attenuation = -0.5
+
+[node name="MainLight2" type="OmniLight3D" parent="." index="3" unique_id=916032151]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.7203097, 3.6443648, 3)
+light_color = Color(0.7224496, 0.7349338, 0.71229774, 1)
+light_energy = 0.3
+light_indirect_energy = 0.2
+light_specular = 0.0
+light_bake_mode = 1
+shadow_enabled = true
+distance_fade_enabled = true
+distance_fade_begin = 80.0
+omni_range = 7.0
+omni_attenuation = -0.5
+
+[node name="MainLight3" type="OmniLight3D" parent="." index="4" unique_id=96631742]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5222554, 3.6443648, 3)
+light_color = Color(0.7224496, 0.7349338, 0.71229774, 1)
+light_energy = 0.3
+light_indirect_energy = 0.2
+light_specular = 0.0
+light_bake_mode = 1
+shadow_enabled = true
+distance_fade_enabled = true
+distance_fade_begin = 80.0
+omni_range = 7.0
+omni_attenuation = -0.5
+
+[node name="MainLight4" type="OmniLight3D" parent="." index="5" unique_id=1819866197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.48678732, 3.6443648, 6.690586)
+light_color = Color(0.7224496, 0.7349338, 0.71229774, 1)
+light_energy = 0.3
+light_indirect_energy = 0.2
+light_specular = 0.0
+light_bake_mode = 1
+shadow_enabled = true
+distance_fade_enabled = true
+distance_fade_begin = 80.0
+omni_range = 7.0
+omni_attenuation = -0.5
+
+[node name="MainLight5" type="OmniLight3D" parent="." index="6" unique_id=1864357828]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.7203097, 3.6443648, 6.690586)
+light_color = Color(0.7224496, 0.7349338, 0.71229774, 1)
+light_energy = 0.3
+light_indirect_energy = 0.2
+light_specular = 0.0
+light_bake_mode = 1
+shadow_enabled = true
+distance_fade_enabled = true
+distance_fade_begin = 80.0
+omni_range = 7.0
+omni_attenuation = -0.5
+
+[node name="MainLight6" type="OmniLight3D" parent="." index="7" unique_id=1580914037]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5222554, 3.6443648, 6.690586)
+light_color = Color(0.7224496, 0.7349338, 0.71229774, 1)
+light_energy = 0.3
+light_indirect_energy = 0.2
+light_specular = 0.0
+light_bake_mode = 1
+shadow_enabled = true
+distance_fade_enabled = true
+distance_fade_begin = 80.0
+omni_range = 7.0
+omni_attenuation = -0.5
+
+[node name="MainLight7" type="OmniLight3D" parent="." index="8" unique_id=1231384081]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.48678732, 3.6443648, -0.34911776)
+light_color = Color(0.7224496, 0.7349338, 0.71229774, 1)
+light_energy = 0.3
+light_indirect_energy = 0.2
+light_specular = 0.0
+light_bake_mode = 1
+shadow_enabled = true
+distance_fade_enabled = true
+distance_fade_begin = 80.0
+omni_range = 7.0
+omni_attenuation = -0.5
+
+[node name="MainLight8" type="OmniLight3D" parent="." index="9" unique_id=215316163]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.7203097, 3.6443648, -0.34911776)
+light_color = Color(0.7224496, 0.7349338, 0.71229774, 1)
+light_energy = 0.3
+light_indirect_energy = 0.2
+light_specular = 0.0
+light_bake_mode = 1
+shadow_enabled = true
+distance_fade_enabled = true
+distance_fade_begin = 80.0
+omni_range = 7.0
+omni_attenuation = -0.5
+
+[node name="MainLight9" type="OmniLight3D" parent="." index="10" unique_id=947133882]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5222554, 3.6443648, -0.34911776)
+light_color = Color(0.7224496, 0.7349338, 0.71229774, 1)
+light_energy = 0.3
+light_indirect_energy = 0.2
+light_specular = 0.0
+light_bake_mode = 1
+shadow_enabled = true
+distance_fade_enabled = true
+distance_fade_begin = 80.0
+omni_range = 7.0
+omni_attenuation = -0.5
+
+[node name="StockLight" type="OmniLight3D" parent="." index="11" unique_id=399607954]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.1752164, 3.5897896, -7.557758)
+light_color = Color(0.6854007, 0.7380936, 0.79241747, 1)
+light_energy = 0.3
+light_indirect_energy = 0.5
+light_bake_mode = 1
+shadow_enabled = true
+distance_fade_enabled = true
+omni_range = 8.0
+omni_attenuation = -0.8
+
+[node name="StockLight2" type="OmniLight3D" parent="." index="12" unique_id=494626809]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.9672637, 3.5897896, -7.557758)
+light_color = Color(0.6854007, 0.7380936, 0.79241747, 1)
+light_energy = 0.3
+light_indirect_energy = 0.5
+light_bake_mode = 1
+shadow_enabled = true
+distance_fade_enabled = true
+omni_range = 8.0
+omni_attenuation = -0.8
