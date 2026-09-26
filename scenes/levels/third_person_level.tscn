@@ -16,9 +16,9 @@
 [ext_resource type="PackedScene" uid="uid://54bswnjg63f6" path="res://scenes/objects/buildings/store_small_greybox.tscn" id="15_tcjw2"]
 [ext_resource type="ArrayMesh" uid="uid://ggirlp6ikgrt" path="res://assets/models/items/cereal_box_01_Cube.res" id="16_fumkw"]
 [ext_resource type="PackedScene" uid="uid://fxtb45r4l7h2" path="res://scenes/objects/product_display.tscn" id="16_om5ry"]
-[ext_resource type="ArrayMesh" uid="uid://t67n6ca3iryg" path="res://assets/models/items/can_beans_Cylinder_001.res" id="17_7stf3"]
+[ext_resource type="ArrayMesh" uid="uid://bj5xg7e7y6mc0" path="res://assets/models/items/can_beans_Cylinder_001.res" id="17_7stf3"]
 [ext_resource type="ArrayMesh" uid="uid://bdrwh3d8gdch4" path="res://assets/models/items/can_peas_Cylinder.res" id="17_8ngln"]
-[ext_resource type="ArrayMesh" uid="uid://cjih2ehfqe08u" path="res://assets/models/items/can_corn_Cylinder_002.res" id="19_7467c"]
+[ext_resource type="ArrayMesh" uid="uid://wi1liuxq3x6r" path="res://assets/models/items/can_corn_Cylinder_002.res" id="19_7467c"]
 [ext_resource type="ArrayMesh" uid="uid://cv52d2moqt0d8" path="res://assets/models/items/bread_loaf_Cube_008.res" id="20_52hqa"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ta2qt"]
@@ -86,6 +86,14 @@ size = Vector3(1.0971164, 0.37739533, 0.94000006)
 [sub_resource type="BoxShape3D" id="BoxShape3D_ho602"]
 resource_local_to_scene = true
 size = Vector3(1.0971164, 0.37739533, 0.94000006)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_chvo6"]
+resource_local_to_scene = true
+size = Vector3(0.67819774, 0.2515969, 0.94000006)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gc6kj"]
+resource_local_to_scene = true
+size = Vector3(0.67819774, 0.2515969, 0.94000006)
 
 [node name="ThirdPersonLevel" type="Node3D" unique_id=1122241509]
 script = ExtResource("1_c3yyn")
@@ -407,6 +415,40 @@ quantity = 72
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.48873842, 0.18869767, 0.32000002)
 shape = SubResource("BoxShape3D_ho602")
 
+[node name="ProductDisplay7" parent="Products" unique_id=1770544344 instance=ExtResource("16_om5ry")]
+transform = Transform3D(-4.371139e-08, -0.11667073, -0.9931706, 0, 0.9931706, -0.11667073, 1, -5.099839e-09, -4.3412864e-08, 6.1905403, 0.27774855, -7.8420005)
+product_mesh = ExtResource("20_52hqa")
+grid_rows = 3
+stack_height = 2
+position_variation = 0.02
+rotation_variation = 1.0
+variation_seed = 25
+max_quantity = 30
+quantity = 30
+
+[node name="Area3D" parent="Products/ProductDisplay7" index="0" unique_id=1400837386 groups=["interactable_items"]]
+
+[node name="CollisionShape3D" parent="Products/ProductDisplay7/Area3D" index="0" unique_id=211993197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.27927908, 0.12579845, 0.32000002)
+shape = SubResource("BoxShape3D_chvo6")
+
+[node name="ProductDisplay8" parent="Products" unique_id=1166194454 instance=ExtResource("16_om5ry")]
+transform = Transform3D(-4.371139e-08, -0.11667073, -0.9931706, 0, 0.9931706, -0.11667073, 1, -5.099839e-09, -4.3412864e-08, 6.1905403, 0.27774855, -6.8420005)
+product_mesh = ExtResource("20_52hqa")
+grid_rows = 3
+stack_height = 2
+position_variation = 0.02
+rotation_variation = 1.0
+variation_seed = 914
+max_quantity = 30
+quantity = 30
+
+[node name="Area3D" parent="Products/ProductDisplay8" index="0" unique_id=1400837386 groups=["interactable_items"]]
+
+[node name="CollisionShape3D" parent="Products/ProductDisplay8/Area3D" index="0" unique_id=211993197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.27927908, 0.12579845, 0.32000002)
+shape = SubResource("BoxShape3D_gc6kj")
+
 [editable path="Products/ProductDisplay"]
 [editable path="Products/ProductDisplay2"]
 [editable path="Products/ProductDisplay3"]
@@ -419,3 +461,5 @@ shape = SubResource("BoxShape3D_ho602")
 [editable path="Products/ProductDisplay14"]
 [editable path="Products/ProductDisplay15"]
 [editable path="Products/ProductDisplay16"]
+[editable path="Products/ProductDisplay7"]
+[editable path="Products/ProductDisplay8"]
