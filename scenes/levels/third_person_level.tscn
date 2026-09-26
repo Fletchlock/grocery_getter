@@ -39,21 +39,37 @@ fog_sky_affect = 0.16
 fog_height = -436.59
 fog_height_density = 3.5969
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_8sngb"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_fumkw"]
 resource_local_to_scene = true
 size = Vector3(1.64, 0.34, 0.56)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7stf3"]
+resource_local_to_scene = true
+size = Vector3(1.64, 0.34, 0.56)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7467c"]
+resource_local_to_scene = true
+size = Vector3(1.64, 0.34, 0.56)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_52hqa"]
+resource_local_to_scene = true
+size = Vector3(1.64, 0.34, 0.56)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8sngb"]
+resource_local_to_scene = true
+size = Vector3(0.91999996, 0.22999999, 0.56)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_y7eyy"]
 resource_local_to_scene = true
-size = Vector3(1.64, 0.34, 0.56)
+size = Vector3(0.91999996, 0.22999999, 0.56)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_m5ay7"]
 resource_local_to_scene = true
-size = Vector3(1.64, 0.34, 0.56)
+size = Vector3(0.91999996, 0.22999999, 0.56)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ghqei"]
 resource_local_to_scene = true
-size = Vector3(1.64, 0.34, 0.56)
+size = Vector3(0.91999996, 0.22999999, 0.56)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0mvpo"]
 resource_local_to_scene = true
@@ -65,25 +81,9 @@ size = Vector3(0.91999996, 0.22999999, 0.56)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_17biw"]
 resource_local_to_scene = true
-size = Vector3(0.91999996, 0.22999999, 0.56)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_ho602"]
-resource_local_to_scene = true
-size = Vector3(0.91999996, 0.22999999, 0.56)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_chvo6"]
-resource_local_to_scene = true
-size = Vector3(0.91999996, 0.22999999, 0.56)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_gc6kj"]
-resource_local_to_scene = true
-size = Vector3(0.91999996, 0.22999999, 0.56)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_bl6aj"]
-resource_local_to_scene = true
 size = Vector3(1.0971164, 0.37739533, 0.94000006)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_phxxo"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_ho602"]
 resource_local_to_scene = true
 size = Vector3(1.0971164, 0.37739533, 0.94000006)
 
@@ -210,7 +210,7 @@ quantity = 30
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.17, 0.24)
-shape = SubResource("BoxShape3D_8sngb")
+shape = SubResource("BoxShape3D_fumkw")
 
 [node name="ProductDisplay2" parent="Products" unique_id=1460089423 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3.1775432, 0.46228826, -10.14489)
@@ -227,7 +227,7 @@ quantity = 30
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay2/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.17, 0.24)
-shape = SubResource("BoxShape3D_y7eyy")
+shape = SubResource("BoxShape3D_7stf3")
 
 [node name="ProductDisplay3" parent="Products" unique_id=139774996 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3.1580412, -0.06804156, -10.14489)
@@ -244,7 +244,7 @@ quantity = 30
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay3/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.17, 0.24)
-shape = SubResource("BoxShape3D_m5ay7")
+shape = SubResource("BoxShape3D_7467c")
 
 [node name="ProductDisplay4" parent="Products" unique_id=836629912 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3.1857767, -0.5983732, -10.14489)
@@ -261,7 +261,7 @@ quantity = 30
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay4/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.17, 0.24)
-shape = SubResource("BoxShape3D_ghqei")
+shape = SubResource("BoxShape3D_52hqa")
 
 [node name="ProductDisplay5" parent="Products" unique_id=1816287026 instance=ExtResource("16_om5ry")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5133185, 0.18944222, -9.077063)
@@ -271,7 +271,6 @@ grid_rows = 5
 stack_height = 2
 product_gap = 0.04
 position_variation = 0.005
-rotation_variation = null
 variation_seed = 19
 max_quantity = 80
 quantity = 80
@@ -280,7 +279,7 @@ quantity = 80
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay5/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.114999995, 0.24)
-shape = SubResource("BoxShape3D_0mvpo")
+shape = SubResource("BoxShape3D_8sngb")
 
 [node name="ProductDisplay6" parent="Products" unique_id=1319288920 instance=ExtResource("16_om5ry")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9472823, 0.18944222, -9.058977)
@@ -290,7 +289,6 @@ grid_rows = 5
 stack_height = 2
 product_gap = 0.04
 position_variation = 0.005
-rotation_variation = null
 variation_seed = 21
 max_quantity = 80
 quantity = 80
@@ -299,7 +297,7 @@ quantity = 80
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay6/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.114999995, 0.24)
-shape = SubResource("BoxShape3D_xwqgo")
+shape = SubResource("BoxShape3D_y7eyy")
 
 [node name="ProductDisplay11" parent="Products" unique_id=1063496991 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.012470305, 0.6371406, -9.8058815)
@@ -309,7 +307,6 @@ grid_rows = 5
 stack_height = 2
 product_gap = 0.04
 position_variation = 0.005
-rotation_variation = null
 variation_seed = 12
 max_quantity = 80
 quantity = 80
@@ -318,7 +315,7 @@ quantity = 80
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay11/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.114999995, 0.24)
-shape = SubResource("BoxShape3D_17biw")
+shape = SubResource("BoxShape3D_m5ay7")
 
 [node name="ProductDisplay12" parent="Products" unique_id=1674876912 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -1.3854735, 0.6371406, -9.817659)
@@ -328,7 +325,6 @@ grid_rows = 5
 stack_height = 2
 product_gap = 0.04
 position_variation = 0.005
-rotation_variation = null
 variation_seed = 13
 max_quantity = 80
 quantity = 80
@@ -337,7 +333,7 @@ quantity = 80
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay12/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.114999995, 0.24)
-shape = SubResource("BoxShape3D_ho602")
+shape = SubResource("BoxShape3D_ghqei")
 
 [node name="ProductDisplay13" parent="Products" unique_id=1946042866 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.012470305, -0.24674426, -9.847002)
@@ -347,7 +343,6 @@ grid_rows = 5
 stack_height = 2
 product_gap = 0.04
 position_variation = 0.005
-rotation_variation = null
 variation_seed = 11
 max_quantity = 80
 quantity = 80
@@ -356,7 +351,7 @@ quantity = 80
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay13/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.114999995, 0.24)
-shape = SubResource("BoxShape3D_chvo6")
+shape = SubResource("BoxShape3D_0mvpo")
 
 [node name="ProductDisplay14" parent="Products" unique_id=1155269802 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -1.3854735, -0.24674426, -9.845791)
@@ -366,7 +361,6 @@ grid_rows = 5
 stack_height = 2
 product_gap = 0.04
 position_variation = 0.005
-rotation_variation = null
 variation_seed = 15
 max_quantity = 80
 quantity = 80
@@ -375,7 +369,7 @@ quantity = 80
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay14/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.114999995, 0.24)
-shape = SubResource("BoxShape3D_gc6kj")
+shape = SubResource("BoxShape3D_xwqgo")
 
 [node name="ProductDisplay15" parent="Products" unique_id=182046786 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.012470305, -1.1406283, -9.668781)
@@ -393,7 +387,7 @@ quantity = 72
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay15/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.48873842, 0.18869767, 0.32000002)
-shape = SubResource("BoxShape3D_bl6aj")
+shape = SubResource("BoxShape3D_17biw")
 
 [node name="ProductDisplay16" parent="Products" unique_id=1836202487 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -1.5346358, -1.1406283, -9.668781)
@@ -411,7 +405,7 @@ quantity = 72
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay16/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.48873842, 0.18869767, 0.32000002)
-shape = SubResource("BoxShape3D_phxxo")
+shape = SubResource("BoxShape3D_ho602")
 
 [editable path="Products/ProductDisplay"]
 [editable path="Products/ProductDisplay2"]
