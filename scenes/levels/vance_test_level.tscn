@@ -18,10 +18,12 @@
 [ext_resource type="Script" uid="uid://bojdkseg653j6" path="res://scripts/push_cart.gd" id="15_rh46u"]
 [ext_resource type="Script" uid="uid://chugr7tbfv0o" path="res://scenes/objects/product_display.gd" id="15_t3y0y"]
 [ext_resource type="Material" uid="uid://gcl0wh5fpeug" path="res://assets/materials/glow_test.tres" id="17_dr1eh"]
+[ext_resource type="ArrayMesh" uid="uid://cv52d2moqt0d8" path="res://assets/models/items/bread_loaf_Cube_008.res" id="17_rh46u"]
 [ext_resource type="ArrayMesh" uid="uid://ggirlp6ikgrt" path="res://assets/models/items/cereal_box_01_Cube.res" id="17_t3y0y"]
 [ext_resource type="Script" uid="uid://6qovou7ip4wx" path="res://scenes/objects/area_3d.gd" id="18_nc3ox"]
 [ext_resource type="Material" uid="uid://d3iscxpv066o5" path="res://assets/materials/outline_standard_material_3d.tres" id="18_rh46u"]
 [ext_resource type="ArrayMesh" uid="uid://bdrwh3d8gdch4" path="res://assets/models/items/can_peas_Cylinder.res" id="21_55wky"]
+[ext_resource type="ArrayMesh" uid="uid://cjih2ehfqe08u" path="res://assets/models/items/can_corn_Cylinder_002.res" id="23_55wky"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_c4on7"]
 vertices = PackedVector3Array(-25.807892, -7.043732, -28.552132, -25.807892, -7.043732, -29.302132, -26.557892, -7.043732, -29.552132, -27.307892, -7.043732, -28.552132, -26.557892, -7.043732, -32.55213, -31.057892, -7.043732, -34.80213, -31.057892, -7.043732, -28.052132, -24.307892, -7.043732, -32.80213, -24.307892, -7.043732, -34.80213, -27.557892, -7.043732, -28.052132, 23.442108, -7.043732, -32.80213, 23.442108, -7.043732, -34.80213, 25.692108, -7.043732, -29.552132, 24.942108, -7.043732, -29.302132, 24.942108, -7.043732, -28.552132, 27.442108, -7.043732, -28.552132, 29.942108, -7.043732, -27.052132, 29.942108, -7.043732, -34.80213, 25.692108, -7.043732, -32.55213, 27.692108, -7.043732, -26.552132, -25.557892, -4.0437317, -31.802132, -25.557892, -4.0437317, -31.302132, 24.692108, -4.0437317, -31.302132, 24.692108, -4.0437317, -31.802132, -25.307892, -7.043732, -28.302132, -13.057892, -7.043732, -29.302132, -17.307892, -7.043732, -15.302132, -17.307892, -7.043732, -10.052132, -14.557892, -7.043732, -9.802132, -14.557892, -7.043732, -22.302132, -25.307892, -7.043732, -9.802132, -22.557892, -7.043732, -10.052132, -22.307892, -7.043732, -15.552132, -13.057892, -7.043732, -22.552132, -11.307892, -7.043732, -22.302132, -11.307892, -7.043732, -20.552132, -7.557892, -7.043732, -20.552132, -7.557892, -7.043732, -22.302132, -5.807892, -7.043732, -22.552132, -5.807892, -7.043732, -29.302132, -4.307892, -7.043732, -22.302132, -4.307892, -7.043732, -20.552132, -0.55789185, -7.043732, -20.552132, -0.55789185, -7.043732, -22.302132, 1.1921082, -7.043732, -22.552132, 1.1921082, -7.043732, -29.302132, 2.6921082, -7.043732, -22.302132, 2.6921082, -7.043732, -20.552132, 6.442108, -7.043732, -20.552132, 6.442108, -7.043732, -22.302132, 8.192108, -7.043732, -22.552132, 8.192108, -7.043732, -29.302132, 9.692108, -7.043732, -22.302132, 9.692108, -7.043732, -20.552132, 13.442108, -7.043732, -20.552132, 13.442108, -7.043732, -22.302132, 15.192108, -7.043732, -22.552132, 15.192108, -7.043732, -29.302132, 24.192108, -7.043732, -28.302132, 16.692108, -7.043732, -22.302132, 16.692108, -7.043732, -20.302132, 24.192108, -7.043732, -20.302132, -26.307892, -7.043732, 26.197868, -26.307892, -7.043732, 23.697868, -27.557892, -7.043732, 23.447868, -31.057892, -7.043732, 26.197868, 25.192108, -4.0437317, -27.552132, 25.692108, -4.0437317, 22.697868, 25.692108, -4.0437317, -27.552132, 27.692108, -7.043732, 23.447868, 25.942108, -7.043732, 23.697868, 25.942108, -7.043732, 26.197868, 29.942108, -7.043732, 26.197868, -11.307892, -7.043732, -3.3021317, -7.557892, -7.043732, -3.3021317, -4.307892, -7.043732, -3.3021317, -0.55789185, -7.043732, -3.3021317, 2.6921082, -7.043732, -3.3021317, 6.442108, -7.043732, -3.3021317, 9.692108, -7.043732, -3.3021317, 13.442108, -7.043732, -3.3021317, 20.692108, -7.043732, 0.44786835, 20.942108, -7.043732, 1.1978683, 24.192108, -7.043732, 1.1978683, 16.692108, -7.043732, -1.8021317, 19.442108, -7.043732, 0.69786835, -21.307892, -6.543732, -14.302132, -21.307892, -6.543732, -13.552132, -20.807892, -6.543732, -13.552132, -20.807892, -6.543732, -14.302132, -19.057892, -6.543732, -14.302132, -19.057892, -6.543732, -13.552132, -18.557892, -6.543732, -13.552132, -18.557892, -6.543732, -14.302132, -21.307892, -6.543732, -12.302132, -21.307892, -6.543732, -11.552132, -20.807892, -6.543732, -11.552132, -20.807892, -6.543732, -12.302132, -19.057892, -6.543732, -12.302132, -19.057892, -6.543732, -11.552132, -18.557892, -6.543732, -11.552132, -18.557892, -6.543732, -12.302132, -21.307892, -6.543732, -10.302132, -21.307892, -6.543732, -9.552132, -20.807892, -6.543732, -9.552132, -20.807892, -6.543732, -10.302132, -19.057892, -6.543732, -10.302132, -19.057892, -6.543732, -9.552132, -18.557892, -6.543732, -9.552132, -18.557892, -6.543732, -10.302132, -25.307892, -7.043732, 10.947868, -22.557892, -7.043732, 11.197868, -22.307892, -7.043732, 9.447868, -17.557892, -7.043732, 9.447868, -17.307892, -7.043732, 11.197868, -14.557892, -7.043732, 10.947868, -14.557892, -7.043732, 2.6978683, -17.557892, -7.043732, -8.302132, -14.557892, -7.043732, -1.5521317, -22.307892, -7.043732, -8.302132, -13.057892, -7.043732, 2.4478683, -13.057892, -7.043732, -1.3021317, -7.557892, -7.043732, -1.5521317, -11.307892, -7.043732, -1.5521317, -7.557892, -7.043732, 2.6978683, -5.807892, -7.043732, 2.4478683, -5.807892, -7.043732, -1.3021317, -11.307892, -7.043732, 2.6978683, -0.55789185, -7.043732, -1.5521317, -4.307892, -7.043732, -1.5521317, -0.55789185, -7.043732, 2.6978683, 1.1921082, -7.043732, 2.4478683, 1.1921082, -7.043732, -1.3021317, -4.307892, -7.043732, 2.6978683, 6.442108, -7.043732, -1.5521317, 2.6921082, -7.043732, -1.5521317, 6.442108, -7.043732, 2.6978683, 8.192108, -7.043732, 2.4478683, 8.192108, -7.043732, -1.3021317, 2.6921082, -7.043732, 2.6978683, 16.692108, -7.043732, 2.9478683, 18.692108, -7.043732, 2.6978683, 18.442108, -7.043732, 1.6978683, 16.442108, -7.043732, 2.4478683, 9.692108, -7.043732, -1.5521317, 13.692108, -7.043732, -1.3021317, 16.442108, -7.043732, -1.3021317, 13.442108, -7.043732, 2.6978683, 9.692108, -7.043732, 2.6978683, 16.692108, -7.043732, 23.447868, 15.192108, -7.043732, 23.697868, 15.192108, -7.043732, 26.197868, 24.192108, -7.043732, 23.447868, 19.942108, -7.043732, 2.6978683, -13.057892, -7.043732, 26.197868, -5.807892, -7.043732, 26.197868, -5.807892, -7.043732, 23.697868, -7.557892, -7.043732, 23.447868, -11.307892, -7.043732, 23.447868, -13.057892, -7.043732, 23.697868, -4.307892, -7.043732, 23.447868, 1.1921082, -7.043732, 26.197868, 1.1921082, -7.043732, 23.697868, -0.55789185, -7.043732, 23.447868, 2.6921082, -7.043732, 23.447868, 8.192108, -7.043732, 26.197868, 8.192108, -7.043732, 23.697868, 6.442108, -7.043732, 23.447868, 9.692108, -7.043732, 23.447868, 13.442108, -7.043732, 23.447868, -21.307892, -6.4437323, 10.697868, -21.307892, -6.4437323, 11.447868, -20.807892, -6.4437323, 11.447868, -20.807892, -6.4437323, 10.697868, -19.057892, -6.4437323, 10.697868, -19.057892, -6.4437323, 11.447868, -18.557892, -6.4437323, 11.447868, -18.557892, -6.4437323, 10.697868, -25.307892, -7.043732, 23.447868, -14.557892, -7.043732, 23.447868, -17.307892, -7.043732, 16.447868, -22.307892, -7.043732, 16.697868, -21.307892, -6.4437323, 12.697868, -21.307892, -6.4437323, 13.447868, -20.807892, -6.4437323, 13.447868, -20.807892, -6.4437323, 12.697868, -19.057892, -6.4437323, 12.697868, -19.057892, -6.4437323, 13.447868, -18.557892, -6.4437323, 13.447868, -18.557892, -6.4437323, 12.697868, -21.307892, -6.4437323, 14.697868, -21.307892, -6.4437323, 15.447868, -20.807892, -6.4437323, 15.447868, -20.807892, -6.4437323, 14.697868, -19.057892, -6.4437323, 14.697868, -19.057892, -6.4437323, 15.447868, -18.557892, -6.4437323, 15.447868, -18.557892, -6.4437323, 14.697868)
@@ -201,18 +203,26 @@ size = Vector3(1.2148438, 1.0324249, 2.2912865)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_t3y0y"]
 resource_local_to_scene = true
-size = Vector3(1.75, 0.35, 0.6)
+size = Vector3(1.5899999, 0.34, 0.63)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_55wky"]
+resource_local_to_scene = true
+size = Vector3(0.58, 0.22999999, 0.48)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rh46u"]
 resource_local_to_scene = true
-size = Vector3(0.9, 0.35, 0.75)
+size = Vector3(1.6556746, 0.2515969, 0.94000006)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nc3ox"]
+resource_local_to_scene = true
+size = Vector3(0.68, 0.22999999, 0.58)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_hd853"]
 
 [node name="vance_test_level" type="Node3D" unique_id=677027071]
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=193006931]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06434679, 0, 0.0014028549)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06446314, 0.0033230782, 0.00094795227)
 navigation_mesh = SubResource("NavigationMesh_c4on7")
 
 [node name="low_poly_character" parent="NavigationRegion3D" unique_id=51086098 instance=ExtResource("8_hp4pk")]
@@ -925,7 +935,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0, 22)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.935654, -0.019354343, -9.001403)
 
 [node name="Freezer_Bin_col3" parent="NavigationRegion3D/Shelves" unique_id=1577031384 instance=ExtResource("14_fg0y7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.935654, 0.1625719, 15.998597)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.935654, 0.0006432533, 15.998597)
 
 [node name="Ground" type="StaticBody3D" parent="NavigationRegion3D" unique_id=628634737]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55789185, -7.2243776, 0)
@@ -1317,22 +1327,23 @@ font_size = 64
 
 [node name="Items" type="Node3D" parent="." unique_id=1505731169]
 
-[node name="ProductDisplay" type="Node3D" parent="Items" unique_id=1658817678]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 15.646557, -5.4492126, 3.583265)
+[node name="ProductDisplay" type="Node3D" parent="Items" unique_id=351663635]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 15.646557, -5.4492126, 3.7119777)
 script = ExtResource("15_t3y0y")
-cereal_mesh = ExtResource("17_t3y0y")
+product_mesh = ExtResource("17_t3y0y")
 outline_material = ExtResource("18_rh46u")
-grid_rows = 4
-horizontal_spacing = 0.35
-max_quantity = 20
-quantity = 20
+grid_columns = 6
+grid_rows = 6
+product_gap = 0.03
+max_quantity = 36
+quantity = 36
 
 [node name="Area3D" type="Area3D" parent="Items/ProductDisplay" unique_id=1400837386 groups=["interactable_items"]]
 collision_layer = 256
 script = ExtResource("18_nc3ox")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Items/ProductDisplay/Area3D" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.175, 0.225)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.675, 0.17, 0.275)
 shape = SubResource("BoxShape3D_t3y0y")
 debug_color = Color(1, 0.64920014, 0.42880207, 0.9882353)
 
@@ -1344,29 +1355,58 @@ visible = false
 [node name="ProductGrid" type="Node3D" parent="Items/ProductDisplay" unique_id=704526395]
 
 [node name="ProductDisplay2" parent="Items" unique_id=1678862390 instance=ExtResource("15_8rqbh")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 15.833684, -5.9795423, 3.7044346)
-cereal_mesh = ExtResource("21_55wky")
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 15.804677, -5.976219, 3.4998353)
+product_mesh = ExtResource("21_55wky")
 grid_columns = 6
 grid_rows = 5
-horizontal_spacing = 0.15
-vertical_spacing = 0.15
-max_quantity = 30
-quantity = 30
+stack_height = 2
+max_quantity = 60
+quantity = 50
 
 [node name="Area3D" parent="Items/ProductDisplay2" index="0" unique_id=1400837386 groups=["interactable_items"]]
 
 [node name="CollisionShape3D" parent="Items/ProductDisplay2/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.375, 0.175, 0.3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.114999995, 0.2)
+shape = SubResource("BoxShape3D_55wky")
+
+[node name="ProductDisplay3" parent="Items" unique_id=1658817678 instance=ExtResource("15_8rqbh")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 15.7171545, -6.506551, 3.828676)
+product_mesh = ExtResource("17_rh46u")
+grid_columns = 12
+grid_rows = 3
+stack_height = 2
+max_quantity = 72
+quantity = 65
+
+[node name="Area3D" parent="Items/ProductDisplay3" index="0" unique_id=1400837386 groups=["interactable_items"]]
+
+[node name="CollisionShape3D" parent="Items/ProductDisplay3/Area3D" index="0" unique_id=211993197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.76801753, 0.12579845, 0.32000002)
 shape = SubResource("BoxShape3D_rh46u")
 
+[node name="ProductDisplay4" parent="Items" unique_id=374054081 instance=ExtResource("15_8rqbh")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 14.782289, -5.976219, 3.6229787)
+product_mesh = ExtResource("23_55wky")
+grid_columns = 7
+grid_rows = 6
+stack_height = 2
+max_quantity = 84
+quantity = 80
+
+[node name="Area3D" parent="Items/ProductDisplay4" index="0" unique_id=1400837386 groups=["interactable_items"]]
+
+[node name="CollisionShape3D" parent="Items/ProductDisplay4/Area3D" index="0" unique_id=211993197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29999998, 0.114999995, 0.25)
+shape = SubResource("BoxShape3D_nc3ox")
+
 [node name="CSGMesh3D2" type="CSGMesh3D" parent="." unique_id=53276062]
-transform = Transform3D(0.1, 0, 0, 0, -1.3113416e-07, 0.1, 0, -3, -4.371139e-09, -20.156118, -5.5263896, 12.98357)
+transform = Transform3D(0.1, 0, 0, 0, -1.3113416e-07, 0.1, 0, -3, -4.371139e-09, -20.156235, -5.684995, 12.983115)
 material_override = ExtResource("17_dr1eh")
 cast_shadow = 0
 mesh = SubResource("CapsuleMesh_hd853")
 
 [node name="CSGMesh3D4" type="CSGMesh3D" parent="." unique_id=218596069]
-transform = Transform3D(0.1, 0, 0, 0, -1.3113416e-07, 0.1, 0, -3, -4.371139e-09, -19.884659, -5.5352855, 12.993786)
+transform = Transform3D(0.1, 0, 0, 0, -1.3113416e-07, 0.1, 0, -3, -4.371139e-09, -19.884775, -5.693891, 12.993331)
 material_override = ExtResource("17_dr1eh")
 cast_shadow = 0
 mesh = SubResource("CapsuleMesh_hd853")
@@ -1377,3 +1417,5 @@ mesh = SubResource("CapsuleMesh_hd853")
 [editable path="NavigationRegion3D/low_poly_character"]
 [editable path="NavigationRegion3D/Shelves/Endcap_5row_col2"]
 [editable path="Items/ProductDisplay2"]
+[editable path="Items/ProductDisplay3"]
+[editable path="Items/ProductDisplay4"]
