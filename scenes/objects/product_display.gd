@@ -235,7 +235,7 @@ func _create_outline(
 	outline_instance.mesh = product_mesh
 	outline_instance.position = product_position
 	outline_instance.rotation = product_rotation
-	outline_instance.scale = Vector3(1.05, 1.05, 1.05)
+	outline_instance.scale = Vector3(1.04, 1.02, 1.04)
 	outline_instance.material_override = outline_material
 	outline_instance.set_meta("generated_product_outline", true)
 
