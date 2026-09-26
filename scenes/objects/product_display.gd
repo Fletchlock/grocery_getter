@@ -169,11 +169,11 @@ func _update_product_display() -> void:
 	rng.seed = variation_seed
 
 	for product_index: int in products_to_display:
-		var stack_layer: int = product_index / layer_capacity
+		var stack_layer: int = floori(float(product_index) / float(layer_capacity))
 		var layer_index: int = product_index % layer_capacity
 
 		var column: int = layer_index % grid_columns
-		var row: int = layer_index / grid_columns
+		var row: int = floori(float(layer_index) / float(grid_columns))
 
 		var base_position: Vector3 = Vector3(
 			column * horizontal_spacing,
@@ -271,7 +271,7 @@ func _update_interaction_zone() -> void:
 	)
 
 	var grid_height: float = (
-		product_size.y
+		stack_spacing
 		* float(stack_height)
 	)
 
