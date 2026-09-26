@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://bcjdafu0erygp"]
+
+[ext_resource type="PackedScene" uid="uid://cdg13wt0ionq2" path="res://assets/models/shelves/Produce_Bin_Narrow_Col.glb" id="1_81bfw"]
+
+[node name="Produce_Bin_Narrow_Col" unique_id=619177297 instance=ExtResource("1_81bfw")]

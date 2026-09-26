@@ -11,11 +11,25 @@
 [ext_resource type="PackedScene" uid="uid://cmmgsv7wgnpms" path="res://scenes/objects/freezer_left_5_row.tscn" id="9_1x7vt"]
 [ext_resource type="PackedScene" uid="uid://b375o8hcy0le6" path="res://scenes/objects/freezer_bin.tscn" id="10_7qr0c"]
 [ext_resource type="PackedScene" uid="uid://ns3ym0bst3do" path="res://scenes/objects/produce_4_row.tscn" id="11_dqjts"]
+[ext_resource type="PackedScene" uid="uid://bcjdafu0erygp" path="res://scenes/objects/produce_bin_narrow_col.tscn" id="12_1x7vt"]
+[ext_resource type="PackedScene" uid="uid://cedtxud1mqlb" path="res://scenes/objects/produce_bin_short_col.tscn" id="13_7qr0c"]
+[ext_resource type="PackedScene" uid="uid://c8tora22e6xw8" path="res://scenes/objects/produce_bin_wide_col.tscn" id="14_ccibt"]
+[ext_resource type="PackedScene" uid="uid://fxtb45r4l7h2" path="res://scenes/objects/product_display.tscn" id="15_jakac"]
+[ext_resource type="ArrayMesh" uid="uid://bdrwh3d8gdch4" path="res://assets/models/items/can_peas_Cylinder.res" id="16_mdgk3"]
+[ext_resource type="ArrayMesh" uid="uid://b3i36k708vrwq" path="res://assets/models/items/bread_loaf_Cube_008.res" id="17_mdgk3"]
 
 [sub_resource type="Environment" id="Environment_umdtr"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_umdtr"]
 size = Vector3(63, 1, 63)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jakac"]
+resource_local_to_scene = true
+size = Vector3(0.48, 0.80499995, 0.88)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mdgk3"]
+resource_local_to_scene = true
+size = Vector3(2.2142327, 0.12579845, 1.9000001)
 
 [node name="dylan_test_level" type="Node3D" unique_id=677027071]
 
@@ -579,52 +593,95 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 0, 16)
 [node name="Produce" type="Node" parent="." unique_id=1290952743]
 
 [node name="Produce_4row" parent="Produce" unique_id=1098757882 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, 17)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, 17)
 
 [node name="Produce_4row17" parent="Produce" unique_id=1760596280 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, 20)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, 20)
 
 [node name="Produce_4row2" parent="Produce" unique_id=11672905 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, 14)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, 14)
 
 [node name="Produce_4row3" parent="Produce" unique_id=806387387 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, 11)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, 11)
 
 [node name="Produce_4row4" parent="Produce" unique_id=202675727 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, 8)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, 8)
 
 [node name="Produce_4row5" parent="Produce" unique_id=386421662 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, 5)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, 5)
 
 [node name="Produce_4row6" parent="Produce" unique_id=1245270739 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, 2)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, 2)
 
 [node name="Produce_4row7" parent="Produce" unique_id=1208403862 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, -1)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, -1)
 
 [node name="Produce_4row8" parent="Produce" unique_id=273740327 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, -4)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, -4)
 
 [node name="Produce_4row9" parent="Produce" unique_id=1741229002 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, -7)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, -7)
 
 [node name="Produce_4row10" parent="Produce" unique_id=1745491184 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, -10)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, -10)
 
 [node name="Produce_4row11" parent="Produce" unique_id=275068498 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, -13)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, -13)
 
 [node name="Produce_4row12" parent="Produce" unique_id=1008604066 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, -16)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, -16)
 
 [node name="Produce_4row13" parent="Produce" unique_id=1244774157 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, -19)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, -19)
 
 [node name="Produce_4row14" parent="Produce" unique_id=1995136124 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, -22)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, -22)
 
 [node name="Produce_4row15" parent="Produce" unique_id=1427981586 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, -25)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, -25)
 
 [node name="Produce_4row16" parent="Produce" unique_id=362860365 instance=ExtResource("11_dqjts")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 0, -28)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 0, -28)
+
+[node name="Produce_Bin_Narrow_Col" parent="." unique_id=619177297 instance=ExtResource("12_1x7vt")]
+transform = Transform3D(-5.9604645e-08, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -5.9604645e-08, 23, 0, 18)
+
+[node name="Produce_Bin_Short_Col" parent="." unique_id=958546008 instance=ExtResource("13_7qr0c")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 23, 0, 8)
+
+[node name="Produce_Bin_Wide_Col" parent="." unique_id=132194449 instance=ExtResource("14_ccibt")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 23, 0, -6)
+
+[node name="ProductDisplay" parent="." unique_id=1658817678 instance=ExtResource("15_jakac")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 15.9, 1.7751652, 3.9)
+product_mesh = ExtResource("16_mdgk3")
+grid_rows = 9
+stack_height = 7
+position_variation = 0.01
+rotation_variation = 1.0
+variation_seed = 97657
+max_quantity = 200
+quantity = 180
+
+[node name="Area3D" parent="ProductDisplay" index="0" unique_id=1400837386 groups=["interactable_items"]]
+
+[node name="CollisionShape3D" parent="ProductDisplay/Area3D" index="0" unique_id=211993197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.40249997, 0.4)
+shape = SubResource("BoxShape3D_jakac")
+
+[node name="ProductDisplay2" parent="." unique_id=620382556 instance=ExtResource("15_jakac")]
+transform = Transform3D(1, 0, 0, 0, 0.98480785, -0.17364821, 0, 0.17364821, 0.98480785, 23, 1.1675677, -5.7999997)
+product_mesh = ExtResource("17_mdgk3")
+grid_columns = 16
+grid_rows = 6
+max_quantity = 400
+quantity = 400
+
+[node name="Area3D" parent="ProductDisplay2" index="0" unique_id=1400837386 groups=["interactable_items"]]
+
+[node name="CollisionShape3D" parent="ProductDisplay2/Area3D" index="0" unique_id=211993197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0472966, 0.062899224, 0.8)
+shape = SubResource("BoxShape3D_mdgk3")
+
+[editable path="ProductDisplay"]
+[editable path="ProductDisplay2"]
