@@ -14,8 +14,12 @@
 [ext_resource type="PackedScene" uid="uid://bsbnaru4ssia1" path="res://scenes/objects/shelf_2_row.tscn" id="13_om5ry"]
 [ext_resource type="PackedScene" uid="uid://b375o8hcy0le6" path="res://scenes/objects/freezer_bin.tscn" id="15_t00v6"]
 [ext_resource type="PackedScene" uid="uid://54bswnjg63f6" path="res://scenes/objects/buildings/store_small_greybox.tscn" id="15_tcjw2"]
+[ext_resource type="ArrayMesh" uid="uid://ggirlp6ikgrt" path="res://assets/models/items/cereal_box_01_Cube.res" id="16_fumkw"]
 [ext_resource type="PackedScene" uid="uid://fxtb45r4l7h2" path="res://scenes/objects/product_display.tscn" id="16_om5ry"]
+[ext_resource type="ArrayMesh" uid="uid://t67n6ca3iryg" path="res://assets/models/items/can_beans_Cylinder_001.res" id="17_7stf3"]
 [ext_resource type="ArrayMesh" uid="uid://bdrwh3d8gdch4" path="res://assets/models/items/can_peas_Cylinder.res" id="17_8ngln"]
+[ext_resource type="ArrayMesh" uid="uid://cjih2ehfqe08u" path="res://assets/models/items/can_corn_Cylinder_002.res" id="19_7467c"]
+[ext_resource type="ArrayMesh" uid="uid://cv52d2moqt0d8" path="res://assets/models/items/bread_loaf_Cube_008.res" id="20_52hqa"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ta2qt"]
 sky_top_color = Color(0.2596472, 0.5435158, 0.9217843, 1)
@@ -35,69 +39,53 @@ fog_sky_affect = 0.16
 fog_height = -436.59
 fog_height_density = 3.5969
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_om5ry"]
-resource_local_to_scene = true
-size = Vector3(1.75, 0.35, 0.8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_8ngln"]
-resource_local_to_scene = true
-size = Vector3(1.75, 0.35, 0.8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_4oa81"]
-resource_local_to_scene = true
-size = Vector3(1.75, 0.35, 0.8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_fumkw"]
-resource_local_to_scene = true
-size = Vector3(1.75, 0.35, 0.8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_7stf3"]
-resource_local_to_scene = true
-size = Vector3(1.2, 0.35, 0.75)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_7467c"]
-resource_local_to_scene = true
-size = Vector3(1.2, 0.35, 0.75)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_52hqa"]
-resource_local_to_scene = true
-size = Vector3(1.2, 0.35, 0.75)
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_8sngb"]
 resource_local_to_scene = true
-size = Vector3(1.2, 0.35, 0.75)
+size = Vector3(1.64, 0.34, 0.56)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_y7eyy"]
 resource_local_to_scene = true
-size = Vector3(1.2, 0.35, 0.75)
+size = Vector3(1.64, 0.34, 0.56)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_m5ay7"]
 resource_local_to_scene = true
-size = Vector3(1.2, 0.35, 0.75)
+size = Vector3(1.64, 0.34, 0.56)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ghqei"]
 resource_local_to_scene = true
-size = Vector3(1.2, 0.35, 0.75)
+size = Vector3(1.64, 0.34, 0.56)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0mvpo"]
 resource_local_to_scene = true
-size = Vector3(1.2, 0.35, 0.75)
+size = Vector3(0.91999996, 0.22999999, 0.56)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_xwqgo"]
 resource_local_to_scene = true
-size = Vector3(1.2, 0.35, 0.75)
+size = Vector3(0.91999996, 0.22999999, 0.56)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_17biw"]
 resource_local_to_scene = true
-size = Vector3(1.2, 0.35, 0.75)
+size = Vector3(0.91999996, 0.22999999, 0.56)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ho602"]
 resource_local_to_scene = true
-size = Vector3(1.2, 0.35, 0.75)
+size = Vector3(0.91999996, 0.22999999, 0.56)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_chvo6"]
 resource_local_to_scene = true
-size = Vector3(1.2, 0.35, 0.75)
+size = Vector3(0.91999996, 0.22999999, 0.56)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gc6kj"]
+resource_local_to_scene = true
+size = Vector3(0.91999996, 0.22999999, 0.56)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bl6aj"]
+resource_local_to_scene = true
+size = Vector3(1.0971164, 0.37739533, 0.94000006)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_phxxo"]
+resource_local_to_scene = true
+size = Vector3(1.0971164, 0.37739533, 0.94000006)
 
 [node name="ThirdPersonLevel" type="Node3D" unique_id=1122241509]
 script = ExtResource("1_c3yyn")
@@ -208,248 +196,222 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 6.46
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.4213586)
 
 [node name="ProductDisplay" parent="Products" unique_id=1658817678 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3.0325885, 0.99261785, -10.14489)
-grid_rows = 4
-horizontal_spacing = 0.35
-max_quantity = 20
-quantity = 20
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3.185771, 0.99261785, -10.14489)
+product_mesh = ExtResource("16_fumkw")
+grid_columns = 6
+grid_rows = 5
+product_gap = 0.04
+position_variation = 0.01
+variation_seed = 12
+max_quantity = 30
+quantity = 30
 
 [node name="Area3D" parent="Products/ProductDisplay" index="0" unique_id=1400837386 groups=["interactable_items"]]
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.175, 0.3)
-shape = SubResource("BoxShape3D_om5ry")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.17, 0.24)
+shape = SubResource("BoxShape3D_8sngb")
 
 [node name="ProductDisplay2" parent="Products" unique_id=1460089423 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3.0325885, 0.46228826, -10.14489)
-grid_rows = 4
-horizontal_spacing = 0.35
-max_quantity = 20
-quantity = 20
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3.1775432, 0.46228826, -10.14489)
+product_mesh = ExtResource("16_fumkw")
+grid_columns = 6
+grid_rows = 5
+product_gap = 0.04
+position_variation = 0.01
+variation_seed = 15
+max_quantity = 30
+quantity = 30
 
 [node name="Area3D" parent="Products/ProductDisplay2" index="0" unique_id=1400837386 groups=["interactable_items"]]
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay2/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.175, 0.3)
-shape = SubResource("BoxShape3D_8ngln")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.17, 0.24)
+shape = SubResource("BoxShape3D_y7eyy")
 
 [node name="ProductDisplay3" parent="Products" unique_id=139774996 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3.0325885, -0.06804156, -10.14489)
-grid_rows = 4
-horizontal_spacing = 0.35
-max_quantity = 20
-quantity = 20
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3.1580412, -0.06804156, -10.14489)
+product_mesh = ExtResource("16_fumkw")
+grid_columns = 6
+grid_rows = 5
+product_gap = 0.04
+position_variation = 0.01
+variation_seed = 46
+max_quantity = 30
+quantity = 30
 
 [node name="Area3D" parent="Products/ProductDisplay3" index="0" unique_id=1400837386 groups=["interactable_items"]]
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay3/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.175, 0.3)
-shape = SubResource("BoxShape3D_4oa81")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.17, 0.24)
+shape = SubResource("BoxShape3D_m5ay7")
 
 [node name="ProductDisplay4" parent="Products" unique_id=836629912 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3.0325885, -0.5983732, -10.14489)
-grid_rows = 4
-horizontal_spacing = 0.35
-max_quantity = 20
-quantity = 20
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3.1857767, -0.5983732, -10.14489)
+product_mesh = ExtResource("16_fumkw")
+grid_columns = 6
+grid_rows = 5
+product_gap = 0.04
+position_variation = 0.01
+variation_seed = 60
+max_quantity = 30
+quantity = 30
 
 [node name="Area3D" parent="Products/ProductDisplay4" index="0" unique_id=1400837386 groups=["interactable_items"]]
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay4/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.175, 0.3)
-shape = SubResource("BoxShape3D_fumkw")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.17, 0.24)
+shape = SubResource("BoxShape3D_ghqei")
 
 [node name="ProductDisplay5" parent="Products" unique_id=1816287026 instance=ExtResource("16_om5ry")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5133185, 0.85235435, -9.179654)
-cereal_mesh = ExtResource("17_8ngln")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5133185, 0.18944222, -9.077063)
+product_mesh = ExtResource("17_7stf3")
 grid_columns = 8
 grid_rows = 5
-horizontal_spacing = 0.15
-vertical_spacing = 0.15
-max_quantity = 40
-quantity = 40
+stack_height = 2
+product_gap = 0.04
+position_variation = 0.005
+rotation_variation = null
+variation_seed = 19
+max_quantity = 80
+quantity = 80
 
 [node name="Area3D" parent="Products/ProductDisplay5" index="0" unique_id=1400837386 groups=["interactable_items"]]
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay5/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.525, 0.175, 0.3)
-shape = SubResource("BoxShape3D_7stf3")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.114999995, 0.24)
+shape = SubResource("BoxShape3D_0mvpo")
 
 [node name="ProductDisplay6" parent="Products" unique_id=1319288920 instance=ExtResource("16_om5ry")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1403153, 0.85235435, -9.179654)
-cereal_mesh = ExtResource("17_8ngln")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9472823, 0.18944222, -9.058977)
+product_mesh = ExtResource("17_7stf3")
 grid_columns = 8
 grid_rows = 5
-horizontal_spacing = 0.15
-vertical_spacing = 0.15
-max_quantity = 40
-quantity = 40
+stack_height = 2
+product_gap = 0.04
+position_variation = 0.005
+rotation_variation = null
+variation_seed = 21
+max_quantity = 80
+quantity = 80
 
 [node name="Area3D" parent="Products/ProductDisplay6" index="0" unique_id=1400837386 groups=["interactable_items"]]
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay6/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.525, 0.175, 0.3)
-shape = SubResource("BoxShape3D_7467c")
-
-[node name="ProductDisplay7" parent="Products" unique_id=2069877806 instance=ExtResource("16_om5ry")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5133185, 0.1894422, -9.179654)
-cereal_mesh = ExtResource("17_8ngln")
-grid_columns = 8
-grid_rows = 5
-horizontal_spacing = 0.15
-vertical_spacing = 0.15
-max_quantity = 40
-quantity = 40
-
-[node name="Area3D" parent="Products/ProductDisplay7" index="0" unique_id=1400837386 groups=["interactable_items"]]
-
-[node name="CollisionShape3D" parent="Products/ProductDisplay7/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.525, 0.175, 0.3)
-shape = SubResource("BoxShape3D_52hqa")
-
-[node name="ProductDisplay8" parent="Products" unique_id=927934946 instance=ExtResource("16_om5ry")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1403153, 0.1894422, -9.179654)
-cereal_mesh = ExtResource("17_8ngln")
-grid_columns = 8
-grid_rows = 5
-horizontal_spacing = 0.15
-vertical_spacing = 0.15
-max_quantity = 40
-quantity = 40
-
-[node name="Area3D" parent="Products/ProductDisplay8" index="0" unique_id=1400837386 groups=["interactable_items"]]
-
-[node name="CollisionShape3D" parent="Products/ProductDisplay8/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.525, 0.175, 0.3)
-shape = SubResource("BoxShape3D_8sngb")
-
-[node name="ProductDisplay9" parent="Products" unique_id=1713282741 instance=ExtResource("16_om5ry")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5133185, -0.47347146, -9.179654)
-cereal_mesh = ExtResource("17_8ngln")
-grid_columns = 8
-grid_rows = 5
-horizontal_spacing = 0.15
-vertical_spacing = 0.15
-max_quantity = 40
-quantity = 40
-
-[node name="Area3D" parent="Products/ProductDisplay9" index="0" unique_id=1400837386 groups=["interactable_items"]]
-
-[node name="CollisionShape3D" parent="Products/ProductDisplay9/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.525, 0.175, 0.3)
-shape = SubResource("BoxShape3D_y7eyy")
-
-[node name="ProductDisplay10" parent="Products" unique_id=688360724 instance=ExtResource("16_om5ry")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1403153, -0.47347146, -9.179654)
-cereal_mesh = ExtResource("17_8ngln")
-grid_columns = 8
-grid_rows = 5
-horizontal_spacing = 0.15
-vertical_spacing = 0.15
-max_quantity = 40
-quantity = 40
-
-[node name="Area3D" parent="Products/ProductDisplay10" index="0" unique_id=1400837386 groups=["interactable_items"]]
-
-[node name="CollisionShape3D" parent="Products/ProductDisplay10/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.525, 0.175, 0.3)
-shape = SubResource("BoxShape3D_m5ay7")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.114999995, 0.24)
+shape = SubResource("BoxShape3D_xwqgo")
 
 [node name="ProductDisplay11" parent="Products" unique_id=1063496991 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.012470305, 0.6371406, -9.718575)
-cereal_mesh = ExtResource("17_8ngln")
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.012470305, 0.6371406, -9.8058815)
+product_mesh = ExtResource("17_8ngln")
 grid_columns = 8
 grid_rows = 5
-horizontal_spacing = 0.15
-vertical_spacing = 0.15
-max_quantity = 40
-quantity = 40
+stack_height = 2
+product_gap = 0.04
+position_variation = 0.005
+rotation_variation = null
+variation_seed = 12
+max_quantity = 80
+quantity = 80
 
 [node name="Area3D" parent="Products/ProductDisplay11" index="0" unique_id=1400837386 groups=["interactable_items"]]
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay11/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.525, 0.175, 0.3)
-shape = SubResource("BoxShape3D_ghqei")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.114999995, 0.24)
+shape = SubResource("BoxShape3D_17biw")
 
 [node name="ProductDisplay12" parent="Products" unique_id=1674876912 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -1.3854735, 0.6371406, -9.718575)
-cereal_mesh = ExtResource("17_8ngln")
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -1.3854735, 0.6371406, -9.817659)
+product_mesh = ExtResource("19_7467c")
 grid_columns = 8
 grid_rows = 5
-horizontal_spacing = 0.15
-vertical_spacing = 0.15
-max_quantity = 40
-quantity = 40
+stack_height = 2
+product_gap = 0.04
+position_variation = 0.005
+rotation_variation = null
+variation_seed = 13
+max_quantity = 80
+quantity = 80
 
 [node name="Area3D" parent="Products/ProductDisplay12" index="0" unique_id=1400837386 groups=["interactable_items"]]
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay12/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.525, 0.175, 0.3)
-shape = SubResource("BoxShape3D_0mvpo")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.114999995, 0.24)
+shape = SubResource("BoxShape3D_ho602")
 
 [node name="ProductDisplay13" parent="Products" unique_id=1946042866 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.012470305, -0.24674426, -9.718575)
-cereal_mesh = ExtResource("17_8ngln")
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.012470305, -0.24674426, -9.847002)
+product_mesh = ExtResource("17_8ngln")
 grid_columns = 8
 grid_rows = 5
-horizontal_spacing = 0.15
-vertical_spacing = 0.15
-max_quantity = 40
-quantity = 40
+stack_height = 2
+product_gap = 0.04
+position_variation = 0.005
+rotation_variation = null
+variation_seed = 11
+max_quantity = 80
+quantity = 80
 
 [node name="Area3D" parent="Products/ProductDisplay13" index="0" unique_id=1400837386 groups=["interactable_items"]]
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay13/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.525, 0.175, 0.3)
-shape = SubResource("BoxShape3D_xwqgo")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.114999995, 0.24)
+shape = SubResource("BoxShape3D_chvo6")
 
 [node name="ProductDisplay14" parent="Products" unique_id=1155269802 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -1.3854735, -0.24674426, -9.718575)
-cereal_mesh = ExtResource("17_8ngln")
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -1.3854735, -0.24674426, -9.845791)
+product_mesh = ExtResource("19_7467c")
 grid_columns = 8
 grid_rows = 5
-horizontal_spacing = 0.15
-vertical_spacing = 0.15
-max_quantity = 40
-quantity = 40
+stack_height = 2
+product_gap = 0.04
+position_variation = 0.005
+rotation_variation = null
+variation_seed = 15
+max_quantity = 80
+quantity = 80
 
 [node name="Area3D" parent="Products/ProductDisplay14" index="0" unique_id=1400837386 groups=["interactable_items"]]
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay14/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.525, 0.175, 0.3)
-shape = SubResource("BoxShape3D_17biw")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.114999995, 0.24)
+shape = SubResource("BoxShape3D_gc6kj")
 
 [node name="ProductDisplay15" parent="Products" unique_id=182046786 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.012470305, -1.1406283, -9.718575)
-cereal_mesh = ExtResource("17_8ngln")
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.012470305, -1.1406283, -9.668781)
+product_mesh = ExtResource("20_52hqa")
 grid_columns = 8
-grid_rows = 5
-horizontal_spacing = 0.15
-vertical_spacing = 0.15
-max_quantity = 40
-quantity = 40
+grid_rows = 3
+stack_height = 3
+position_variation = 0.01
+rotation_variation = 8.0
+variation_seed = 123
+max_quantity = 72
+quantity = 72
 
 [node name="Area3D" parent="Products/ProductDisplay15" index="0" unique_id=1400837386 groups=["interactable_items"]]
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay15/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.525, 0.175, 0.3)
-shape = SubResource("BoxShape3D_ho602")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.48873842, 0.18869767, 0.32000002)
+shape = SubResource("BoxShape3D_bl6aj")
 
-[node name="ProductDisplay16" parent="Products" unique_id=21151917 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -1.3854735, -1.1406283, -9.718575)
-cereal_mesh = ExtResource("17_8ngln")
+[node name="ProductDisplay16" parent="Products" unique_id=1836202487 instance=ExtResource("16_om5ry")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -1.5346358, -1.1406283, -9.668781)
+product_mesh = ExtResource("20_52hqa")
 grid_columns = 8
-grid_rows = 5
-horizontal_spacing = 0.15
-vertical_spacing = 0.15
-max_quantity = 40
-quantity = 40
+grid_rows = 3
+stack_height = 3
+position_variation = 0.01
+rotation_variation = 8.0
+variation_seed = 551
+max_quantity = 72
+quantity = 72
 
 [node name="Area3D" parent="Products/ProductDisplay16" index="0" unique_id=1400837386 groups=["interactable_items"]]
 
 [node name="CollisionShape3D" parent="Products/ProductDisplay16/Area3D" index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.525, 0.175, 0.3)
-shape = SubResource("BoxShape3D_chvo6")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.48873842, 0.18869767, 0.32000002)
+shape = SubResource("BoxShape3D_phxxo")
 
 [editable path="Products/ProductDisplay"]
 [editable path="Products/ProductDisplay2"]
@@ -457,10 +419,6 @@ shape = SubResource("BoxShape3D_chvo6")
 [editable path="Products/ProductDisplay4"]
 [editable path="Products/ProductDisplay5"]
 [editable path="Products/ProductDisplay6"]
-[editable path="Products/ProductDisplay7"]
-[editable path="Products/ProductDisplay8"]
-[editable path="Products/ProductDisplay9"]
-[editable path="Products/ProductDisplay10"]
 [editable path="Products/ProductDisplay11"]
 [editable path="Products/ProductDisplay12"]
 [editable path="Products/ProductDisplay13"]

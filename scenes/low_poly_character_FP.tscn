@@ -606,7 +606,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.708, 0)
 fov = 85.0
 
 [node name="InteractRaycast3D" type="RayCast3D" parent="FirstPersonCameraPivot/FirstPersonCamera" unique_id=1492090311 node_paths=PackedStringArray("interact_raycast_3d", "interaction_prompt")]
-target_position = Vector3(0, 0, -1.6)
+target_position = Vector3(0, 0, -1.8)
 collision_mask = 256
 collide_with_areas = true
 script = ExtResource("10_iwhk0")
