@@ -104,8 +104,8 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_vc5oy")
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_1f2y3"]
-size = Vector3(1.0654297, 1.4724655, 0.8507843)
+[sub_resource type="BoxShape3D" id="BoxShape3D_rd2g5"]
+size = Vector3(1, 0.37493896, 0.3581543)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7ajv0"]
 size = Vector3(1.3525391, 0.16113949, 0.6348572)
@@ -165,6 +165,9 @@ max_contacts_reported = 4
 linear_damp = 0.6
 angular_damp = 0.58
 script = ExtResource("1_i4yyv")
+position_follow_speed = 40.0
+rotation_swing_speed = 6.0
+rotation_align_speed = 20.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1348594139]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.0052490234, 0, -0.8827122)
@@ -174,12 +177,13 @@ surface_material_override/1 = ExtResource("2_juux1")
 [node name="HandlePoint" type="Marker3D" parent="." unique_id=1156551631]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9804872, 0.39552152)
 
-[node name="InteractionArea" type="Area3D" parent="." unique_id=1729556404]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8152827, 0.73845553)
+[node name="InteractionArea" type="Area3D" parent="." unique_id=1729556404 groups=["interactable_items"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1455225, 0.42617226)
+collision_layer = 257
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea" unique_id=746593780]
-transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.015575411, -0.05102372, -0.01731348)
-shape = SubResource("BoxShape3D_1f2y3")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0010681152, -0.018432617)
+shape = SubResource("BoxShape3D_rd2g5")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=889546494]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00048828125, 1.1138524, 0.13997638)
@@ -217,12 +221,10 @@ shape = SubResource("BoxShape3D_6arrp")
 replication_config = SubResource("SceneReplicationConfig_i4yyv")
 
 [node name="LeftHandTarget" type="Node3D" parent="." unique_id=2067598042]
-transform = Transform3D(-0.0059417565, 0.090126835, 0.9959122, -0.99998224, -0.00053552125, -0.0059175733, 0, -0.9959298, 0.09012842, -0.45, 1.188098, 0.49607152)
-rotation_edit_mode = 2
+transform = Transform3D(0.25783417, 0.022557624, -0.96592575, 0.9622502, 0.08418603, 0.258819, 0.08715582, -0.99619466, -4.2221956e-08, -0.5, 1.187, 0.533)
 
 [node name="RightHandTarget" type="Node3D" parent="." unique_id=1644043477]
-transform = Transform3D(0.067206666, -0.08992467, -0.9936783, 0.9977391, 0.006057232, 0.06693313, 0, -0.99593, 0.090128444, 0.45, 1.188098, 0.49607152)
-rotation_edit_mode = 2
+transform = Transform3D(0.25783414, -0.022557624, 0.9659257, -0.9622501, 0.08418603, 0.258819, -0.08715581, -0.9961946, -4.2221956e-08, 0.5, 1.187, 0.533)
 
 [node name="ContentsArea" type="Area3D" parent="." unique_id=131051931]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7105986, -0.8416152)
@@ -235,6 +237,7 @@ shape = SubResource("BoxShape3D_bcy86")
 debug_color = Color(0.6677083, 0.4045921, 0.9830254, 1)
 
 [node name="NavigationObstacle3D" type="NavigationObstacle3D" parent="." unique_id=1399339440]
+visible = false
 radius = 2.0
 use_3d_avoidance = true
 

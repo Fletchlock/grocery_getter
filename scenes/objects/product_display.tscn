@@ -2,19 +2,20 @@
 
 [ext_resource type="Script" uid="uid://chugr7tbfv0o" path="res://scenes/objects/product_display.gd" id="1_l5wtk"]
 [ext_resource type="Script" uid="uid://6qovou7ip4wx" path="res://scenes/objects/area_3d.gd" id="2_5pxkw"]
-[ext_resource type="ArrayMesh" uid="uid://ggirlp6ikgrt" path="res://assets/models/items/cereal_box_01_Cube.res" id="2_5rgkc"]
 [ext_resource type="Material" uid="uid://d3iscxpv066o5" path="res://assets/materials/outline_standard_material_3d.tres" id="3_cpcfy"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cpcfy"]
 resource_local_to_scene = true
 size = Vector3(2, 0.35, 0.4)
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_5rgkc"]
+properties/0/path = NodePath(".:quantity")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
 [node name="ProductDisplay" type="Node3D" unique_id=1658817678]
 script = ExtResource("1_l5wtk")
-cereal_mesh = ExtResource("2_5rgkc")
 outline_material = ExtResource("3_cpcfy")
-horizontal_spacing = 0.4
-vertical_spacing = 0.2
 
 [node name="Area3D" type="Area3D" parent="." unique_id=1400837386]
 collision_layer = 256
@@ -31,3 +32,6 @@ visible = false
 [node name="ProductMarker" type="Marker3D" parent="." unique_id=1793950634]
 
 [node name="ProductGrid" type="Node3D" parent="." unique_id=704526395]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=650710489]
+replication_config = SubResource("SceneReplicationConfig_5rgkc")

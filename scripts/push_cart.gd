@@ -172,4 +172,39 @@ func _on_contents_area_body_exited(body: Node3D) -> void:
 
 
 func get_interaction_prompt() -> String:
+	if player_character != null:
+		return "[E] Release cart"
+
 	return "[E] Grab cart"
+
+
+func interact() -> void:
+	var player: CharacterBody3D = player_character
+
+	if player != null:
+		if player.has_method("try_release_cart"):
+			player.try_release_cart()
+
+		return
+
+	var players: Array[Node] = get_tree().get_nodes_in_group("player")
+
+	if players.is_empty():
+		return
+
+	var closest_player: CharacterBody3D = null
+	var closest_distance: float = INF
+
+	for node: Node in players:
+		if node is CharacterBody3D:
+			var candidate: CharacterBody3D = node as CharacterBody3D
+			var distance: float = global_position.distance_squared_to(
+				candidate.global_position
+			)
+
+			if distance < closest_distance:
+				closest_distance = distance
+				closest_player = candidate
+
+	if closest_player != null and closest_player.has_method("try_grab_cart"):
+		closest_player.try_grab_cart(self)
