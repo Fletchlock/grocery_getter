@@ -40,7 +40,8 @@ var _last_position_variation: float = -1.0
 var _last_rotation_variation: float = -1.0
 var _last_variation_seed: int = 0
 var _last_quantity: int = -1
-
+# Networking
+var _last_network_quantity: int = -1
 
 func _ready() -> void:
 	_find_nodes()
@@ -50,32 +51,50 @@ func _ready() -> void:
 	_ensure_unique_collision_shape()
 	_update_product_display()
 	_update_interaction_zone()
+	_last_network_quantity = quantity
 	_cache_preview_state()
 
 
 func _process(_delta: float) -> void:
 	if not Engine.is_editor_hint():
+		_find_nodes()
+
+		if product_marker == null or product_grid == null:
+			return
+
+		if _preview_needs_update():
+			_update_product_display()
+			_update_interaction_zone()
+			_cache_preview_state()
+			
 		return
-
-	_find_nodes()
-
-	if product_marker == null or product_grid == null:
-		return
-
-	if _preview_needs_update():
+		
+	if quantity != _last_network_quantity:
+		_last_network_quantity = quantity
 		_update_product_display()
 		_update_interaction_zone()
-		_cache_preview_state()
 
 
-func interact() -> void:
+func request_interact() -> void:
+	if multiplayer.is_server():
+		_take_product()
+	else:
+		request_take_product.rpc_id(1)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_take_product() -> void:
+	if not multiplayer.is_server():
+		return
+
+	_take_product()
+
+
+func _take_product() -> void:
 	if quantity <= 0:
 		return
 
 	quantity -= 1
-
-	_update_product_display()
-	_update_interaction_zone()
 
 
 func _find_nodes() -> void:

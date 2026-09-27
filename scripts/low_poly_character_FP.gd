@@ -11,7 +11,6 @@ extends CharacterBody3D
 @export var network_first_person: bool = false
 
 var _first_person: bool = true
-#var _third_person_root_rotation_y: float = 0.0
 
 @onready var armature_node: Node3D = $Armature
 @onready var skeleton: Skeleton3D = $Armature/Skeleton3D
@@ -23,26 +22,15 @@ var _first_person: bool = true
 @onready var grocery_blue: MeshInstance3D = $Armature/Skeleton3D/GroceryBlue
 @onready var grocery_green: MeshInstance3D = $Armature/Skeleton3D/GroceryGreen
 
-
-
-
-# PushCart stuff
-# === Hand IK References ===
 @onready var left_hand_ik: SkeletonIK3D = $Armature/Skeleton3D/LeftHandIK
 @onready var right_hand_ik: SkeletonIK3D = $Armature/Skeleton3D/RightHandIK
-@onready var cart_detector: Area3D = $CartDetector
-
 
 @export_group("Cart")
 @export var strafe_rotation := 35.0
-	# Track carts that are close enough to grab
 var nearby_carts: Array[RigidBody3D] = []
-	# Track the cart we are currently pushing
 @export var attached_cart: RigidBody3D = null
 
-
 # === Configuration Properties ===
-
 @export_group("Camera")
 @export_range(0.0, 1.0) var mouse_sensitivity := 0.25 ## Mouse camera sensitivity.
 @export var gamepad_sensitivty := 3.0 ## Gamepad camera sensitivity.
@@ -51,14 +39,12 @@ var nearby_carts: Array[RigidBody3D] = []
 @export var min_zoom := 2.0 ## Minimum camera distance.
 @export var max_zoom := 8.0 ## Maximum camera distance.
 
-
 @export_group("Movement")
 @export var move_speed := 6.0 ## Maximum movement speed.
 @export var acceleration := 36.0 ## Ground movement acceleration.
 @export var rotation_speed := 12.0 ## Character rotation speed.
 @export var jump_strength := 12.0 ## Initial upward force when jumping.
 @export var air_acceleration := 12.0 ## Movement acceleration while airborne.
-
 
 @export_group("Network Replication")
 @export var network_position := Vector3.ZERO
@@ -82,10 +68,8 @@ var _network_first_person_last_received: bool = false
 const NORMAL_INTERPOLATION_DELAY := 0.07
 const PLATFORM_INTERPOLATION_DELAY := 0.05
 
-
 @export_group("UI Navigation")
 @export var gamepad_cursor_speed := 800.0
-
 
 @export_group("Blink")
 @export var blink_min_time: float = 2.5 ## Minimum time to wait before a blink.
@@ -113,8 +97,7 @@ var _camera_input_direction := Vector2.ZERO
 var _last_movement_direction := Vector3.FORWARD
 var _gravity := -30.0
 var _was_airborne := false
-var _target_zoom := 4.0
-
+var _target_zoom := 2.0
 
 # === Player Scene Reference ===
 const PLAYER_SCENE = preload(
@@ -206,8 +189,6 @@ func _ready() -> void:
 		sync_node.public_visibility = true
 
 
-
-
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():
 		return
@@ -220,11 +201,6 @@ func _unhandled_input(event: InputEvent) -> void:
 				interact_raycast_3d.interact()
 
 		return
-
-
-	#if event.is_action_pressed("toggle_perspective"):
-		#_toggle_perspective()
-		#return
 			
 	var is_camera_motion := (
 		event is InputEventMouseMotion
@@ -262,14 +238,15 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _toggle_perspective() -> void:
 	var target_first_person: bool = not _first_person
-
+	
+	#Fade to black and back when switching camera
 	var tween: Tween = create_tween()
 
 	tween.tween_property(
 		TransitionManager.fade_rect,
 		"modulate:a",
 		1.0,
-		0.10
+		0.10 #transition speed
 	)
 
 	tween.tween_callback(
@@ -281,7 +258,7 @@ func _toggle_perspective() -> void:
 		TransitionManager.fade_rect,
 		"modulate:a",
 		0.0,
-		0.14
+		0.10 #transition speed
 	)
 
 
@@ -361,7 +338,7 @@ func try_grab_cart(cart: RigidBody3D) -> void:
 		armature_node.global_rotation.y = global_rotation.y
 
 	var distance_offset: float = 1.0
-
+	
 	if "attach_distance" in attached_cart:
 		distance_offset = attached_cart.attach_distance
 
@@ -448,22 +425,6 @@ func _find_active_push_cart() -> RigidBody3D:
 			return body as RigidBody3D
 			
 	return null
-
-
-func _on_cart_detector_area_entered(area: Area3D) -> void:
-	# Look up to the root of the cart to see if it's a valid push cart
-	var cart_body = area.get_parent()
-	if cart_body and cart_body.has_method("is_cart"):
-		if not nearby_carts.has(cart_body):
-			nearby_carts.append(cart_body)
-
-func _on_cart_detector_area_exited(area: Area3D) -> void:
-	var cart_body = area.get_parent()
-	if cart_body and cart_body.has_method("is_cart"):
-		nearby_carts.erase(cart_body)
-		
-		if attached_cart == cart_body:
-			try_release_cart()
 
 
 func _process(delta: float) -> void:
@@ -893,35 +854,6 @@ func _physics_process(delta: float) -> void:
 		network_rotation_y = armature_node.global_rotation.y
 
 	# ============================================================
-	# CART DETECTOR POSITIONING
-	# ============================================================
-
-	if is_multiplayer_authority():
-		var detector_forward: Vector3
-
-		if _first_person:
-			detector_forward = -global_transform.basis.z
-		else:
-			detector_forward = -armature_node.global_transform.basis.z
-
-		detector_forward.y = 0.0
-
-		if detector_forward.length_squared() > 0.001:
-			detector_forward = detector_forward.normalized()
-
-			cart_detector.global_position = (
-				global_position
-				+ detector_forward * 0.4
-				+ Vector3(0.0, 1.0, 0.0)
-			)
-
-			cart_detector.global_rotation.y = atan2(
-				-detector_forward.x,
-				-detector_forward.z
-			)
-
-
-	# ============================================================
 	# SMOOTHED MULTIPLAYER SKELETAL IK JITTER FILTER
 	# ============================================================
 	# If we are a remote client viewing another player push a cart,
@@ -1216,6 +1148,8 @@ func interact_with_item(item: Node3D) -> void:
 	if attached_cart == null:
 		if item is RigidBody3D and item.has_method("grab_cart"):
 			try_grab_cart(item as RigidBody3D)
+		elif item.has_method("request_interact"):
+			item.request_interact()
 		elif item.has_method("interact"):
 			item.interact()
 	else:
