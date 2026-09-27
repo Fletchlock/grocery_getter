@@ -105,7 +105,7 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_vc5oy")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1f2y3"]
-size = Vector3(1.0654297, 1.4724655, 0.8507843)
+size = Vector3(0.2613907, 0.9415622, 0.34266973)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7ajv0"]
 size = Vector3(1.3525391, 0.16113949, 0.6348572)
@@ -165,6 +165,7 @@ max_contacts_reported = 4
 linear_damp = 0.6
 angular_damp = 0.58
 script = ExtResource("1_i4yyv")
+rotation_swing_speed = 8.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1348594139]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.0052490234, 0, -0.8827122)
@@ -174,11 +175,12 @@ surface_material_override/1 = ExtResource("2_juux1")
 [node name="HandlePoint" type="Marker3D" parent="." unique_id=1156551631]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9804872, 0.39552152)
 
-[node name="InteractionArea" type="Area3D" parent="." unique_id=1729556404]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8152827, 0.73845553)
+[node name="InteractionArea" type="Area3D" parent="." unique_id=1729556404 groups=["interactable_items"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1455225, 0.42617226)
+collision_layer = 257
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea" unique_id=746593780]
-transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.015575411, -0.05102372, -0.01731348)
+transform = Transform3D(-4.3551044e-08, -0.99633175, -0.08557463, 1, -4.371139e-08, 0, -3.7405856e-09, -0.08557463, 0.99633175, 0.0016139634, -0.03622818, -0.02696374)
 shape = SubResource("BoxShape3D_1f2y3")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=889546494]
@@ -235,6 +237,7 @@ shape = SubResource("BoxShape3D_bcy86")
 debug_color = Color(0.6677083, 0.4045921, 0.9830254, 1)
 
 [node name="NavigationObstacle3D" type="NavigationObstacle3D" parent="." unique_id=1399339440]
+visible = false
 radius = 2.0
 use_3d_avoidance = true
 

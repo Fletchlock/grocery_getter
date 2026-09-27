@@ -4,6 +4,7 @@ extends CharacterBody3D
 @onready var _third_person_camera: Camera3D = $SpringArmPivot/SpringArm3D/Camera3D
 @onready var _first_person_camera: Camera3D = $FirstPersonCameraPivot/FirstPersonCamera
 @onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
+@onready var interact_raycast_3d: RayCast3D = $FirstPersonCameraPivot/FirstPersonCamera/InteractRaycast3D
 
 @onready var _spring_arm_pivot: Node3D = $SpringArmPivot
 @onready var _first_person_pivot: Node3D = $FirstPersonCameraPivot
@@ -37,7 +38,7 @@ var _first_person: bool = true
 	# Track carts that are close enough to grab
 var nearby_carts: Array[RigidBody3D] = []
 	# Track the cart we are currently pushing
-var attached_cart: RigidBody3D = null
+@export var attached_cart: RigidBody3D = null
 
 
 # === Configuration Properties ===
@@ -211,10 +212,20 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():
 		return
 
-	if event.is_action_pressed("toggle_perspective"):
-		_toggle_perspective()
+	if event.is_action_pressed("interact"):
+		if attached_cart != null:
+			try_release_cart()
+		else:
+			if interact_raycast_3d.has_method("interact"):
+				interact_raycast_3d.interact()
+
 		return
 
+
+	#if event.is_action_pressed("toggle_perspective"):
+		#_toggle_perspective()
+		#return
+			
 	var is_camera_motion := (
 		event is InputEventMouseMotion
 		and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
@@ -247,14 +258,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		_camera_input_direction = (
 			event.screen_relative * mouse_sensitivity
 		)
-	
-	
-	# Cart handling.
-	if event.is_action_pressed("interact"):
-		if attached_cart == null:
-			try_grab_cart()
-		else:
-			try_release_cart()
 
 
 func _toggle_perspective() -> void:
@@ -266,7 +269,7 @@ func _toggle_perspective() -> void:
 		TransitionManager.fade_rect,
 		"modulate:a",
 		1.0,
-		0.03
+		0.10
 	)
 
 	tween.tween_callback(
@@ -278,7 +281,7 @@ func _toggle_perspective() -> void:
 		TransitionManager.fade_rect,
 		"modulate:a",
 		0.0,
-		0.03
+		0.14
 	)
 
 
@@ -298,6 +301,9 @@ func _set_perspective(first_person: bool) -> void:
 		_first_person_pivot.rotation.x = _spring_arm_pivot.rotation.x
 
 		_first_person_camera.make_current()
+
+		if interact_raycast_3d:
+			interact_raycast_3d.enabled = true
 
 	else:
 		# Transfer the first-person facing to the third-person camera.
@@ -335,16 +341,16 @@ func _set_perspective(first_person: bool) -> void:
 		_third_person_camera.make_current()
 		body_mesh.visible = true
 
+		if interact_raycast_3d:
+			interact_raycast_3d.enabled = false
+
 	network_first_person = _first_person
 
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
-func try_grab_cart() -> void:
-	if nearby_carts.is_empty():
-		return
-
-	attached_cart = nearby_carts[0]
+func try_grab_cart(cart: RigidBody3D) -> void:
+	attached_cart = cart
 
 	attached_cart.linear_velocity = Vector3.ZERO
 	attached_cart.angular_velocity = Vector3.ZERO
@@ -367,6 +373,7 @@ func try_grab_cart() -> void:
 	attached_cart.global_position = target_pos
 
 	var target_look: Vector3 = target_pos + forward_dir
+
 	attached_cart.look_at(
 		target_look,
 		Vector3.UP
@@ -377,7 +384,10 @@ func try_grab_cart() -> void:
 	sync_ik_start.rpc(cart_path)
 
 	attached_cart.grab_cart(self)
-
+	
+	_toggle_perspective()
+	if interact_raycast_3d:
+		interact_raycast_3d.set_interaction_enabled(false)
 
 func try_release_cart() -> void:
 	if attached_cart:
@@ -394,6 +404,10 @@ func try_release_cart() -> void:
 
 		attached_cart.release_cart()
 		attached_cart = null
+		
+		_toggle_perspective()
+		if interact_raycast_3d:
+			interact_raycast_3d.set_interaction_enabled(true)
 
 # Cart RPCs
 @rpc("any_peer", "call_local")
@@ -434,7 +448,6 @@ func _find_active_push_cart() -> RigidBody3D:
 			return body as RigidBody3D
 			
 	return null
-
 
 
 func _on_cart_detector_area_entered(area: Area3D) -> void:
@@ -1194,3 +1207,17 @@ func get_camera_forward() -> Vector3:
 		forward_dir = forward_dir.normalized()
 
 	return forward_dir
+
+
+func interact_with_item(item: Node3D) -> void:
+	if item == null:
+		return
+
+	if attached_cart == null:
+		if item is RigidBody3D and item.has_method("grab_cart"):
+			try_grab_cart(item as RigidBody3D)
+		elif item.has_method("interact"):
+			item.interact()
+	else:
+		if item == attached_cart:
+			try_release_cart()
