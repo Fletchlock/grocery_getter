@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://dklerfmqk4jk0"]
+
+[ext_resource type="ArrayMesh" uid="uid://ggirlp6ikgrt" path="res://assets/models/items/cereal_box_01_Cube.res" id="1_7w5fw"]
+[ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_mee4h"]
+
+[resource]
+script = ExtResource("1_mee4h")
+item_id = "cereal"
+display_name = "Cereal"
+product_mesh = ExtResource("1_7w5fw")
+metadata/_custom_type_script = "uid://ce7xl2fesyef6"

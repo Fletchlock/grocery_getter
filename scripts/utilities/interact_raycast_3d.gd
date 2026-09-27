@@ -9,6 +9,12 @@ var current_outline_mesh: Node3D = null
 
 
 func _process(_delta: float) -> void:
+	if player_character == null:
+		return
+
+	if not player_character.is_multiplayer_authority():
+		return
+
 	if not is_colliding():
 		_clear_interaction()
 		return
@@ -187,15 +193,14 @@ func _clear_interaction() -> void:
 	if current_outline_mesh:
 		current_outline_mesh.visible = false
 		current_outline_mesh = null
-
 	current_interactable = null
 
 	_hide_prompt()
 
 
-func set_interaction_enabled(enabled: bool) -> void:
-	set_process(enabled)
+func set_interaction_enabled(interaction_enabled: bool) -> void:
+	set_process(interaction_enabled)
 
-	if not enabled:
+	if not interaction_enabled:
 		force_raycast_update()
 		_clear_interaction()

@@ -3,7 +3,7 @@ extends Node3D
 
 
 @export_group("Product")
-@export var product_mesh: Mesh
+@export var product_data: ProductData
 @export var outline_material: Material
 
 
@@ -31,7 +31,7 @@ var mesh_outline: Node3D = null
 var collision_shape: CollisionShape3D = null
 
 var _last_marker_position: Vector3 = Vector3.INF
-var _last_product_mesh: Mesh = null
+var _last_product_data: ProductData = null
 var _last_grid_columns: int = -1
 var _last_grid_rows: int = -1
 var _last_stack_height: int = -1
@@ -40,8 +40,10 @@ var _last_position_variation: float = -1.0
 var _last_rotation_variation: float = -1.0
 var _last_variation_seed: int = 0
 var _last_quantity: int = -1
+
 # Networking
 var _last_network_quantity: int = -1
+
 
 func _ready() -> void:
 	_find_nodes()
@@ -56,19 +58,19 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if not Engine.is_editor_hint():
-		_find_nodes()
+	_find_nodes()
 
-		if product_marker == null or product_grid == null:
-			return
+	if product_marker == null or product_grid == null:
+		return
 
+	if Engine.is_editor_hint():
 		if _preview_needs_update():
 			_update_product_display()
 			_update_interaction_zone()
 			_cache_preview_state()
-			
+
 		return
-		
+
 	if quantity != _last_network_quantity:
 		_last_network_quantity = quantity
 		_update_product_display()
@@ -111,11 +113,18 @@ func _find_nodes() -> void:
 		collision_shape = get_node_or_null("Area3D/CollisionShape3D")
 
 
+func _get_product_mesh() -> Mesh:
+	if product_data == null:
+		return null
+
+	return product_data.product_mesh
+
+
 func _preview_needs_update() -> bool:
 	if product_marker.position != _last_marker_position:
 		return true
 
-	if product_mesh != _last_product_mesh:
+	if product_data != _last_product_data:
 		return true
 
 	if grid_columns != _last_grid_columns:
@@ -149,7 +158,7 @@ func _cache_preview_state() -> void:
 	if product_marker:
 		_last_marker_position = product_marker.position
 
-	_last_product_mesh = product_mesh
+	_last_product_data = product_data
 	_last_grid_columns = grid_columns
 	_last_grid_rows = grid_rows
 	_last_stack_height = stack_height
@@ -171,10 +180,12 @@ func _update_product_display() -> void:
 	if mesh_outline:
 		mesh_outline.position = product_marker.position
 
-	if product_mesh == null:
+	var mesh: Mesh = _get_product_mesh()
+
+	if mesh == null:
 		return
 
-	var product_size: Vector3 = product_mesh.get_aabb().size
+	var product_size: Vector3 = mesh.get_aabb().size
 
 	var horizontal_spacing: float = product_size.x + product_gap
 	var depth_spacing: float = product_size.z + product_gap
@@ -231,7 +242,7 @@ func _create_product(
 ) -> void:
 	var product_instance: MeshInstance3D = MeshInstance3D.new()
 
-	product_instance.mesh = product_mesh
+	product_instance.mesh = _get_product_mesh()
 	product_instance.position = product_position
 	product_instance.rotation = product_rotation
 	product_instance.set_meta("generated_product", true)
@@ -247,6 +258,11 @@ func _create_outline(
 		return
 
 	if outline_material == null:
+		return
+
+	var product_mesh: Mesh = _get_product_mesh()
+
+	if product_mesh == null:
 		return
 
 	var outline_instance: MeshInstance3D = MeshInstance3D.new()
@@ -269,6 +285,8 @@ func _update_interaction_zone() -> void:
 
 	if box_shape == null:
 		return
+
+	var product_mesh: Mesh = _get_product_mesh()
 
 	if product_mesh == null:
 		return

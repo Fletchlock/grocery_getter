@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://bk72xf2654xaf"]
+
+[ext_resource type="ArrayMesh" uid="uid://wi1liuxq3x6r" path="res://assets/models/items/can_corn_Cylinder_002.res" id="1_5eadt"]
+[ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_lah3t"]
+
+[resource]
+script = ExtResource("1_lah3t")
+item_id = "can_corn"
+display_name = "Can of corn"
+product_mesh = ExtResource("1_5eadt")
+metadata/_custom_type_script = "uid://ce7xl2fesyef6"

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://bdoudowbwde22"]
+
+[ext_resource type="ArrayMesh" uid="uid://bdrwh3d8gdch4" path="res://assets/models/items/can_peas_Cylinder.res" id="1_g7mwy"]
+[ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_u32wy"]
+
+[resource]
+script = ExtResource("1_u32wy")
+item_id = "can_peas"
+display_name = "Can of peas"
+product_mesh = ExtResource("1_g7mwy")
+metadata/_custom_type_script = "uid://ce7xl2fesyef6"

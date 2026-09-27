@@ -5,6 +5,8 @@ extends CharacterBody3D
 @onready var _first_person_camera: Camera3D = $FirstPersonCameraPivot/FirstPersonCamera
 @onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
 @onready var interact_raycast_3d: RayCast3D = $FirstPersonCameraPivot/FirstPersonCamera/InteractRaycast3D
+@onready var held_item_holder: Node3D = $FirstPersonCameraPivot/HeldItemHolder
+
 
 @onready var _spring_arm_pivot: Node3D = $SpringArmPivot
 @onready var _first_person_pivot: Node3D = $FirstPersonCameraPivot
@@ -98,6 +100,10 @@ var _last_movement_direction := Vector3.FORWARD
 var _gravity := -30.0
 var _was_airborne := false
 var _target_zoom := 2.0
+
+# === Held Item Variables ===
+var held_item: ProductData = null
+var held_item_visual: MeshInstance3D = null
 
 # === Player Scene Reference ===
 const PLAYER_SCENE = preload(
@@ -1155,3 +1161,35 @@ func interact_with_item(item: Node3D) -> void:
 	else:
 		if item == attached_cart:
 			try_release_cart()
+
+
+# Held item functions
+func _create_held_item_visual() -> void:
+	if held_item == null:
+		return
+
+	if held_item_holder == null:
+		return
+
+	if held_item_visual != null:
+		held_item_visual.queue_free()
+		held_item_visual = null
+
+	if held_item.product_mesh == null:
+		return
+
+	held_item_visual = MeshInstance3D.new()
+	held_item_visual.mesh = held_item.product_mesh
+	held_item_visual.position = held_item.hand_position
+	held_item_visual.rotation = held_item.hand_rotation
+	held_item_visual.scale = held_item.hand_scale
+
+	held_item_holder.add_child(held_item_visual)
+
+
+func _clear_held_item() -> void:
+	if held_item_visual != null:
+		held_item_visual.queue_free()
+		held_item_visual = null
+
+	held_item = null

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://6frq8yt7wboh"]
+
+[ext_resource type="ArrayMesh" uid="uid://bj5xg7e7y6mc0" path="res://assets/models/items/can_beans_Cylinder_001.res" id="1_kmfih"]
+[ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_v4vbk"]
+
+[resource]
+script = ExtResource("1_v4vbk")
+item_id = "can_beans"
+display_name = "Can of beans"
+product_mesh = ExtResource("1_kmfih")
+metadata/_custom_type_script = "uid://ce7xl2fesyef6"
