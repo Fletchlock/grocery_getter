@@ -610,6 +610,8 @@ player_character = NodePath("../../..")
 interact_raycast_3d = NodePath(".")
 interaction_prompt = NodePath("../../../InteractionPrompt")
 
+[node name="HeldItemHolder" type="Node3D" parent="FirstPersonCameraPivot" unique_id=1664927062]
+
 [node name="InteractionPrompt" type="Node3D" parent="." unique_id=1287054937]
 top_level = true
 
