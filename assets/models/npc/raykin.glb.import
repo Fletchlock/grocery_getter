@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bu2tkihpjdky6"
-path="res://godot/imported/cereal_box_01.glb-895cd9e76e92ee7eff64cc48fb4c65be.scn"
+uid="uid://bd0ayyp7ow3n2"
+path="res://godot/imported/raykin.glb-21d057a55bdf3db8a0301015bfe3f294.scn"
 
 [deps]
 
-source_file="res://assets/models/cereal_box_01.glb"
-dest_files=["res://godot/imported/cereal_box_01.glb-895cd9e76e92ee7eff64cc48fb4c65be.scn"]
+source_file="res://assets/models/npc/raykin.glb"
+dest_files=["res://godot/imported/raykin.glb-21d057a55bdf3db8a0301015bfe3f294.scn"]
 
 [params]
 

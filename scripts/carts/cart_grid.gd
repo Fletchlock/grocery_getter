@@ -39,6 +39,38 @@ var fit_cache_valid: bool = false
 func _ready() -> void:
 	_rebuild_grid()
 
+	if not Engine.is_editor_hint():
+		if not multiplayer.is_server():
+			call_deferred("_request_cart_state")
+
+
+func _request_cart_state() -> void:
+	if multiplayer.is_server():
+		return
+
+	request_cart_state.rpc_id(1)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_cart_state() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
+
+	var product_paths: Array[String] = []
+
+	for product: ProductData in cart_items:
+		if product == null:
+			product_paths.append("")
+		else:
+			product_paths.append(product.resource_path)
+
+	sync_cart_state.rpc_id(
+		requesting_peer_id,
+		product_paths
+	)
+
 
 func add_item(product: ProductData) -> bool:
 	if product == null:
@@ -691,6 +723,7 @@ func _create_product_visual(
 
 	visual.mesh = product.product_mesh
 	visual.scale = item_scale
+	visual.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 	var product_bounds: AABB = _get_product_bounds(product)
 
@@ -732,3 +765,195 @@ func _invalidate_fit_cache() -> void:
 	cached_fit_product = null
 	cached_fit_position = Vector3.INF
 	fit_cache_valid = false
+
+
+func request_interact(player: CharacterBody3D) -> void:
+	if player == null:
+		return
+
+	# Holding an item → try to place it in the cart.
+	if player.held_item != null:
+		var product_path: String = player.held_item.resource_path
+
+		if multiplayer.is_server():
+			_add_item_from_player(player, product_path)
+		else:
+			request_add_item.rpc_id(
+				1,
+				player.get_path(),
+				product_path
+			)
+
+		return
+
+	# Empty hands → take the last item from the cart.
+	if has_items():
+		if multiplayer.is_server():
+			_take_item_for_player(player)
+		else:
+			request_take_item.rpc_id(
+				1,
+				player.get_path()
+			)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_add_item(
+	player_path: NodePath,
+	product_path: String
+	) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
+
+	var player_node: Node = get_node_or_null(player_path)
+
+	if player_node == null:
+		return
+
+	if not player_node is CharacterBody3D:
+		return
+
+	var player: CharacterBody3D = player_node as CharacterBody3D
+
+	if player.get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	_add_item_from_player(player, product_path)
+
+
+func _add_item_from_player(
+	player: CharacterBody3D,
+	product_path: String
+	) -> void:
+	if player == null:
+		return
+
+	if product_path.is_empty():
+		return
+
+	var product: ProductData = load(product_path) as ProductData
+
+	if product == null:
+		return
+
+	if not add_item(product):
+		return
+
+	_clear_player_held_item(player)
+
+	_broadcast_cart_state()
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_take_item(player_path: NodePath) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
+
+	var player_node: Node = get_node_or_null(player_path)
+
+	if player_node == null:
+		return
+
+	if not player_node is CharacterBody3D:
+		return
+
+	var player: CharacterBody3D = player_node as CharacterBody3D
+
+	if player.get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	_take_item_for_player(player)
+
+
+func _take_item_for_player(player: CharacterBody3D) -> void:
+	if player == null:
+		return
+
+	if player.held_item != null:
+		return
+
+	var product: ProductData = take_last_item()
+
+	if product == null:
+		return
+
+	_give_product_to_player(player, product)
+
+	_broadcast_cart_state()
+	
+	
+func _give_product_to_player(
+	player: CharacterBody3D,
+	product: ProductData
+	) -> void:
+	if player == null:
+		return
+
+	if product == null:
+		return
+
+	var player_peer_id: int = player.get_multiplayer_authority()
+	var product_path: String = product.resource_path
+
+	if player_peer_id == multiplayer.get_unique_id():
+		player.receive_product(product_path)
+	else:
+		player.receive_product.rpc_id(
+			player_peer_id,
+			product_path
+		)
+
+
+func _clear_player_held_item(player: CharacterBody3D) -> void:
+	if player == null:
+		return
+
+	var player_peer_id: int = player.get_multiplayer_authority()
+
+	if player_peer_id == multiplayer.get_unique_id():
+		player._clear_held_item()
+	else:
+		player.clear_held_item.rpc_id(
+			player_peer_id
+		)
+		
+
+func _broadcast_cart_state() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var product_paths: Array[String] = []
+
+	for product: ProductData in cart_items:
+		if product == null:
+			product_paths.append("")
+		else:
+			product_paths.append(product.resource_path)
+
+	_apply_cart_state(product_paths)
+
+	sync_cart_state.rpc(product_paths)
+
+
+@rpc("authority", "call_remote", "reliable")
+func sync_cart_state(product_paths: Array[String]) -> void:
+	_apply_cart_state(product_paths)
+
+
+func _apply_cart_state(product_paths: Array[String]) -> void:
+	cart_items.clear()
+
+	for path: String in product_paths:
+		if path.is_empty():
+			continue
+
+		var product: ProductData = load(path) as ProductData
+
+		if product != null:
+			cart_items.append(product)
+
+	_rebuild_grid()

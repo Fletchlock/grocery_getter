@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cjabx1e5qvnvx" path="res://scripts/levels/third_person_level.gd" id="1_c3yyn"]
 [ext_resource type="PackedScene" uid="uid://dfa6glbhgltej" path="res://assets/models/buildings/DesertMap.glb" id="3_ijfqo"]
-[ext_resource type="PackedScene" uid="uid://bd0ayyp7ow3n2" path="res://assets/models/raykin.glb" id="8_ijfqo"]
+[ext_resource type="PackedScene" uid="uid://bd0ayyp7ow3n2" path="res://assets/models/npc/raykin.glb" id="8_ijfqo"]
 [ext_resource type="PackedScene" uid="uid://djp7hmfm0m00m" path="res://scenes/objects/carts/push_cart.tscn" id="9_alulh"]
 [ext_resource type="PackedScene" uid="uid://dlukamev28f1f" path="res://scenes/objects/shelves/freezer_right_5_row.tscn" id="9_glxnp"]
 [ext_resource type="PackedScene" uid="uid://c4g1plfy54h5y" path="res://scenes/objects/buildings/shack_tall_wide_right.tscn" id="9_vhux3"]
@@ -168,8 +168,8 @@ product_gap = 0.04
 position_variation = 0.02
 rotation_variation = 1.0
 variation_seed = 24
-max_quantity = 49
-quantity = 49
+max_quantity = 42
+quantity = 42
 
 [node name="ProductDisplay3" parent="." unique_id=153784913 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.058685, -0.5983734, -7.310756)
