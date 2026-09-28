@@ -105,6 +105,15 @@ var _target_zoom := 2.0
 var held_item: ProductData = null
 var held_item_visual: MeshInstance3D = null
 
+@onready var held_item_target: Node3D = $Armature/HeldItemTarget
+@onready var held_item_network_visual: MeshInstance3D = $Armature/HeldItemTarget/HeldItemNetworkVisual
+
+@export var network_holding_item: bool = false
+@export var network_held_item_path: String = ""
+
+var _network_holding_item_last_received: bool = false
+var _network_held_item_path_last_received: String = ""
+
 # === Player Scene Reference ===
 const PLAYER_SCENE = preload(
 	"res://scenes/player/low_poly_character_FP.tscn"
@@ -479,7 +488,13 @@ func _physics_process(delta: float) -> void:
 		var hat = body_mesh.get_node("Hat")
 		hat.visible = network_hat_visible
 
-		# (All your previous conditional IK code is gone from here!)
+		if (
+			network_holding_item != _network_holding_item_last_received
+			or network_held_item_path != _network_held_item_path_last_received
+		):
+			_network_holding_item_last_received = network_holding_item
+			_network_held_item_path_last_received = network_held_item_path
+			_update_network_held_item_visual()
 		
 		# Detect a new received network state...
 		if (
@@ -860,6 +875,15 @@ func _physics_process(delta: float) -> void:
 
 		network_rotation_y = armature_node.global_rotation.y
 
+	# Network held item visual
+	network_holding_item = held_item != null
+
+	if held_item != null:
+		network_held_item_path = held_item.resource_path
+	else:
+		network_held_item_path = ""
+
+
 	# ============================================================
 	# SMOOTHED MULTIPLAYER SKELETAL IK JITTER FILTER
 	# ============================================================
@@ -1195,6 +1219,42 @@ func _clear_held_item() -> void:
 		held_item_visual = null
 
 	held_item = null
+
+
+func _update_network_held_item_visual() -> void:
+	if is_multiplayer_authority():
+		return
+
+	if not network_holding_item or network_held_item_path.is_empty():
+		held_item_network_visual.visible = false
+
+		if right_hand_ik:
+			right_hand_ik.stop()
+
+		return
+
+	var loaded_resource: Resource = load(network_held_item_path)
+
+	if loaded_resource == null:
+		return
+
+	if not loaded_resource is ProductData:
+		return
+
+	var product: ProductData = loaded_resource as ProductData
+
+	if product.product_mesh == null:
+		return
+
+	held_item_network_visual.mesh = product.product_mesh
+	held_item_network_visual.position = product.hand_position
+	held_item_network_visual.rotation = product.hand_rotation
+	held_item_network_visual.scale = product.hand_scale
+	held_item_network_visual.visible = true
+
+	if right_hand_ik and held_item_target:
+		right_hand_ik.target_node = held_item_target.get_path()
+		right_hand_ik.start()
 
 
 @rpc("any_peer", "call_remote", "reliable")
