@@ -71,6 +71,9 @@ func _get_interactable(collider: Node3D) -> Node3D:
 	var node: Node = collider
 
 	while node != null:
+		if node.has_method("get_interaction_prompt_for_player"):
+			return node as Node3D
+
 		if node.has_method("get_interaction_prompt"):
 			return node as Node3D
 
@@ -107,11 +110,17 @@ func _update_interaction_prompt(
 	if interaction_prompt == null:
 		return
 
-	if not interactable.has_method("get_interaction_prompt"):
+	var prompt_text: String = ""
+
+	if interactable.has_method("get_interaction_prompt_for_player"):
+		prompt_text = interactable.get_interaction_prompt_for_player(
+			player_character
+		)
+	elif interactable.has_method("get_interaction_prompt"):
+		prompt_text = interactable.get_interaction_prompt()
+	else:
 		_hide_prompt()
 		return
-
-	var prompt_text: String = interactable.get_interaction_prompt()
 
 	if prompt_text.is_empty():
 		_hide_prompt()
@@ -140,37 +149,44 @@ func _update_interaction_prompt(
 	label.text = prompt_text
 	label.visible = true
 
-	var prompt_position: Vector3 = (
-		collision_shape.global_position
-		+ Vector3.UP * 0.1
-	)
+	var prompt_position: Vector3
 
-	var camera_position: Vector3 = global_position
-
-	var local_camera_position: Vector3 = (
-		collision_shape.global_transform.affine_inverse()
-		* camera_position
-	)
-
-	var half_width: float = box_shape.size.x * 0.5
-	var half_depth: float = box_shape.size.z * 0.5
-
-	var local_offset: Vector3 = Vector3.ZERO
-
-	var x_distance: float = absf(local_camera_position.x)
-	var z_distance: float = absf(local_camera_position.z)
-
-	if x_distance > z_distance:
-		local_offset.x = signf(local_camera_position.x) * half_width
+	if interactable.has_method("get_interaction_prompt_position"):
+		prompt_position = interactable.get_interaction_prompt_position(
+			collision_shape
+		)
 	else:
-		local_offset.z = signf(local_camera_position.z) * half_depth
+		prompt_position = (
+			collision_shape.global_position
+			+ Vector3.UP * 0.1
+		)
 
-	var world_offset: Vector3 = (
-		collision_shape.global_transform.basis
-		* local_offset
-	)
+		var camera_position: Vector3 = global_position
 
-	prompt_position += world_offset
+		var local_camera_position: Vector3 = (
+			collision_shape.global_transform.affine_inverse()
+			* camera_position
+		)
+
+		var half_width: float = box_shape.size.x * 0.5
+		var half_depth: float = box_shape.size.z * 0.5
+
+		var local_offset: Vector3 = Vector3.ZERO
+
+		var x_distance: float = absf(local_camera_position.x)
+		var z_distance: float = absf(local_camera_position.z)
+
+		if x_distance > z_distance:
+			local_offset.x = signf(local_camera_position.x) * half_width
+		else:
+			local_offset.z = signf(local_camera_position.z) * half_depth
+
+		var world_offset: Vector3 = (
+			collision_shape.global_transform.basis
+			* local_offset
+		)
+
+		prompt_position += world_offset
 
 	interaction_prompt.visible = false
 	interaction_prompt.global_position = prompt_position

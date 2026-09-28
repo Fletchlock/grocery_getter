@@ -77,26 +77,62 @@ func _process(_delta: float) -> void:
 		_update_interaction_zone()
 
 
-func request_interact() -> void:
+func request_interact(player: CharacterBody3D) -> void:
+	if product_data == null:
+		return
+
+	if quantity <= 0:
+		return
+
+	if player == null:
+		return
+
 	if multiplayer.is_server():
-		_take_product()
+		_take_product(player)
 	else:
-		request_take_product.rpc_id(1)
+		request_take_product.rpc_id(1, player.get_path())
 
 
 @rpc("any_peer", "call_remote", "reliable")
-func request_take_product() -> void:
+func request_take_product(player_path: NodePath) -> void:
 	if not multiplayer.is_server():
 		return
 
-	_take_product()
+	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
+	var player_node: Node = get_node_or_null(player_path)
+
+	if player_node == null:
+		return
+
+	if not player_node is CharacterBody3D:
+		return
+
+	var player: CharacterBody3D = player_node as CharacterBody3D
+
+	if player.get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	_take_product(player)
 
 
-func _take_product() -> void:
+func _take_product(player: CharacterBody3D) -> void:
+	if product_data == null:
+		return
+
 	if quantity <= 0:
 		return
 
 	quantity -= 1
+
+	var product_path: String = product_data.resource_path
+
+	if player.get_multiplayer_authority() == multiplayer.get_unique_id():
+		player.receive_product(product_path)
+	else:
+		player.receive_product.rpc_id(
+			player.get_multiplayer_authority(),
+			product_path
+		)
 
 
 func _find_nodes() -> void:
@@ -360,4 +396,10 @@ func get_interaction_prompt() -> String:
 	if quantity <= 0:
 		return ""
 
-	return "[E] Take one"
+	if product_data == null:
+		return "[E] Take"
+
+	if product_data.display_name.is_empty():
+		return "[E] Take"
+
+	return "[E] Take " + product_data.display_name

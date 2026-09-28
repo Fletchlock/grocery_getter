@@ -1151,16 +1151,33 @@ func interact_with_item(item: Node3D) -> void:
 	if item == null:
 		return
 
-	if attached_cart == null:
-		if item is RigidBody3D and item.has_method("grab_cart"):
-			try_grab_cart(item as RigidBody3D)
-		elif item.has_method("request_interact"):
-			item.request_interact()
-		elif item.has_method("interact"):
-			item.interact()
-	else:
-		if item == attached_cart:
-			try_release_cart()
+	if item is CartGrid:
+		if held_item != null:
+			if item.add_item(held_item):
+				_clear_held_item()
+		elif item.has_items():
+			var product: ProductData = item.take_last_item()
+
+			if product != null:
+				held_item = product
+				_create_held_item_visual()
+
+		return
+
+	if item is RigidBody3D and item.has_method("grab_cart"):
+		if held_item != null:
+			return
+
+		try_grab_cart(item as RigidBody3D)
+		return
+
+	if held_item != null:
+		return
+
+	if item.has_method("request_interact"):
+		item.request_interact(self)
+	elif item.has_method("interact"):
+		item.interact()
 
 
 # Held item functions
@@ -1193,3 +1210,18 @@ func _clear_held_item() -> void:
 		held_item_visual = null
 
 	held_item = null
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func receive_product(product_path: String) -> void:
+	var loaded_resource: Resource = load(product_path)
+
+	if loaded_resource == null:
+		return
+
+	if not loaded_resource is ProductData:
+		return
+
+	held_item = loaded_resource as ProductData
+
+	_create_held_item_visual()
