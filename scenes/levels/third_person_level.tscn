@@ -1,20 +1,20 @@
 [gd_scene format=3 uid="uid://gcp374r23hjn"]
 
-[ext_resource type="Script" uid="uid://cjabx1e5qvnvx" path="res://scripts/third_person_level.gd" id="1_c3yyn"]
-[ext_resource type="PackedScene" uid="uid://dfa6glbhgltej" path="res://assets/models/DesertMap.glb" id="3_ijfqo"]
+[ext_resource type="Script" uid="uid://cjabx1e5qvnvx" path="res://scripts/levels/third_person_level.gd" id="1_c3yyn"]
+[ext_resource type="PackedScene" uid="uid://dfa6glbhgltej" path="res://assets/models/buildings/DesertMap.glb" id="3_ijfqo"]
 [ext_resource type="PackedScene" uid="uid://bd0ayyp7ow3n2" path="res://assets/models/raykin.glb" id="8_ijfqo"]
-[ext_resource type="PackedScene" uid="uid://djp7hmfm0m00m" path="res://scenes/push_cart.tscn" id="9_alulh"]
-[ext_resource type="PackedScene" uid="uid://dlukamev28f1f" path="res://scenes/objects/freezer_right_5_row.tscn" id="9_glxnp"]
-[ext_resource type="PackedScene" uid="uid://c4g1plfy54h5y" path="res://scenes/objects/shack_tall_wide_right.tscn" id="9_vhux3"]
-[ext_resource type="PackedScene" uid="uid://cmmgsv7wgnpms" path="res://scenes/objects/freezer_left_5_row.tscn" id="10_tcjw2"]
-[ext_resource type="PackedScene" uid="uid://c5rv2si7ox4uw" path="res://scenes/objects/shack_tall_stairs_l.tscn" id="10_vhux3"]
-[ext_resource type="PackedScene" uid="uid://d3flnkp5j2on4" path="res://scenes/objects/endcap_5_row.tscn" id="11_5i2ml"]
-[ext_resource type="PackedScene" uid="uid://dffkedylp1svl" path="res://scenes/objects/shelf_3_row.tscn" id="11_glxnp"]
-[ext_resource type="PackedScene" uid="uid://ns3ym0bst3do" path="res://scenes/objects/produce_4_row.tscn" id="11_t00v6"]
-[ext_resource type="PackedScene" uid="uid://bsbnaru4ssia1" path="res://scenes/objects/shelf_2_row.tscn" id="13_om5ry"]
-[ext_resource type="PackedScene" uid="uid://b375o8hcy0le6" path="res://scenes/objects/freezer_bin.tscn" id="15_t00v6"]
+[ext_resource type="PackedScene" uid="uid://djp7hmfm0m00m" path="res://scenes/objects/carts/push_cart.tscn" id="9_alulh"]
+[ext_resource type="PackedScene" uid="uid://dlukamev28f1f" path="res://scenes/objects/shelves/freezer_right_5_row.tscn" id="9_glxnp"]
+[ext_resource type="PackedScene" uid="uid://c4g1plfy54h5y" path="res://scenes/objects/buildings/shack_tall_wide_right.tscn" id="9_vhux3"]
+[ext_resource type="PackedScene" uid="uid://cmmgsv7wgnpms" path="res://scenes/objects/shelves/freezer_left_5_row.tscn" id="10_tcjw2"]
+[ext_resource type="PackedScene" uid="uid://c5rv2si7ox4uw" path="res://scenes/objects/buildings/shack_tall_stairs_l.tscn" id="10_vhux3"]
+[ext_resource type="PackedScene" uid="uid://d3flnkp5j2on4" path="res://scenes/objects/shelves/endcap_5_row.tscn" id="11_5i2ml"]
+[ext_resource type="PackedScene" uid="uid://dffkedylp1svl" path="res://scenes/objects/shelves/shelf_3_row.tscn" id="11_glxnp"]
+[ext_resource type="PackedScene" uid="uid://ns3ym0bst3do" path="res://scenes/objects/shelves/produce_4_row.tscn" id="11_t00v6"]
+[ext_resource type="PackedScene" uid="uid://bsbnaru4ssia1" path="res://scenes/objects/shelves/shelf_2_row.tscn" id="13_om5ry"]
+[ext_resource type="PackedScene" uid="uid://b375o8hcy0le6" path="res://scenes/objects/shelves/freezer_bin.tscn" id="15_t00v6"]
 [ext_resource type="PackedScene" uid="uid://54bswnjg63f6" path="res://scenes/objects/buildings/store_small_greybox.tscn" id="15_tcjw2"]
-[ext_resource type="PackedScene" uid="uid://fxtb45r4l7h2" path="res://scenes/objects/product_display.tscn" id="16_om5ry"]
+[ext_resource type="PackedScene" uid="uid://fxtb45r4l7h2" path="res://scenes/items/product_display.tscn" id="16_om5ry"]
 [ext_resource type="Resource" uid="uid://cg1ckgnjrikqh" path="res://resources/products/bread.tres" id="16_t00v6"]
 [ext_resource type="Resource" uid="uid://dklerfmqk4jk0" path="res://resources/products/cereal.tres" id="17_om5ry"]
 [ext_resource type="Resource" uid="uid://bk72xf2654xaf" path="res://resources/products/can_corn.tres" id="18_fumkw"]
@@ -160,9 +160,9 @@ max_quantity = 72
 quantity = 72
 
 [node name="ProductDisplay2" parent="." unique_id=452188552 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -2.9298565, -0.06804156, -10.692687)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -2.9298565, -0.06804156, -10.573076)
 product_data = ExtResource("17_om5ry")
-grid_columns = 7
+grid_columns = 6
 grid_rows = 7
 product_gap = 0.04
 position_variation = 0.02

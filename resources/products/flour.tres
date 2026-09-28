@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://dpcxghxgl7ms"]
+
+[ext_resource type="ArrayMesh" uid="uid://b31b1fwkbykt8" path="res://assets/models/items/flour_Cube_009.res" id="1_6jjfg"]
+[ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_euycf"]
+
+[resource]
+script = ExtResource("1_euycf")
+item_id = "flour"
+display_name = "Flour"
+product_mesh = ExtResource("1_6jjfg")
+metadata/_custom_type_script = "uid://ce7xl2fesyef6"

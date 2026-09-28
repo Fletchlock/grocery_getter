@@ -8,6 +8,35 @@ var current_interactable: Node3D = null
 var current_outline_mesh: Node3D = null
 
 
+
+
+func _ready() -> void:
+	_prewarm_interaction_prompt()
+
+
+func _prewarm_interaction_prompt() -> void:
+	if interaction_prompt == null:
+		return
+
+	var label: Label3D = interaction_prompt.get_node_or_null(
+		"Label3D"
+	) as Label3D
+
+	if label == null:
+		return
+
+	label.text = "warming up labels text..."
+	label.visible = true
+	interaction_prompt.visible = true
+
+	await get_tree().process_frame
+
+	label.visible = false
+	interaction_prompt.visible = false
+
+
+
+
 func _process(_delta: float) -> void:
 	if player_character == null:
 		return
@@ -188,7 +217,6 @@ func _update_interaction_prompt(
 
 		prompt_position += world_offset
 
-	interaction_prompt.visible = false
 	interaction_prompt.global_position = prompt_position
 	interaction_prompt.visible = true
 
