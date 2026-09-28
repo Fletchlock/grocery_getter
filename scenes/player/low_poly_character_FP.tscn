@@ -359,6 +359,12 @@ properties/8/replication_mode = 1
 properties/9/path = NodePath(".:network_rotation_y")
 properties/9/spawn = true
 properties/9/replication_mode = 1
+properties/10/path = NodePath(".:network_holding_item")
+properties/10/spawn = true
+properties/10/replication_mode = 1
+properties/11/path = NodePath(".:network_held_item_path")
+properties/11/spawn = true
+properties/11/replication_mode = 1
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_qgfk6"]
 radius = 0.5971316
@@ -554,6 +560,11 @@ primary_limit_angle = 1.2217305
 primary_damp_threshold = 1.0
 secondary_limit_angle = 1.2217305
 secondary_damp_threshold = 1.0
+
+[node name="HeldItemTarget" type="Node3D" parent="Armature" unique_id=558431979]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 1.1, -0.4)
+
+[node name="HeldItemNetworkVisual" type="MeshInstance3D" parent="Armature/HeldItemTarget" unique_id=753128070]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=795921799]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
