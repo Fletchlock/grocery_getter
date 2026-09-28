@@ -1152,27 +1152,11 @@ func interact_with_item(item: Node3D) -> void:
 	if item == null:
 		return
 
-	if item is CartGrid:
-		if held_item != null:
-			if item.add_item(held_item):
-				_clear_held_item()
-		elif item.has_items():
-			var product: ProductData = item.take_last_item()
-
-			if product != null:
-				held_item = product
-				_create_held_item_visual()
-
-		return
-
 	if item is RigidBody3D and item.has_method("grab_cart"):
 		if held_item != null:
 			return
 
 		try_grab_cart(item as RigidBody3D)
-		return
-
-	if held_item != null:
 		return
 
 	if item.has_method("request_interact"):
@@ -1211,6 +1195,14 @@ func _clear_held_item() -> void:
 		held_item_visual = null
 
 	held_item = null
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func clear_held_item() -> void:
+	if multiplayer.get_remote_sender_id() != 1:
+		return
+
+	_clear_held_item()
 
 
 @rpc("any_peer", "call_remote", "reliable")

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://u71xogfk53i"]
 
-[ext_resource type="PackedScene" uid="uid://5vi8odyy5nph" path="res://assets/models/cart.glb" id="1_0tgi4"]
+[ext_resource type="PackedScene" uid="uid://5vi8odyy5nph" path="res://assets/models/carts/cart.glb" id="1_0tgi4"]
 
 [node name="cart" unique_id=1247605086 instance=ExtResource("1_0tgi4")]
 

@@ -81,10 +81,30 @@ func request_interact(player: CharacterBody3D) -> void:
 	if product_data == null:
 		return
 
-	if quantity <= 0:
+	if player == null:
 		return
 
-	if player == null:
+	# Holding an item means we are trying to put it back.
+	if player.held_item != null:
+		if player.held_item != product_data:
+			return
+
+		if quantity >= max_quantity:
+			return
+
+		if multiplayer.is_server():
+			_return_product(player)
+		else:
+			request_return_product.rpc_id(
+				1,
+				player.get_path(),
+				product_data.resource_path
+			)
+
+		return
+
+	# Empty hands means we are trying to take an item.
+	if quantity <= 0:
 		return
 
 	if multiplayer.is_server():
@@ -133,6 +153,60 @@ func _take_product(player: CharacterBody3D) -> void:
 			player.get_multiplayer_authority(),
 			product_path
 		)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_return_product(
+	player_path: NodePath,
+	product_path: String
+	) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
+	var player_node: Node = get_node_or_null(player_path)
+
+	if player_node == null:
+		return
+
+	if not player_node is CharacterBody3D:
+		return
+
+	var player: CharacterBody3D = player_node as CharacterBody3D
+
+	if player.get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	if product_data == null:
+		return
+
+	if product_path != product_data.resource_path:
+		return
+
+	if quantity >= max_quantity:
+		return
+
+	_return_product(player)
+
+
+func _return_product(player: CharacterBody3D) -> void:
+	if product_data == null:
+		return
+
+	if player == null:
+		return
+
+	if quantity >= max_quantity:
+		return
+
+	quantity += 1
+
+	var player_peer_id: int = player.get_multiplayer_authority()
+
+	if player_peer_id == multiplayer.get_unique_id():
+		player._clear_held_item()
+	else:
+		player.clear_held_item.rpc_id(player_peer_id)
 
 
 func _find_nodes() -> void:
@@ -392,14 +466,35 @@ func _ensure_unique_collision_shape() -> void:
 		collision_shape.shape = box_shape
 
 
-func get_interaction_prompt() -> String:
-	if quantity <= 0:
+func get_interaction_prompt_for_player(
+	player: CharacterBody3D
+) -> String:
+	if player == null:
 		return ""
 
 	if product_data == null:
-		return "[E] Take"
+		return ""
+
+	# Player is holding something.
+	if player.held_item != null:
+		# Wrong product.
+		if player.held_item != product_data:
+			return ""
+
+		# Display is already full.
+		if quantity >= max_quantity:
+			return ""
+
+		if product_data.display_name.is_empty():
+			return "[E] Place Item"
+
+		return "[E] Place " + product_data.display_name
+
+	# Player has empty hands.
+	if quantity <= 0:
+		return ""
 
 	if product_data.display_name.is_empty():
-		return "[E] Take"
+		return "[E] Take Item"
 
 	return "[E] Take " + product_data.display_name
