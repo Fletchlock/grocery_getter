@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bojdkseg653j6" path="res://scripts/push_cart.gd" id="1_i4yyv"]
 [ext_resource type="Material" uid="uid://bgd55jnxmrdrx" path="res://assets/materials/Material.tres" id="2_juux1"]
+[ext_resource type="Script" uid="uid://cjpcpdqhqpcgo" path="res://scripts/cart_grid.gd" id="3_toadb"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_i4yyv"]
 friction = 0.15
@@ -104,6 +105,9 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_vc5oy")
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
+size = Vector3(0.75454557, 0.7067013, 1.6119537)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_rd2g5"]
 size = Vector3(1, 0.37493896, 0.3581543)
 
@@ -150,9 +154,6 @@ properties/4/path = NodePath(".:angular_velocity")
 properties/4/spawn = true
 properties/4/replication_mode = 1
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_bcy86"]
-size = Vector3(1.2148438, 1.0324249, 2.2912865)
-
 [node name="push_cart" type="RigidBody3D" unique_id=1577398286]
 collision_mask = 7
 axis_lock_angular_x = true
@@ -173,6 +174,23 @@ rotation_align_speed = 20.0
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.0052490234, 0, -0.8827122)
 mesh = SubResource("ArrayMesh_0ygl2")
 surface_material_override/1 = ExtResource("2_juux1")
+
+[node name="CartGrid" type="Node3D" parent="." unique_id=1147855258]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.27885115, -1.64931)
+script = ExtResource("3_toadb")
+max_items = 100
+horizontal_spacing = 0.04
+vertical_spacing = 0.0
+depth_spacing = 0.04
+rotation_variation_degrees = 4.0
+
+[node name="InteractionArea" type="Area3D" parent="CartGrid" unique_id=608925111]
+collision_layer = 257
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CartGrid/InteractionArea" unique_id=1895585703]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.016851068, 0.64090204, 0.69018066)
+shape = SubResource("BoxShape3D_6aigx")
+debug_color = Color(0.9847451, 0.4989375, 0.4725191, 1)
 
 [node name="HandlePoint" type="Marker3D" parent="." unique_id=1156551631]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9804872, 0.39552152)
@@ -226,20 +244,7 @@ transform = Transform3D(0.25783417, 0.022557624, -0.96592575, 0.9622502, 0.08418
 [node name="RightHandTarget" type="Node3D" parent="." unique_id=1644043477]
 transform = Transform3D(0.25783414, -0.022557624, 0.9659257, -0.9622501, 0.08418603, 0.258819, -0.08715581, -0.9961946, -4.2221956e-08, 0.5, 1.187, 0.533)
 
-[node name="ContentsArea" type="Area3D" parent="." unique_id=131051931]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7105986, -0.8416152)
-collision_layer = 2
-collision_mask = 4
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ContentsArea" unique_id=1472509003]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0007324219, 0.15293121, -0.038583755)
-shape = SubResource("BoxShape3D_bcy86")
-debug_color = Color(0.6677083, 0.4045921, 0.9830254, 1)
-
 [node name="NavigationObstacle3D" type="NavigationObstacle3D" parent="." unique_id=1399339440]
 visible = false
 radius = 2.0
 use_3d_avoidance = true
-
-[connection signal="body_entered" from="ContentsArea" to="." method="_on_contents_area_body_entered"]
-[connection signal="body_exited" from="ContentsArea" to="." method="_on_contents_area_body_exited"]

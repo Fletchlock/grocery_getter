@@ -17,6 +17,9 @@
 [ext_resource type="PackedScene" uid="uid://fxtb45r4l7h2" path="res://scenes/objects/product_display.tscn" id="16_om5ry"]
 [ext_resource type="Resource" uid="uid://cg1ckgnjrikqh" path="res://resources/products/bread.tres" id="16_t00v6"]
 [ext_resource type="Resource" uid="uid://dklerfmqk4jk0" path="res://resources/products/cereal.tres" id="17_om5ry"]
+[ext_resource type="Resource" uid="uid://bk72xf2654xaf" path="res://resources/products/can_corn.tres" id="18_fumkw"]
+[ext_resource type="Resource" uid="uid://6frq8yt7wboh" path="res://resources/products/can_beans.tres" id="19_7stf3"]
+[ext_resource type="Resource" uid="uid://bdoudowbwde22" path="res://resources/products/can_peas.tres" id="20_7467c"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ta2qt"]
 sky_top_color = Color(0.2596472, 0.5435158, 0.9217843, 1)
@@ -67,7 +70,7 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -4.5
 transform = Transform3D(-4.3711385e-08, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -4.3711385e-08, -3.4750786, -1.320557, 2.2588005)
 
 [node name="push_cart2" parent="." unique_id=892892404 instance=ExtResource("9_alulh")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -10.302549, -1.4125986, -13.9804)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.9875855, -1.4125986, -7.114858)
 
 [node name="shack_tall_wide_right" parent="." unique_id=477675682 instance=ExtResource("9_vhux3")]
 transform = Transform3D(-0.0076118787, 0, -1.199976, 0, 1.1999999, 0, 1.199976, 0, -0.0076118787, 18.169405, -1.4046435, -10.71521)
@@ -167,3 +170,32 @@ rotation_variation = 1.0
 variation_seed = 24
 max_quantity = 49
 quantity = 49
+
+[node name="ProductDisplay3" parent="." unique_id=153784913 instance=ExtResource("16_om5ry")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.058685, -0.5983734, -7.310756)
+product_data = ExtResource("18_fumkw")
+grid_rows = 6
+stack_height = 2
+position_variation = 0.01
+variation_seed = 6564
+max_quantity = 60
+quantity = 60
+
+[node name="ProductDisplay4" parent="." unique_id=129504775 instance=ExtResource("16_om5ry")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.0535913, -0.5983734, -6.7609005)
+product_data = ExtResource("19_7stf3")
+grid_rows = 6
+stack_height = 2
+position_variation = 0.01
+variation_seed = 54645
+max_quantity = 60
+quantity = 60
+
+[node name="ProductDisplay5" parent="." unique_id=248497538 instance=ExtResource("16_om5ry")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.0535913, -0.5983734, -6.120722)
+product_data = ExtResource("20_7467c")
+grid_rows = 6
+stack_height = 2
+position_variation = 0.01
+max_quantity = 60
+quantity = 60

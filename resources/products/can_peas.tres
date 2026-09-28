@@ -6,6 +6,6 @@
 [resource]
 script = ExtResource("1_u32wy")
 item_id = "can_peas"
-display_name = "Can of peas"
+display_name = "Peas"
 product_mesh = ExtResource("1_g7mwy")
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

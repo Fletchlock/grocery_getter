@@ -611,6 +611,7 @@ interact_raycast_3d = NodePath(".")
 interaction_prompt = NodePath("../../../InteractionPrompt")
 
 [node name="HeldItemHolder" type="Node3D" parent="FirstPersonCameraPivot" unique_id=1664927062]
+transform = Transform3D(1, 0, 0, 0, 0.9848077, 0.17364818, 0, -0.17364818, 0.9848077, 0.30141425, -0.37516415, -0.3783714)
 
 [node name="InteractionPrompt" type="Node3D" parent="." unique_id=1287054937]
 top_level = true
