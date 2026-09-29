@@ -64,10 +64,6 @@ bind/15/pose = Transform3D(-0.9912653, -0.13188432, -0.0032896977, 0.05094052, -
 
 [node name="Shopper AI" type="CharacterBody3D" unique_id=810827079]
 script = ExtResource("1_h2sg7")
-shopping_min_points = 2
-shopping_max_points = 5
-shopping_idle_max = 3.0
-shopping_start_delay_max = 5.0
 look_speed = 1.5
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=131252810]
