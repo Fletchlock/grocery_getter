@@ -125,10 +125,13 @@ func _physics_process(delta: float) -> void:
 		)
 
 
-func get_interaction_prompt() -> String:
+func get_interaction_prompt(player: CharacterBody3D) -> String:
+	if player.network_holding_item:
+		return ""
+	
 	if player_character != null:
 		return "[E] Release cart"
-
+	
 	return "[E] Grab cart"
 
 

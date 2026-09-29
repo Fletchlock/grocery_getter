@@ -242,7 +242,7 @@ replication_config = SubResource("SceneReplicationConfig_i4yyv")
 transform = Transform3D(0.25783417, 0.022557624, -0.96592575, 0.9622502, 0.08418603, 0.258819, 0.08715582, -0.99619466, -4.2221956e-08, -0.5, 1.187, 0.533)
 
 [node name="RightHandTarget" type="Node3D" parent="." unique_id=1644043477]
-transform = Transform3D(0.25783414, -0.022557624, 0.9659257, -0.9622501, 0.08418603, 0.258819, -0.08715581, -0.9961946, -4.2221956e-08, 0.5, 1.187, 0.533)
+transform = Transform3D(0.25783414, -0.022557624, 0.96592563, -0.96225005, 0.08418603, 0.25881898, -0.08715581, -0.9961946, -4.2221952e-08, 0.5, 1.187, 0.533)
 
 [node name="NavigationObstacle3D" type="NavigationObstacle3D" parent="." unique_id=1399339440]
 visible = false

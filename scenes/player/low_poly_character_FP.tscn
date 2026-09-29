@@ -497,21 +497,19 @@ bones/15/rotation = Quaternion(-0.6644075, -0.048883215, 0.025692575, 0.7453274)
 bones/15/scale = Vector3(0.9999923, 0.99999905, 1.0000011)
 
 [node name="LeftHandIK" type="SkeletonIK3D" parent="Armature/Skeleton3D" unique_id=1486074684]
-influence = 0.99
 root_bone = &"upperarm.L"
 tip_bone = &"hand.L"
 use_magnet = true
-magnet = Vector3(-0.5, 0.8, 0.5)
+magnet = Vector3(-0.5, 0.8, 1)
 min_distance = 0.02
 max_iterations = 40
 
 [node name="RightHandIK" type="SkeletonIK3D" parent="Armature/Skeleton3D" unique_id=1170223618]
-influence = 0.99
 root_bone = &"upperarm.R"
 tip_bone = &"hand.R"
 use_magnet = true
-magnet = Vector3(0.5, 0.8, 0.5)
-min_distance = 0.5
+magnet = Vector3(0.5, 0.8, 1)
+min_distance = 0.02
 max_iterations = 40
 
 [node name="GroceryRed" type="MeshInstance3D" parent="Armature/Skeleton3D" unique_id=1109459962]
@@ -561,8 +559,11 @@ primary_damp_threshold = 1.0
 secondary_limit_angle = 1.2217305
 secondary_damp_threshold = 1.0
 
+[node name="HeldItemHandTarget" type="Node3D" parent="Armature" unique_id=459022950]
+transform = Transform3D(3.8096997e-09, 4.3545054e-08, -0.99999994, 0.9961947, -0.08715577, 0, -0.08715577, -0.9961947, -4.3711385e-08, 0.3, 1.1, -0.40041316)
+
 [node name="HeldItemTarget" type="Node3D" parent="Armature" unique_id=558431979]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 1.1, -0.4)
+transform = Transform3D(0.99904877, 0, -0.043606695, 0, 1, 0, 0.043606695, 0, 0.99904877, 0.3262685, 1.1, -0.4832602)
 
 [node name="HeldItemNetworkVisual" type="MeshInstance3D" parent="Armature/HeldItemTarget" unique_id=753128070]
 
