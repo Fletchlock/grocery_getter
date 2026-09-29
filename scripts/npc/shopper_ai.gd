@@ -11,13 +11,14 @@ signal finished_shopping
 @export var shopping_min_points: int = 6
 @export var shopping_max_points: int = 10
 @export var shopping_idle_min: float = 2.0
-@export var shopping_idle_max: float = 4.0
+@export var shopping_idle_max: float = 3.0
 @export var shopping_start_delay_min: float = 1.0
 @export var shopping_start_delay_max: float = 2.0
 @export var shopping_wait_min: float = 1.0
 @export var shopping_wait_max: float = 3.0
 
-@onready var shopping_points_node: Node3D = $"../ShoppingPoints"
+
+@onready var shopping_points_node: Node3D = $"../Items"
 @onready var exit_point: Marker3D = $"../ExitPoint"
 
 
@@ -228,9 +229,11 @@ func go_to_next_shopping_point() -> void:
 		if is_shopping_point_available(shopping_point):
 			current_shopping_index = i
 			current_shopping_point = shopping_point
+			
+			var shopper_point: Marker3D = shopping_point.get_node("AIShopperPoint")
 
 			reserve_shopping_point(shopping_point)
-			set_navigation_target(shopping_point.global_position)
+			set_navigation_target(shopper_point.global_position)
 
 			state = State.SHOPPING
 			return
@@ -332,11 +335,9 @@ func _on_moving(delta: float) -> void:
 
 	navigation_agent_3d.velocity = new_velocity
 
-	if new_velocity.length_squared() > 0.01:
-		target_rotation = atan2(
-			direction.x,
-			direction.z
-		)
+	# Only set target_rotation towards velocity direction when MOVING, SHOPPING or EXITING
+	if new_velocity.length_squared() > 0.01 and state in [State.MOVING, State.SHOPPING, State.EXITING]:
+		target_rotation = atan2(direction.x, direction.z)
 
 	if current_position.distance_to(last_position) < 0.05:
 		stuck_timer += delta
@@ -365,10 +366,22 @@ func handle_stuck() -> void:
 
 
 func _on_navigation_agent_3d_target_reached() -> void:
-	velocity = Vector3.ZERO
-	navigation_agent_3d.velocity = Vector3.ZERO
 
 	if state == State.SHOPPING:
+		velocity = Vector3.ZERO
+		navigation_agent_3d.velocity = Vector3.ZERO
+		
+		# Rotate AI towards the AIShopperPoint
+		var shopper_point: Marker3D = current_shopping_point.get_node("AIShopperPoint")
+
+		var forward: Vector3 = shopper_point.global_transform.basis.z
+		forward.y = 0.0
+		forward = forward.normalized()
+
+		target_rotation = atan2(forward.x, forward.z)
+
+		rotation.y = target_rotation
+		
 		shopping_idle_timer = randf_range(
 			shopping_idle_min,
 			shopping_idle_max
