@@ -105,6 +105,7 @@ var _target_zoom := 2.0
 var held_item: ProductData = null
 var held_item_visual: MeshInstance3D = null
 
+@onready var held_item_hand_target: Node3D = $Armature/HeldItemHandTarget
 @onready var held_item_target: Node3D = $Armature/HeldItemTarget
 @onready var held_item_network_visual: MeshInstance3D = $Armature/HeldItemTarget/HeldItemNetworkVisual
 
@@ -174,7 +175,8 @@ func _ready() -> void:
 			body_mesh = grocery_green
 
 	if is_multiplayer_authority():
-		_set_perspective(true)
+		_set_perspective(true
+	)
 
 	_network_position_last_received = network_position
 	_network_velocity_last_received = network_velocity
@@ -1253,7 +1255,7 @@ func _update_network_held_item_visual() -> void:
 	held_item_network_visual.visible = true
 
 	if right_hand_ik and held_item_target:
-		right_hand_ik.target_node = held_item_target.get_path()
+		right_hand_ik.target_node = held_item_hand_target.get_path()
 		right_hand_ik.start()
 
 

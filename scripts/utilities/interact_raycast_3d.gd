@@ -146,7 +146,7 @@ func _update_interaction_prompt(
 			player_character
 		)
 	elif interactable.has_method("get_interaction_prompt"):
-		prompt_text = interactable.get_interaction_prompt()
+		prompt_text = interactable.get_interaction_prompt(player_character)
 	else:
 		_hide_prompt()
 		return
