@@ -302,7 +302,7 @@ shape = SubResource("BoxShape3D_l57jt")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.34945393, -0.057409763, 0.7991338)
 
 [node name="ProductDisplay10" parent="NavigationRegion3D/Items" unique_id=875195488 instance=ExtResource("15_8rqbh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.9226, -6.5065494, 9.207761)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -26.9226, -6.5065494, 9.188866)
 product_data = ExtResource("22_mo7ao")
 grid_columns = 8
 grid_rows = 8
@@ -317,7 +317,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 0.114999995, 0.35)
 shape = SubResource("BoxShape3D_3tdcr")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/ProductDisplay10" index="4" unique_id=2005891054]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.77088356, -0.02119112, 0.32060146)
+transform = Transform3D(-1, 0, -1.5099579e-07, 0, 1, 0, 1.5099579e-07, 0, -1, 0.32282352, 0.090360165, 0.63632965)
 
 [node name="ProductDisplay11" parent="NavigationRegion3D/Items" unique_id=1757411628 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, 7.767503, -4.91556, -14.146444)
@@ -427,8 +427,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06434679, 0, -0.0014028549)
 script = ExtResource("15_fg0y7")
 stats_label = NodePath("../ShopperStats/Label3D")
 shopper_scenes = Array[PackedScene]([ExtResource("7_c4on7"), ExtResource("4_u4agu"), ExtResource("5_nxwu1")])
+max_shoppers = 12
 spawn_interval_min = 5.0
-spawn_interval_max = 7.0
+spawn_interval_max = 6.0
 spawn_point = NodePath("../ShopperSpawnPoint")
 
 [node name="ShopperSpawnPoint" type="Marker3D" parent="NavigationRegion3D" unique_id=1135914735]
@@ -1241,7 +1242,7 @@ font_size = 180
 outline_size = 40
 
 [node name="push_cart" parent="NavigationRegion3D" unique_id=1577398286 instance=ExtResource("15_nc3ox")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.755503, -7.224377, -3.7297835)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.722664, -7.224377, -18.397856)
 
 [node name="Environment" type="Node3D" parent="." unique_id=1082671680]
 

@@ -1,6 +1,7 @@
 extends CharacterBody3D
 
 # Signals
+signal reached_enter_point
 signal finished_shopping
 
 # Character refs
@@ -8,18 +9,22 @@ signal finished_shopping
 
 # Shopping
 @export_group("Shopping")
-@export var shopping_min_points: int = 6
-@export var shopping_max_points: int = 10
+@export var shopping_min_points: int = 3
+@export var shopping_max_points: int = 5
 @export var shopping_idle_min: float = 2.0
 @export var shopping_idle_max: float = 3.0
 @export var shopping_start_delay_min: float = 1.0
 @export var shopping_start_delay_max: float = 2.0
-@export var shopping_wait_min: float = 1.0
-@export var shopping_wait_max: float = 3.0
+@export var shopping_wait_min: float = 2.0
+@export var shopping_wait_max: float = 4.0
 
+@export_group("Shopping Wander")
+@export var shopping_wander_distance_min: float = 1.0
+@export var shopping_wander_distance_max: float = 3.0
 
 @onready var shopping_points_node: Node3D = $"../Items"
 @onready var exit_point: Marker3D = $"../ExitPoint"
+@onready var enter_point: Marker3D = $"../EnterPoint"
 
 
 var shopping_points: Array[Node3D] = []
@@ -58,6 +63,7 @@ var double_blink_pending := false
 @export var look_back_speed: float = 1.0 ## Speed at which the head turns away from another player.
 @export_range(0.0, 180.0) var look_angle: float = 70.0 ## Maximum angle from forward that the character will look.
 
+@onready var players_node: Node3D = $"../../Players"
 @onready var look_at_modifier: LookAtModifier3D = $Armature/Skeleton3D/LookAtModifier3D
 var look_target: Node3D = null
 
@@ -69,9 +75,11 @@ enum State {
 	IDLE,
 	WAITING_TO_MOVE,
 	MOVING,
+	ENTERING,
 	SHOPPING,
 	SHOPPING_IDLE,
 	SHOPPING_WAITING,
+	SHOPPING_WAITING_IDLE,
 	EXITING
 }
 	
@@ -104,7 +112,7 @@ func _ready() -> void:
 
 	await get_tree().create_timer(start_delay).timeout
 
-	start_shopping()
+	go_to_enter()
 
 func _process(delta: float) -> void:
 	blink(delta)
@@ -123,6 +131,9 @@ func _physics_process(delta: float) -> void:
 
 		State.MOVING:
 			_on_moving(delta)
+			
+		State.ENTERING:
+			_on_moving(delta)
 
 		State.SHOPPING:
 			_on_moving(delta)
@@ -132,6 +143,10 @@ func _physics_process(delta: float) -> void:
 			
 		State.SHOPPING_WAITING:
 			_on_shopping_waiting(delta)
+			
+		
+		State.SHOPPING_WAITING_IDLE:
+			_on_shopping_waiting_idle(delta)
 
 		State.EXITING:
 			_on_moving(delta)
@@ -139,7 +154,13 @@ func _physics_process(delta: float) -> void:
 	update_animation()
 	
 	# ONLY call move_and_slide here for non-moving states (like standing idle)
-	if state not in [State.MOVING, State.SHOPPING, State.EXITING]:
+	if state not in [
+		State.ENTERING,
+		State.MOVING,
+		State.SHOPPING,
+		State.SHOPPING_WAITING,
+		State.EXITING
+	]:
 		move_and_slide()
 
 	
@@ -162,12 +183,19 @@ func _on_waiting_to_move(delta: float) -> void:
 		state = State.MOVING
 
 
-func get_new_target_location() -> Vector3:
+func get_new_target_location(shopping_wander: bool = false) -> Vector3:
 	# 1. Get a random direction vector on a flat 2D plane (X and Z)
 	var random_direction = Vector3(randf_range(-1.0, 1.0), 0.0, randf_range(-1.0, 1.0)).normalized()
 	# 2. Multiply by a random distance between 5.0 and 10.0
 	var random_distance = randf_range(10.0, 20.0)
 	# 3. Add to your current position
+	
+	if shopping_wander:
+		random_distance = randf_range(
+			shopping_wander_distance_min,
+			shopping_wander_distance_max
+		)
+	
 	return global_transform.origin + (random_direction * random_distance)
 
 
@@ -223,28 +251,30 @@ func go_to_next_shopping_point() -> void:
 		go_to_exit()
 		return
 
-	for i: int in range(current_shopping_index, shopping_list.size()):
-		var shopping_point: Node3D = shopping_list[i]
+	var shopping_point: Node3D = shopping_list[current_shopping_index]
 
-		if is_shopping_point_available(shopping_point):
-			current_shopping_index = i
-			current_shopping_point = shopping_point
-			
-			var shopper_point: Marker3D = shopping_point.get_node("AIShopperPoint")
+	if is_shopping_point_available(shopping_point):
+		current_shopping_point = shopping_point
 
-			reserve_shopping_point(shopping_point)
-			set_navigation_target(shopper_point.global_position)
+		var shopper_point: Marker3D = shopping_point.get_node("AIShopperPoint")
 
-			state = State.SHOPPING
-			return
+		reserve_shopping_point(shopping_point)
+		set_navigation_target(shopper_point.global_position)
 
-	# Every remaining point is currently occupied.
+		state = State.SHOPPING
+		return
+
+	# Current point is occupied. Wander until it becomes available.
 	shopping_wait_timer = randf_range(
 		shopping_wait_min,
 		shopping_wait_max
 	)
 
+	var wander_target: Vector3 = get_new_target_location(true)
+	set_navigation_target(wander_target)
+
 	state = State.SHOPPING_WAITING
+
 
 
 func _on_shopping_idle(delta: float) -> void:
@@ -254,6 +284,9 @@ func _on_shopping_idle(delta: float) -> void:
 	shopping_idle_timer -= delta
 
 	if shopping_idle_timer <= 0.0:
+		# AI takes product just before moving on.
+		if current_shopping_point.has_method("ai_take_product"):
+			current_shopping_point.ai_take_product()
 		release_shopping_point()
 
 		current_shopping_index += 1
@@ -261,6 +294,10 @@ func _on_shopping_idle(delta: float) -> void:
 
 
 func _on_shopping_waiting(delta: float) -> void:
+	_on_moving(delta)
+
+
+func _on_shopping_waiting_idle(delta: float) -> void:
 	velocity = Vector3.ZERO
 	navigation_agent_3d.velocity = Vector3.ZERO
 
@@ -268,6 +305,11 @@ func _on_shopping_waiting(delta: float) -> void:
 
 	if shopping_wait_timer <= 0.0:
 		go_to_next_shopping_point()
+
+
+func go_to_enter() -> void:
+	set_navigation_target(enter_point.global_position)
+	state = State.ENTERING
 
 
 func go_to_exit() -> void:
@@ -336,7 +378,13 @@ func _on_moving(delta: float) -> void:
 	navigation_agent_3d.velocity = new_velocity
 
 	# Only set target_rotation towards velocity direction when MOVING, SHOPPING or EXITING
-	if new_velocity.length_squared() > 0.01 and state in [State.MOVING, State.SHOPPING, State.EXITING]:
+	if new_velocity.length_squared() > 0.01 and state in [
+		State.ENTERING,
+		State.MOVING,
+		State.SHOPPING,
+		State.SHOPPING_WAITING,
+		State.EXITING
+		]:
 		target_rotation = atan2(direction.x, direction.z)
 
 	if current_position.distance_to(last_position) < 0.05:
@@ -356,7 +404,11 @@ func handle_stuck() -> void:
 		# Skip a shopping point that cannot be reached.
 		current_shopping_index += 1
 		go_to_next_shopping_point()
-
+	
+	elif state == State.SHOPPING_WAITING:
+		var wander_target: Vector3 = get_new_target_location()
+		set_navigation_target(wander_target)
+	
 	elif state == State.EXITING:
 		# Give the exit another attempt.
 		set_navigation_target(exit_point.global_position)
@@ -367,6 +419,14 @@ func handle_stuck() -> void:
 
 func _on_navigation_agent_3d_target_reached() -> void:
 
+	if state == State.ENTERING:
+		add_to_group("shopper_in_store")
+		reached_enter_point.emit()
+		
+		await get_tree().process_frame
+		start_shopping()
+		return
+	
 	if state == State.SHOPPING:
 		velocity = Vector3.ZERO
 		navigation_agent_3d.velocity = Vector3.ZERO
@@ -382,33 +442,53 @@ func _on_navigation_agent_3d_target_reached() -> void:
 
 		rotation.y = target_rotation
 		
+		
 		shopping_idle_timer = randf_range(
 			shopping_idle_min,
 			shopping_idle_max
 		)
 
+
+	
 		state = State.SHOPPING_IDLE
 		return
 
 	if state == State.EXITING:
+		remove_from_group("shopper_in_store")
 		queue_free()
 		finished_shopping.emit()
 		return
+	
+	#if state == State.SHOPPING_WAITING:
+		#return
+	
+	if state == State.SHOPPING_WAITING:
+		velocity = Vector3.ZERO
+		navigation_agent_3d.velocity = Vector3.ZERO
 
+		shopping_wait_timer = randf_range(
+			shopping_wait_min,
+			shopping_wait_max
+		)
+
+		state = State.SHOPPING_WAITING_IDLE
+		return
+		
 	state = State.IDLE
 
 
 
 func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
-	if state == State.MOVING or state == State.SHOPPING or state == State.EXITING:
-		# 1. Blend ONLY the horizontal movements (X and Z)
+	if state in [
+		State.ENTERING,
+		State.MOVING,
+		State.SHOPPING,
+		State.SHOPPING_WAITING,
+		State.EXITING
+	]:
 		velocity.x = move_toward(velocity.x, safe_velocity.x, 0.55)
 		velocity.z = move_toward(velocity.z, safe_velocity.z, 0.55)
-		
-		# 2. DO NOT modify velocity.y here. Leave it alone so the 
-		# gravity applied in _physics_process can do its job.
-		
-		# 3. Call move_and_slide immediately after receiving the safe trajectory
+
 		move_and_slide()
 
 		
@@ -431,9 +511,15 @@ func update_animation() -> void:
 			new_animation = &"low_poly_character_anims/crouch_idle"
 			
 		State.SHOPPING_WAITING:
+			new_animation = &"low_poly_character_anims/Walk"
+			
+		State.SHOPPING_WAITING_IDLE:
 			new_animation = &"low_poly_character_anims/idle"
 
 		State.MOVING:
+			new_animation = &"low_poly_character_anims/Walk"
+			
+		State.ENTERING:
 			new_animation = &"low_poly_character_anims/Walk"
 
 		State.SHOPPING:
@@ -525,7 +611,7 @@ func find_nearest_player() -> Node3D:
 	var max_angle: float = deg_to_rad(look_angle)
 	var min_dot: float = cos(max_angle)
 
-	for player in get_parent().get_children():
+	for player in players_node.get_children():
 		if player == self or not player is CharacterBody3D:
 			continue
 
