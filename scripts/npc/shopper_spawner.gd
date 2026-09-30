@@ -1,13 +1,6 @@
 extends Node3D
 
 
-@export_group("Debug Display")
-@export var stats_label: Label3D
-
-var total_shoppers_shopped: int = 0
-var stats_update_timer: float = 0.0
-
-
 @export_group("Shopper Spawning")
 @export var shopper_scenes: Array[PackedScene]
 @export var max_shoppers: int = 10
@@ -16,6 +9,7 @@ var stats_update_timer: float = 0.0
 @export var spawn_points: Array[Marker3D]
 
 @onready var multiplayer_shopper_spawner: MultiplayerSpawner = $"../MultiplayerShopperSpawner"
+@onready var shopper_stats: Node3D = $"../ShopperStats"
 
 
 var last_spawn_point: Marker3D = null
@@ -115,26 +109,14 @@ func _spawn_shopper(data: Variant) -> Node:
 	return shopper_scenes[shopper_index].instantiate()
 
 
+func _on_shopper_finished_shopping(purchase_total: float) -> void:
+	shopper_stats.current_shoppers -= 1
+	shopper_stats.record_purchase(purchase_total)
+	
+
 func _on_shopper_reached_enter_point() -> void:
-	update_stats_label()
-
-
-func _on_shopper_finished_shopping() -> void:
-	total_shoppers_shopped += 1
-	update_stats_label()
-
-
-func update_stats_label() -> void:
-	if stats_label == null:
-		return
-
-	var current_shoppers: int = get_active_shopper_count()
-
-	stats_label.text = (
-		"SHOPPERS IN STORE: "
-		+ str(current_shoppers)
-		+ " / "
-		+ str(max_shoppers)
-		+ "\nTOTAL SHOPPED: "
-		+ str(total_shoppers_shopped)
-	)
+	print("SHOPPER ENTERED | PEER: ", multiplayer.get_unique_id())
+	if multiplayer.is_server():
+		shopper_stats.current_shoppers += 1
+	else:
+		shopper_stats._current_shoppers += 1
