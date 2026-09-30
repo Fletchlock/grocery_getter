@@ -590,6 +590,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.723, 0)
 fov = 85.0
 
 [node name="MultiplayerSyncronizer" type="MultiplayerSynchronizer" parent="." unique_id=238298103]
+physics_interpolation_mode = 1
 replication_config = SubResource("SceneReplicationConfig_2jhue")
 public_visibility = false
 

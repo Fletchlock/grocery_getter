@@ -7,6 +7,7 @@ extends Node3D
 var total_shoppers_shopped: int = 0
 var stats_update_timer: float = 0.0
 
+
 @export_group("Shopper Spawning")
 @export var shopper_scenes: Array[PackedScene]
 @export var max_shoppers: int = 10
@@ -14,21 +15,29 @@ var stats_update_timer: float = 0.0
 @export var spawn_interval_max: float = 30.0
 @export var spawn_points: Array[Marker3D]
 
-var last_spawn_point: Marker3D = null
+@onready var multiplayer_shopper_spawner: MultiplayerSpawner = $"../MultiplayerShopperSpawner"
 
+
+var last_spawn_point: Marker3D = null
 var shopper_scene_pool: Array[PackedScene] = []
 var spawn_timer: float = 0.0
 
 
 func _ready() -> void:
 	randomize()
-	
+
+	multiplayer_shopper_spawner.spawn_function = _spawn_shopper
+
 	shopper_scene_pool = shopper_scenes.duplicate()
 	shopper_scene_pool.shuffle()
+
 	set_next_spawn_timer()
 
 
 func _process(delta: float) -> void:
+	if not multiplayer.is_server():
+		return
+
 	spawn_timer -= delta
 
 	if spawn_timer <= 0.0:
@@ -74,19 +83,36 @@ func spawn_shopper() -> void:
 	if shopper_scene == null:
 		return
 
-	var shopper: Node3D = shopper_scene.instantiate() as Node3D
+	var shopper_index: int = shopper_scenes.find(shopper_scene)
+
+	if shopper_index < 0:
+		return
+
+	var shopper: Node3D = multiplayer_shopper_spawner.spawn(shopper_index) as Node3D
 
 	if shopper == null:
 		return
 
-	get_parent().add_child(shopper)
 	shopper.global_position = spawn_point.global_position
 
 	if shopper.has_signal("reached_enter_point"):
-		shopper.reached_enter_point.connect(_on_shopper_reached_enter_point)
+		shopper.reached_enter_point.connect(
+			_on_shopper_reached_enter_point
+		)
 
 	if shopper.has_signal("finished_shopping"):
-		shopper.finished_shopping.connect(_on_shopper_finished_shopping)
+		shopper.finished_shopping.connect(
+			_on_shopper_finished_shopping
+		)
+
+
+func _spawn_shopper(data: Variant) -> Node:
+	var shopper_index: int = int(data)
+
+	if shopper_index < 0 or shopper_index >= shopper_scenes.size():
+		return null
+
+	return shopper_scenes[shopper_index].instantiate()
 
 
 func _on_shopper_reached_enter_point() -> void:
@@ -96,7 +122,8 @@ func _on_shopper_reached_enter_point() -> void:
 func _on_shopper_finished_shopping() -> void:
 	total_shoppers_shopped += 1
 	update_stats_label()
-	
+
+
 func update_stats_label() -> void:
 	if stats_label == null:
 		return

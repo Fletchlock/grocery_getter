@@ -14,7 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://b375o8hcy0le6" path="res://scenes/objects/shelves/freezer_bin.tscn" id="14_fg0y7"]
 [ext_resource type="PackedScene" uid="uid://ns3ym0bst3do" path="res://scenes/objects/shelves/produce_4_row.tscn" id="15_8fxuy"]
 [ext_resource type="PackedScene" uid="uid://fxtb45r4l7h2" path="res://scenes/items/product_display.tscn" id="15_8rqbh"]
-[ext_resource type="Script" uid="uid://sm3yxjc2mmn8" path="res://scenes/levels/shopper_spawner.gd" id="15_fg0y7"]
+[ext_resource type="Script" uid="uid://sm3yxjc2mmn8" path="res://scripts/npc/shopper_spawner.gd" id="15_fg0y7"]
 [ext_resource type="PackedScene" uid="uid://djp7hmfm0m00m" path="res://scenes/objects/carts/push_cart.tscn" id="15_nc3ox"]
 [ext_resource type="Material" uid="uid://gcl0wh5fpeug" path="res://assets/materials/glow_test.tres" id="17_dr1eh"]
 [ext_resource type="Resource" uid="uid://dpcxghxgl7ms" path="res://resources/products/flour.tres" id="18_55wky"]
@@ -422,7 +422,7 @@ blend_shapes/Blink = 0.0
 [node name="GroceryBlue" parent="NavigationRegion3D/low_poly_character/Armature/Skeleton3D" index="3" unique_id=1076076089]
 blend_shapes/Blink = 0.0
 
-[node name="ShopperSpawner" type="Node3D" parent="NavigationRegion3D" unique_id=776720949 node_paths=PackedStringArray("stats_label", "spawn_point")]
+[node name="ShopperSpawner" type="Node3D" parent="NavigationRegion3D" unique_id=776720949 node_paths=PackedStringArray("stats_label")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06434679, 0, -0.0014028549)
 script = ExtResource("15_fg0y7")
 stats_label = NodePath("../ShopperStats/Label3D")
@@ -430,7 +430,6 @@ shopper_scenes = Array[PackedScene]([ExtResource("7_c4on7"), ExtResource("4_u4ag
 max_shoppers = 12
 spawn_interval_min = 5.0
 spawn_interval_max = 6.0
-spawn_point = NodePath("../ShopperSpawnPoint")
 
 [node name="ShopperSpawnPoint" type="Marker3D" parent="NavigationRegion3D" unique_id=1135914735]
 transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, 28.034618, -7.224377, 24.71127)
