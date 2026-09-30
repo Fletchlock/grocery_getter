@@ -372,6 +372,9 @@ properties/4/path = NodePath(".:state")
 properties/4/spawn = true
 properties/4/replication_mode = 1
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_lguh8"]
+radius = 0.5971316
+
 [node name="Shopper AI" type="CharacterBody3D" unique_id=810827079]
 script = ExtResource("1_iw64w")
 shopping_min_points = 2
@@ -546,6 +549,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18444872, 0.8683975, 0.4690
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=392776072]
 replication_config = SubResource("SceneReplicationConfig_mmktf")
+
+[node name="CartPusher" type="RigidBody3D" parent="." unique_id=92627932]
+collision_layer = 2
+collision_mask = 2
+gravity_scale = 0.0
+freeze = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CartPusher" unique_id=1912116464]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2473755, 0)
+shape = SubResource("SphereShape3D_lguh8")
+debug_color = Color(0.27058825, 0.56078434, 0.94509804, 0.9529412)
 
 [connection signal="target_reached" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_target_reached"]
 [connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]

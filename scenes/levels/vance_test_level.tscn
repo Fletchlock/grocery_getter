@@ -23,6 +23,7 @@
 [ext_resource type="Resource" uid="uid://drhqmd8mbofk" path="res://resources/products/eggs.tres" id="21_p5ktf"]
 [ext_resource type="Resource" uid="uid://bdoudowbwde22" path="res://resources/products/can_peas.tres" id="21_rcc0p"]
 [ext_resource type="Resource" uid="uid://6frq8yt7wboh" path="res://resources/products/can_beans.tres" id="22_mo7ao"]
+[ext_resource type="Script" uid="uid://bgdhmfha6j1tf" path="res://scripts/items/shopper_stats.gd" id="22_nc3ox"]
 [ext_resource type="Resource" uid="uid://dklerfmqk4jk0" path="res://resources/products/cereal.tres" id="23_cyw3o"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_c4on7"]
@@ -98,6 +99,20 @@ albedo_color = Color(0.42851397, 0.5068187, 0.9609017, 1)
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_2xry6"]
 points = PackedVector3Array(-1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0, 1)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ho602"]
+properties/0/path = NodePath(".:total_shoppers")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:total_sales")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:last_purchase")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+properties/3/path = NodePath(".:current_shoppers")
+properties/3/spawn = true
+properties/3/replication_mode = 2
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_dr1eh"]
 sky_top_color = Color(0.1964078, 0.47041714, 0.68169343, 1)
@@ -391,48 +406,20 @@ shape = SubResource("BoxShape3D_36a7h")
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/ProductDisplay14" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.8207941, -0.04421234, 0.9171834)
 
-[node name="low_poly_character" parent="NavigationRegion3D" unique_id=51086098 instance=ExtResource("8_hp4pk")]
-transform = Transform3D(0.7099662, 0, 0.7042358, 0, 1, 0, -0.7042358, 0, 0.7099662, 19.715162, -7.2242875, 1.653523)
-
-[node name="Skeleton3D" parent="NavigationRegion3D/low_poly_character/Armature" parent_id_path=PackedInt32Array(51086098, 1485995296) index="0" unique_id=972510031]
-bones/0/rotation = Quaternion(0.025572151, 0, 0, 0.999673)
-bones/1/rotation = Quaternion(-0.015551604, 0, 0, 0.99987906)
-bones/2/rotation = Quaternion(-0.13068068, 1.1818703e-07, -1.557835e-08, 0.9914245)
-bones/3/rotation = Quaternion(0.110640466, -2.5022622e-14, 2.6378737e-08, 0.9938605)
-bones/4/rotation = Quaternion(0.02210752, 0.084997654, 0.9439818, 0.31809586)
-bones/5/rotation = Quaternion(-0.14423136, 0.00022060436, 0.032007936, 0.9890262)
-bones/6/rotation = Quaternion(-0.052163113, -0.031390984, 0.17021029, 0.98352534)
-bones/7/rotation = Quaternion(-0.02210752, 0.084997654, 0.9439818, -0.31809586)
-bones/8/rotation = Quaternion(-0.14423136, -0.00022060436, -0.032007936, 0.9890262)
-bones/9/rotation = Quaternion(-0.052163113, 0.031390984, -0.17021029, 0.98352534)
-bones/10/rotation = Quaternion(-0.0044929218, -0.0285922, 0.99800813, 0.056054894)
-bones/10/scale = Vector3(0.99999434, 0.99999994, 0.99999845)
-bones/11/rotation = Quaternion(0.18132728, 0.0025742962, 0.037146367, 0.98271763)
-bones/12/rotation = Quaternion(-0.6645255, 0.020071466, -0.042631388, 0.7457785)
-bones/12/scale = Vector3(1, 1, 0.99999994)
-bones/13/rotation = Quaternion(0.0044929218, -0.0285922, 0.99800813, -0.056054894)
-bones/13/scale = Vector3(0.99999434, 0.99999994, 0.99999845)
-bones/14/rotation = Quaternion(0.18132728, -0.0025742962, -0.037146367, 0.98271763)
-bones/15/rotation = Quaternion(-0.6645255, -0.020071466, 0.042631388, 0.7457785)
-bones/15/scale = Vector3(1, 1, 0.99999994)
-
-[node name="GroceryRed" parent="NavigationRegion3D/low_poly_character/Armature/Skeleton3D" index="2" unique_id=1109459962]
-blend_shapes/Blink = 0.0
-
-[node name="GroceryBlue" parent="NavigationRegion3D/low_poly_character/Armature/Skeleton3D" index="3" unique_id=1076076089]
-blend_shapes/Blink = 0.0
-
-[node name="ShopperSpawner" type="Node3D" parent="NavigationRegion3D" unique_id=776720949 node_paths=PackedStringArray("stats_label")]
+[node name="ShopperSpawner" type="Node3D" parent="NavigationRegion3D" unique_id=776720949 node_paths=PackedStringArray("spawn_points")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06434679, 0, -0.0014028549)
 script = ExtResource("15_fg0y7")
-stats_label = NodePath("../ShopperStats/Label3D")
 shopper_scenes = Array[PackedScene]([ExtResource("7_c4on7"), ExtResource("4_u4agu"), ExtResource("5_nxwu1")])
 max_shoppers = 12
 spawn_interval_min = 5.0
 spawn_interval_max = 6.0
+spawn_points = [NodePath("../ShopperSpawnPoint"), NodePath("../ShopperSpawnPoint2")]
 
 [node name="ShopperSpawnPoint" type="Marker3D" parent="NavigationRegion3D" unique_id=1135914735]
-transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, 28.034618, -7.224377, 24.71127)
+transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, 28.13343, -7.224377, 17.708303)
+
+[node name="ShopperSpawnPoint2" type="Marker3D" parent="NavigationRegion3D" unique_id=476594190]
+transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, 25.151066, -7.224377, -30.671686)
 
 [node name="Shelves" type="Node3D" parent="NavigationRegion3D" unique_id=624687456]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7.2243776, 0)
@@ -1228,11 +1215,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.720472, -6.779776, 8.76461
 [node name="ShoppingPoint28" type="Marker3D" parent="NavigationRegion3D/ShoppingPoints" unique_id=1606816967]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.940921, -6.779776, 23.327843)
 
-[node name="ExitPoint" type="Marker3D" parent="NavigationRegion3D" unique_id=336065300]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.837275, -7.2243767, 22.885782)
-
-[node name="ShopperStats" type="Node3D" parent="NavigationRegion3D" unique_id=1234207305]
+[node name="ShopperStats" type="Node3D" parent="NavigationRegion3D" unique_id=1234207305 node_paths=PackedStringArray("stats_label")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2889318, -31.123444)
+script = ExtResource("22_nc3ox")
+stats_label = NodePath("Label3D")
 
 [node name="Label3D" type="Label3D" parent="NavigationRegion3D/ShopperStats" unique_id=72223035]
 text = "SHOPPERS IN STORE: 0 / 10
@@ -1240,8 +1226,21 @@ TOTAL SHOPPED: 0"
 font_size = 180
 outline_size = 40
 
+[node name="MultiplayerStatsSynchronizer" type="MultiplayerSynchronizer" parent="NavigationRegion3D/ShopperStats" unique_id=1055930228]
+replication_config = SubResource("SceneReplicationConfig_ho602")
+
 [node name="push_cart" parent="NavigationRegion3D" unique_id=1577398286 instance=ExtResource("15_nc3ox")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.722664, -7.224377, -18.397856)
+
+[node name="MultiplayerShopperSpawner" type="MultiplayerSpawner" parent="NavigationRegion3D" unique_id=265700246]
+_spawnable_scenes = PackedStringArray("uid://bf8g2pgb7xltd", "uid://sg31a5his64v", "uid://c1mxkcnwv1kbe")
+spawn_path = NodePath("..")
+
+[node name="EnterPoint" type="Marker3D" parent="NavigationRegion3D" unique_id=888580517]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.64674, -7.224378, 24.50354)
+
+[node name="ExitPoint" type="Marker3D" parent="NavigationRegion3D" unique_id=336065300]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.837275, -7.2243767, 22.885782)
 
 [node name="Environment" type="Node3D" parent="." unique_id=1082671680]
 
@@ -1448,6 +1447,39 @@ material_override = ExtResource("17_dr1eh")
 cast_shadow = 0
 mesh = SubResource("CapsuleMesh_hd853")
 
+[node name="Players" type="Node3D" parent="." unique_id=1440592963]
+
+[node name="low_poly_character" parent="Players" unique_id=51086098 instance=ExtResource("8_hp4pk")]
+transform = Transform3D(0.7099662, 0, 0.7042358, 0, 1, 0, -0.7042358, 0, 0.7099662, 19.6507, -7.2209644, 1.6544709)
+
+[node name="Skeleton3D" parent="Players/low_poly_character/Armature" parent_id_path=PackedInt32Array(51086098, 1485995296) index="0" unique_id=972510031]
+bones/0/rotation = Quaternion(0.025572151, 0, 0, 0.999673)
+bones/1/rotation = Quaternion(-0.015551604, 0, 0, 0.99987906)
+bones/2/rotation = Quaternion(-0.13068068, 1.1818703e-07, -1.557835e-08, 0.9914245)
+bones/3/rotation = Quaternion(0.110640466, -2.5022622e-14, 2.6378737e-08, 0.9938605)
+bones/4/rotation = Quaternion(0.02210752, 0.084997654, 0.9439818, 0.31809586)
+bones/5/rotation = Quaternion(-0.14423136, 0.00022060436, 0.032007936, 0.9890262)
+bones/6/rotation = Quaternion(-0.052163113, -0.031390984, 0.17021029, 0.98352534)
+bones/7/rotation = Quaternion(-0.02210752, 0.084997654, 0.9439818, -0.31809586)
+bones/8/rotation = Quaternion(-0.14423136, -0.00022060436, -0.032007936, 0.9890262)
+bones/9/rotation = Quaternion(-0.052163113, 0.031390984, -0.17021029, 0.98352534)
+bones/10/rotation = Quaternion(-0.0044929218, -0.0285922, 0.99800813, 0.056054894)
+bones/10/scale = Vector3(0.99999434, 0.99999994, 0.99999845)
+bones/11/rotation = Quaternion(0.18132728, 0.0025742962, 0.037146367, 0.98271763)
+bones/12/rotation = Quaternion(-0.6645255, 0.020071466, -0.042631388, 0.7457785)
+bones/12/scale = Vector3(1, 1, 0.99999994)
+bones/13/rotation = Quaternion(0.0044929218, -0.0285922, 0.99800813, -0.056054894)
+bones/13/scale = Vector3(0.99999434, 0.99999994, 0.99999845)
+bones/14/rotation = Quaternion(0.18132728, -0.0025742962, -0.037146367, 0.98271763)
+bones/15/rotation = Quaternion(-0.6645255, -0.020071466, 0.042631388, 0.7457785)
+bones/15/scale = Vector3(1, 1, 0.99999994)
+
+[node name="GroceryRed" parent="Players/low_poly_character/Armature/Skeleton3D" index="2" unique_id=1109459962]
+blend_shapes/Blink = 0.0
+
+[node name="GroceryBlue" parent="Players/low_poly_character/Armature/Skeleton3D" index="3" unique_id=1076076089]
+blend_shapes/Blink = 0.0
+
 [editable path="NavigationRegion3D/Items/ProductDisplay"]
 [editable path="NavigationRegion3D/Items/ProductDisplay4"]
 [editable path="NavigationRegion3D/Items/ProductDisplay2"]
@@ -1463,5 +1495,5 @@ mesh = SubResource("CapsuleMesh_hd853")
 [editable path="NavigationRegion3D/Items/ProductDisplay12"]
 [editable path="NavigationRegion3D/Items/ProductDisplay13"]
 [editable path="NavigationRegion3D/Items/ProductDisplay14"]
-[editable path="NavigationRegion3D/low_poly_character"]
 [editable path="NavigationRegion3D/Shelves/Endcap_5row_col2"]
+[editable path="Players/low_poly_character"]

@@ -501,7 +501,7 @@ func get_interaction_prompt_for_player(
 
 
 # === AI Functions ===
-func ai_take_product() -> void:
+func ai_take_product() -> ProductData:
 	if not multiplayer.is_server():
 		return
 
@@ -509,3 +509,4 @@ func ai_take_product() -> void:
 		return
 
 	quantity -= 1
+	return product_data

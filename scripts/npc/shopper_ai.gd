@@ -2,7 +2,7 @@ extends CharacterBody3D
 
 # Signals
 signal reached_enter_point
-signal finished_shopping
+signal finished_shopping(purchase_total: float)
 
 # Character refs
 @onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/npc_shopper_01
@@ -27,8 +27,9 @@ signal finished_shopping
 @onready var enter_point: Marker3D = $"../EnterPoint"
 
 
-var shopping_points: Array[Node3D] = []
-var shopping_list: Array[Node3D] = []
+var shopping_points: Array[Node3D] = [] # This is a list of avialable points to shpo at.
+var shopping_list: Array[Node3D] = [] # This is a list of shopping_points that they are going to.
+var purchased_items: Array[ProductData] = [] # The items the AI has taken. ProductData array
 var current_shopping_index: int = 0
 var shopping_idle_timer: float = 0.0
 var shopping_wait_timer: float = 0.0
@@ -73,8 +74,6 @@ var look_target: Node3D = null
 	set(value):
 		state = value
 		update_animation()
-
-
 
 
 # States
@@ -301,9 +300,13 @@ func _on_shopping_idle(delta: float) -> void:
 	shopping_idle_timer -= delta
 
 	if shopping_idle_timer <= 0.0:
-		# AI takes product just before moving on.
+		# AI takes product just before moving on and adds it to purchased_item array
 		if current_shopping_point.has_method("ai_take_product"):
-			current_shopping_point.ai_take_product()
+			var purchased_product: ProductData = current_shopping_point.ai_take_product()
+			
+			if purchased_product != null:
+				purchased_items.append(purchased_product)
+
 		release_shopping_point()
 
 		current_shopping_index += 1
@@ -471,9 +474,17 @@ func _on_navigation_agent_3d_target_reached() -> void:
 		return
 
 	if state == State.EXITING:
+		# Calculate total purchase price of products in purchased_items array
+		var purchase_total: float = 0.0
+		
+		for product: ProductData in purchased_items:
+			purchase_total += product.product_price
+			
+		print("AI PURCHASE TOTAL: $", purchase_total)
+		
 		remove_from_group("shopper_in_store")
 		queue_free()
-		finished_shopping.emit()
+		finished_shopping.emit(purchase_total)
 		return
 	
 	#if state == State.SHOPPING_WAITING:
