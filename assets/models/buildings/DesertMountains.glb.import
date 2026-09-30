@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dfa6glbhgltej"
-path="res://godot/imported/DesertMap.glb-3f9792ebfcc429effb89c04a10b3cae4.scn"
+uid="uid://2qe7s10woeh4"
+path="res://godot/imported/DesertMountains.glb-ac0a56e0e5c855b3d4e66f7774647216.scn"
 
 [deps]
 
-source_file="res://assets/models/buildings/DesertMap.glb"
-dest_files=["res://godot/imported/DesertMap.glb-3f9792ebfcc429effb89c04a10b3cae4.scn"]
+source_file="res://assets/models/buildings/DesertMountains.glb"
+dest_files=["res://godot/imported/DesertMountains.glb-ac0a56e0e5c855b3d4e66f7774647216.scn"]
 
 [params]
 
@@ -41,14 +41,14 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "meshes": {
-"DesertMap_Plane_006": {
+"DesertMountains_Plane_006": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/buildings/DesertMap_Plane_006.res",
-"save_to_file/path": "uid://b6tucf241q31k"
+"save_to_file/fallback_path": "res://assets/models/buildings/DesertMountains_Plane_006.res",
+"save_to_file/path": "uid://d4f652q7c2hsn"
 }
 }
 }

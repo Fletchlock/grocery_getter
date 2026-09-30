@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://drhqmd8mbofk"]
 
-[ext_resource type="ArrayMesh" uid="uid://bggql4ft8wl6d" path="res://assets/models/items/eggs_Cube_011.res" id="1_njdf1"]
+[ext_resource type="ArrayMesh" uid="uid://cjfvgw78pqiqx" path="res://assets/models/items/eggs_Cube_011.res" id="1_njdf1"]
 [ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_xfn3o"]
 
 [resource]
