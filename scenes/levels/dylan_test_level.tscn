@@ -43,19 +43,19 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_umdtr"]
 size = Vector3(63, 1, 63)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_n8giy"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_h6vbw"]
 resource_local_to_scene = true
 size = Vector3(0.48, 0.80499995, 0.88)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_0sqwg"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_l2sts"]
 resource_local_to_scene = true
 size = Vector3(1.7953141, 0.12579845, 0.62)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_amoyh"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_c0ula"]
 resource_local_to_scene = true
 size = Vector3(1.7953141, 0.2515969, 0.62)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_l2sts"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_n8giy"]
 resource_local_to_scene = true
 size = Vector3(0.8116051, 0.094916426, 1.7471609)
 
@@ -676,7 +676,7 @@ quantity = 180
 
 [node name="CollisionShape3D" parent="ProductDisplay/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.40249997, 0.4)
-shape = SubResource("BoxShape3D_n8giy")
+shape = SubResource("BoxShape3D_h6vbw")
 
 [node name="ProductDisplay3" parent="." unique_id=1370885838 instance=ExtResource("15_jakac")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.180155, 1.6937951, -17.8)
@@ -689,7 +689,7 @@ quantity = 26
 
 [node name="CollisionShape3D" parent="ProductDisplay3/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8378373, 0.062899224, 0.16000001)
-shape = SubResource("BoxShape3D_0sqwg")
+shape = SubResource("BoxShape3D_l2sts")
 
 [node name="ProductDisplay4" parent="." unique_id=2025777821 instance=ExtResource("15_jakac")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.180155, 1.37759, -17.8)
@@ -704,7 +704,7 @@ quantity = 52
 
 [node name="CollisionShape3D" parent="ProductDisplay4/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8378373, 0.12579845, 0.16000001)
-shape = SubResource("BoxShape3D_amoyh")
+shape = SubResource("BoxShape3D_c0ula")
 
 [node name="Small_Freezer_Bin_col2" parent="." unique_id=281981185 instance=ExtResource("20_7sy3w")]
 transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, -22, 0, 10)
@@ -794,151 +794,151 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -23,
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -26, 0, -31)
 
 [node name="Roof_Corner_Lights2" parent="." unique_id=1937312725 instance=ExtResource("30_j2gd6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 9, -28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 12, -28)
 
 [node name="Roof_Edge2" parent="." unique_id=655838093 instance=ExtResource("31_h6vbw")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 9, -28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 12, -28)
 
 [node name="Roof_Edge_Lights2" parent="." unique_id=623612046 instance=ExtResource("32_l2sts")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 9, -28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 12, -28)
 
 [node name="Roof_Middle2" parent="." unique_id=1106237911 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 9, -20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 12, -20)
 
 [node name="Roof_Middle4" parent="." unique_id=1288056897 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 9, -20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 12, -20)
 
 [node name="Roof_Middle3" parent="." unique_id=1799253055 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 9, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 12, -12)
 
 [node name="Roof_Middle_Lights2" parent="." unique_id=894553738 instance=ExtResource("34_n8giy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 9, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 12, -12)
 
 [node name="Roof_Side2" parent="." unique_id=685810868 instance=ExtResource("35_rs4b4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 9, -20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 12, -20)
 
 [node name="Roof_Side_Lights2" parent="." unique_id=984369968 instance=ExtResource("36_0sqwg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 9, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 12, -12)
 
 [node name="Roof_Middle5" parent="." unique_id=310668320 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 9, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 12, -4)
 
 [node name="Roof_Middle6" parent="." unique_id=989184685 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 9, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 12, -4)
 
 [node name="Roof_Middle7" parent="." unique_id=836782124 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 9, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 12, 4)
 
 [node name="Roof_Middle_Lights3" parent="." unique_id=1825397758 instance=ExtResource("34_n8giy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 9, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 12, 4)
 
 [node name="Roof_Side3" parent="." unique_id=1285579687 instance=ExtResource("35_rs4b4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 9, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 12, -4)
 
 [node name="Roof_Side_Lights3" parent="." unique_id=1230939959 instance=ExtResource("36_0sqwg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 9, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 12, 4)
 
 [node name="Roof_Middle8" parent="." unique_id=337071241 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 9, 12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 12, 12)
 
 [node name="Roof_Middle9" parent="." unique_id=1167415701 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 9, 12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 12, 12)
 
 [node name="Roof_Middle10" parent="." unique_id=275171835 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 9, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 12, 20)
 
 [node name="Roof_Middle_Lights4" parent="." unique_id=897527004 instance=ExtResource("34_n8giy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 9, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 12, 20)
 
 [node name="Roof_Edge3" parent="." unique_id=258112730 instance=ExtResource("31_h6vbw")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 9, -28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 12, -28)
 
 [node name="Roof_Edge_Lights3" parent="." unique_id=1359656680 instance=ExtResource("32_l2sts")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 9, -28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 12, -28)
 
 [node name="Roof_Middle11" parent="." unique_id=1128376116 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 9, -20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 12, -20)
 
 [node name="Roof_Middle12" parent="." unique_id=1218348459 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 9, -20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 12, -20)
 
 [node name="Roof_Middle13" parent="." unique_id=1190601819 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 9, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 12, -12)
 
 [node name="Roof_Middle_Lights5" parent="." unique_id=1192925239 instance=ExtResource("34_n8giy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 9, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 12, -12)
 
 [node name="Roof_Middle14" parent="." unique_id=1544326714 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 9, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 12, -4)
 
 [node name="Roof_Middle15" parent="." unique_id=97838828 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 9, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 12, -4)
 
 [node name="Roof_Middle16" parent="." unique_id=862110234 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 9, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 12, 4)
 
 [node name="Roof_Middle_Lights6" parent="." unique_id=716263131 instance=ExtResource("34_n8giy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 9, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 12, 4)
 
 [node name="Roof_Middle17" parent="." unique_id=1632641656 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 9, 12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 12, 12)
 
 [node name="Roof_Middle18" parent="." unique_id=1424984375 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 9, 12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 12, 12)
 
 [node name="Roof_Middle19" parent="." unique_id=732894528 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 9, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 12, 20)
 
 [node name="Roof_Middle_Lights7" parent="." unique_id=702984542 instance=ExtResource("34_n8giy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 9, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 12, 20)
 
 [node name="Roof_Edge4" parent="." unique_id=1407247215 instance=ExtResource("31_h6vbw")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 9, -28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 12, -28)
 
 [node name="Roof_Edge_Lights4" parent="." unique_id=551763157 instance=ExtResource("32_l2sts")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 9, -28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 12, -28)
 
 [node name="Roof_Middle20" parent="." unique_id=895083200 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 9, -20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 12, -20)
 
 [node name="Roof_Middle21" parent="." unique_id=123921964 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 9, -20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 12, -20)
 
 [node name="Roof_Middle22" parent="." unique_id=1363443739 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 9, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 12, -12)
 
 [node name="Roof_Middle_Lights8" parent="." unique_id=1658265989 instance=ExtResource("34_n8giy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 9, -12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 12, -12)
 
 [node name="Roof_Middle23" parent="." unique_id=1555477009 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 9, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 12, -4)
 
 [node name="Roof_Middle24" parent="." unique_id=372934707 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 9, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 12, -4)
 
 [node name="Roof_Middle25" parent="." unique_id=657752712 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 9, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 12, 4)
 
 [node name="Roof_Middle_Lights9" parent="." unique_id=1440906752 instance=ExtResource("34_n8giy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 9, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 12, 4)
 
 [node name="Roof_Middle26" parent="." unique_id=469802118 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 9, 12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 12, 12)
 
 [node name="Roof_Middle27" parent="." unique_id=809697201 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 9, 12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 12, 12)
 
 [node name="Roof_Middle28" parent="." unique_id=833691511 instance=ExtResource("33_c0ula")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 9, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 12, 20)
 
 [node name="Roof_Middle_Lights10" parent="." unique_id=1145811030 instance=ExtResource("34_n8giy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 9, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 12, 20)
 
 [node name="Roof_Side4" parent="." unique_id=81743890 instance=ExtResource("35_rs4b4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 9, 12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 12, 12)
 
 [node name="Roof_Side_Lights4" parent="." unique_id=363799408 instance=ExtResource("36_0sqwg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 9, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 12, 20)
 
 [node name="Apple_Display" parent="." unique_id=357758402 instance=ExtResource("15_jakac")]
 transform = Transform3D(1, 0, 0, 0, 0.9864813, -0.16387449, 0, 0.16387449, 0.9864813, 23.507627, 1.1938218, -5.8064027)
@@ -952,7 +952,7 @@ quantity = 136
 
 [node name="CollisionShape3D" parent="Apple_Display/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36382723, 0.047458213, 0.83160514)
-shape = SubResource("BoxShape3D_l2sts")
+shape = SubResource("BoxShape3D_n8giy")
 
 [editable path="ProductDisplay"]
 [editable path="ProductDisplay3"]
