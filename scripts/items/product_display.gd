@@ -498,3 +498,14 @@ func get_interaction_prompt_for_player(
 		return "[E] Take Item"
 
 	return "[E] Take " + product_data.display_name
+
+
+# === AI Functions ===
+func ai_take_product() -> void:
+	if not multiplayer.is_server():
+		return
+
+	if quantity <= 0:
+		return
+
+	quantity -= 1
