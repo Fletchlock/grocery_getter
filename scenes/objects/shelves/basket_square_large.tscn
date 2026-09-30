@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://bgor7brvtovqx"]
+
+[ext_resource type="PackedScene" uid="uid://wv13vbdxdpj0" path="res://assets/models/shelves/Basket_Square_Large.glb" id="1_7yxn3"]
+
+[node name="Basket_Square_Large2" unique_id=600673888 instance=ExtResource("1_7yxn3")]

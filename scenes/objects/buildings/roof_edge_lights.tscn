@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://cgav4385jpdun"]
+
+[ext_resource type="PackedScene" uid="uid://d3b5gpskel6le" path="res://assets/models/buildings/Roof_Edge_Lights.glb" id="1_51237"]
+
+[node name="Roof_Edge_Lights2" unique_id=623612046 instance=ExtResource("1_51237")]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="." index="1" unique_id=385631609]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.1095202, -2.607366, 1.9930599)
+spot_angle = 19.30074
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="." index="2" unique_id=418698012]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.1095202, -2.607366, -1.9806474)
+spot_angle = 19.30074

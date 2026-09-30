@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://br7doqs6mfymo"]
+
+[ext_resource type="PackedScene" uid="uid://d10hgkongg1s8" path="res://assets/models/shelves/Basket_Produce_Wide.glb" id="1_b11eh"]
+
+[node name="Basket_Produce_Wide2" unique_id=1479020103 instance=ExtResource("1_b11eh")]

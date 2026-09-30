@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://blnjtjx78axnh"]
+
+[ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_1d4ot"]
+[ext_resource type="ArrayMesh" uid="uid://do686c78k15rx" path="res://assets/models/items/Pear_Green_Cube_048.res" id="1_u37nd"]
+
+[resource]
+script = ExtResource("1_1d4ot")
+item_id = "pear_green"
+display_name = "Green Pear"
+product_mesh = ExtResource("1_u37nd")
+product_price = 0.5
+metadata/_custom_type_script = "uid://ce7xl2fesyef6"

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://qj7cygpjgf6g"]
+
+[ext_resource type="ArrayMesh" uid="uid://bib44o7bqg1ht" path="res://assets/models/items/Orange_Cube_045.res" id="1_3lnoc"]
+[ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_vxags"]
+
+[resource]
+script = ExtResource("1_vxags")
+item_id = "orange"
+display_name = "Orange"
+product_mesh = ExtResource("1_3lnoc")
+product_price = 0.5
+metadata/_custom_type_script = "uid://ce7xl2fesyef6"

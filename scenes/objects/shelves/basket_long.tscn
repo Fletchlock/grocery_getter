@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://dvw8l3tpg6gj6"]
+
+[ext_resource type="PackedScene" uid="uid://bsyfv0m7urwnv" path="res://assets/models/shelves/Basket_Long.glb" id="1_tk12a"]
+
+[node name="Basket_Long2" unique_id=80019029 instance=ExtResource("1_tk12a")]

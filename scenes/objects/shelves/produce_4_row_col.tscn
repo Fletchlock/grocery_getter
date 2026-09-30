@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://ewh4kp4kwvix"]
+
+[ext_resource type="PackedScene" uid="uid://de8jglh3afwut" path="res://assets/models/shelves/Produce_4row_col.glb" id="1_4ne1e"]
+
+[node name="Produce_4row_col2" unique_id=1933470339 instance=ExtResource("1_4ne1e")]
