@@ -69,6 +69,13 @@ var look_target: Node3D = null
 
 # Network replication
 @export var network_is_grounded : bool = true
+@export var state: State = State.IDLE:
+	set(value):
+		state = value
+		update_animation()
+
+
+
 
 # States
 enum State {
@@ -82,8 +89,7 @@ enum State {
 	SHOPPING_WAITING_IDLE,
 	EXITING
 }
-	
-var state : State = State.IDLE
+
 
 # Timers
 @export var idle_wait_time_min: float = 3.0
@@ -97,6 +103,15 @@ var last_position: Vector3 = Vector3.ZERO
 
 
 func _ready() -> void:
+	print(
+			"SHOPPER READY | peer=",
+			multiplayer.get_unique_id(),
+			" authority=",
+			is_multiplayer_authority(),
+			" parent=",
+			get_parent().get_path()
+		)
+	
 	add_to_group("shopper_ai")
 	
 	skeleton_ik_node.start()
@@ -119,7 +134,9 @@ func _process(delta: float) -> void:
 	update_idle_look(delta)
 
 func _physics_process(delta: float) -> void:
-
+	if not is_multiplayer_authority():
+		return
+		
 	velocity += get_gravity() * delta
 
 	match state:
@@ -498,6 +515,9 @@ func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
 # ---------------------------------------------------------
 
 func update_animation() -> void:
+	if not is_node_ready():
+		await ready
+	
 	var new_animation: StringName = &"low_poly_character_anims/idle"
 
 	match state:
