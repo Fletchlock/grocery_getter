@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://gcayaa0iaxb"]
+
+[ext_resource type="PackedScene" uid="uid://cqh55rx647uh" path="res://assets/models/shelves/Freezer_Open_3row_col.glb" id="1_tbia4"]
+
+[node name="Freezer_Open_3row_col2" unique_id=1095167490 instance=ExtResource("1_tbia4")]

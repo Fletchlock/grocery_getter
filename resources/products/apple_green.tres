@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://cyu35bn0ge3ba"]
+
+[ext_resource type="ArrayMesh" uid="uid://b0uc25nrsh1e7" path="res://assets/models/items/Apple_Green_Cube_044.res" id="1_fva2l"]
+[ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="2_5w4e3"]
+
+[resource]
+script = ExtResource("2_5w4e3")
+item_id = "apple_green"
+display_name = "Granny Smith Apple"
+product_mesh = ExtResource("1_fva2l")
+product_price = 0.5
+metadata/_custom_type_script = "uid://ce7xl2fesyef6"

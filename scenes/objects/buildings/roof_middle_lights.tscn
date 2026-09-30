@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://bmbkumk6ial72"]
+
+[ext_resource type="PackedScene" uid="uid://ebeg62ghmw3u" path="res://assets/models/buildings/Roof_Middle_Lights.glb" id="1_xsaru"]
+
+[node name="Roof_Middle_Lights2" unique_id=894553738 instance=ExtResource("1_xsaru")]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="." index="1" unique_id=1151600571]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.1095202, -2.607366, 1.9930599)
+spot_angle = 19.30074
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="." index="2" unique_id=720830098]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.1095202, -2.607366, -1.9806474)
+spot_angle = 19.30074
