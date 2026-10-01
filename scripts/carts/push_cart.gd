@@ -135,8 +135,8 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 	return "[E] Grab cart"
 
 
-func interact() -> void:
-	var player: CharacterBody3D = player_character
+func interact(player: CharacterBody3D) -> void:
+	
 
 	if player != null:
 		if player.has_method("try_release_cart"):

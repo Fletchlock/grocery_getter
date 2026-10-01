@@ -20,6 +20,7 @@ signal finished_shopping(purchase_total: float)
 @export var shopping_wait_max: float = 4.0
 
 @export_group("Shopping Wander")
+@export var shopping_point_check_distance: float = 3.0
 @export var shopping_wander_distance_min: float = 1.0
 @export var shopping_wander_distance_max: float = 3.0
 
@@ -35,6 +36,7 @@ var current_shopping_index: int = 0
 var shopping_idle_timer: float = 0.0
 var shopping_wait_timer: float = 0.0
 var current_shopping_point: Node3D = null
+var shopping_point_checked: bool = false
 
 # AI Movement and rotation
 @export var rotation_speed: float = 10.0
@@ -269,28 +271,14 @@ func go_to_next_shopping_point() -> void:
 		return
 
 	var shopping_point: Node3D = shopping_list[current_shopping_index]
+	current_shopping_point = shopping_point
+	shopping_point_checked = false
 
-	if is_shopping_point_available(shopping_point):
-		current_shopping_point = shopping_point
+	var shopper_point: Marker3D = shopping_point.get_node("AIShopperPoint")
 
-		var shopper_point: Marker3D = shopping_point.get_node("AIShopperPoint")
+	set_navigation_target(shopper_point.global_position)
 
-		reserve_shopping_point(shopping_point)
-		set_navigation_target(shopper_point.global_position)
-
-		state = State.SHOPPING
-		return
-
-	# Current point is occupied. Wander until it becomes available.
-	shopping_wait_timer = randf_range(
-		shopping_wait_min,
-		shopping_wait_max
-	)
-
-	var wander_target: Vector3 = get_new_target_location(true)
-	set_navigation_target(wander_target)
-
-	state = State.SHOPPING_WAITING
+	state = State.SHOPPING
 
 
 
@@ -390,6 +378,26 @@ func _on_moving(delta: float) -> void:
 	var current_position: Vector3 = global_position
 	var next_position: Vector3 = navigation_agent_3d.get_next_path_position()
 
+	if state == State.SHOPPING and not shopping_point_checked and current_shopping_point != null:
+		var shopper_point: Marker3D = current_shopping_point.get_node("AIShopperPoint")
+
+		if current_position.distance_to(shopper_point.global_position) <= shopping_point_check_distance:
+			shopping_point_checked = true
+
+			if is_shopping_point_available(current_shopping_point):
+				reserve_shopping_point(current_shopping_point)
+			else:
+				shopping_wait_timer = randf_range(
+					shopping_wait_min,
+					shopping_wait_max
+				)
+
+				var wander_target: Vector3 = get_new_target_location(true)
+				set_navigation_target(wander_target)
+
+				state = State.SHOPPING_WAITING
+				return
+
 	var direction: Vector3 = (
 		next_position - current_position
 	).normalized()
@@ -405,7 +413,7 @@ func _on_moving(delta: float) -> void:
 		State.SHOPPING,
 		State.SHOPPING_WAITING,
 		State.EXITING
-		]:
+	]:
 		target_rotation = atan2(direction.x, direction.z)
 
 	if current_position.distance_to(last_position) < 0.05:
@@ -666,5 +674,5 @@ func find_nearest_player() -> Node3D:
 
 
 func play_footstep() -> void:
-	footstep_player.pitch_scale = randf_range(0.8, 1.2)
+	footstep_player.pitch_scale = randf_range(0.9, 1.3)
 	footstep_player.play()

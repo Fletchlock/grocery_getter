@@ -1191,7 +1191,7 @@ func interact_with_item(item: Node3D) -> void:
 	if item.has_method("request_interact"):
 		item.request_interact(self)
 	elif item.has_method("interact"):
-		item.interact()
+		item.interact(self)
 
 
 # Held item functions
@@ -1286,5 +1286,5 @@ func receive_product(product_path: String) -> void:
 
 
 func play_footstep() -> void:
-	footstep_player.pitch_scale = randf_range(0.8, 1.2)
+	footstep_player.pitch_scale = randf_range(1.1, 1.5)
 	footstep_player.play()
