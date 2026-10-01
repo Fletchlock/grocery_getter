@@ -7,6 +7,9 @@ extends CharacterBody3D
 @onready var interact_raycast_3d: RayCast3D = $FirstPersonCameraPivot/FirstPersonCamera/InteractRaycast3D
 @onready var held_item_holder: Node3D = $FirstPersonCameraPivot/HeldItemHolder
 
+# Audio
+@onready var footstep_player: AudioStreamPlayer3D = $FirstPersonCameraPivot/FirstPersonCamera/FootstepPlayer
+
 
 @onready var _spring_arm_pivot: Node3D = $SpringArmPivot
 @onready var _first_person_pivot: Node3D = $FirstPersonCameraPivot
@@ -1280,3 +1283,8 @@ func receive_product(product_path: String) -> void:
 	held_item = loaded_resource as ProductData
 
 	_create_held_item_visual()
+
+
+func play_footstep() -> void:
+	footstep_player.pitch_scale = randf_range(0.8, 1.2)
+	footstep_player.play()

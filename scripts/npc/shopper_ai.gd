@@ -6,6 +6,7 @@ signal finished_shopping(purchase_total: float)
 
 # Character refs
 @onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/npc_shopper_01
+@onready var footstep_player: AudioStreamPlayer3D = $FootstepPlayer
 
 # Shopping
 @export_group("Shopping")
@@ -662,3 +663,8 @@ func find_nearest_player() -> Node3D:
 		nearest_player = player
 
 	return nearest_player
+
+
+func play_footstep() -> void:
+	footstep_player.pitch_scale = randf_range(0.8, 1.2)
+	footstep_player.play()

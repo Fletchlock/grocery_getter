@@ -410,9 +410,8 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.82
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06434679, 0, -0.0014028549)
 script = ExtResource("15_fg0y7")
 shopper_scenes = Array[PackedScene]([ExtResource("7_c4on7"), ExtResource("4_u4agu"), ExtResource("5_nxwu1")])
-max_shoppers = 12
 spawn_interval_min = 5.0
-spawn_interval_max = 6.0
+spawn_interval_max = 10.0
 spawn_points = [NodePath("../ShopperSpawnPoint"), NodePath("../ShopperSpawnPoint2")]
 
 [node name="ShopperSpawnPoint" type="Marker3D" parent="NavigationRegion3D" unique_id=1135914735]
@@ -1452,32 +1451,10 @@ mesh = SubResource("CapsuleMesh_hd853")
 [node name="low_poly_character" parent="Players" unique_id=51086098 instance=ExtResource("8_hp4pk")]
 transform = Transform3D(0.7099662, 0, 0.7042358, 0, 1, 0, -0.7042358, 0, 0.7099662, 19.6507, -7.2209644, 1.6544709)
 
-[node name="Skeleton3D" parent="Players/low_poly_character/Armature" parent_id_path=PackedInt32Array(51086098, 1485995296) index="0" unique_id=972510031]
-bones/0/rotation = Quaternion(0.025572151, 0, 0, 0.999673)
-bones/1/rotation = Quaternion(-0.015551604, 0, 0, 0.99987906)
-bones/2/rotation = Quaternion(-0.13068068, 1.1818703e-07, -1.557835e-08, 0.9914245)
-bones/3/rotation = Quaternion(0.110640466, -2.5022622e-14, 2.6378737e-08, 0.9938605)
-bones/4/rotation = Quaternion(0.02210752, 0.084997654, 0.9439818, 0.31809586)
-bones/5/rotation = Quaternion(-0.14423136, 0.00022060436, 0.032007936, 0.9890262)
-bones/6/rotation = Quaternion(-0.052163113, -0.031390984, 0.17021029, 0.98352534)
-bones/7/rotation = Quaternion(-0.02210752, 0.084997654, 0.9439818, -0.31809586)
-bones/8/rotation = Quaternion(-0.14423136, -0.00022060436, -0.032007936, 0.9890262)
-bones/9/rotation = Quaternion(-0.052163113, 0.031390984, -0.17021029, 0.98352534)
-bones/10/rotation = Quaternion(-0.0044929218, -0.0285922, 0.99800813, 0.056054894)
-bones/10/scale = Vector3(0.99999434, 0.99999994, 0.99999845)
-bones/11/rotation = Quaternion(0.18132728, 0.0025742962, 0.037146367, 0.98271763)
-bones/12/rotation = Quaternion(-0.6645255, 0.020071466, -0.042631388, 0.7457785)
-bones/12/scale = Vector3(1, 1, 0.99999994)
-bones/13/rotation = Quaternion(0.0044929218, -0.0285922, 0.99800813, -0.056054894)
-bones/13/scale = Vector3(0.99999434, 0.99999994, 0.99999845)
-bones/14/rotation = Quaternion(0.18132728, -0.0025742962, -0.037146367, 0.98271763)
-bones/15/rotation = Quaternion(-0.6645255, -0.020071466, 0.042631388, 0.7457785)
-bones/15/scale = Vector3(1, 1, 0.99999994)
-
-[node name="GroceryRed" parent="Players/low_poly_character/Armature/Skeleton3D" index="2" unique_id=1109459962]
+[node name="GroceryRed" parent="Players/low_poly_character/Armature/Skeleton3D" parent_id_path=PackedInt32Array(51086098, 972510031) index="2" unique_id=1109459962]
 blend_shapes/Blink = 0.0
 
-[node name="GroceryBlue" parent="Players/low_poly_character/Armature/Skeleton3D" index="3" unique_id=1076076089]
+[node name="GroceryBlue" parent="Players/low_poly_character/Armature/Skeleton3D" parent_id_path=PackedInt32Array(51086098, 972510031) index="3" unique_id=1076076089]
 blend_shapes/Blink = 0.0
 
 [editable path="NavigationRegion3D/Items/ProductDisplay"]
