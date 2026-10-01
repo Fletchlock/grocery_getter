@@ -1,31 +1,26 @@
 [gd_resource type="AnimationNodeStateMachine" format=3 uid="uid://k24dl8h4178k"]
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vuxa7"]
-animation = &"low_poly_character_anims/idle"
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4tmgi"]
+animation = &"character_anims/run"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ry6uu"]
-animation = &"low_poly_character_anims/run"
-use_custom_timeline = true
-timeline_length = 0.65
-stretch_time_scale = true
-start_offset = 0.0
-loop_mode = 1
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_o6irr"]
+animation = &"character_anims/idle"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_y6qf7"]
-animation = &"low_poly_character_anims/run"
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_cxyl5"]
+animation = &"character_anims/run"
 play_mode = 1
 
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_w60e8"]
 snap = 0.07
-blend_point_0/node = SubResource("AnimationNodeAnimation_vuxa7")
-blend_point_0/pos = 0.0
-blend_point_0/name = &"low_poly_character_anims_idle"
-blend_point_1/node = SubResource("AnimationNodeAnimation_ry6uu")
-blend_point_1/pos = 1.0
-blend_point_1/name = &"low_poly_character_anims_run"
-blend_point_2/node = SubResource("AnimationNodeAnimation_y6qf7")
+blend_point_0/node = SubResource("AnimationNodeAnimation_4tmgi")
+blend_point_0/pos = 1.0
+blend_point_0/name = &"character_anims_run"
+blend_point_1/node = SubResource("AnimationNodeAnimation_o6irr")
+blend_point_1/pos = 0.0
+blend_point_1/name = &"character_anims_idle"
+blend_point_2/node = SubResource("AnimationNodeAnimation_cxyl5")
 blend_point_2/pos = -1.0
-blend_point_2/name = &"low_poly_character_anims_run 2"
+blend_point_2/name = &"character_anims_run 2"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3gk5t"]
 animation = &"low_poly_character_anims/pushing_loop"
@@ -42,11 +37,12 @@ nodes/Animation/position = Vector2(80, 112)
 node_connections = [&"output", 0, &"PushBlend", &"PushBlend", 0, &"Animation"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_w60e8"]
-animation = &"low_poly_character_anims/falling"
+animation = &"character_anims/falling"
 
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_ev8jc"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_l2khc"]
+graph_offset = Vector2(-95.966995, 43.480988)
 nodes/output/position = Vector2(928, 112)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_w60e8")
 nodes/Animation/position = Vector2(336, 128)
@@ -76,4 +72,4 @@ states/FallingState/node = SubResource("AnimationNodeBlendTree_l2khc")
 states/FallingState/position = Vector2(660.4, 299.2)
 states/Start/position = Vector2(22.399994, 57.600002)
 transitions = ["Start", "BlendSpace1D", SubResource("AnimationNodeStateMachineTransition_vuxa7"), "BlendSpace1D", "FallingState", SubResource("AnimationNodeStateMachineTransition_l2khc"), "FallingState", "BlendSpace1D", SubResource("AnimationNodeStateMachineTransition_ry6uu")]
-graph_offset = Vector2(-201, -74)
+graph_offset = Vector2(-201, 102.53847)
