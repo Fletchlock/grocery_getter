@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://dnla4fxwa5v6j"]
+
+[ext_resource type="Script" uid="uid://tot5f1x7kijh" path="res://scripts/managers/order_manager.gd" id="1_8dnq8"]
+[ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="2_frqi1"]
+[ext_resource type="Resource" uid="uid://cyu35bn0ge3ba" path="res://resources/products/apple_green.tres" id="3_eb7sa"]
+[ext_resource type="Resource" uid="uid://b8su14u0l5fxh" path="res://resources/products/apple_red2.tres" id="4_l24qr"]
+[ext_resource type="Resource" uid="uid://bbafgfwo542nm" path="res://resources/products/apple_red.tres" id="5_o262s"]
+[ext_resource type="Resource" uid="uid://eitab8g0uwcx" path="res://resources/products/bag_mandarins.tres" id="6_a1c4v"]
+[ext_resource type="Resource" uid="uid://cg1ckgnjrikqh" path="res://resources/products/bread.tres" id="7_q8ipl"]
+[ext_resource type="Resource" uid="uid://6frq8yt7wboh" path="res://resources/products/can_beans.tres" id="8_g8wsy"]
+[ext_resource type="Resource" uid="uid://bk72xf2654xaf" path="res://resources/products/can_corn.tres" id="9_irppk"]
+[ext_resource type="Resource" uid="uid://bdoudowbwde22" path="res://resources/products/can_peas.tres" id="10_fg06t"]
+[ext_resource type="Resource" uid="uid://dklerfmqk4jk0" path="res://resources/products/cereal.tres" id="11_qt6gk"]
+[ext_resource type="Resource" uid="uid://drhqmd8mbofk" path="res://resources/products/eggs.tres" id="12_hmk0s"]
+[ext_resource type="Resource" uid="uid://dpcxghxgl7ms" path="res://resources/products/flour.tres" id="13_0288q"]
+[ext_resource type="Resource" uid="uid://bxag1kfs6pnwd" path="res://resources/products/grapefruit.tres" id="14_pt8w2"]
+[ext_resource type="Resource" uid="uid://c117r4ojbg6ym" path="res://resources/products/lemon.tres" id="15_g4m3m"]
+[ext_resource type="Resource" uid="uid://cimfw3tohvb1d" path="res://resources/products/lime.tres" id="16_ujuvh"]
+[ext_resource type="Resource" uid="uid://d0ysrbe7f2rwf" path="res://resources/products/mandarin.tres" id="17_01e7g"]
+[ext_resource type="Resource" uid="uid://qj7cygpjgf6g" path="res://resources/products/orange.tres" id="18_clkrp"]
+[ext_resource type="Resource" uid="uid://bqhxyo1vjvcki" path="res://resources/products/pear_brown.tres" id="19_h2nih"]
+[ext_resource type="Resource" uid="uid://blnjtjx78axnh" path="res://resources/products/pear_green.tres" id="20_phvt6"]
+[ext_resource type="Resource" uid="uid://cusqf2gc2jl7h" path="res://resources/products/sugar.tres" id="21_p3w5a"]
+[ext_resource type="Resource" uid="uid://c6wdbigdc2g1p" path="res://resources/products/tomato.tres" id="22_otiyo"]
+
+[node name="OrderManager" type="Node" unique_id=756232929]
+script = ExtResource("1_8dnq8")
+available_products = Array[ExtResource("2_frqi1")]([ExtResource("3_eb7sa"), ExtResource("4_l24qr"), ExtResource("5_o262s"), ExtResource("6_a1c4v"), ExtResource("7_q8ipl"), ExtResource("8_g8wsy"), ExtResource("9_irppk"), ExtResource("10_fg06t"), ExtResource("11_qt6gk"), ExtResource("12_hmk0s"), ExtResource("13_0288q"), ExtResource("14_pt8w2"), ExtResource("15_g4m3m"), ExtResource("16_ujuvh"), ExtResource("17_01e7g"), ExtResource("18_clkrp"), ExtResource("19_h2nih"), ExtResource("20_phvt6"), ExtResource("21_p3w5a"), ExtResource("22_otiyo")])

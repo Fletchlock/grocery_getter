@@ -16,6 +16,10 @@ config/use_hidden_project_data_directory=false
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://assets/materials/icon.svg"
 
+[audio]
+
+buses/default_bus_layout="uid://qxinuq43nvun"
+
 [autoload]
 
 GameManager="*uid://c5vmnkryo34dd"
@@ -24,6 +28,7 @@ LobbyManager="*uid://bsjq7g6r35y0m"
 LevelManager="*uid://de4lom6ucbx61"
 SpawnManager="*uid://ban24s6ykfait"
 TransitionManager="*uid://bnrp3fpda0ylt"
+OrderManager="*uid://dnla4fxwa5v6j"
 
 [debug]
 
