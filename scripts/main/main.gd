@@ -3,6 +3,7 @@ extends Node
 const MAIN_MENU := "res://scenes/menus/main_menu.tscn"
 const LOBBY := "res://scenes/menus/lobby.tscn"
 const PAUSE_MENU := "res://scenes/menus/pause_menu.tscn"
+const TABLET_MENU := "res://scenes/menus/tablet_menu.tscn"
 
 var main_menu: Control
 var lobby: Control
@@ -76,7 +77,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			_open_pause_menu()
 		elif GameManager.current_state == GameManager.GameState.PAUSED:
 			_close_pause_menu()
-			
+	
+	if event.is_action_pressed("toggle_order_hud"):
+		if GameManager.current_state == GameManager.GameState.PLAYING:
+			_toggle_tablet_menu()	
 
 func _open_pause_menu() -> void:
 	var pause_scene := load(PAUSE_MENU) as PackedScene
@@ -138,3 +142,19 @@ func open_lobby_browser() -> void:
 	$UI.add_child(lobby_browser)
 
 	main_menu.hide()
+
+
+func _toggle_tablet_menu() -> void:
+	var tablet_menu = get_node_or_null("UI/TabletMenu")
+
+	if tablet_menu == null:
+		var tablet_menu_scene := load(TABLET_MENU) as PackedScene
+
+		if tablet_menu_scene == null:
+			push_error("Could not load tablet menu")
+			return
+
+		tablet_menu = tablet_menu_scene.instantiate()
+		$UI.add_child(tablet_menu)
+
+	tablet_menu.get_node("CanvasLayer/OrderHUD")._toggle_hud()

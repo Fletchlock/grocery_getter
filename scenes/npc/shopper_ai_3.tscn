@@ -565,8 +565,9 @@ debug_color = Color(0.27058825, 0.56078434, 0.94509804, 0.9529412)
 [node name="FootstepPlayer" type="AudioStreamPlayer3D" parent="." unique_id=1756919205]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.025091648, -0.2009846)
 stream = ExtResource("4_w3jdb")
+volume_db = -5.0
 max_distance = 10.0
-bus = &"SFX"
+bus = &"Footsteps"
 
 [connection signal="target_reached" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_target_reached"]
 [connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]

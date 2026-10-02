@@ -9,6 +9,7 @@ extends CharacterBody3D
 
 # Audio
 @onready var footstep_player: AudioStreamPlayer3D = $FirstPersonCameraPivot/FirstPersonCamera/FootstepPlayer
+@onready var audio_listener: AudioListener3D = $AudioListener3D
 
 
 @onready var _spring_arm_pivot: Node3D = $SpringArmPivot
@@ -103,6 +104,7 @@ var _last_movement_direction := Vector3.FORWARD
 var _gravity := -30.0
 var _was_airborne := false
 var _target_zoom := 2.0
+var order_menu_open: bool = false
 
 # === Held Item Variables ===
 var held_item: ProductData = null
@@ -133,6 +135,8 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
+	audio_listener.current = is_multiplayer_authority()
+	
 	print(
 		"PLAYER READY: ",
 		name,
@@ -543,7 +547,7 @@ func _physics_process(delta: float) -> void:
 	# ============================================================
 	# LOCAL PLAYER
 	# ============================================================
-
+	
 	# === 1. Camera / Look ===
 
 	var gamepad_look: Vector2 = Input.get_vector(
@@ -694,16 +698,21 @@ func _physics_process(delta: float) -> void:
 
 	velocity.y = 0.0
 
-	var current_acceleration: float = (
-		acceleration
-		if is_on_floor()
-		else air_acceleration
-	)
+	if not order_menu_open:
+		var current_acceleration: float = (
+			acceleration
+			if is_on_floor()
+			else air_acceleration
+		)
 
-	velocity = velocity.move_toward(
-		move_direction * move_speed,
-		current_acceleration * delta
-	)
+		velocity = velocity.move_toward(
+			move_direction * move_speed,
+			current_acceleration * delta
+		)
+
+	if order_menu_open:
+		velocity.x = 0.0
+		velocity.z = 0.0
 
 	velocity.y = y_velocity + _gravity * delta
 
@@ -1286,5 +1295,6 @@ func receive_product(product_path: String) -> void:
 
 
 func play_footstep() -> void:
-	footstep_player.pitch_scale = randf_range(1.1, 1.5)
+	
+	footstep_player.pitch_scale = randf_range(0.9, 1.2)
 	footstep_player.play()

@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://67pb4x05a7e8"]
+
+[ext_resource type="Script" uid="uid://c1d1hqkmnu0o6" path="res://scripts/menus/tablet_menu.gd" id="1_5idys"]
+
+[node name="TabletMenu" type="Control" unique_id=1655709720]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1478621498]
+
+[node name="OrderHUD" type="Control" parent="CanvasLayer" unique_id=1038374885]
+visible = false
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -357.0
+offset_top = -472.0
+offset_right = -317.0
+offset_bottom = -432.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("1_5idys")
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/OrderHUD" unique_id=2062544613]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_top = -15.5
+offset_right = 0.5
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OrderLabel" type="Label" parent="CanvasLayer/OrderHUD/PanelContainer" unique_id=1653666970]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26

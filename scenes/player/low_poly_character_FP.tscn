@@ -367,7 +367,7 @@ properties/8/replication_mode = 1
 [sub_resource type="SphereShape3D" id="SphereShape3D_qgfk6"]
 radius = 0.5971316
 
-[node name="low_poly_character_fp" type="CharacterBody3D" unique_id=51086098]
+[node name="low_poly_character_fp" type="CharacterBody3D" unique_id=51086098 groups=["player"]]
 process_mode = 1
 script = ExtResource("1_lslaa")
 look_distance = 4.0
@@ -617,7 +617,7 @@ fov = 85.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5468142, 0)
 stream = ExtResource("11_5wda0")
 max_distance = 10.0
-bus = &"SFX"
+bus = &"Footsteps"
 
 [node name="InteractRaycast3D" type="RayCast3D" parent="FirstPersonCameraPivot/FirstPersonCamera" unique_id=1492090311 node_paths=PackedStringArray("player_character", "interact_raycast_3d", "interaction_prompt")]
 target_position = Vector3(0, 0, -1.8)
@@ -646,4 +646,5 @@ outline_size = 8
 
 [node name="AudioListener3D" type="AudioListener3D" parent="." unique_id=147064121]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6927462, 0)
+doppler_tracking = 1
 current = true

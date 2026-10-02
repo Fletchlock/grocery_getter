@@ -8,8 +8,6 @@ var current_interactable: Node3D = null
 var current_outline_mesh: Node3D = null
 
 
-
-
 func _ready() -> void:
 	_prewarm_interaction_prompt()
 
@@ -231,7 +229,6 @@ func _hide_prompt() -> void:
 			label.visible = false
 
 		interaction_prompt.visible = false
-
 
 func _clear_interaction() -> void:
 	if current_outline_mesh:

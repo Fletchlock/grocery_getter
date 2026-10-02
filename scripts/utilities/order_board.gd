@@ -2,17 +2,20 @@ extends Node3D
 
 
 @onready var order_label: Label3D = $Label3D
+@onready var scanner_beep_player: AudioStreamPlayer3D = $AcceptOrderArea/ScannerBeepPlayer
+
+
+
 
 var showing_new_order: bool = false
 
 func _ready() -> void:
 	OrderManager.order_generated.connect(_on_order_generated)
 	OrderManager.order_updated.connect(_on_order_updated)
-	
-	if OrderManager.current_order != null:
-		_update_order_display(OrderManager.current_order)
-	
+
+	showing_new_order = true
 	order_label.text = "NEW ORDER AVAILABLE"
+		
 		
 
 func _process(delta: float) -> void:
@@ -39,11 +42,16 @@ func _update_order_display(order: OrderData) -> void:
 	var text: String = "ORDER #%d\n\n" % order.order_id
 
 	for item: OrderItem in order.items:
-		text += "%s    %d/%d\n" % [
+		var item_text: String = "%s    %d/%d" % [
 			item.product.display_name,
 			item.quantity_fulfilled,
 			item.quantity
 		]
+
+		if item.is_complete():
+			text += "%s\n" % item_text
+		else:
+			text += "%s\n" % item_text
 	
 	text += "\nORDER TOTAL: $%.2f" % order.current_profit
 	
@@ -105,9 +113,10 @@ func interact(player: CharacterBody3D) -> void:
 			request_submit_product.rpc_id(
 				1,
 				player.get_path(),
-				player.held_item.resouce_path
+				player.held_item.resource_path
 			)
-			
+		scanner_beep_player.pitch_scale = randf_range(1.0, 1.05)
+		scanner_beep_player.play()
 		return
 
 	if OrderManager.current_order == null:
