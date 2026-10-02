@@ -56,6 +56,14 @@ func record_purchase(purchase_total: float) -> void:
 
 	update_label()
 
+
+func record_order(order_total: float) -> void:
+	if not multiplayer.is_server():
+		return
+		
+	_total_sales += order_total
+	_last_purchase = order_total	
+
 func update_label() -> void:
 	if stats_label == null:
 		return

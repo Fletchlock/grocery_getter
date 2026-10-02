@@ -6,15 +6,21 @@ signal order_updated(order: OrderData)
 
 @export_group("Order Generation")
 @export var available_products: Array[ProductData] = []
-@export var min_items: int = 4
-@export var max_items: int = 6
+@export var min_products: int = 4
+@export var max_products: int = 6
+@export var min_items: int = 1
+@export var max_items: int = 2
 @export var next_order_delay: float = 30.0
+
 
 var current_order: OrderData
 var next_order_id: int = 1
 var next_order_timer: float = 0.0
+var shopper_stats: Node3D
+
 
 func _ready() -> void:
+	shopper_stats = get_tree().get_first_node_in_group("shopper_stats")
 	generate_order()
 
 
@@ -35,7 +41,7 @@ func generate_order() -> void:
 	current_order.order_id = next_order_id
 	next_order_id += 1
 	
-	var item_count: int = randi_range(min_items, max_items)
+	var item_count: int = randi_range(min_products, max_products)
 	
 	var products: Array[ProductData] = available_products.duplicate()
 	products.shuffle()
@@ -45,7 +51,7 @@ func generate_order() -> void:
 	for i: int in item_count:
 		var item: OrderItem = OrderItem.new()
 		item.product = products[i]
-		item.quantity = randi_range(1, 2)
+		item.quantity = randi_range(min_items, max_items)
 		
 		current_order.items.append(item)
 		
@@ -129,8 +135,10 @@ func complete_order() -> void:
 		
 	current_order.state = OrderData.OrderState.COMPLETED
 	next_order_timer = next_order_delay
-	
+		
+	shopper_stats.record_order(current_order.current_profit)
 	order_updated.emit(current_order)
+	
 	
 func cancel_order() -> void:
 	pass

@@ -37,6 +37,8 @@ var fit_cache_valid: bool = false
 
 
 func _ready() -> void:
+	add_to_group("cart_grid")
+	
 	_rebuild_grid()
 
 	if not Engine.is_editor_hint():
