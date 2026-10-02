@@ -779,10 +779,10 @@ transform = Transform3D(0.9326745, 0, -0.36071923, 0, 1, 0, 0.36071923, 0, 0.932
 [node name="StoreSmallGreybox" parent="." unique_id=253599967 groups=["level_geo"] instance=ExtResource("15_tcjw2")]
 transform = Transform3D(-1.0000001, 0, -8.7422784e-08, 0, 1, 0, 8.7422784e-08, 0, -1.0000001, -0.53600764, -1.5205572, -3.3310928)
 
-[node name="store_small" parent="StoreSmallGreybox" index="0" unique_id=1597780132]
+[node name="store_small" parent="StoreSmallGreybox" index="0" unique_id=680403805]
 transform = Transform3D(1, 0, 1.0899726e-11, 0, 1, 0, -1.0899726e-11, 0, 1, 0.463, 0, -0.33)
 
-[node name="store_small_windows" parent="StoreSmallGreybox" index="1" unique_id=840135888]
+[node name="store_small_windows" parent="StoreSmallGreybox" index="1" unique_id=793886628]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.463, 0, -0.33)
 
 [node name="shack_tall_wide_right" parent="." unique_id=477675682 groups=["level_geo"] instance=ExtResource("9_vhux3")]

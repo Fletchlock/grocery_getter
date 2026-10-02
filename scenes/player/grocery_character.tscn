@@ -232,20 +232,20 @@ blend_shape_mode = 0
 
 [node name="grocery_character" unique_id=1887025754 instance=ExtResource("1_xppay")]
 
-[node name="character_blue" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(838592261) index="0" unique_id=2142932604]
+[node name="character_blue" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(1500915126) index="0" unique_id=1722780994]
 mesh = ExtResource("2_u5x1s")
 
-[node name="character_blue_hat" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(838592261) index="1" unique_id=320910559]
+[node name="character_blue_hat" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(1500915126) index="1" unique_id=2134344773]
 mesh = SubResource("ArrayMesh_ucic3")
 
-[node name="character_green" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(838592261) index="2" unique_id=604715273]
+[node name="character_green" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(1500915126) index="2" unique_id=767330751]
 mesh = ExtResource("3_beqp5")
 
-[node name="character_green__hat" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(838592261) index="3" unique_id=1182129827]
+[node name="character_green__hat" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(1500915126) index="3" unique_id=2007695686]
 mesh = ExtResource("4_0knsf")
 
-[node name="character_red" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(838592261) index="4" unique_id=1130306551]
+[node name="character_red" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(1500915126) index="4" unique_id=1759217552]
 mesh = SubResource("ArrayMesh_beqp5")
 
-[node name="character_red_hat" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(838592261) index="5" unique_id=289616043]
+[node name="character_red_hat" parent="Armature/Skeleton3D" parent_id_path=PackedInt32Array(1500915126) index="5" unique_id=1069426417]
 mesh = SubResource("ArrayMesh_0knsf")
