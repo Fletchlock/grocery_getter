@@ -7,21 +7,17 @@ signal cart_contents_changed(cart_grid: CartGrid)
 @export_group("Cart Capacity")
 @export_range(1, 100, 1) var max_items: int = 20
 
-
 @export_group("Spacing")
 @export var horizontal_spacing: float = 0.05
 @export var vertical_spacing: float = 0.05
 @export var depth_spacing: float = 0.05
 
-
 @export_group("Display")
 @export var item_scale: Vector3 = Vector3.ONE
 @export_range(0.0, 15.0, 0.5) var rotation_variation_degrees: float = 3.0
 
-
 @export_group("Interaction Area")
 @export var interaction_top_padding: float = 0.2
-
 
 @onready var interaction_area: Area3D = $InteractionArea
 @onready var interaction_collision: CollisionShape3D = $InteractionArea/CollisionShape3D
@@ -39,7 +35,7 @@ var fit_cache_valid: bool = false
 
 func _ready() -> void:
 	add_to_group("cart_grid")
-	
+
 	_rebuild_grid()
 
 	if not Engine.is_editor_hint():
@@ -204,7 +200,7 @@ func _can_fit_product(product: ProductData) -> bool:
 	if fit_cache_valid and cached_fit_product == product:
 		return cached_fit_position != Vector3.INF
 
-	var placement: Vector3 = _find_fit_position(product)
+	var placement: Vector3 = _find_position_for_new_item(product)
 
 	cached_fit_product = product
 	cached_fit_position = placement
@@ -213,313 +209,184 @@ func _can_fit_product(product: ProductData) -> bool:
 	return placement != Vector3.INF
 
 
-func _find_fit_position(product: ProductData) -> Vector3:
-	var product_bounds: AABB = _get_product_bounds(product)
-
-	if product_bounds.size.x <= 0.0:
-		return Vector3.INF
-
-	if product_bounds.size.y <= 0.0:
-		return Vector3.INF
-
-	if product_bounds.size.z <= 0.0:
-		return Vector3.INF
-
-	var bounds: AABB = _get_cart_bounds()
-
-	if not _product_can_fit_inside_cart(
-		product_bounds.size,
-		bounds
-	):
-		return Vector3.INF
-
-	var candidate_x_values: Array[float] = []
-	var candidate_z_values: Array[float] = []
-
-	_build_candidate_x_values(
-		candidate_x_values,
-		product_bounds.size.x,
-		bounds
-	)
-
-	_build_candidate_z_values(
-		candidate_z_values,
-		product_bounds.size.z,
-		bounds
-	)
-
-	# First try to place directly on the cart floor.
-	for candidate_z: float in candidate_z_values:
-		for candidate_x: float in candidate_x_values:
-			var candidate_position: Vector3 = Vector3(
-				candidate_x,
-				bounds.position.y
-				+ product_bounds.size.y * 0.5,
-				candidate_z
-			)
-
-			if not _position_fits_bounds(
-				candidate_position,
-				product_bounds.size,
-				bounds
-			):
-				continue
-
-			if _position_overlaps_items(
-				candidate_position,
-				product_bounds.size
-			):
-				continue
-
-			return candidate_position
-
-	# If the floor is full, try stacking.
-	#
-	# We intentionally return the first valid stacking position
-	# instead of searching every possible position for the absolute
-	# lowest one. This keeps placement fast as the cart fills.
-	for candidate_z: float in candidate_z_values:
-		for candidate_x: float in candidate_x_values:
-			var candidate_position: Vector3 = Vector3(
-				candidate_x,
-				bounds.position.y
-				+ product_bounds.size.y * 0.5,
-				candidate_z
-			)
-
-			var support_height: float = _get_support_height(
-				candidate_position,
-				product_bounds.size,
-				bounds
-			)
-
-			# This candidate does not have an item supporting it,
-			# so it was already rejected as a floor placement.
-			if is_equal_approx(
-				support_height,
-				bounds.position.y
-			):
-				continue
-
-			candidate_position.y = (
-				support_height
-				+ product_bounds.size.y * 0.5
-			)
-
-			if not _position_fits_bounds(
-				candidate_position,
-				product_bounds.size,
-				bounds
-			):
-				continue
-
-			if _position_overlaps_items(
-				candidate_position,
-				product_bounds.size
-			):
-				continue
-
-			return candidate_position
-
-	return Vector3.INF
-
+# -------------------------------------------------------------------
+# Simplified placement
+# -------------------------------------------------------------------
 
 func _find_position_for_new_item(
 	product: ProductData
 	) -> Vector3:
-	return _find_fit_position(product)
+	var product_size: Vector3 = _get_product_size(product)
 
+	if product_size.x <= 0.0:
+		return Vector3.INF
 
-func _build_candidate_x_values(
-	candidates: Array[float],
-	product_width: float,
-	bounds: AABB
-	) -> void:
-	var half_width: float = product_width * 0.5
+	if product_size.y <= 0.0:
+		return Vector3.INF
 
-	# Cart edges first.
-	_add_candidate_value(
-		candidates,
-		bounds.position.x + half_width
-	)
+	if product_size.z <= 0.0:
+		return Vector3.INF
 
-	_add_candidate_value(
-		candidates,
-		bounds.end.x - half_width
-	)
+	var bounds: AABB = _get_cart_bounds()
 
-	# Then positions based on existing items.
-	for index: int in range(item_positions.size()):
-		var existing_position: Vector3 = item_positions[index]
-		var existing_size: Vector3 = _get_product_size(
-			cart_items[index]
+	if not _product_can_fit_inside_cart(product_size, bounds):
+		return Vector3.INF
+
+	# The cart is treated as a series of simple horizontal
+	# rows/layers. We only test positions immediately after
+	# existing items instead of generating many candidate
+	# coordinates and testing every combination.
+	#
+	# This makes placement substantially cheaper as the cart fills.
+
+	var candidate_positions: Array[Vector3] = []
+
+	# First item.
+	if item_positions.is_empty():
+		candidate_positions.append(
+			Vector3(
+				bounds.position.x + product_size.x * 0.5,
+				bounds.position.y + product_size.y * 0.5,
+				bounds.position.z + product_size.z * 0.5
+			)
 		)
+	else:
+		# Try extending each existing row.
+		for index: int in range(item_positions.size()):
+			var existing_product: ProductData = cart_items[index]
 
-		var existing_min_x: float = (
-			existing_position.x
-			- existing_size.x * 0.5
-		)
+			if existing_product == null:
+				continue
 
-		var existing_max_x: float = (
-			existing_position.x
-			+ existing_size.x * 0.5
-		)
+			var existing_size: Vector3 = _get_product_size(
+				existing_product
+			)
 
-		# Immediately beside the existing item.
-		_add_candidate_value(
-			candidates,
-			existing_max_x
-			+ horizontal_spacing
-			+ half_width
-		)
+			var existing_position: Vector3 = item_positions[index]
 
-		_add_candidate_value(
-			candidates,
-			existing_min_x
-			- horizontal_spacing
-			- half_width
-		)
+			# Continue to the right.
+			candidate_positions.append(
+				Vector3(
+					existing_position.x
+					+ existing_size.x * 0.5
+					+ horizontal_spacing
+					+ product_size.x * 0.5,
+					existing_position.y,
+					existing_position.z
+				)
+			)
 
-		# Directly above the existing item.
-		_add_candidate_value(
-			candidates,
-			existing_position.x
-		)
+			# Continue toward the back.
+			candidate_positions.append(
+				Vector3(
+					existing_position.x,
+					existing_position.y,
+					existing_position.z
+					+ existing_size.z * 0.5
+					+ depth_spacing
+					+ product_size.z * 0.5
+				)
+			)
 
+			# Stack directly above.
+			candidate_positions.append(
+				Vector3(
+					existing_position.x,
+					existing_position.y
+					+ existing_size.y * 0.5
+					+ vertical_spacing
+					+ product_size.y * 0.5,
+					existing_position.z
+				)
+			)
 
-func _build_candidate_z_values(
-	candidates: Array[float],
-	product_depth: float,
-	bounds: AABB
-	) -> void:
-	var half_depth: float = product_depth * 0.5
-
-	# Cart edges first.
-	_add_candidate_value(
-		candidates,
-		bounds.position.z + half_depth
-	)
-
-	_add_candidate_value(
-		candidates,
-		bounds.end.z - half_depth
-	)
-
-	# Then positions based on existing items.
-	for index: int in range(item_positions.size()):
-		var existing_position: Vector3 = item_positions[index]
-		var existing_size: Vector3 = _get_product_size(
-			cart_items[index]
-		)
-
-		var existing_min_z: float = (
-			existing_position.z
-			- existing_size.z * 0.5
-		)
-
-		var existing_max_z: float = (
-			existing_position.z
-			+ existing_size.z * 0.5
-		)
-
-		# Immediately beside the existing item.
-		_add_candidate_value(
-			candidates,
-			existing_max_z
-			+ depth_spacing
-			+ half_depth
-		)
-
-		_add_candidate_value(
-			candidates,
-			existing_min_z
-			- depth_spacing
-			- half_depth
-		)
-
-		# Directly above the existing item.
-		_add_candidate_value(
-			candidates,
-			existing_position.z
-		)
-
-
-func _get_support_height(
-	item_position: Vector3,
-	product_size: Vector3,
-	bounds: AABB
-	) -> float:
-	var support_height: float = bounds.position.y
-
-	var product_half_x: float = product_size.x * 0.5
-	var product_half_z: float = product_size.z * 0.5
-
-	var product_min_x: float = (
-		item_position.x - product_half_x
-	)
-
-	var product_max_x: float = (
-		item_position.x + product_half_x
-	)
-
-	var product_min_z: float = (
-		item_position.z - product_half_z
-	)
-
-	var product_max_z: float = (
-		item_position.z + product_half_z
-	)
-
-	for index: int in range(item_positions.size()):
-		var existing_position: Vector3 = item_positions[index]
-		var existing_size: Vector3 = _get_product_size(
-			cart_items[index]
-		)
-
-		var existing_min_x: float = (
-			existing_position.x
-			- existing_size.x * 0.5
-		)
-
-		var existing_max_x: float = (
-			existing_position.x
-			+ existing_size.x * 0.5
-		)
-
-		var existing_min_z: float = (
-			existing_position.z
-			- existing_size.z * 0.5
-		)
-
-		var existing_max_z: float = (
-			existing_position.z
-			+ existing_size.z * 0.5
-		)
-
-		var overlaps_x: bool = (
-			product_min_x < existing_max_x
-			and product_max_x > existing_min_x
-		)
-
-		var overlaps_z: bool = (
-			product_min_z < existing_max_z
-			and product_max_z > existing_min_z
-		)
-
-		if not overlaps_x or not overlaps_z:
+	# Test the small number of generated candidates.
+	for candidate: Vector3 in candidate_positions:
+		if not _position_fits_bounds(
+			candidate,
+			product_size,
+			bounds
+		):
 			continue
 
-		var existing_top: float = (
-			existing_position.y
-			+ existing_size.y * 0.5
+		if _position_overlaps_items(
+			candidate,
+			product_size
+		):
+			continue
+
+		return candidate
+
+	# If the direct candidates failed, find a new row.
+	var row_position: Vector3 = _find_new_row_position(
+		product_size,
+		bounds
+	)
+
+	if row_position != Vector3.INF:
+		return row_position
+
+	return Vector3.INF
+
+
+func _find_new_row_position(
+	product_size: Vector3,
+	bounds: AABB
+	) -> Vector3:
+	var x: float = (
+		bounds.position.x
+		+ product_size.x * 0.5
+	)
+
+	var z: float = (
+		bounds.position.z
+		+ product_size.z * 0.5
+	)
+
+	# Determine the next available row from the existing
+	# item's Z extents.
+	var highest_z: float = bounds.position.z
+
+	for index: int in range(item_positions.size()):
+		var existing_product: ProductData = cart_items[index]
+
+		if existing_product == null:
+			continue
+
+		var existing_size: Vector3 = _get_product_size(
+			existing_product
 		)
 
-		support_height = maxf(
-			support_height,
-			existing_top + vertical_spacing
+		var existing_position: Vector3 = item_positions[index]
+
+		highest_z = maxf(
+			highest_z,
+			existing_position.z
+			+ existing_size.z * 0.5
 		)
 
-	return support_height
+	z = highest_z + depth_spacing + product_size.z * 0.5
+
+	var candidate: Vector3 = Vector3(
+		x,
+		bounds.position.y + product_size.y * 0.5,
+		z
+	)
+
+	if not _position_fits_bounds(
+		candidate,
+		product_size,
+		bounds
+	):
+		return Vector3.INF
+
+	if _position_overlaps_items(
+		candidate,
+		product_size
+	):
+		return Vector3.INF
+
+	return candidate
 
 
 func _product_can_fit_inside_cart(
@@ -567,6 +434,7 @@ func _position_overlaps_items(
 
 	for index: int in range(item_positions.size()):
 		var existing_position: Vector3 = item_positions[index]
+
 		var existing_size: Vector3 = _get_product_size(
 			cart_items[index]
 		)
@@ -592,16 +460,9 @@ func _position_overlaps_items(
 	return false
 
 
-func _add_candidate_value(
-	candidates: Array[float],
-	value: float
-	) -> void:
-	for existing: float in candidates:
-		if is_equal_approx(existing, value):
-			return
-
-	candidates.append(value)
-
+# -------------------------------------------------------------------
+# Cart bounds / product bounds
+# -------------------------------------------------------------------
 
 func _get_cart_bounds() -> AABB:
 	if interaction_collision == null:
@@ -662,36 +523,9 @@ func _get_product_bounds(product: ProductData) -> AABB:
 	)
 
 
-func _rebuild_grid() -> void:
-	_clear_visuals()
-
-	item_positions.clear()
-
-	if cart_items.is_empty():
-		_invalidate_fit_cache()
-		return
-
-	for product: ProductData in cart_items:
-		if product == null:
-			continue
-
-		var placement: Vector3 = _find_position_for_new_item(
-			product
-		)
-
-		if placement == Vector3.INF:
-			continue
-
-		item_positions.append(placement)
-
-		_create_and_add_visual(
-			product,
-			placement,
-			item_visuals.size()
-		)
-
-		_invalidate_fit_cache()
-
+# -------------------------------------------------------------------
+# Visuals
+# -------------------------------------------------------------------
 
 func _create_and_add_visual(
 	product: ProductData,
@@ -770,6 +604,10 @@ func _invalidate_fit_cache() -> void:
 	fit_cache_valid = false
 
 
+# -------------------------------------------------------------------
+# Multiplayer interaction
+# -------------------------------------------------------------------
+
 func request_interact(player: CharacterBody3D) -> void:
 	if player == null:
 		return
@@ -808,7 +646,9 @@ func request_add_item(
 	if not multiplayer.is_server():
 		return
 
-	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
+	var requesting_peer_id: int = (
+		multiplayer.get_remote_sender_id()
+	)
 
 	var player_node: Node = get_node_or_null(player_path)
 
@@ -818,12 +658,17 @@ func request_add_item(
 	if not player_node is CharacterBody3D:
 		return
 
-	var player: CharacterBody3D = player_node as CharacterBody3D
+	var player: CharacterBody3D = (
+		player_node as CharacterBody3D
+	)
 
 	if player.get_multiplayer_authority() != requesting_peer_id:
 		return
 
-	_add_item_from_player(player, product_path)
+	_add_item_from_player(
+		player,
+		product_path
+	)
 
 
 func _add_item_from_player(
@@ -836,7 +681,9 @@ func _add_item_from_player(
 	if product_path.is_empty():
 		return
 
-	var product: ProductData = load(product_path) as ProductData
+	var product: ProductData = (
+		load(product_path) as ProductData
+	)
 
 	if product == null:
 		return
@@ -854,7 +701,9 @@ func request_take_item(player_path: NodePath) -> void:
 	if not multiplayer.is_server():
 		return
 
-	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
+	var requesting_peer_id: int = (
+		multiplayer.get_remote_sender_id()
+	)
 
 	var player_node: Node = get_node_or_null(player_path)
 
@@ -864,7 +713,9 @@ func request_take_item(player_path: NodePath) -> void:
 	if not player_node is CharacterBody3D:
 		return
 
-	var player: CharacterBody3D = player_node as CharacterBody3D
+	var player: CharacterBody3D = (
+		player_node as CharacterBody3D
+	)
 
 	if player.get_multiplayer_authority() != requesting_peer_id:
 		return
@@ -872,7 +723,9 @@ func request_take_item(player_path: NodePath) -> void:
 	_take_item_for_player(player)
 
 
-func _take_item_for_player(player: CharacterBody3D) -> void:
+func _take_item_for_player(
+	player: CharacterBody3D
+	) -> void:
 	if player == null:
 		return
 
@@ -884,11 +737,14 @@ func _take_item_for_player(player: CharacterBody3D) -> void:
 	if product == null:
 		return
 
-	_give_product_to_player(player, product)
+	_give_product_to_player(
+		player,
+		product
+	)
 
 	_broadcast_cart_state()
-	
-	
+
+
 func _give_product_to_player(
 	player: CharacterBody3D,
 	product: ProductData
@@ -899,8 +755,13 @@ func _give_product_to_player(
 	if product == null:
 		return
 
-	var player_peer_id: int = player.get_multiplayer_authority()
-	var product_path: String = product.resource_path
+	var player_peer_id: int = (
+		player.get_multiplayer_authority()
+	)
+
+	var product_path: String = (
+		product.resource_path
+	)
 
 	if player_peer_id == multiplayer.get_unique_id():
 		player.receive_product(product_path)
@@ -911,11 +772,15 @@ func _give_product_to_player(
 		)
 
 
-func _clear_player_held_item(player: CharacterBody3D) -> void:
+func _clear_player_held_item(
+	player: CharacterBody3D
+	) -> void:
 	if player == null:
 		return
 
-	var player_peer_id: int = player.get_multiplayer_authority()
+	var player_peer_id: int = (
+		player.get_multiplayer_authority()
+	)
 
 	if player_peer_id == multiplayer.get_unique_id():
 		player._clear_held_item()
@@ -923,7 +788,11 @@ func _clear_player_held_item(player: CharacterBody3D) -> void:
 		player.clear_held_item.rpc_id(
 			player_peer_id
 		)
-		
+
+
+# -------------------------------------------------------------------
+# Multiplayer cart synchronization
+# -------------------------------------------------------------------
 
 func _broadcast_cart_state() -> void:
 	if not multiplayer.is_server():
@@ -945,21 +814,161 @@ func _broadcast_cart_state() -> void:
 
 
 @rpc("authority", "call_remote", "reliable")
-func sync_cart_state(product_paths: Array[String]) -> void:
+func sync_cart_state(
+	product_paths: Array[String]
+	) -> void:
 	_apply_cart_state(product_paths)
-	
+
 	cart_contents_changed.emit(self)
 
-func _apply_cart_state(product_paths: Array[String]) -> void:
+
+func _apply_cart_state(
+	product_paths: Array[String]
+	) -> void:
+	# If the incoming state is simply an addition or removal from
+	# the end, preserve all existing positions and visuals.
+	#
+	# This is the common path during normal cart interaction.
+
+	if _matches_existing_prefix(product_paths):
+		_apply_incremental_cart_state(product_paths)
+		return
+
+	# A completely different state was received.
+	# This is primarily used for initial synchronization.
+	_rebuild_from_paths(product_paths)
+
+
+func _matches_existing_prefix(
+	product_paths: Array[String]
+	) -> bool:
+	var shared_count: int = mini(
+		product_paths.size(),
+		cart_items.size()
+	)
+
+	for index: int in range(shared_count):
+		var existing_product: ProductData = cart_items[index]
+
+		if existing_product == null:
+			if not product_paths[index].is_empty():
+				return false
+
+			continue
+
+		if existing_product.resource_path != product_paths[index]:
+			return false
+
+	return true
+
+
+func _apply_incremental_cart_state(
+	product_paths: Array[String]
+	) -> void:
+	var target_count: int = product_paths.size()
+
+	# Remove items from the end if necessary.
+	while cart_items.size() > target_count:
+		cart_items.pop_back()
+
+		if not item_positions.is_empty():
+			item_positions.pop_back()
+
+		if not item_visuals.is_empty():
+			var visual: MeshInstance3D = item_visuals.pop_back()
+
+			if is_instance_valid(visual):
+				visual.queue_free()
+
+	# Add newly synchronized items.
+	while cart_items.size() < target_count:
+		var index: int = cart_items.size()
+
+		var path: String = product_paths[index]
+
+		if path.is_empty():
+			cart_items.append(null)
+			continue
+
+		var product: ProductData = (
+			load(path) as ProductData
+		)
+
+		if product == null:
+			cart_items.append(null)
+			continue
+
+		var placement: Vector3 = (
+			_find_position_for_new_item(product)
+		)
+
+		if placement == Vector3.INF:
+			# This should not normally happen because the server
+			# already validated the placement.
+			cart_items.append(product)
+			item_positions.append(Vector3.ZERO)
+			continue
+
+		cart_items.append(product)
+		item_positions.append(placement)
+
+		_create_and_add_visual(
+			product,
+			placement,
+			item_visuals.size()
+		)
+
+	_invalidate_fit_cache()
+
+
+func _rebuild_from_paths(
+	product_paths: Array[String]
+	) -> void:
+	_clear_visuals()
+
 	cart_items.clear()
+	item_positions.clear()
 
 	for path: String in product_paths:
 		if path.is_empty():
 			continue
 
-		var product: ProductData = load(path) as ProductData
+		var product: ProductData = (
+			load(path) as ProductData
+		)
 
 		if product != null:
 			cart_items.append(product)
 
 	_rebuild_grid()
+
+
+func _rebuild_grid() -> void:
+	_clear_visuals()
+
+	item_positions.clear()
+
+	if cart_items.is_empty():
+		_invalidate_fit_cache()
+		return
+
+	for product: ProductData in cart_items:
+		if product == null:
+			continue
+
+		var placement: Vector3 = (
+			_find_position_for_new_item(product)
+		)
+
+		if placement == Vector3.INF:
+			continue
+
+		item_positions.append(placement)
+
+		_create_and_add_visual(
+			product,
+			placement,
+			item_visuals.size()
+		)
+
+	_invalidate_fit_cache()
