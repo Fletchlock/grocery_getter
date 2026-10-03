@@ -2,6 +2,7 @@
 extends Node3D
 class_name CartGrid
 
+signal cart_contents_changed(cart_grid: CartGrid)
 
 @export_group("Cart Capacity")
 @export_range(1, 100, 1) var max_items: int = 20
@@ -940,11 +941,14 @@ func _broadcast_cart_state() -> void:
 
 	sync_cart_state.rpc(product_paths)
 
+	cart_contents_changed.emit(self)
+
 
 @rpc("authority", "call_remote", "reliable")
 func sync_cart_state(product_paths: Array[String]) -> void:
 	_apply_cart_state(product_paths)
-
+	
+	cart_contents_changed.emit(self)
 
 func _apply_cart_state(product_paths: Array[String]) -> void:
 	cart_items.clear()

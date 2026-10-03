@@ -173,7 +173,7 @@ text = "Accept / Checkout"
 font_size = 12
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_62gvq"]
-size = Vector3(1.0941925, 0.30008125, 0.14367676)
+size = Vector3(1.0941925, 0.52548623, 0.14367676)
 
 [node name="ThirdPersonLevel" type="Node3D" unique_id=1122241509]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.321, 0)
@@ -834,7 +834,7 @@ transform = Transform3D(-4.3711385e-08, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, 
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.1779389, -1.4125986, 2.1236799)
 
 [node name="OrderBoard" type="Node3D" parent="." unique_id=1669689231]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.9799714, 0.17664349, 5.245718)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.9799714, 0.17664349, 5.8695035)
 script = ExtResource("32_gc6kj")
 
 [node name="Label3D" type="Label3D" parent="OrderBoard" unique_id=972216908]
@@ -856,13 +856,14 @@ $50
 font_size = 24
 
 [node name="AcceptOrderArea" type="Area3D" parent="OrderBoard" unique_id=1066872346]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5144811, -0.16249669, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3372467, -0.16249669, 0)
 collision_layer = 256
 
 [node name="CSGMesh3D" type="CSGMesh3D" parent="OrderBoard/AcceptOrderArea" unique_id=1863740499]
 mesh = SubResource("TextMesh_tq13k")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="OrderBoard/AcceptOrderArea" unique_id=1527627947]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0066925287, 0)
 shape = SubResource("BoxShape3D_62gvq")
 debug_color = Color(0.9437243, 0.6000647, 0.15216762, 0.85882354)
 

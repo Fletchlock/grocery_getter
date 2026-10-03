@@ -76,7 +76,12 @@ func _on_lobby_joined(_lobby_id: int) -> void:
 func start_multiplayer_game() -> void:
 	if not multiplayer.is_server():
 		return
-
+	
+	print("GameManager: Initializing orders in Order Manager.")
+	
+	# Tell order manager to initialize orders.
+	OrderManager.initialize_orders()
+	
 	print("GameManager: Starting multiplayer game.")
 
 	# Tell all clients to start the game.
