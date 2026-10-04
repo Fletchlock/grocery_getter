@@ -63,7 +63,16 @@ func record_order(order_total: float) -> void:
 		
 	_total_sales += order_total
 	_last_purchase = order_total	
-
+	
+	print(
+		"RECORD ORDER: AFTER TOTAL: $",
+		_total_sales,
+		" | LAST: $",
+		_last_purchase
+	)
+	
+	update_label()
+	
 func update_label() -> void:
 	if stats_label == null:
 		return

@@ -611,6 +611,7 @@ debug_color = Color(0.27058825, 0.56078434, 0.94509804, 0.9529412)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.708, 0)
 
 [node name="FirstPersonCamera" type="Camera3D" parent="FirstPersonCameraPivot" unique_id=2139662967]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1)
 fov = 85.0
 
 [node name="FootstepPlayer" type="AudioStreamPlayer3D" parent="FirstPersonCameraPivot/FirstPersonCamera" unique_id=1219873977]
@@ -629,7 +630,7 @@ interact_raycast_3d = NodePath(".")
 interaction_prompt = NodePath("../../../InteractionPrompt")
 
 [node name="HeldItemHolder" type="Node3D" parent="FirstPersonCameraPivot" unique_id=1664927062]
-transform = Transform3D(1, 0, 0, 0, 0.9848077, 0.17364818, 0, -0.17364818, 0.9848077, 0.30141425, -0.37516415, -0.3783714)
+transform = Transform3D(1, 0, 0, 0, 0.9848077, 0.17364818, 0, -0.17364818, 0.9848077, 0.301, -0.375, -0.48)
 
 [node name="InteractionPrompt" type="Node3D" parent="." unique_id=1287054937]
 top_level = true

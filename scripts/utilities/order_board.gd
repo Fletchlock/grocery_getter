@@ -1,6 +1,9 @@
 extends Node3D
 
 
+@export_group("Interaction Area")
+@export var interaction_top_padding: float = 0.0
+
 @onready var order_label: Label3D = $Label3D
 @onready var scanner_beep_player: AudioStreamPlayer3D = $AcceptOrderArea/ScannerBeepPlayer
 
@@ -128,6 +131,23 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 		return ""
 
 	return "[E] Accept Order"
+
+
+func get_interaction_prompt_position(
+	collision_shape: CollisionShape3D
+	) -> Vector3:
+	var box_shape: BoxShape3D = collision_shape.shape as BoxShape3D
+
+	if box_shape == null:
+		return collision_shape.global_position
+
+	return (
+		collision_shape.global_position
+		+ Vector3.UP * (
+			box_shape.size.y * 0.5
+			+ interaction_top_padding
+		)
+	)
 
 
 func interact(player: CharacterBody3D) -> void:
