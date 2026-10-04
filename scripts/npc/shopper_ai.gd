@@ -163,7 +163,6 @@ func _physics_process(delta: float) -> void:
 		State.SHOPPING_WAITING:
 			_on_shopping_waiting(delta)
 			
-		
 		State.SHOPPING_WAITING_IDLE:
 			_on_shopping_waiting_idle(delta)
 

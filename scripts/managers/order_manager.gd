@@ -24,8 +24,8 @@ const TIMER_SYNC_INTERVAL: float = 0.1
 
 
 func _ready() -> void:
-	shopper_stats = get_tree().get_first_node_in_group("shopper_stats")
-
+	#shopper_stats = get_tree().get_first_node_in_group("shopper_stats")
+	pass
 
 func initialize_orders() -> void:
 	if not multiplayer.is_server():
@@ -240,7 +240,9 @@ func complete_order(order: OrderData) -> void:
 		return
 
 	order.state = OrderData.OrderState.COMPLETED
-
+	
+	var shopper_stats: Node3D = get_tree().get_first_node_in_group("shopper_stats")
+	
 	if shopper_stats != null:
 		shopper_stats.record_order(
 			order.current_profit

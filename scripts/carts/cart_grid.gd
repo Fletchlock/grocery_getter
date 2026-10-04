@@ -19,6 +19,12 @@ signal cart_contents_changed(cart_grid: CartGrid)
 @export_group("Interaction Area")
 @export var interaction_top_padding: float = 0.2
 
+@export_group("Outline")
+@export var outline_material: Material
+
+var cart_outline: MeshInstance3D = null
+var outlined_visual: MeshInstance3D = null
+
 @onready var interaction_area: Area3D = $InteractionArea
 @onready var interaction_collision: CollisionShape3D = $InteractionArea/CollisionShape3D
 
@@ -118,6 +124,7 @@ func take_last_item() -> ProductData:
 			visual.queue_free()
 
 	_invalidate_fit_cache()
+	_update_take_item_outline()
 
 	return product
 
@@ -141,9 +148,12 @@ func get_interaction_prompt_for_player(
 	player: CharacterBody3D
 	) -> String:
 	if player == null:
+		_clear_take_item_outline()
 		return ""
 
 	if player.held_item != null:
+		_clear_take_item_outline()
+
 		if is_full():
 			return ""
 
@@ -156,9 +166,17 @@ func get_interaction_prompt_for_player(
 		return "[E] Place " + player.held_item.display_name
 
 	if cart_items.is_empty():
+		_clear_take_item_outline()
 		return ""
 
-	var product: ProductData = cart_items[cart_items.size() - 1]
+	_update_take_item_outline()
+
+	var take_index: int = _get_take_item_index()
+
+	if take_index < 0:
+		return ""
+
+	var product: ProductData = cart_items[take_index]
 
 	if product == null:
 		return "[E] Take Item"
@@ -271,7 +289,7 @@ func _find_position_for_new_item(
 					+ existing_size.x * 0.5
 					+ horizontal_spacing
 					+ product_size.x * 0.5,
-					existing_position.y,
+					bounds.position.y + product_size.y * 0.5,
 					existing_position.z
 				)
 			)
@@ -280,7 +298,7 @@ func _find_position_for_new_item(
 			candidate_positions.append(
 				Vector3(
 					existing_position.x,
-					existing_position.y,
+					bounds.position.y + product_size.y * 0.5,
 					existing_position.z
 					+ existing_size.z * 0.5
 					+ depth_spacing
@@ -591,6 +609,8 @@ func _create_product_visual(
 
 
 func _clear_visuals() -> void:
+	_clear_take_item_outline()
+
 	for visual: MeshInstance3D in item_visuals:
 		if is_instance_valid(visual):
 			visual.queue_free()
@@ -972,3 +992,62 @@ func _rebuild_grid() -> void:
 		)
 
 	_invalidate_fit_cache()
+
+# outline functions
+func _get_take_item_index() -> int:
+	if cart_items.is_empty():
+		return -1
+
+	return cart_items.size() - 1
+	
+
+func _update_take_item_outline() -> void:
+	var take_index: int = _get_take_item_index()
+
+	if take_index < 0:
+		_clear_take_item_outline()
+		return
+
+	if take_index >= item_visuals.size():
+		_clear_take_item_outline()
+		return
+
+	if outline_material == null:
+		_clear_take_item_outline()
+		return
+
+	var visual: MeshInstance3D = item_visuals[take_index]
+
+	if not is_instance_valid(visual):
+		_clear_take_item_outline()
+		return
+
+	if visual.mesh == null:
+		_clear_take_item_outline()
+		return
+
+	# The correct item is already outlined.
+	if outlined_visual == visual and is_instance_valid(cart_outline):
+		return
+
+	_clear_take_item_outline()
+
+	cart_outline = MeshInstance3D.new()
+	cart_outline.mesh = visual.mesh
+	cart_outline.position = visual.position
+	cart_outline.rotation = visual.rotation
+	cart_outline.scale = Vector3(1.04, 1.02, 1.04)
+	cart_outline.material_override = outline_material
+	cart_outline.set_meta("generated_cart_outline", true)
+
+	visual.get_parent().add_child(cart_outline)
+
+	outlined_visual = visual
+
+
+func _clear_take_item_outline() -> void:
+	if is_instance_valid(cart_outline):
+		cart_outline.queue_free()
+
+	cart_outline = null
+	outlined_visual = null
