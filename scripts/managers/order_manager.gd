@@ -274,7 +274,10 @@ func _sync_completed_orders() -> void:
 	var needs_sync: bool = false
 
 	for order: OrderData in orders:
-		if order.state != OrderData.OrderState.COMPLETED:
+		if (
+			order.state != OrderData.OrderState.COMPLETED
+			and order.state != OrderData.OrderState.CANCELLED
+		):
 			continue
 
 		if not order.has_meta("replacement_created"):
@@ -308,7 +311,10 @@ func _create_replacement_order(
 	if completed_order == null:
 		return
 
-	if completed_order.state != OrderData.OrderState.COMPLETED:
+	if (
+		completed_order.state != OrderData.OrderState.COMPLETED
+		and completed_order.state != OrderData.OrderState.CANCELLED
+		):
 		return
 
 	var index: int = orders.find(completed_order)

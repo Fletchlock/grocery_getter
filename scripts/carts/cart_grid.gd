@@ -18,6 +18,7 @@ signal cart_contents_changed(cart_grid: CartGrid)
 
 @export_group("Interaction Area")
 @export var interaction_top_padding: float = 0.2
+@export var item_target_distance: float = 8.0
 
 @export_group("Outline")
 @export var outline_material: Material
@@ -28,11 +29,9 @@ var outlined_visual: MeshInstance3D = null
 @onready var interaction_area: Area3D = $InteractionArea
 @onready var interaction_collision: CollisionShape3D = $InteractionArea/CollisionShape3D
 
-
 var cart_items: Array[ProductData] = []
 var item_positions: Array[Vector3] = []
 var item_visuals: Array[MeshInstance3D] = []
-
 
 var cached_fit_product: ProductData = null
 var cached_fit_position: Vector3 = Vector3.INF
@@ -112,19 +111,32 @@ func take_last_item() -> ProductData:
 	if cart_items.is_empty():
 		return null
 
-	var product: ProductData = cart_items.pop_back()
+	return take_item_at_index(cart_items.size() - 1)
 
-	if not item_positions.is_empty():
-		item_positions.pop_back()
 
-	if not item_visuals.is_empty():
-		var visual: MeshInstance3D = item_visuals.pop_back()
+func take_item_at_index(item_index: int) -> ProductData:
+	if item_index < 0 or item_index >= cart_items.size():
+		return null
+
+	var product: ProductData = cart_items[item_index]
+
+	if product == null:
+		return null
+
+	cart_items.remove_at(item_index)
+
+	if item_index < item_positions.size():
+		item_positions.remove_at(item_index)
+
+	if item_index < item_visuals.size():
+		var visual: MeshInstance3D = item_visuals[item_index]
+		item_visuals.remove_at(item_index)
 
 		if is_instance_valid(visual):
 			visual.queue_free()
 
 	_invalidate_fit_cache()
-	_update_take_item_outline()
+	_clear_take_item_outline()
 
 	return product
 
@@ -169,12 +181,13 @@ func get_interaction_prompt_for_player(
 		_clear_take_item_outline()
 		return ""
 
-	_update_take_item_outline()
-
-	var take_index: int = _get_take_item_index()
+	var take_index: int = _get_take_item_index(player)
 
 	if take_index < 0:
+		_clear_take_item_outline()
 		return ""
+
+	_update_take_item_outline(take_index)
 
 	var product: ProductData = cart_items[take_index]
 
@@ -190,6 +203,35 @@ func get_interaction_prompt_for_player(
 func get_interaction_prompt_position(
 	collision_shape: CollisionShape3D
 	) -> Vector3:
+	# If an item is currently being targeted, place the prompt
+	# above that item instead of above the entire interaction area.
+	if is_instance_valid(outlined_visual):
+		var product_size: Vector3 = Vector3.ZERO
+
+		var item_index: int = item_visuals.find(outlined_visual)
+
+		if item_index >= 0 and item_index < cart_items.size():
+			var product: ProductData = cart_items[item_index]
+
+			if product != null:
+				product_size = _get_product_size(product)
+
+		if product_size.y > 0.0:
+			return (
+				outlined_visual.global_position
+				+ Vector3.UP * (
+					product_size.y * 0.5
+					+ interaction_top_padding
+				)
+			)
+
+		# Fallback if we couldn't get the product size.
+		return (
+			outlined_visual.global_position
+			+ Vector3.UP * interaction_top_padding
+		)
+
+	# No item targeted — use the normal grid-bound position.
 	var box_shape: BoxShape3D = collision_shape.shape as BoxShape3D
 
 	if box_shape == null:
@@ -228,6 +270,157 @@ func _can_fit_product(product: ProductData) -> bool:
 
 
 # -------------------------------------------------------------------
+# Item targeting
+# -------------------------------------------------------------------
+
+func _get_take_item_index(player: CharacterBody3D) -> int:
+	if player == null:
+		return -1
+
+	if cart_items.is_empty():
+		return -1
+
+	var camera: Camera3D = player.get_viewport().get_camera_3d()
+
+	if camera == null:
+		return -1
+
+	var ray_origin: Vector3 = camera.global_position
+	var ray_direction: Vector3 = -camera.global_transform.basis.z
+
+	var closest_distance: float = item_target_distance
+	var closest_index: int = -1
+
+	var item_count: int = mini(
+		cart_items.size(),
+		item_visuals.size()
+	)
+
+	for index: int in range(item_count):
+		var visual: MeshInstance3D = item_visuals[index]
+
+		if not is_instance_valid(visual):
+			continue
+
+		if visual.mesh == null:
+			continue
+
+		var hit_distance: float = _get_ray_mesh_distance(
+			ray_origin,
+			ray_direction,
+			visual
+		)
+
+		if hit_distance < 0.0:
+			continue
+
+		if hit_distance < closest_distance:
+			closest_distance = hit_distance
+			closest_index = index
+
+	return closest_index
+
+
+func _get_ray_mesh_distance(
+	ray_origin: Vector3,
+	ray_direction: Vector3,
+	visual: MeshInstance3D
+	) -> float:
+	if visual == null:
+		return -1.0
+
+	if visual.mesh == null:
+		return -1.0
+
+	var inverse_transform: Transform3D = (
+		visual.global_transform.affine_inverse()
+	)
+
+	var local_origin: Vector3 = (
+		inverse_transform * ray_origin
+	)
+
+	var local_direction: Vector3 = (
+		inverse_transform.basis * ray_direction
+	)
+
+	if local_direction.length_squared() <= 0.000001:
+		return -1.0
+
+	local_direction = local_direction.normalized()
+
+	var bounds: AABB = visual.mesh.get_aabb()
+
+	var local_distance: float = _ray_aabb_distance(
+		local_origin,
+		local_direction,
+		bounds
+	)
+
+	if local_distance < 0.0:
+		return -1.0
+
+	var local_hit: Vector3 = (
+		local_origin
+		+ local_direction * local_distance
+	)
+
+	var world_hit: Vector3 = (
+		visual.global_transform * local_hit
+	)
+
+	return ray_origin.distance_to(world_hit)
+
+
+func _ray_aabb_distance(
+	ray_origin: Vector3,
+	ray_direction: Vector3,
+	bounds: AABB
+	) -> float:
+	var t_min: float = 0.0
+	var t_max: float = INF
+
+	var min_bound: Vector3 = bounds.position
+	var max_bound: Vector3 = bounds.end
+
+	for axis: int in range(3):
+		var origin_value: float = ray_origin[axis]
+		var direction_value: float = ray_direction[axis]
+
+		if absf(direction_value) < 0.000001:
+			if (
+				origin_value < min_bound[axis]
+				or origin_value > max_bound[axis]
+			):
+				return -1.0
+
+			continue
+
+		var inverse_direction: float = 1.0 / direction_value
+
+		var t1: float = (
+			min_bound[axis] - origin_value
+		) * inverse_direction
+
+		var t2: float = (
+			max_bound[axis] - origin_value
+		) * inverse_direction
+
+		if t1 > t2:
+			var temp: float = t1
+			t1 = t2
+			t2 = temp
+
+		t_min = maxf(t_min, t1)
+		t_max = minf(t_max, t2)
+
+		if t_min > t_max:
+			return -1.0
+
+	return t_min
+
+
+# -------------------------------------------------------------------
 # Simplified placement
 # -------------------------------------------------------------------
 
@@ -250,16 +443,8 @@ func _find_position_for_new_item(
 	if not _product_can_fit_inside_cart(product_size, bounds):
 		return Vector3.INF
 
-	# The cart is treated as a series of simple horizontal
-	# rows/layers. We only test positions immediately after
-	# existing items instead of generating many candidate
-	# coordinates and testing every combination.
-	#
-	# This makes placement substantially cheaper as the cart fills.
-
 	var candidate_positions: Array[Vector3] = []
 
-	# First item.
 	if item_positions.is_empty():
 		candidate_positions.append(
 			Vector3(
@@ -269,7 +454,6 @@ func _find_position_for_new_item(
 			)
 		)
 	else:
-		# Try extending each existing row.
 		for index: int in range(item_positions.size()):
 			var existing_product: ProductData = cart_items[index]
 
@@ -318,7 +502,6 @@ func _find_position_for_new_item(
 				)
 			)
 
-	# Test the small number of generated candidates.
 	for candidate: Vector3 in candidate_positions:
 		if not _position_fits_bounds(
 			candidate,
@@ -335,7 +518,6 @@ func _find_position_for_new_item(
 
 		return candidate
 
-	# If the direct candidates failed, find a new row.
 	var row_position: Vector3 = _find_new_row_position(
 		product_size,
 		bounds
@@ -361,8 +543,6 @@ func _find_new_row_position(
 		+ product_size.z * 0.5
 	)
 
-	# Determine the next available row from the existing
-	# item's Z extents.
 	var highest_z: float = bounds.position.z
 
 	for index: int in range(item_positions.size()):
@@ -647,14 +827,23 @@ func request_interact(player: CharacterBody3D) -> void:
 
 		return
 
-	# Empty hands → take the last item from the cart.
+	# Empty hands → take the item currently under the crosshair.
 	if has_items():
+		var take_index: int = _get_take_item_index(player)
+
+		if take_index < 0:
+			return
+
 		if multiplayer.is_server():
-			_take_item_for_player(player)
+			_take_item_for_player(
+				player,
+				take_index
+			)
 		else:
 			request_take_item.rpc_id(
 				1,
-				player.get_path()
+				player.get_path(),
+				take_index
 			)
 
 
@@ -717,7 +906,10 @@ func _add_item_from_player(
 
 
 @rpc("any_peer", "call_remote", "reliable")
-func request_take_item(player_path: NodePath) -> void:
+func request_take_item(
+	player_path: NodePath,
+	item_index: int
+	) -> void:
 	if not multiplayer.is_server():
 		return
 
@@ -740,11 +932,15 @@ func request_take_item(player_path: NodePath) -> void:
 	if player.get_multiplayer_authority() != requesting_peer_id:
 		return
 
-	_take_item_for_player(player)
+	_take_item_for_player(
+		player,
+		item_index
+	)
 
 
 func _take_item_for_player(
-	player: CharacterBody3D
+	player: CharacterBody3D,
+	item_index: int
 	) -> void:
 	if player == null:
 		return
@@ -752,7 +948,7 @@ func _take_item_for_player(
 	if player.held_item != null:
 		return
 
-	var product: ProductData = take_last_item()
+	var product: ProductData = take_item_at_index(item_index)
 
 	if product == null:
 		return
@@ -845,17 +1041,10 @@ func sync_cart_state(
 func _apply_cart_state(
 	product_paths: Array[String]
 	) -> void:
-	# If the incoming state is simply an addition or removal from
-	# the end, preserve all existing positions and visuals.
-	#
-	# This is the common path during normal cart interaction.
-
 	if _matches_existing_prefix(product_paths):
 		_apply_incremental_cart_state(product_paths)
 		return
 
-	# A completely different state was received.
-	# This is primarily used for initial synchronization.
 	_rebuild_from_paths(product_paths)
 
 
@@ -887,7 +1076,6 @@ func _apply_incremental_cart_state(
 	) -> void:
 	var target_count: int = product_paths.size()
 
-	# Remove items from the end if necessary.
 	while cart_items.size() > target_count:
 		cart_items.pop_back()
 
@@ -900,7 +1088,6 @@ func _apply_incremental_cart_state(
 			if is_instance_valid(visual):
 				visual.queue_free()
 
-	# Add newly synchronized items.
 	while cart_items.size() < target_count:
 		var index: int = cart_items.size()
 
@@ -923,8 +1110,6 @@ func _apply_incremental_cart_state(
 		)
 
 		if placement == Vector3.INF:
-			# This should not normally happen because the server
-			# already validated the placement.
 			cart_items.append(product)
 			item_positions.append(Vector3.ZERO)
 			continue
@@ -993,22 +1178,17 @@ func _rebuild_grid() -> void:
 
 	_invalidate_fit_cache()
 
-# outline functions
-func _get_take_item_index() -> int:
-	if cart_items.is_empty():
-		return -1
 
-	return cart_items.size() - 1
-	
+# -------------------------------------------------------------------
+# Item outline
+# -------------------------------------------------------------------
 
-func _update_take_item_outline() -> void:
-	var take_index: int = _get_take_item_index()
-
-	if take_index < 0:
+func _update_take_item_outline(item_index: int) -> void:
+	if item_index < 0:
 		_clear_take_item_outline()
 		return
 
-	if take_index >= item_visuals.size():
+	if item_index >= item_visuals.size():
 		_clear_take_item_outline()
 		return
 
@@ -1016,7 +1196,7 @@ func _update_take_item_outline() -> void:
 		_clear_take_item_outline()
 		return
 
-	var visual: MeshInstance3D = item_visuals[take_index]
+	var visual: MeshInstance3D = item_visuals[item_index]
 
 	if not is_instance_valid(visual):
 		_clear_take_item_outline()

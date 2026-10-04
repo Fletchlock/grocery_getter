@@ -7,6 +7,9 @@ size = Vector3(0.75454557, 0.7067013, 1.6119537)
 
 [node name="CartGrid" type="Node3D" unique_id=925843198]
 script = ExtResource("1_2bvqw")
+horizontal_spacing = 0.0
+vertical_spacing = 0.0
+depth_spacing = 0.0
 metadata/_custom_type_script = "uid://cjpcpdqhqpcgo"
 
 [node name="InteractionArea" type="Area3D" parent="." unique_id=2127909686]
