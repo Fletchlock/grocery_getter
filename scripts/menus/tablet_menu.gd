@@ -1,7 +1,8 @@
 extends Control
 
 
-@onready var order_label: Label = $PanelContainer/OrderLabel
+@onready var order_label: Label = $MarginContainer/PanelContainer/OrderLabel
+
 
 var displayed_order: OrderData
 var active_cart: CartGrid

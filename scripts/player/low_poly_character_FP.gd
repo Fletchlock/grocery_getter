@@ -698,21 +698,21 @@ func _physics_process(delta: float) -> void:
 
 	velocity.y = 0.0
 
-	if not order_menu_open:
-		var current_acceleration: float = (
-			acceleration
-			if is_on_floor()
-			else air_acceleration
-		)
+	#if not order_menu_open:
+	var current_acceleration: float = (
+		acceleration
+		if is_on_floor()
+		else air_acceleration
+	)
 
-		velocity = velocity.move_toward(
-			move_direction * move_speed,
-			current_acceleration * delta
-		)
+	velocity = velocity.move_toward(
+		move_direction * move_speed,
+		current_acceleration * delta
+	)
 
-	if order_menu_open:
-		velocity.x = 0.0
-		velocity.z = 0.0
+	#if order_menu_open:
+		#velocity.x = 0.0
+		#velocity.z = 0.0
 
 	velocity.y = y_velocity + _gravity * delta
 

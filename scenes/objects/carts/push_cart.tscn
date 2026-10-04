@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bojdkseg653j6" path="res://scripts/carts/push_cart.gd" id="1_ok1qa"]
 [ext_resource type="Material" uid="uid://bgd55jnxmrdrx" path="res://assets/materials/Material.tres" id="2_juux1"]
 [ext_resource type="Script" uid="uid://cjpcpdqhqpcgo" path="res://scripts/carts/cart_grid.gd" id="3_toadb"]
+[ext_resource type="Material" uid="uid://d3iscxpv066o5" path="res://assets/materials/outline_standard_material_3d.tres" id="4_6ah16"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_i4yyv"]
 friction = 0.15
@@ -183,6 +184,8 @@ horizontal_spacing = 0.04
 vertical_spacing = 0.0
 depth_spacing = 0.04
 rotation_variation_degrees = 4.0
+item_target_distance = null
+outline_material = ExtResource("4_6ah16")
 
 [node name="InteractionArea" type="Area3D" parent="CartGrid" unique_id=608925111]
 collision_layer = 257
