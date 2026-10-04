@@ -1,0 +1,105 @@
+[gd_scene format=3 uid="uid://1hei66lsnpc5"]
+
+[ext_resource type="ArrayMesh" uid="uid://c8snf2yhk4qq1" path="res://assets/models/carts/cart_small_Plane.res" id="1_2ap80"]
+[ext_resource type="Script" uid="uid://bojdkseg653j6" path="res://scripts/carts/push_cart.gd" id="2_cmal0"]
+[ext_resource type="Script" uid="uid://cjpcpdqhqpcgo" path="res://scripts/carts/cart_grid.gd" id="3_15jub"]
+[ext_resource type="Material" uid="uid://d3iscxpv066o5" path="res://assets/materials/outline_standard_material_3d.tres" id="4_ryc0r"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_i4yyv"]
+friction = 0.15
+bounce = 0.15
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_cmal0"]
+points = PackedVector3Array(0.21834016, 1.0585136, 0.05662203, 0.25066078, 1.0586174, 0.05640316, -0.21839868, 1.0585136, 0.05662203, 0.21834016, 1.0333233, 0.05662203, 0.28462094, 1.0546781, 0.040718257, 0.29638988, 1.0546781, 0.01350683, 0.25066078, 1.0586174, 0.031526208, -0.25071934, 1.0586174, 0.05640316, 0.25066078, 1.0333233, 0.05640316, 0.29656553, 0.15466642, 0.04458475, -0.21839868, 1.0333233, 0.05662203, 0.29656553, 1.0543671, -0.03559053, 0.29908323, 0.04105056, 0.006138563, 0.29908323, 0.044056818, 0.005336106, -0.25071934, 1.0586174, 0.031526208, -0.2964484, 1.0546781, 0.01350683, -0.28467947, 1.0546781, 0.040718257, -0.29662406, 0.15466642, 0.04458475, -0.25071934, 1.0333233, 0.05640316, 0.2883097, 0.04105056, 0.04159373, 0.292584, 0.04105056, 0.03896737, 0.29656553, 0.11102383, 0.03670585, 0.29638988, 0.922921, -0.43675882, 0.28005385, 0.922921, -0.4749862, 0.24181944, 0.922921, -0.49132764, 0, 0.922921, -0.49147356, -0.29662406, 1.0543671, -0.03559053, 0.29908323, 0.046233766, 0.0031474829, 0.29908323, 0.04706308, 8.34465e-05, 0.29908323, 0.046233766, -0.0029075742, 0.292584, 0.02156171, 0.033787727, 0.29908323, 0.0380443, 0.005336106, -0.29908323, 0.044056818, 0.005336106, -0.29908323, 0.04105056, 0.006138563, -0.29662406, 0.11102383, 0.03670585, -0.29264253, 0.04105056, 0.03896737, -0.28836823, 0.04105056, 0.04159373, 0.2883097, 0.02031774, 0.036049306, 0.29638988, 0.90540177, -0.43675882, 0.24925554, 0.5099233, -0.6346802, 0.29908323, 0.044056818, -0.005096197, 0.29908323, 0.04105056, -0.0058986545, 0.23016763, 0.5099233, -0.67246985, 0.19105494, 0.5099233, -0.6885195, 0, 0.5099233, -0.6886654, -0.241878, 0.922921, -0.49132764, -0.28011242, 0.922921, -0.4749862, -0.2964484, 0.922921, -0.43675882, -0.29908323, 0.046233766, -0.0029075742, -0.29908323, 0.04706308, 8.34465e-05, -0.29908323, 0.046233766, 0.0031474829, 0.2883097, 0.005079118, 0.020875037, 0.292584, 0.0073597278, 0.019561887, 0.29908323, 0.035763692, 0.0031474829, -0.29908323, 0.0380443, 0.005336106, -0.29264253, 0.02156171, 0.033787727, -0.28836823, 0.02031774, 0.036049306, 0.24925554, 0.4925077, -0.6346802, 0.29908323, 0.0380443, -0.005096197, 0.23016763, 0.4925077, -0.67246985, 0.19105494, 0.4925077, -0.6885195, -0.19111347, 0.5099233, -0.6885195, 0, 0.4925077, -0.6886654, -0.23022616, 0.5099233, -0.67246985, -0.2493141, 0.5099233, -0.6346802, -0.2964484, 0.90540177, -0.43675882, -0.29908323, 0.04105056, -0.0058986545, -0.29908323, 0.044056818, -0.005096197, -0.28836823, 0.005079118, 0.020875037, 0.2883097, -0.0004150793, 8.34465e-05, 0.292584, 0.0021765232, 8.34465e-05, 0.29908323, 0.035038043, 8.34465e-05, -0.29908323, 0.035763692, 0.0031474829, -0.29264253, 0.0073597278, 0.019561887, 0.292584, 0.02156171, -0.03354782, 0.19650027, 0.02156171, -0.62096506, 0.19650027, 0.04105056, -0.62621766, 0.29908323, 0.035763692, -0.0029075742, 0.13695297, 0.09112032, -0.66656065, 0.192226, 0.04105056, -0.628771, 0.053867787, 0.09112032, -0.6884465, 0, 0.09112032, -0.6885195, -0.19111347, 0.4925077, -0.6885195, -0.23022616, 0.4925077, -0.67246985, -0.2493141, 0.4925077, -0.6346802, -0.29908323, 0.0380443, -0.005096197, -0.29264253, 0.0021765232, 8.34465e-05, -0.28836823, -0.0004150793, 8.34465e-05, 0.192226, -0.0004150793, -0.58733374, 0.19650027, 0.0021765232, -0.58733374, 0.292584, 0.0073597278, -0.019322038, -0.29908323, 0.035038043, 8.34465e-05, 0.19650027, 0.0073597278, -0.6067392, 0.192226, 0.005079118, -0.6080524, 0.192226, 0.02031774, -0.6232266, -0.05392632, 0.09112032, -0.6884465, -0.19228452, 0.02031774, -0.6232266, -0.1370115, 0.09112032, -0.66656065, -0.19228452, 0.04105056, -0.628771, -0.1965588, 0.04105056, -0.62621766, -0.1965588, 0.02156171, -0.62096506, -0.29264253, 0.02156171, -0.03354782, -0.29908323, 0.035763692, -0.0029075742, -0.29264253, 0.0073597278, -0.019322038, -0.1965588, 0.0021765232, -0.58733374, -0.19228452, -0.0004150793, -0.58733374, -0.19228452, 0.005079118, -0.6080524, -0.1965588, 0.0073597278, -0.6067392)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cmal0"]
+size = Vector3(0.48935455, 0.67966294, 0.5038262)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_15jub"]
+size = Vector3(0.55830383, 0.6978188, 0.091692924)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_2ap80"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:is_being_pushed")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:linear_velocity")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath(".:angular_velocity")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6aigx"]
+radius = 0.038085938
+height = 0.7480469
+
+[node name="cart_small" type="RigidBody3D" unique_id=1722978453]
+collision_mask = 7
+mass = 3.0
+physics_material_override = SubResource("PhysicsMaterial_i4yyv")
+center_of_mass_mode = 1
+linear_damp = 0.6
+angular_damp = 0.58
+script = ExtResource("2_cmal0")
+attach_distance = 0.6
+position_follow_speed = 40.0
+rotation_swing_speed = 6.0
+rotation_align_speed = 20.0
+
+[node name="cart_small" type="MeshInstance3D" parent="." unique_id=427118471]
+mesh = ExtResource("1_2ap80")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1316352361]
+shape = SubResource("ConvexPolygonShape3D_cmal0")
+
+[node name="CartGrid" type="Node3D" parent="." unique_id=2043045112]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.22174816, 0.27885115, -0.6537726)
+script = ExtResource("3_15jub")
+horizontal_spacing = 0.0
+vertical_spacing = 0.0
+depth_spacing = 0.0
+rotation_variation_degrees = 2.0
+interaction_top_padding = 0.0
+outline_material = ExtResource("4_ryc0r")
+
+[node name="InteractionArea" type="Area3D" parent="CartGrid" unique_id=853261953]
+collision_layer = 257
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CartGrid/InteractionArea" unique_id=648699600]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.22266524, 0.31148434, 0.24256787)
+shape = SubResource("BoxShape3D_cmal0")
+debug_color = Color(0.9847451, 0.4989375, 0.4725191, 1)
+
+[node name="HandlePoint" type="Marker3D" parent="." unique_id=1447353661]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0448142, 0.0410389)
+
+[node name="InteractionArea" type="Area3D" parent="." unique_id=1100853670 groups=["interactable_items"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0442417, 0.04431644)
+collision_layer = 257
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea" unique_id=803431923]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00011444092, 0.0053139925, -0.036162853)
+shape = SubResource("BoxShape3D_15jub")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=582863137]
+replication_config = SubResource("SceneReplicationConfig_2ap80")
+
+[node name="LeftHandTarget" type="Node3D" parent="." unique_id=449325245]
+transform = Transform3D(0.25783417, 0.022557624, -0.96592575, 0.9622502, 0.08418603, 0.258819, 0.08715582, -0.99619466, -4.2221956e-08, -0.22541106, 1.0081246, 0.05604914)
+
+[node name="RightHandTarget" type="Node3D" parent="." unique_id=1096158907]
+transform = Transform3D(0.25783414, -0.022557624, 0.96592563, -0.96225005, 0.08418603, 0.25881898, -0.08715581, -0.9961946, -4.2221952e-08, 0.23308122, 1.0096586, 0.05604914)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=96710179]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0.03910306, -0.6527447)
+shape = SubResource("CapsuleShape3D_6aigx")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="." unique_id=1735642137]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0.0087890625, 0.03910306, 0.06420684)
+shape = SubResource("CapsuleShape3D_6aigx")

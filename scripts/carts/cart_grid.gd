@@ -77,6 +77,13 @@ func request_cart_state() -> void:
 
 
 func add_item(product: ProductData) -> bool:
+	print(
+		"ADD ITEM: ",
+		product.display_name if product != null else "NULL",
+		" | cart_items=",
+		cart_items.size()
+	)
+	
 	if product == null:
 		return false
 
@@ -257,10 +264,16 @@ func _can_fit_product(product: ProductData) -> bool:
 	if cart_items.size() >= max_items:
 		return false
 
-	if fit_cache_valid and cached_fit_product == product:
-		return cached_fit_position != Vector3.INF
-
 	var placement: Vector3 = _find_position_for_new_item(product)
+
+	print(
+		"FIT TEST: ",
+		product.display_name,
+		" | items=",
+		cart_items.size(),
+		" | placement=",
+		placement
+	)
 
 	cached_fit_product = product
 	cached_fit_position = placement
@@ -443,90 +456,243 @@ func _find_position_for_new_item(
 	if not _product_can_fit_inside_cart(product_size, bounds):
 		return Vector3.INF
 
-	var candidate_positions: Array[Vector3] = []
+	var bottom_y: float = (
+		bounds.position.y
+		+ product_size.y * 0.5
+	)
 
+	# Empty grid
 	if item_positions.is_empty():
-		candidate_positions.append(
-			Vector3(
-				bounds.position.x + product_size.x * 0.5,
-				bounds.position.y + product_size.y * 0.5,
-				bounds.position.z + product_size.z * 0.5
-			)
+		var first_position: Vector3 = Vector3(
+			bounds.position.x + product_size.x * 0.5,
+			bottom_y,
+			bounds.position.z + product_size.z * 0.5
 		)
-	else:
-		for index: int in range(item_positions.size()):
-			var existing_product: ProductData = cart_items[index]
 
-			if existing_product == null:
-				continue
+		if _position_fits_bounds(
+			first_position,
+			product_size,
+			bounds
+		):
+			return first_position
 
-			var existing_size: Vector3 = _get_product_size(
-				existing_product
+		return Vector3.INF
+
+	# Bottom level: positions beside existing items, all at bottom.
+	for index: int in range(item_positions.size()):
+		var existing_product: ProductData = cart_items[index]
+
+		if existing_product == null:
+			continue
+
+		var existing_size: Vector3 = _get_product_size(
+			existing_product
+		)
+
+		var existing_position: Vector3 = item_positions[index]
+
+		# Right
+		var right_position: Vector3 = Vector3(
+			existing_position.x
+			+ existing_size.x * 0.5
+			+ horizontal_spacing
+			+ product_size.x * 0.5,
+			bottom_y,
+			existing_position.z
+		)
+
+		if (
+			_position_fits_bounds(
+				right_position,
+				product_size,
+				bounds
+			)
+			and not _position_overlaps_items(
+				right_position,
+				product_size
+			)
+		):
+			return right_position
+
+		# Left
+		var left_position: Vector3 = Vector3(
+			existing_position.x
+			- existing_size.x * 0.5
+			- horizontal_spacing
+			- product_size.x * 0.5,
+			bottom_y,
+			existing_position.z
+		)
+
+		if (
+			_position_fits_bounds(
+				left_position,
+				product_size,
+				bounds
+			)
+			and not _position_overlaps_items(
+				left_position,
+				product_size
+			)
+		):
+			return left_position
+
+		# Behind
+		var back_position: Vector3 = Vector3(
+			existing_position.x,
+			bottom_y,
+			existing_position.z
+			+ existing_size.z * 0.5
+			+ depth_spacing
+			+ product_size.z * 0.5
+		)
+
+		if (
+			_position_fits_bounds(
+				back_position,
+				product_size,
+				bounds
+			)
+			and not _position_overlaps_items(
+				back_position,
+				product_size
+			)
+		):
+			return back_position
+
+		# In front
+		var front_position: Vector3 = Vector3(
+			existing_position.x,
+			bottom_y,
+			existing_position.z
+			- existing_size.z * 0.5
+			- depth_spacing
+			- product_size.z * 0.5
+		)
+
+		if (
+			_position_fits_bounds(
+				front_position,
+				product_size,
+				bounds
+			)
+			and not _position_overlaps_items(
+				front_position,
+				product_size
+			)
+		):
+			return front_position
+
+	# Bottom-level fallback scan.
+	var scan_step_x: float = (
+		product_size.x + horizontal_spacing
+	)
+
+	var scan_step_z: float = (
+		product_size.z + depth_spacing
+	)
+
+	var max_x: float = (
+		bounds.end.x
+		- product_size.x * 0.5
+	)
+
+	var max_z: float = (
+		bounds.end.z
+		- product_size.z * 0.5
+	)
+
+	var scan_x: float = (
+		bounds.position.x
+		+ product_size.x * 0.5
+	)
+
+	while scan_x <= max_x:
+		var scan_z: float = (
+			bounds.position.z
+			+ product_size.z * 0.5
+		)
+
+		while scan_z <= max_z:
+			var scan_position: Vector3 = Vector3(
+				scan_x,
+				bottom_y,
+				scan_z
 			)
 
-			var existing_position: Vector3 = item_positions[index]
+			if not _position_overlaps_items(
+				scan_position,
+				product_size
+			):
+				return scan_position
 
-			# Continue to the right.
-			candidate_positions.append(
-				Vector3(
-					existing_position.x
-					+ existing_size.x * 0.5
-					+ horizontal_spacing
-					+ product_size.x * 0.5,
-					bounds.position.y + product_size.y * 0.5,
-					existing_position.z
-				)
-			)
+			scan_z += scan_step_z
 
-			# Continue toward the back.
-			candidate_positions.append(
-				Vector3(
-					existing_position.x,
-					bounds.position.y + product_size.y * 0.5,
-					existing_position.z
-					+ existing_size.z * 0.5
-					+ depth_spacing
-					+ product_size.z * 0.5
-				)
-			)
+		scan_x += scan_step_x
 
-			# Stack directly above.
-			candidate_positions.append(
-				Vector3(
-					existing_position.x,
-					existing_position.y
-					+ existing_size.y * 0.5
-					+ vertical_spacing
-					+ product_size.y * 0.5,
-					existing_position.z
-				)
-			)
+	# Vertical stacking only after bottom-level options.
+	for index: int in range(item_positions.size()):
+		var existing_product: ProductData = cart_items[index]
 
-	for candidate: Vector3 in candidate_positions:
+		if existing_product == null:
+			continue
+
+		var existing_size: Vector3 = _get_product_size(
+			existing_product
+		)
+
+		var existing_position: Vector3 = item_positions[index]
+
+		var stack_position: Vector3 = Vector3(
+			existing_position.x,
+			existing_position.y
+			+ existing_size.y * 0.5
+			+ vertical_spacing
+			+ product_size.y * 0.5,
+			existing_position.z
+		)
+
 		if not _position_fits_bounds(
-			candidate,
+			stack_position,
 			product_size,
 			bounds
 		):
 			continue
 
 		if _position_overlaps_items(
-			candidate,
+			stack_position,
 			product_size
 		):
 			continue
 
-		return candidate
-
-	var row_position: Vector3 = _find_new_row_position(
-		product_size,
-		bounds
-	)
-
-	if row_position != Vector3.INF:
-		return row_position
+		return stack_position
 
 	return Vector3.INF
+	
+	
+func _score_candidate_position(
+	candidate: Vector3,
+	product_size: Vector3,
+	bounds: AABB
+	) -> float:
+	var score: float = 0.0
+
+	# Prefer positions that stay close to the bottom of the basket.
+	score += (
+		candidate.y - bounds.position.y
+	) * 10.0
+
+	# Prefer positions toward the front/starting area.
+	score += (
+		candidate.z - bounds.position.z
+	) * 2.0
+
+	# Slight preference toward the left side.
+	score += (
+		candidate.x - bounds.position.x
+	)
+
+	return score
 
 
 func _find_new_row_position(
@@ -605,16 +771,23 @@ func _position_fits_bounds(
 	) -> bool:
 	var half_size: Vector3 = product_size * 0.5
 
-	var item_min: Vector3 = item_position - half_size
-	var item_max: Vector3 = item_position + half_size
+	var item_min: Vector3 = (
+		item_position - half_size
+	)
+
+	var item_max: Vector3 = (
+		item_position + half_size
+	)
+
+	var tolerance: float = 0.0001
 
 	return (
-		item_min.x >= bounds.position.x
-		and item_max.x <= bounds.end.x
-		and item_min.y >= bounds.position.y
-		and item_max.y <= bounds.end.y
-		and item_min.z >= bounds.position.z
-		and item_max.z <= bounds.end.z
+		item_min.x >= bounds.position.x - tolerance
+		and item_max.x <= bounds.end.x + tolerance
+		and item_min.y >= bounds.position.y - tolerance
+		and item_max.y <= bounds.end.y + tolerance
+		and item_min.z >= bounds.position.z - tolerance
+		and item_max.z <= bounds.end.z + tolerance
 	)
 
 
