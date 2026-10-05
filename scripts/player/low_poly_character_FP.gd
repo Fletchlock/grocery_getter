@@ -3,6 +3,7 @@ extends CharacterBody3D
 # === Node References ===
 @onready var _third_person_camera: Camera3D = $SpringArmPivot/SpringArm3D/Camera3D
 @onready var _first_person_camera: Camera3D = $FirstPersonCameraPivot/FirstPersonCamera
+@onready var first_person_camera_pivot: Node3D = $FirstPersonCameraPivot
 @onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
 @onready var interact_raycast_3d: RayCast3D = $FirstPersonCameraPivot/FirstPersonCamera/InteractRaycast3D
 @onready var held_item_holder: Node3D = $FirstPersonCameraPivot/HeldItemHolder
@@ -22,6 +23,8 @@ extends CharacterBody3D
 @onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
 @onready var anim_tree = $AnimationTree
 @onready var _mesh_default_y: float = $Armature.position.y
+@onready var collision_shape: CollisionShape3D = $CollisionShape3D
+
 
 @onready var grocery_red: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
 @onready var grocery_blue: MeshInstance3D = $Armature/Skeleton3D/GroceryBlue
@@ -47,6 +50,7 @@ var nearby_carts: Array[RigidBody3D] = []
 @export_group("Movement")
 @export var walk_speed : float = 3.5 ## Speed while walking.
 @export var sprint_speed : float = 6.0 ## Speed while sprinting
+@export var crouch_speed: float = 2.0 ## Speed while crouching
 @export var acceleration : float= 36.0 ## Ground movement acceleration.
 @export var rotation_speed : float= 12.0 ## Character rotation speed.
 @export var jump_strength : float= 12.0 ## Initial upward force when jumping.
@@ -59,6 +63,7 @@ var nearby_carts: Array[RigidBody3D] = []
 @export var network_anim_blend : float = 0.0
 @export var network_is_falling : bool = false
 @export var network_is_grounded : bool = true
+@export var network_is_crouching: bool = false
 @export var network_hat_visible : bool = true
 @export var network_on_moving_platform : bool = false
 @export var network_is_pushing_cart: bool = false
@@ -102,12 +107,14 @@ var look_target: Node3D = null
 var _camera_input_direction := Vector2.ZERO
 var _last_movement_direction := Vector3.FORWARD
 var is_sprinting: bool = false
+var is_crouching: bool = false
 var _gravity := -30.0
 var _was_airborne := false
 var _target_zoom := 2.0
 var order_menu_open: bool = false
 var _first_person: bool = true
-var _smoothed_blend: float = 0.0
+var _smoothed_sprint_blend: float = 0.0
+var _smoothed_crouch_blend: float = 0.0
 
 # === Held Item Variables ===
 var held_item: ProductData = null
@@ -220,7 +227,11 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():
 		return
-
+	
+	if event.is_action_pressed("crouch") and attached_cart == null:
+		is_crouching = !is_crouching
+		update_crouch_collision()
+		
 	if event.is_action_pressed("interact"):
 		if attached_cart != null:
 			try_release_cart()
@@ -355,6 +366,10 @@ func _set_perspective(first_person: bool) -> void:
 
 
 func try_grab_cart(cart: RigidBody3D) -> void:
+	if is_crouching:
+		is_crouching = false
+		update_crouch_collision()
+	
 	attached_cart = cart
 
 	attached_cart.linear_velocity = Vector3.ZERO
@@ -365,8 +380,8 @@ func try_grab_cart(cart: RigidBody3D) -> void:
 	if _first_person:
 		armature_node.global_rotation.y = global_rotation.y
 
-	var distance_offset: float = 1.0
-	
+	var distance_offset: float = 0.7
+		
 	if "attach_distance" in attached_cart:
 		distance_offset = attached_cart.attach_distance
 
@@ -560,6 +575,15 @@ func _physics_process(delta: float) -> void:
 		"look_down"
 	)
 
+	# First person camera pivot move when crouching
+	var target_camera_y: float = 1.308 if is_crouching else 1.708
+	
+	first_person_camera_pivot.position.y = lerp(
+		first_person_camera_pivot.position.y,
+		target_camera_y,
+		1.0 - exp(-10.0 * delta)
+	)
+
 	if Input.mouse_mode == Input.MOUSE_MODE_HIDDEN:
 
 		if gamepad_look.length() > 0.05:
@@ -697,12 +721,15 @@ func _physics_process(delta: float) -> void:
 
 	# === 3. Velocity and Kinematics ===
 	is_sprinting = (
-		Input.is_action_pressed("Sprint")
+		Input.is_action_pressed("sprint")
+		and not is_crouching
 		and raw_input.length_squared() > 0.0
 	)
 	
 	var target_move_speed: float = (
-		sprint_speed
+		crouch_speed
+		if is_crouching
+		else sprint_speed
 		if is_sprinting
 		else walk_speed
 	)
@@ -738,10 +765,16 @@ func _physics_process(delta: float) -> void:
 		velocity.z
 	).length()
 
-	network_anim_blend = horizontal_speed / sprint_speed
+	var animation_speed: float = (
+		crouch_speed
+		if is_crouching
+		else sprint_speed
+	)
+
+	network_anim_blend = horizontal_speed / animation_speed
 	network_anim_blend = clamp(network_anim_blend, 0.0, 1.0)
 
-	if attached_cart != null and horizontal_speed > 0.1:
+	if horizontal_speed > 0.1:
 		var armature_forward: Vector3 = (
 			-armature_node.global_transform.basis.z
 		)
@@ -761,6 +794,7 @@ func _physics_process(delta: float) -> void:
 
 	network_is_falling = not is_on_floor()
 	network_is_grounded = is_on_floor()
+	network_is_crouching = is_crouching
 	network_is_pushing_cart = (
 		attached_cart != null
 	)
@@ -772,6 +806,7 @@ func _physics_process(delta: float) -> void:
 
 	var is_starting_jump: bool = (
 		Input.is_action_just_pressed("jump")
+		and not is_crouching
 		and is_on_floor()
 	)
 
@@ -830,7 +865,21 @@ func _physics_process(delta: float) -> void:
 	# === 9. Character Rotation ===
 
 	if _first_person:
-		network_rotation_y = rotation.y
+		var strafe_angle: float = 0.0
+
+		if raw_input.x != 0.0:
+			strafe_angle = (
+				-raw_input.x
+				* deg_to_rad(strafe_rotation)
+			)
+
+		armature_node.rotation.y = lerp_angle(
+			armature_node.rotation.y,
+			strafe_angle,
+			rotation_speed * delta
+		)
+
+		network_rotation_y = armature_node.global_rotation.y
 
 	else:
 
@@ -968,32 +1017,57 @@ func set_anim_tree() -> void:
 	
 	# Smoothly slide towards the network value. 
 	# Adjust '24.0' higher for a snappier stop, or lower for a heavier, skidding stop.
-	_smoothed_blend = lerp(_smoothed_blend, network_anim_blend,1.0 - exp(-24.0 * dt))
+	_smoothed_sprint_blend = lerp(_smoothed_sprint_blend,
+		network_anim_blend,
+		1.0 - exp(-24.0 * dt)
+	)
 	
-	# 1. Target the BlendSpace1D using our smoothly interpolated value
+	# 1. Target the BlendSpace1D using our smoothly interpolated value or network value
 	anim_tree.set(
 		"parameters/MovementState/BlendSpace1D/blend_position",
-		_smoothed_blend
+		_smoothed_sprint_blend
+	)
+	_smoothed_crouch_blend = lerp(
+		_smoothed_crouch_blend,
+		network_anim_blend,
+		1.0 - exp(-10.0 * dt)
 	)
 
+	anim_tree.set(
+		"parameters/CrouchingState/BlendSpace1D/blend_position",
+		_smoothed_crouch_blend
+	)
+	
 	# 2. Calculate the speed multiplier based on the SMOOTHED value
 	var target_speed_scale := 1.0
 	
-	if _smoothed_blend <= 0.0:
+	if _smoothed_sprint_blend <= 0.0:
 		target_speed_scale = 1.0 
-	elif _smoothed_blend <= 0.58:
-		var t = remap(_smoothed_blend, 0.0, 0.58, 0.0, 1.0)
-		target_speed_scale = lerp(1.0, 1.56, t)
+	elif _smoothed_sprint_blend <= 0.58:
+		var t = remap(_smoothed_sprint_blend, 0.0, 0.58, 0.0, 1.0)
+		target_speed_scale = lerp(1.0, 1.40, t)
 	else:
-		var t = remap(_smoothed_blend, 0.58, 1.0, 0.0, 1.0)
-		target_speed_scale = lerp(1.56, 1.0, t)
+		var t = remap(_smoothed_sprint_blend, 0.58, 1.0, 0.0, 1.0)
+		target_speed_scale = lerp(1.40, 1.0, t)
+	
+	# Crouch animation speed blending
+	var crouch_speed_scale := 1.0
 
+	var crouch_blend: float = abs(network_anim_blend)
+
+	if crouch_blend > 0.0:
+		crouch_speed_scale = lerp(1.0, 1.45, crouch_blend)
+
+	anim_tree.set(
+		"parameters/CrouchingState/TimeScale/scale",
+		crouch_speed_scale
+	)
 	# 3. Apply it to the TimeScale node
 	anim_tree.set(
 		"parameters/MovementState/TimeScale/scale",
 		target_speed_scale
 	)
-	
+		
 	anim_tree.set(
 		"parameters/conditions/is_falling",
 		network_is_falling
@@ -1002,6 +1076,11 @@ func set_anim_tree() -> void:
 	anim_tree.set(
 		"parameters/conditions/is_grounded",
 		network_is_grounded
+	)
+	print("Local crouch: ", is_crouching, " | Network crouch: ", network_is_crouching)
+	anim_tree.set(
+		"parameters/conditions/is_crouching",
+		network_is_crouching
 	)
 
 
@@ -1179,6 +1258,22 @@ func update_idle_look(delta: float) -> void:
 			0.0,
 			look_speed * delta
 		)
+
+
+func update_crouch_collision() -> void:
+	var capsule: CapsuleShape3D = collision_shape.shape as CapsuleShape3D
+
+	if capsule == null:
+		return
+
+	if is_crouching:
+		capsule.radius = 0.6
+		capsule.height = 1.6
+		collision_shape.position.y = 0.8
+	else:
+		capsule.radius = 0.35
+		capsule.height = 2.0
+		collision_shape.position.y = 1.0
 
 
 func find_nearest_player() -> Node3D:

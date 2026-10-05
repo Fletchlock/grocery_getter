@@ -47,7 +47,6 @@ center_of_mass_mode = 1
 linear_damp = 0.6
 angular_damp = 0.58
 script = ExtResource("2_cmal0")
-attach_distance = 0.6
 position_follow_speed = 40.0
 rotation_swing_speed = 6.0
 rotation_align_speed = 20.0
@@ -91,10 +90,10 @@ shape = SubResource("BoxShape3D_15jub")
 replication_config = SubResource("SceneReplicationConfig_2ap80")
 
 [node name="LeftHandTarget" type="Node3D" parent="." unique_id=449325245]
-transform = Transform3D(0.25783417, 0.022557624, -0.96592575, 0.9622502, 0.08418603, 0.258819, 0.08715582, -0.99619466, -4.2221956e-08, -0.22541106, 1.0081246, 0.05604914)
+transform = Transform3D(0.2578342, 0.022557626, -0.9659257, 0.9622502, 0.08418603, 0.25881904, 0.08715582, -0.99619466, -4.2221956e-08, -0.22541106, 1.0474333, 0.08222337)
 
 [node name="RightHandTarget" type="Node3D" parent="." unique_id=1096158907]
-transform = Transform3D(0.25783414, -0.022557624, 0.96592563, -0.96225005, 0.08418603, 0.25881898, -0.08715581, -0.9961946, -4.2221952e-08, 0.23308122, 1.0096586, 0.05604914)
+transform = Transform3D(0.25783414, -0.022557624, 0.96592563, -0.96225005, 0.08418603, 0.25881898, -0.08715581, -0.9961946, -4.2221952e-08, 0.23308122, 1.0489672, 0.08222337)
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=96710179]
 transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0.03910306, -0.6527447)
