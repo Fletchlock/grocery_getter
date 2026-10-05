@@ -1077,7 +1077,7 @@ func set_anim_tree() -> void:
 		"parameters/conditions/is_grounded",
 		network_is_grounded
 	)
-	print("Local crouch: ", is_crouching, " | Network crouch: ", network_is_crouching)
+	
 	anim_tree.set(
 		"parameters/conditions/is_crouching",
 		network_is_crouching

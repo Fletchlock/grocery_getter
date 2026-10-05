@@ -266,15 +266,6 @@ func _can_fit_product(product: ProductData) -> bool:
 
 	var placement: Vector3 = _find_position_for_new_item(product)
 
-	print(
-		"FIT TEST: ",
-		product.display_name,
-		" | items=",
-		cart_items.size(),
-		" | placement=",
-		placement
-	)
-
 	cached_fit_product = product
 	cached_fit_position = placement
 	fit_cache_valid = true
