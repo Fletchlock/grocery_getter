@@ -16,7 +16,6 @@ extends CharacterBody3D
 @onready var _first_person_pivot: Node3D = $FirstPersonCameraPivot
 @export var network_first_person: bool = false
 
-var _first_person: bool = true
 
 @onready var armature_node: Node3D = $Armature
 @onready var skeleton: Skeleton3D = $Armature/Skeleton3D
@@ -46,11 +45,12 @@ var nearby_carts: Array[RigidBody3D] = []
 @export var max_zoom := 8.0 ## Maximum camera distance.
 
 @export_group("Movement")
-@export var move_speed := 6.0 ## Maximum movement speed.
-@export var acceleration := 36.0 ## Ground movement acceleration.
-@export var rotation_speed := 12.0 ## Character rotation speed.
-@export var jump_strength := 12.0 ## Initial upward force when jumping.
-@export var air_acceleration := 12.0 ## Movement acceleration while airborne.
+@export var walk_speed : float = 3.5 ## Speed while walking.
+@export var sprint_speed : float = 6.0 ## Speed while sprinting
+@export var acceleration : float= 36.0 ## Ground movement acceleration.
+@export var rotation_speed : float= 12.0 ## Character rotation speed.
+@export var jump_strength : float= 12.0 ## Initial upward force when jumping.
+@export var air_acceleration : float= 12.0 ## Movement acceleration while airborne.
 
 @export_group("Network Replication")
 @export var network_position := Vector3.ZERO
@@ -101,10 +101,13 @@ var look_target: Node3D = null
 # === Internal State Variables ===
 var _camera_input_direction := Vector2.ZERO
 var _last_movement_direction := Vector3.FORWARD
+var is_sprinting: bool = false
 var _gravity := -30.0
 var _was_airborne := false
 var _target_zoom := 2.0
 var order_menu_open: bool = false
+var _first_person: bool = true
+var _smoothed_blend: float = 0.0
 
 # === Held Item Variables ===
 var held_item: ProductData = null
@@ -693,7 +696,17 @@ func _physics_process(delta: float) -> void:
 
 
 	# === 3. Velocity and Kinematics ===
-
+	is_sprinting = (
+		Input.is_action_pressed("Sprint")
+		and raw_input.length_squared() > 0.0
+	)
+	
+	var target_move_speed: float = (
+		sprint_speed
+		if is_sprinting
+		else walk_speed
+	)
+	
 	var y_velocity: float = velocity.y
 
 	velocity.y = 0.0
@@ -706,7 +719,7 @@ func _physics_process(delta: float) -> void:
 	)
 
 	velocity = velocity.move_toward(
-		move_direction * move_speed,
+		move_direction * target_move_speed,
 		current_acceleration * delta
 	)
 
@@ -725,7 +738,8 @@ func _physics_process(delta: float) -> void:
 		velocity.z
 	).length()
 
-	network_anim_blend = horizontal_speed / move_speed
+	network_anim_blend = horizontal_speed / sprint_speed
+	network_anim_blend = clamp(network_anim_blend, 0.0, 1.0)
 
 	if attached_cart != null and horizontal_speed > 0.1:
 		var armature_forward: Vector3 = (
@@ -949,11 +963,37 @@ func set_character(character_id: int) -> void:
 
 
 func set_anim_tree() -> void:
+	# Get the delta time (use get_process_delta_time() or pass delta into this function)
+	var dt = get_physics_process_delta_time()
+	
+	# Smoothly slide towards the network value. 
+	# Adjust '24.0' higher for a snappier stop, or lower for a heavier, skidding stop.
+	_smoothed_blend = lerp(_smoothed_blend, network_anim_blend,1.0 - exp(-24.0 * dt))
+	
+	# 1. Target the BlendSpace1D using our smoothly interpolated value
 	anim_tree.set(
-		"parameters/BlendSpace1D/blend_position",
-		network_anim_blend
+		"parameters/MovementState/BlendSpace1D/blend_position",
+		_smoothed_blend
 	)
 
+	# 2. Calculate the speed multiplier based on the SMOOTHED value
+	var target_speed_scale := 1.0
+	
+	if _smoothed_blend <= 0.0:
+		target_speed_scale = 1.0 
+	elif _smoothed_blend <= 0.58:
+		var t = remap(_smoothed_blend, 0.0, 0.58, 0.0, 1.0)
+		target_speed_scale = lerp(1.0, 1.56, t)
+	else:
+		var t = remap(_smoothed_blend, 0.58, 1.0, 0.0, 1.0)
+		target_speed_scale = lerp(1.56, 1.0, t)
+
+	# 3. Apply it to the TimeScale node
+	anim_tree.set(
+		"parameters/MovementState/TimeScale/scale",
+		target_speed_scale
+	)
+	
 	anim_tree.set(
 		"parameters/conditions/is_falling",
 		network_is_falling
