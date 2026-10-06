@@ -865,11 +865,11 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -4.5
 
 [node name="push_cart" parent="." unique_id=1577398286 instance=ExtResource("9_alulh")]
 transform = Transform3D(-4.3711385e-08, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -4.3711385e-08, -3.4750786, -1.320557, 2.2588005)
-attach_distance = 1.0
+attach_distance = 0.8
 
 [node name="push_cart2" parent="." unique_id=892892404 instance=ExtResource("9_alulh")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.1779389, -1.4125986, 2.1236799)
-attach_distance = 1.0
+attach_distance = 0.8
 
 [node name="OrderBoard" type="Node3D" parent="." unique_id=1669689231]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -6.150495, 0.05336976, -10.684111)
@@ -945,3 +945,4 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -6.8
 [editable path="NavigationRegion3D/Shelves/Freezer_Right_5row2"]
 [editable path="StoreSmallGreybox"]
 [editable path="checkout_sm_left2"]
+[editable path="cart_small"]

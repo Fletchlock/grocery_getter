@@ -46,6 +46,9 @@ nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_ev8jc")
 nodes/TimeScale/position = Vector2(672, 128)
 node_connections = [&"output", 0, &"TimeScale", &"TimeScale", 0, &"Animation"]
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_uxeqb"]
+animation = &"character_anims/default"
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_jxxpm"]
 animation = &"character_anims/idle"
 
@@ -81,6 +84,10 @@ blend_point_4/node = SubResource("AnimationNodeAnimation_xrlsb")
 blend_point_4/pos = -0.58
 blend_point_4/name = &"character_anims_Walk 2"
 
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_6vuci"]
+filter_enabled = true
+filters = ["Armature/Skeleton3D:hand.L", "Armature/Skeleton3D:hand.R"]
+
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_y4gsw"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_td4dg"]
@@ -88,8 +95,12 @@ nodes/output/position = Vector2(976, 144)
 nodes/BlendSpace1D/node = SubResource("AnimationNodeBlendSpace1D_pttyk")
 nodes/BlendSpace1D/position = Vector2(272, 128)
 nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_y4gsw")
-nodes/TimeScale/position = Vector2(544, 144)
-node_connections = [&"output", 0, &"TimeScale", &"TimeScale", 0, &"BlendSpace1D"]
+nodes/TimeScale/position = Vector2(528, 96)
+nodes/PushCartBlend/node = SubResource("AnimationNodeBlend2_6vuci")
+nodes/PushCartBlend/position = Vector2(736, 160)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_uxeqb")
+nodes/Animation/position = Vector2(448, 336)
+node_connections = [&"output", 0, &"PushCartBlend", &"TimeScale", 0, &"BlendSpace1D", &"PushCartBlend", 0, &"TimeScale", &"PushCartBlend", 1, &"Animation"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_05rbj"]
 advance_mode = 2

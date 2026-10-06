@@ -2,7 +2,7 @@ extends RigidBody3D
 
 # === Exported Physics Configuration ===
 @export_group("Cart Tuning")
-@export var attach_distance: float = 0.7
+@export var attach_distance: float = 0.5
 @export var position_follow_speed: float = 55.0
 @export var rotation_swing_speed: float = 5.5
 @export var rotation_align_speed: float = 22.0

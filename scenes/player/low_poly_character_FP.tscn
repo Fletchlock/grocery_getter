@@ -6,8 +6,8 @@
 [ext_resource type="ArrayMesh" uid="uid://br0auko3rjpx7" path="res://assets/models/characters/grocery_character_Cube_006.res" id="4_mubmw"]
 [ext_resource type="ArrayMesh" uid="uid://bgjmtoa3m6eaf" path="res://assets/models/characters/grocery_character_Cube_007.res" id="5_5f7qc"]
 [ext_resource type="ArrayMesh" uid="uid://b5oofn2bpewfm" path="res://assets/models/characters/grocery_character_Cube_005.res" id="6_hmgcb"]
-[ext_resource type="ArrayMesh" uid="uid://dr1ei8o241ofd" path="res://assets/models/characters/grocery_green_Cube_003.res" id="7_5wda0"]
-[ext_resource type="ArrayMesh" uid="uid://p8ytdlbwhtpq" path="res://assets/models/characters/grocery_green_Cube_004.res" id="8_k3qdh"]
+[ext_resource type="ArrayMesh" uid="uid://x3mrwfu43k44" path="res://assets/models/characters/grocery_green_Cube_003.res" id="7_5wda0"]
+[ext_resource type="ArrayMesh" uid="uid://c65bt42fdeft6" path="res://assets/models/characters/grocery_green_Cube_004.res" id="8_k3qdh"]
 [ext_resource type="AnimationNodeStateMachine" uid="uid://k24dl8h4178k" path="res://assets/animations/character_state_machine.tres" id="9_fldhp"]
 [ext_resource type="Script" uid="uid://bu6nohragxh0l" path="res://scripts/utilities/interact_raycast_3d.gd" id="10_78fgg"]
 [ext_resource type="AudioStream" uid="uid://bxk6rpou86l15" path="res://assets/sounds/footstep-on-stone-2.wav" id="11_5wda0"]
@@ -410,7 +410,7 @@ properties/9/spawn = true
 properties/9/replication_mode = 1
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_qgfk6"]
-radius = 0.5971316
+radius = 0.57096505
 
 [node name="low_poly_character_fp" type="CharacterBody3D" unique_id=51086098 groups=["player"]]
 process_mode = 1
@@ -539,27 +539,73 @@ bones/15/position = Vector3(2.7062924e-08, 0.30160186, 9.313226e-10)
 bones/15/rotation = Quaternion(-0.6644075, -0.048883215, 0.025692575, 0.7453274)
 bones/15/scale = Vector3(0.9999923, 0.99999905, 1.0000011)
 
-[node name="LeftHandIK" type="SkeletonIK3D" parent="Armature/Skeleton3D" unique_id=1486074684]
-root_bone = &"upperarm.L"
-tip_bone = &"hand.L"
-use_magnet = true
-magnet = Vector3(-0.403, 1.153, -0.2)
-min_distance = 0.02
-max_iterations = 40
+[node name="LeftTwoBoneIK3D" type="TwoBoneIK3D" parent="Armature/Skeleton3D" unique_id=1391249345]
+influence = 0.0
+setting_count = 1
+settings/0/target_node = NodePath("")
+settings/0/pole_node = NodePath("LeftElbowPoleTarget")
+settings/0/root_bone_name = "upperarm.L"
+settings/0/root_bone = 4
+settings/0/middle_bone_name = "lowerarm.L"
+settings/0/middle_bone = 5
+settings/0/pole_direction = 0
+settings/0/end_bone_name = "hand.L"
+settings/0/end_bone = 6
+settings/0/use_virtual_end = false
+settings/0/extend_end_bone = false
 
-[node name="Marker3D" type="Marker3D" parent="Armature/Skeleton3D/LeftHandIK" unique_id=1235070631]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.9013405, -0.2)
+[node name="LeftElbowPoleTarget" type="Marker3D" parent="Armature/Skeleton3D/LeftTwoBoneIK3D" unique_id=1235070631]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.8, 0.3)
 
-[node name="RightHandIK" type="SkeletonIK3D" parent="Armature/Skeleton3D" unique_id=1170223618]
-root_bone = &"upperarm.R"
-tip_bone = &"hand.R"
-use_magnet = true
-magnet = Vector3(0.40340424, 1.1533203, -0.2)
-min_distance = 0.02
-max_iterations = 40
+[node name="RightTwoBoneIK3D" type="TwoBoneIK3D" parent="Armature/Skeleton3D" unique_id=1662101740]
+influence = 0.0
+setting_count = 1
+settings/0/target_node = NodePath("")
+settings/0/pole_node = NodePath("RightElbowPoleTarget")
+settings/0/root_bone_name = "upperarm.R"
+settings/0/root_bone = 7
+settings/0/middle_bone_name = "lowerarm.R"
+settings/0/middle_bone = 8
+settings/0/pole_direction = 0
+settings/0/end_bone_name = "hand.R"
+settings/0/end_bone = 9
+settings/0/use_virtual_end = false
+settings/0/extend_end_bone = false
 
-[node name="Marker3D" type="Marker3D" parent="Armature/Skeleton3D/RightHandIK" unique_id=691480714]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.40340424, 1.1533203, -0.2)
+[node name="RightElbowPoleTarget" type="Marker3D" parent="Armature/Skeleton3D/RightTwoBoneIK3D" unique_id=691480714]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.8, 0.3)
+
+[node name="LeftHandRotationModifier" type="CopyTransformModifier3D" parent="Armature/Skeleton3D" unique_id=1124026115]
+influence = 0.0
+setting_count = 1
+settings/0/amount = 1.0
+settings/0/apply_bone_name = "hand.L"
+settings/0/apply_bone = 6
+settings/0/reference_type = 1
+settings/0/reference_node = NodePath("")
+settings/0/copy = 2
+settings/0/axes = 7
+settings/0/invert = 0
+settings/0/additive = false
+
+[node name="RightHandRotatioinModifier" type="CopyTransformModifier3D" parent="Armature/Skeleton3D" unique_id=54650109]
+influence = 0.0
+setting_count = 1
+settings/0/amount = 1.0
+settings/0/apply_bone_name = "hand.R"
+settings/0/apply_bone = 9
+settings/0/reference_type = 1
+settings/0/reference_node = NodePath("")
+settings/0/copy = 2
+settings/0/axes = 7
+settings/0/invert = 0
+settings/0/additive = false
+
+[node name="LeftHandRotationTarget" type="Marker3D" parent="Armature/Skeleton3D" unique_id=276391823]
+transform = Transform3D(0.9999999, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0.6566143, 0.5713507, 0)
+
+[node name="RightHandRotationTarget" type="Marker3D" parent="Armature/Skeleton3D" unique_id=1610675195]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 1, 0.60959053, 0.5713507, 0)
 
 [node name="GroceryRed" type="MeshInstance3D" parent="Armature/Skeleton3D" unique_id=1109459962]
 mesh = ExtResource("3_k3qdh")
@@ -580,7 +626,6 @@ skeleton = NodePath("..")
 blend_shapes/Blink = -0.08721
 
 [node name="Hat" type="MeshInstance3D" parent="Armature/Skeleton3D/GroceryBlue" unique_id=32792588]
-visible = false
 mesh = ExtResource("6_hmgcb")
 skin = SubResource("Skin_fs7re")
 skeleton = NodePath("../..")
@@ -593,7 +638,6 @@ skeleton = NodePath("..")
 blend_shapes/Blink = 0.0
 
 [node name="Hat" type="MeshInstance3D" parent="Armature/Skeleton3D/GroceryGreen" unique_id=1870604616]
-visible = false
 mesh = ExtResource("8_k3qdh")
 skin = SubResource("Skin_qgfk6")
 skeleton = NodePath("../..")
@@ -611,7 +655,7 @@ secondary_limit_angle = 1.2217305
 secondary_damp_threshold = 1.0
 
 [node name="HeldItemHandTarget" type="Node3D" parent="Armature" unique_id=459022950]
-transform = Transform3D(3.8096997e-09, 4.3545054e-08, -0.99999994, 0.9961947, -0.08715577, 0, -0.08715577, -0.9961947, -4.3711385e-08, 0.3, 1.1, -0.40041316)
+transform = Transform3D(3.8096997e-09, 4.3545054e-08, -0.99999994, 0.9961947, -0.08715577, 0, -0.08715577, -0.9961947, -4.3711385e-08, 0.38135296, 1.0888306, -0.40041316)
 
 [node name="HeldItemTarget" type="Node3D" parent="Armature" unique_id=558431979]
 transform = Transform3D(0.99904877, 0, -0.043606695, 0, 1, 0, 0.043606695, 0, 0.99904877, 0.3262685, 1.1, -0.4832602)
@@ -633,6 +677,7 @@ parameters/CrouchingState/TimeScale/scale = 1.0
 parameters/FallingState/TimeScale/scale = 1.5
 parameters/MovementState/BlendSpace1D/blend_position = 0.0
 parameters/MovementState/TimeScale/scale = 1.5600000000000025
+parameters/MovementState/PushCartBlend/blend_amount = 0.0
 
 [node name="SpringArmPivot" type="Node3D" parent="." unique_id=1560238884]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.723, 0)
@@ -653,11 +698,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4461434, 0)
 [node name="CartPusher" type="RigidBody3D" parent="." unique_id=136002147]
 collision_layer = 2
 collision_mask = 2
+mass = 5.0
 gravity_scale = 0.0
 freeze = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CartPusher" unique_id=64807885]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2473755, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0238342, 0)
 shape = SubResource("SphereShape3D_qgfk6")
 debug_color = Color(0.27058825, 0.56078434, 0.94509804, 0.9529412)
 
