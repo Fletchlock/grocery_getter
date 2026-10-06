@@ -6,8 +6,8 @@
 [ext_resource type="ArrayMesh" uid="uid://br0auko3rjpx7" path="res://assets/models/characters/grocery_character_Cube_006.res" id="4_mubmw"]
 [ext_resource type="ArrayMesh" uid="uid://bgjmtoa3m6eaf" path="res://assets/models/characters/grocery_character_Cube_007.res" id="5_5f7qc"]
 [ext_resource type="ArrayMesh" uid="uid://b5oofn2bpewfm" path="res://assets/models/characters/grocery_character_Cube_005.res" id="6_hmgcb"]
-[ext_resource type="ArrayMesh" uid="uid://cimpdt7mqlwtp" path="res://assets/models/characters/grocery_character_Cube_003.res" id="7_bj5yv"]
-[ext_resource type="ArrayMesh" uid="uid://cgeag6vla5v1k" path="res://assets/models/characters/grocery_character_Cube_004.res" id="8_0j1xc"]
+[ext_resource type="ArrayMesh" uid="uid://dr1ei8o241ofd" path="res://assets/models/characters/grocery_green_Cube_003.res" id="7_5wda0"]
+[ext_resource type="ArrayMesh" uid="uid://p8ytdlbwhtpq" path="res://assets/models/characters/grocery_green_Cube_004.res" id="8_k3qdh"]
 [ext_resource type="AnimationNodeStateMachine" uid="uid://k24dl8h4178k" path="res://assets/animations/character_state_machine.tres" id="9_fldhp"]
 [ext_resource type="Script" uid="uid://bu6nohragxh0l" path="res://scripts/utilities/interact_raycast_3d.gd" id="10_78fgg"]
 [ext_resource type="AudioStream" uid="uid://bxk6rpou86l15" path="res://assets/sounds/footstep-on-stone-2.wav" id="11_5wda0"]
@@ -580,19 +580,21 @@ skeleton = NodePath("..")
 blend_shapes/Blink = -0.08721
 
 [node name="Hat" type="MeshInstance3D" parent="Armature/Skeleton3D/GroceryBlue" unique_id=32792588]
+visible = false
 mesh = ExtResource("6_hmgcb")
 skin = SubResource("Skin_fs7re")
 skeleton = NodePath("../..")
 
 [node name="GroceryGreen" type="MeshInstance3D" parent="Armature/Skeleton3D" unique_id=493722702]
 visible = false
-mesh = ExtResource("7_bj5yv")
+mesh = ExtResource("7_5wda0")
 skin = SubResource("Skin_njhnf")
 skeleton = NodePath("..")
 blend_shapes/Blink = 0.0
 
 [node name="Hat" type="MeshInstance3D" parent="Armature/Skeleton3D/GroceryGreen" unique_id=1870604616]
-mesh = ExtResource("8_0j1xc")
+visible = false
+mesh = ExtResource("8_k3qdh")
 skin = SubResource("Skin_qgfk6")
 skeleton = NodePath("../..")
 
