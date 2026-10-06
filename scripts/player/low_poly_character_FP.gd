@@ -24,14 +24,19 @@ extends CharacterBody3D
 @onready var anim_tree = $AnimationTree
 @onready var _mesh_default_y: float = $Armature.position.y
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
+@onready var cart_pusher: RigidBody3D = $CartPusher
 
 
 @onready var grocery_red: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
 @onready var grocery_blue: MeshInstance3D = $Armature/Skeleton3D/GroceryBlue
 @onready var grocery_green: MeshInstance3D = $Armature/Skeleton3D/GroceryGreen
 
-@onready var left_hand_ik: SkeletonIK3D = $Armature/Skeleton3D/LeftHandIK
-@onready var right_hand_ik: SkeletonIK3D = $Armature/Skeleton3D/RightHandIK
+# Cart IK refs
+@onready var left_hand_ik: TwoBoneIK3D = $Armature/Skeleton3D/LeftTwoBoneIK3D
+@onready var right_hand_ik: TwoBoneIK3D = $Armature/Skeleton3D/RightTwoBoneIK3D
+@onready var left_hand_rot: CopyTransformModifier3D = $Armature/Skeleton3D/LeftHandRotationModifier
+@onready var right_hand_rot: CopyTransformModifier3D = $Armature/Skeleton3D/RightHandRotatioinModifier
+
 
 @export_group("Cart")
 @export var strafe_rotation := 35.0
@@ -370,6 +375,8 @@ func try_grab_cart(cart: RigidBody3D) -> void:
 		is_crouching = false
 		update_crouch_collision()
 	
+	cart_pusher.set_collision_layer_value(2, false)
+	
 	attached_cart = cart
 
 	attached_cart.linear_velocity = Vector3.ZERO
@@ -380,7 +387,7 @@ func try_grab_cart(cart: RigidBody3D) -> void:
 	if _first_person:
 		armature_node.global_rotation.y = global_rotation.y
 
-	var distance_offset: float = 0.7
+	var distance_offset: float = 0.6
 		
 	if "attach_distance" in attached_cart:
 		distance_offset = attached_cart.attach_distance
@@ -412,7 +419,9 @@ func try_grab_cart(cart: RigidBody3D) -> void:
 func try_release_cart() -> void:
 	if attached_cart:
 		var forward_dir: Vector3 = get_camera_forward()
-
+		
+		cart_pusher.set_collision_layer_value(2, true)
+		
 		if forward_dir.length_squared() > 0.001:
 			_last_movement_direction = forward_dir
 
@@ -433,7 +442,7 @@ func try_release_cart() -> void:
 @rpc("any_peer", "call_local")
 func sync_ik_start(cart_node_path: NodePath) -> void:
 	network_is_pushing_cart = true
-	
+	anim_tree.set("parameters/PushCartBlend/blend_amount", 1.0)
 	# Look up the node directly using the received network path flag
 	var target_cart = get_node_or_null(cart_node_path) as RigidBody3D
 	
@@ -442,20 +451,40 @@ func sync_ik_start(cart_node_path: NodePath) -> void:
 		var right_target = target_cart.get_node_or_null("RightHandTarget")
 		
 		if left_target and right_target:
-			left_hand_ik.target_node = left_target.get_path()
-			right_hand_ik.target_node = right_target.get_path()
+			# Directly assign the target paths to the properties
+			left_hand_ik.set_target_node(0, left_target.get_path())
+			right_hand_ik.set_target_node(0, right_target.get_path())
+		
+			# Enable the modifier stack instantly
+			left_hand_ik.influence = 1.0
+			right_hand_ik.influence = 1.0
 			
-			left_hand_ik.start()
-			right_hand_ik.start()
+			# Set rotation targets to the same nodes and turn them on
+			left_hand_rot.target_node = left_target.get_path()
+			right_hand_rot.target_node = right_target.get_path()
+			left_hand_rot.influence = 1.0
+			right_hand_rot.influence = 1.0
 
 
 @rpc("any_peer", "call_local")
 func sync_ik_stop() -> void:
 	network_is_pushing_cart = false
-	
+	anim_tree.set("parameters/PushCartBlend/blend_amount", 0.0)
 	if left_hand_ik and right_hand_ik:
-		left_hand_ik.stop()
-		right_hand_ik.stop()
+		# Disable the modifier stack instantly
+		left_hand_ik.influence = 0.0
+		right_hand_ik.influence = 0.0
+		
+		# Cleanly detach target references
+		left_hand_ik.target_node = NodePath("")
+		right_hand_ik.target_node = NodePath("")
+		
+		# Disable and clear rotation modifiers safely
+		if left_hand_rot and right_hand_rot:
+			left_hand_rot.influence = 0.0
+			right_hand_rot.influence = 0.0
+			left_hand_rot.target_node = NodePath("")
+			right_hand_rot.target_node = NodePath("")
 
 
 # Helper function to find the cart linked to this player
@@ -961,39 +990,6 @@ func _physics_process(delta: float) -> void:
 		network_held_item_path = ""
 
 
-	# ============================================================
-	# SMOOTHED MULTIPLAYER SKELETAL IK JITTER FILTER
-	# ============================================================
-	# If we are a remote client viewing another player push a cart,
-	# we smoothly blend the local target paths to prevent network tick-rate 
-	# stutter from shaking the spine, neck, and head bones!
-	if not is_multiplayer_authority() and network_is_pushing_cart:
-		# Locate the local hand markers we spawned inside the player scene tree earlier
-		var local_left_marker = $Armature/Skeleton3D/GroceryRed/IK_LeftHandTarget
-		var local_right_marker = $Armature/Skeleton3D/GroceryRed/IK_RightHandTarget
-		
-		# Locate the real moving network cart handle nodes
-		var target_cart = _find_active_push_cart()
-		if target_cart and local_left_marker and local_right_marker:
-			var net_left_grip = target_cart.get_node_or_null("LeftHandTarget")
-			var net_right_grip = target_cart.get_node_or_null("RightHandTarget")
-			
-			if net_left_grip and net_right_grip:
-				# FIX: Instead of snapping instantly, we smoothly interpolate (lerp)
-				# the local target anchors toward the jittery network handle positions.
-				# 15.0 * delta serves as a dampening buffer, filtering out raw packet jumps!
-				local_left_marker.global_transform = local_left_marker.global_transform.interpolate_with(
-					net_left_grip.global_transform, 
-					15.0 * delta
-				)
-				local_right_marker.global_transform = local_right_marker.global_transform.interpolate_with(
-					net_right_grip.global_transform, 
-					15.0 * delta
-				)
-
-
-
-
 func set_character(character_id: int) -> void:
 
 	var characters: Array[MeshInstance3D] = [
@@ -1378,7 +1374,8 @@ func _update_network_held_item_visual() -> void:
 		held_item_network_visual.visible = false
 
 		if right_hand_ik:
-			right_hand_ik.stop()
+			right_hand_ik.influence = 0.0
+			right_hand_ik.set_target_node(0, NodePath(""))
 
 		return
 
@@ -1402,8 +1399,8 @@ func _update_network_held_item_visual() -> void:
 	held_item_network_visual.visible = true
 
 	if right_hand_ik and held_item_target:
-		right_hand_ik.target_node = held_item_hand_target.get_path()
-		right_hand_ik.start()
+		right_hand_ik.set_target_node(0, held_item_hand_target.get_path())
+		right_hand_ik.influence = 1.0
 
 
 @rpc("any_peer", "call_remote", "reliable")

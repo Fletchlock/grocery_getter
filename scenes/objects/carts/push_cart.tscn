@@ -155,6 +155,8 @@ properties/4/path = NodePath(".:angular_velocity")
 properties/4/spawn = true
 properties/4/replication_mode = 1
 
+[sub_resource type="BoxMesh" id="BoxMesh_bcy86"]
+
 [node name="push_cart" type="RigidBody3D" unique_id=1577398286]
 collision_mask = 7
 axis_lock_angular_x = true
@@ -184,7 +186,6 @@ horizontal_spacing = 0.04
 vertical_spacing = 0.0
 depth_spacing = 0.04
 rotation_variation_degrees = 4.0
-item_target_distance = null
 outline_material = ExtResource("4_6ah16")
 
 [node name="InteractionArea" type="Area3D" parent="CartGrid" unique_id=608925111]
@@ -242,10 +243,15 @@ shape = SubResource("BoxShape3D_6arrp")
 replication_config = SubResource("SceneReplicationConfig_i4yyv")
 
 [node name="LeftHandTarget" type="Node3D" parent="." unique_id=2067598042]
-transform = Transform3D(0.25783417, 0.022557624, -0.96592575, 0.9622502, 0.08418603, 0.258819, 0.08715582, -0.99619466, -4.2221956e-08, -0.5, 1.187, 0.533)
+transform = Transform3D(0.25783417, 0.022557624, -0.96592575, 0.9622502, 0.08418603, 0.258819, 0.08715582, -0.99619466, -4.2221956e-08, -0.5, 1.187, 0.5634892)
 
 [node name="RightHandTarget" type="Node3D" parent="." unique_id=1644043477]
-transform = Transform3D(0.25783414, -0.022557624, 0.96592563, -0.96225005, 0.08418603, 0.25881898, -0.08715581, -0.9961946, -4.2221952e-08, 0.5, 1.187, 0.533)
+transform = Transform3D(-0.25783414, -0.022557545, -0.96592563, 0.9622501, 0.08418606, -0.25881898, 0.08715578, -0.99619496, -4.2221952e-08, 0.5, 1.187, 0.5634892)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RightHandTarget" unique_id=1992441397]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
+visible = false
+mesh = SubResource("BoxMesh_bcy86")
 
 [node name="NavigationObstacle3D" type="NavigationObstacle3D" parent="." unique_id=1399339440]
 visible = false
