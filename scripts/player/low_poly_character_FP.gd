@@ -1427,6 +1427,15 @@ func receive_product(product_path: String) -> void:
 
 
 func play_footstep() -> void:
-	
-	footstep_player.pitch_scale = randf_range(0.9, 1.2)
+	if is_crouching:
+		footstep_player.volume_db = -20
+	else:
+		footstep_player.volume_db = -12
+	footstep_player.pitch_scale = randf_range(0.8, 1.1)
 	footstep_player.play()
+
+
+func play_run_footstep() -> void:
+	if is_sprinting:
+		footstep_player.pitch_scale = randf_range(0.9, 1.2)
+		footstep_player.play()
