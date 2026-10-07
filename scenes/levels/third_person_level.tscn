@@ -301,7 +301,7 @@ shape = SubResource("BoxShape3D_uxp8y")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.1838626, 0, 0.70059395)
 
 [node name="ProductDisplay4" parent="NavigationRegion3D/Items" unique_id=656946575 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -3.9669728, -0.8001856, 1.1196294)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -3.9669728, -0.9210001, 1.1196294)
 product_data = ExtResource("16_o6fm4")
 grid_columns = 6
 grid_rows = 6
@@ -339,7 +339,7 @@ shape = SubResource("BoxShape3D_mfxkc")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.7403743, 0.3155322, 0.8113041)
 
 [node name="ProductDisplay6" parent="NavigationRegion3D/Items" unique_id=718564412 instance=ExtResource("16_om5ry")]
-transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, -7.8457603, -0.010526538, -4.756401)
+transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, -7.8457603, 0.009030938, -4.756401)
 product_data = ExtResource("12_m5ay7")
 grid_columns = 3
 grid_rows = 7
@@ -357,7 +357,7 @@ shape = SubResource("BoxShape3D_dyt62")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.111236095, 0, 1.0283985)
 
 [node name="ProductDisplay20" parent="NavigationRegion3D/Items" unique_id=2002736817 instance=ExtResource("16_om5ry")]
-transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, -7.7907534, -0.010526538, -2.806325)
+transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, -7.7907534, 0.01859355, -2.806325)
 product_data = ExtResource("14_3kqrq")
 grid_rows = 6
 position_variation = 0.01
@@ -374,7 +374,7 @@ shape = SubResource("BoxShape3D_yufli")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.111236095, 0, 1.0283985)
 
 [node name="ProductDisplay7" parent="NavigationRegion3D/Items" unique_id=2012166865 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -2.4690683, -0.8001856, 1.1196294)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -2.4690683, -0.9210001, 1.1196294)
 product_data = ExtResource("17_1pd08")
 grid_columns = 6
 grid_rows = 6
@@ -386,7 +386,7 @@ max_quantity = 36
 quantity = 36
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/ProductDisplay7/Area3D" parent_id_path=PackedInt32Array(2012166865, 1400837386) index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33474815, 0.034680232, 0.33474815)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33474827, 0.010821521, 0.3347481)
 shape = SubResource("BoxShape3D_32gdb")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/ProductDisplay7" index="4" unique_id=2005891054]
@@ -431,7 +431,7 @@ shape = SubResource("BoxShape3D_tjbrl")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.33683014, 0.0870316, 1.0028168)
 
 [node name="ProductDisplay10" parent="NavigationRegion3D/Items" unique_id=267980143 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.828885, -0.0761646, 1.2525101)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.828885, 0.09913218, 1.2525101)
 product_data = ExtResource("14_ghqei")
 grid_columns = 6
 grid_rows = 7
@@ -469,7 +469,7 @@ shape = SubResource("BoxShape3D_07txa")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.33683014, 0.0870316, 1.0028168)
 
 [node name="ProductDisplay12" parent="NavigationRegion3D/Items" unique_id=1581059352 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.5494943, 0.45416522, -0.8297045)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.5494943, 0.523396, -0.8297045)
 product_data = ExtResource("20_7467c")
 grid_columns = 6
 grid_rows = 5
@@ -609,7 +609,7 @@ root_path = NodePath("../../ProductDisplay14")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.20319676, 0, 0.62655187)
 
 [node name="ProductDisplay19" parent="NavigationRegion3D/Items" unique_id=640975976 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.31499353, 0.060275435, 1.1148763)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.31499353, -0.20100045, 1.1148763)
 product_data = ExtResource("26_tq13k")
 grid_rows = 6
 product_gap = 0.01
@@ -637,29 +637,24 @@ spawn_path = NodePath("..")
 
 [node name="Freezer_Open_2row_col2" parent="NavigationRegion3D/Shelves" unique_id=825926071 groups=["level_geo"] instance=ExtResource("16_phxxo")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2, 0.13303673, 20.200169)
-metadata/_edit_lock_ = true
 
 [node name="Freezer_Open_2row_col3" parent="NavigationRegion3D/Shelves" unique_id=1227593898 groups=["level_geo"] instance=ExtResource("16_phxxo")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0.13303673, 20.200169)
-metadata/_edit_lock_ = true
 
 [node name="Produce_2row_col2" parent="NavigationRegion3D/Shelves" unique_id=301518425 groups=["level_geo"] instance=ExtResource("17_tfknh")]
 transform = Transform3D(-1, 0, 8.742277e-08, 0, 1, 0, -8.742277e-08, 0, -1, 6, 0.13303673, 6.2001686)
-metadata/_edit_lock_ = true
 
 [node name="Produce_2row_col3" parent="NavigationRegion3D/Shelves" unique_id=455553691 groups=["level_geo"] instance=ExtResource("17_tfknh")]
 transform = Transform3D(-1, 0, 8.742277e-08, 0, 1, 0, -8.742277e-08, 0, -1, 6, 0.13303673, 11.200169)
-metadata/_edit_lock_ = true
 
 [node name="Produce_2row_col4" parent="NavigationRegion3D/Shelves" unique_id=1915163943 groups=["level_geo"] instance=ExtResource("17_tfknh")]
 transform = Transform3D(-1, 0, 8.742277e-08, 0, 1, 0, -8.742277e-08, 0, -1, 6, 0.13303673, 16.200169)
-metadata/_edit_lock_ = true
 
 [node name="Freezer_Left_5row2" parent="NavigationRegion3D/Shelves" unique_id=650957259 groups=["level_geo"] instance=ExtResource("18_o6fm4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.13303673, 17.200169)
 metadata/_edit_lock_ = true
 
-[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Shelves/Freezer_Left_5row2/Freezer_Left_5row" parent_id_path=PackedInt32Array(650957259, 1513094733) index="0" unique_id=336672918]
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Shelves/Freezer_Left_5row2/Freezer_Left_5row" parent_id_path=PackedInt32Array(650957259, 648516694) index="0" unique_id=336672918]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Shelves/Freezer_Left_5row2/Freezer_Left_5row/StaticBody3D" unique_id=1756956754]
 shape = SubResource("ConvexPolygonShape3D_62gvq")
@@ -668,7 +663,7 @@ shape = SubResource("ConvexPolygonShape3D_62gvq")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.13303673, 14.200169)
 metadata/_edit_lock_ = true
 
-[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Shelves/Freezer_Right_5row2/Freezer_Right_5row" parent_id_path=PackedInt32Array(1048575017, 853516796) index="0" unique_id=1736547379]
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Shelves/Freezer_Right_5row2/Freezer_Right_5row" parent_id_path=PackedInt32Array(1048575017, 2055526497) index="0" unique_id=1736547379]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Shelves/Freezer_Right_5row2/Freezer_Right_5row/StaticBody3D" unique_id=1510723560]
 shape = SubResource("ConvexPolygonShape3D_a8s8y")
@@ -743,34 +738,31 @@ metadata/_edit_lock_ = true
 
 [node name="Endcap_5row_col2" parent="NavigationRegion3D/Shelves" unique_id=21100947 groups=["level_geo"] instance=ExtResource("23_rob7k")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 2, 0.13303673, 20.200169)
-metadata/_edit_lock_ = true
 
 [node name="Endcap_5row_col3" parent="NavigationRegion3D/Shelves" unique_id=38298285 groups=["level_geo"] instance=ExtResource("23_rob7k")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -6, 0.13303673, 20.200169)
-metadata/_edit_lock_ = true
 
 [node name="Endcap_5row_col4" parent="NavigationRegion3D/Shelves" unique_id=1467934299 groups=["level_geo"] instance=ExtResource("23_rob7k")]
 transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, -8, 0.13303673, 18.200169)
-metadata/_edit_lock_ = true
 
 [node name="Basket_Square_Large2" parent="NavigationRegion3D/Shelves" unique_id=1024620718 groups=["level_geo"] instance=ExtResource("33_eo4fh")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.8097363, 0.6330365, 20.059917)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.8097363, 0.5330366, 20.059917)
 metadata/_edit_lock_ = true
 
 [node name="Basket_Square_Large3" parent="NavigationRegion3D/Shelves" unique_id=2142607240 groups=["level_geo"] instance=ExtResource("33_eo4fh")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.304426, 0.6330365, 20.059917)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.304426, 0.5330366, 20.059917)
 metadata/_edit_lock_ = true
 
 [node name="Basket_Round_Large2" parent="NavigationRegion3D/Shelves" unique_id=852856421 groups=["level_geo"] instance=ExtResource("34_x5hmh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07301724, 0.6428789, 20.108715)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07301724, 0.54091054, 20.108715)
 metadata/_edit_lock_ = true
 
 [node name="Basket_Round_Large3" parent="NavigationRegion3D/Shelves" unique_id=662869320 groups=["level_geo"] instance=ExtResource("34_x5hmh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9217552, 0.6428789, 20.108715)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9217552, 0.5511763, 20.108715)
 metadata/_edit_lock_ = true
 
 [node name="Basket_Square_Small2" parent="NavigationRegion3D/Shelves" unique_id=702720247 groups=["level_geo"] instance=ExtResource("35_dpvep")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0084751, 1.5330361, 20.136436)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0084751, 1.2530363, 20.136436)
 
 [node name="Basket_Square_Small3" parent="NavigationRegion3D/Shelves" unique_id=799133456 groups=["level_geo"] instance=ExtResource("35_dpvep")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -1.0084751, 1.5143121, 10.128728)
@@ -815,10 +807,10 @@ transform = Transform3D(0.9326745, 0, -0.36071923, 0, 1, 0, 0.36071923, 0, 0.932
 [node name="StoreSmallGreybox" parent="." unique_id=253599967 groups=["level_geo"] instance=ExtResource("15_tcjw2")]
 transform = Transform3D(-1.0000001, 0, -8.7422784e-08, 0, 1, 0, 8.7422784e-08, 0, -1.0000001, -0.53600764, -1.5205572, -3.3310928)
 
-[node name="store_small" parent="StoreSmallGreybox" index="0" unique_id=680403805]
+[node name="store_small" parent="StoreSmallGreybox" index="0" unique_id=1088277672]
 transform = Transform3D(1, 0, 1.0899726e-11, 0, 1, 0, -1.0899726e-11, 0, 1, 0.463, 0, -0.33)
 
-[node name="store_small_windows" parent="StoreSmallGreybox" index="1" unique_id=793886628]
+[node name="store_small_windows" parent="StoreSmallGreybox" index="1" unique_id=1779279494]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.463, 0, -0.33)
 
 [node name="shack_tall_wide_right" parent="." unique_id=477675682 groups=["level_geo"] instance=ExtResource("9_vhux3")]

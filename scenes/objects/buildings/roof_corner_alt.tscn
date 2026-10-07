@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://dctieh1uvpspw"]
+
+[ext_resource type="PackedScene" uid="uid://i54tfa0vfb1u" path="res://assets/models/buildings/Roof_Corner_Alt.glb" id="1_yaijq"]
+
+[node name="Roof_Corner_Alt2" unique_id=321503567 instance=ExtResource("1_yaijq")]

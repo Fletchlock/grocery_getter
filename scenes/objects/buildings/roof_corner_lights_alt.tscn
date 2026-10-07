@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://ddnw2txqxvmud"]
+
+[ext_resource type="PackedScene" uid="uid://dy31h6qivkj8f" path="res://assets/models/buildings/Roof_Corner_Lights_Alt.glb" id="1_6plkm"]
+
+[node name="Roof_Corner_Lights_Alt2" unique_id=1433213503 instance=ExtResource("1_6plkm")]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="." index="1" unique_id=688958058]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.1095202, -2.607366, 1.9930599)
+spot_angle = 19.30074
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="." index="2" unique_id=1601501826]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.1095202, -2.607366, -1.9806474)
+spot_angle = 19.30074
