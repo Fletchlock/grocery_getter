@@ -1427,15 +1427,36 @@ func receive_product(product_path: String) -> void:
 
 
 func play_footstep() -> void:
-	if is_crouching:
-		footstep_player.volume_db = -20
-	else:
-		footstep_player.volume_db = -12
-	footstep_player.pitch_scale = randf_range(0.8, 1.1)
-	footstep_player.play()
+	if not is_multiplayer_authority():
+		return
+	var target_volume: float = -18.0
+	var min_pitch: float = 0.8
+	var max_pitch: float = 1.1
 
-
-func play_run_footstep() -> void:
 	if is_sprinting:
-		footstep_player.pitch_scale = randf_range(0.9, 1.2)
+		# If sprinting, use running pitches/volumes
+		min_pitch = 0.9
+		max_pitch = 1.2
+		target_volume = -8.0
+	elif is_crouching:
+		# If walking but crouching, lower the volume
+		target_volume = -24.0
+
+	var chosen_pitch = randf_range(min_pitch, max_pitch)
+
+	network_play_footstep.rpc(target_volume, chosen_pitch)
+
+
+@rpc("any_peer", "call_local", "unreliable")
+func network_play_footstep(volume: float, pitch: float) -> void:
+	print(
+		"FOOTSTEP RPC | peer=", multiplayer.get_unique_id(),
+		" player=", name,
+		" authority=", get_multiplayer_authority(),
+		" footstep_player=", footstep_player
+	)
+
+	if footstep_player:
+		footstep_player.volume_db = volume
+		footstep_player.pitch_scale = pitch
 		footstep_player.play()
