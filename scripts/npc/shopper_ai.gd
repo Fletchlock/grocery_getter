@@ -673,5 +673,6 @@ func find_nearest_player() -> Node3D:
 
 
 func play_footstep() -> void:
+	footstep_player.volume_db = -15.0
 	footstep_player.pitch_scale = randf_range(0.9, 1.3)
 	footstep_player.play()
