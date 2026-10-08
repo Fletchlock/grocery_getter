@@ -386,7 +386,7 @@ max_quantity = 36
 quantity = 36
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/ProductDisplay7/Area3D" parent_id_path=PackedInt32Array(2012166865, 1400837386) index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33474827, 0.010821521, 0.3347481)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33474815, 0.034680232, 0.33474815)
 shape = SubResource("BoxShape3D_32gdb")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/ProductDisplay7" index="4" unique_id=2005891054]
@@ -542,9 +542,6 @@ quantity = 36
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.21394224, 0.05152878, 0.2109083)
 shape = SubResource("BoxShape3D_wvni4")
 
-[node name="MultiplayerSynchronizer" parent="NavigationRegion3D/Items/ProductDisplay15" index="3" unique_id=650710489]
-root_path = NodePath("../../ProductDisplay14")
-
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/ProductDisplay15" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.20319676, 0, 0.62655187)
 
@@ -561,9 +558,6 @@ quantity = 25
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/ProductDisplay16/Area3D" parent_id_path=PackedInt32Array(1367205065, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.20790128, 0.047458213, 0.20790128)
 shape = SubResource("BoxShape3D_e8twm")
-
-[node name="MultiplayerSynchronizer" parent="NavigationRegion3D/Items/ProductDisplay16" index="3" unique_id=650710489]
-root_path = NodePath("../../ProductDisplay14")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/ProductDisplay16" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.20319676, 0, 0.62655187)
@@ -582,9 +576,6 @@ quantity = 25
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.20790128, 0.047458213, 0.20790128)
 shape = SubResource("BoxShape3D_mcoed")
 
-[node name="MultiplayerSynchronizer" parent="NavigationRegion3D/Items/ProductDisplay17" index="3" unique_id=650710489]
-root_path = NodePath("../../ProductDisplay14")
-
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/ProductDisplay17" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.20319676, 0, 0.62655187)
 
@@ -601,9 +592,6 @@ quantity = 25
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/ProductDisplay18/Area3D" parent_id_path=PackedInt32Array(461886373, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.20790128, 0.047458213, 0.20790128)
 shape = SubResource("BoxShape3D_otsaw")
-
-[node name="MultiplayerSynchronizer" parent="NavigationRegion3D/Items/ProductDisplay18" index="3" unique_id=650710489]
-root_path = NodePath("../../ProductDisplay14")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/ProductDisplay18" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.20319676, 0, 0.62655187)
@@ -622,9 +610,6 @@ quantity = 30
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/ProductDisplay19/Area3D" parent_id_path=PackedInt32Array(640975976, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2162498, 0.040560484, 0.27031222)
 shape = SubResource("BoxShape3D_287kg")
-
-[node name="MultiplayerSynchronizer" parent="NavigationRegion3D/Items/ProductDisplay19" index="3" unique_id=650710489]
-root_path = NodePath("../../ProductDisplay14")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/ProductDisplay19" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.22869807, 0, 0.8359835)
@@ -654,7 +639,7 @@ transform = Transform3D(-1, 0, 8.742277e-08, 0, 1, 0, -8.742277e-08, 0, -1, 6, 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.13303673, 17.200169)
 metadata/_edit_lock_ = true
 
-[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Shelves/Freezer_Left_5row2/Freezer_Left_5row" parent_id_path=PackedInt32Array(650957259, 648516694) index="0" unique_id=336672918]
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Shelves/Freezer_Left_5row2/Freezer_Left_5row" parent_id_path=PackedInt32Array(650957259, 926063526) index="0" unique_id=336672918]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Shelves/Freezer_Left_5row2/Freezer_Left_5row/StaticBody3D" unique_id=1756956754]
 shape = SubResource("ConvexPolygonShape3D_62gvq")
@@ -663,7 +648,7 @@ shape = SubResource("ConvexPolygonShape3D_62gvq")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.13303673, 14.200169)
 metadata/_edit_lock_ = true
 
-[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Shelves/Freezer_Right_5row2/Freezer_Right_5row" parent_id_path=PackedInt32Array(1048575017, 2055526497) index="0" unique_id=1736547379]
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/Shelves/Freezer_Right_5row2/Freezer_Right_5row" parent_id_path=PackedInt32Array(1048575017, 1877230537) index="0" unique_id=1736547379]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Shelves/Freezer_Right_5row2/Freezer_Right_5row/StaticBody3D" unique_id=1510723560]
 shape = SubResource("ConvexPolygonShape3D_a8s8y")
@@ -807,10 +792,10 @@ transform = Transform3D(0.9326745, 0, -0.36071923, 0, 1, 0, 0.36071923, 0, 0.932
 [node name="StoreSmallGreybox" parent="." unique_id=253599967 groups=["level_geo"] instance=ExtResource("15_tcjw2")]
 transform = Transform3D(-1.0000001, 0, -8.7422784e-08, 0, 1, 0, 8.7422784e-08, 0, -1.0000001, -0.53600764, -1.5205572, -3.3310928)
 
-[node name="store_small" parent="StoreSmallGreybox" index="0" unique_id=1088277672]
+[node name="store_small" parent="StoreSmallGreybox" index="0" unique_id=680403805]
 transform = Transform3D(1, 0, 1.0899726e-11, 0, 1, 0, -1.0899726e-11, 0, 1, 0.463, 0, -0.33)
 
-[node name="store_small_windows" parent="StoreSmallGreybox" index="1" unique_id=1779279494]
+[node name="store_small_windows" parent="StoreSmallGreybox" index="1" unique_id=793886628]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.463, 0, -0.33)
 
 [node name="shack_tall_wide_right" parent="." unique_id=477675682 groups=["level_geo"] instance=ExtResource("9_vhux3")]
