@@ -8,9 +8,9 @@ signal cart_contents_changed(cart_grid: CartGrid)
 @export_range(1, 100, 1) var max_items: int = 20
 
 @export_group("Spacing")
-@export var horizontal_spacing: float = 0.05
-@export var vertical_spacing: float = 0.05
-@export var depth_spacing: float = 0.05
+@export var horizontal_spacing: float = 0.01
+@export var vertical_spacing: float = 0.01
+@export var depth_spacing: float = 0.01
 
 @export_group("Display")
 @export var item_scale: Vector3 = Vector3.ONE
@@ -37,6 +37,8 @@ var cached_fit_product: ProductData = null
 var cached_fit_position: Vector3 = Vector3.INF
 var fit_cache_valid: bool = false
 
+# Ownership
+var order_owner_peer_id: int = 0
 
 func _ready() -> void:
 	add_to_group("cart_grid")
@@ -77,12 +79,6 @@ func request_cart_state() -> void:
 
 
 func add_item(product: ProductData) -> bool:
-	print(
-		"ADD ITEM: ",
-		product.display_name if product != null else "NULL",
-		" | cart_items=",
-		cart_items.size()
-	)
 	
 	if product == null:
 		return false
@@ -110,7 +106,13 @@ func add_item(product: ProductData) -> bool:
 		placement,
 		item_visuals.size()
 	)
-
+	
+	print(
+		"ADD DEBUG | cart_items=", cart_items.size(),
+		" item_positions=", item_positions.size(),
+		" item_visuals=", item_visuals.size()
+	)
+	
 	return true
 
 
@@ -132,6 +134,9 @@ func take_item_at_index(item_index: int) -> ProductData:
 
 	cart_items.remove_at(item_index)
 
+	if cart_items.is_empty():
+		order_owner_peer_id = 0
+	
 	if item_index < item_positions.size():
 		item_positions.remove_at(item_index)
 
@@ -444,8 +449,22 @@ func _find_position_for_new_item(
 
 	var bounds: AABB = _get_cart_bounds()
 
+	# Try the normal orientation first.
 	if not _product_can_fit_inside_cart(product_size, bounds):
-		return Vector3.INF
+		# Try rotating the item 90 degrees on the Y axis.
+		var rotated_product_size: Vector3 = Vector3(
+			product_size.z,
+			product_size.y,
+			product_size.x
+		)
+
+		if not _product_can_fit_inside_cart(
+			rotated_product_size,
+			bounds
+		):
+			return Vector3.INF
+
+		product_size = rotated_product_size
 
 	var bottom_y: float = (
 		bounds.position.y
@@ -575,13 +594,8 @@ func _find_position_for_new_item(
 			return front_position
 
 	# Bottom-level fallback scan.
-	var scan_step_x: float = (
-		product_size.x + horizontal_spacing
-	)
-
-	var scan_step_z: float = (
-		product_size.z + depth_spacing
-	)
+	var scan_step_x: float = 0.02
+	var scan_step_z: float = 0.02
 
 	var max_x: float = (
 		bounds.end.x
@@ -620,6 +634,47 @@ func _find_position_for_new_item(
 			scan_z += scan_step_z
 
 		scan_x += scan_step_x
+
+	# Vertical stacking only after bottom-level options.
+	for index: int in range(item_positions.size()):
+		var existing_product: ProductData = cart_items[index]
+
+		if existing_product == null:
+			continue
+
+		var existing_size: Vector3 = _get_product_size(
+			existing_product
+		)
+
+		var existing_position: Vector3 = item_positions[index]
+
+		var stack_position: Vector3 = Vector3(
+			existing_position.x,
+			existing_position.y
+			+ existing_size.y * 0.5
+			+ vertical_spacing
+			+ product_size.y * 0.5,
+			existing_position.z
+		)
+
+		if not _position_fits_bounds(
+			stack_position,
+			product_size,
+			bounds
+		):
+			continue
+
+		if _position_overlaps_items(
+			stack_position,
+			product_size
+		):
+			continue
+
+		return stack_position
+
+	return Vector3.INF
+
+	
 
 	# Vertical stacking only after bottom-level options.
 	for index: int in range(item_positions.size()):
@@ -1048,6 +1103,7 @@ func _add_item_from_player(
 	player: CharacterBody3D,
 	product_path: String
 	) -> void:
+		
 	if player == null:
 		return
 
@@ -1060,13 +1116,56 @@ func _add_item_from_player(
 
 	if product == null:
 		return
+	
+	if order_owner_peer_id == 0:
+		if not add_item(product):
+			return
 
+		var player_order: OrderData = OrderManager.get_player_order(
+			player.get_multiplayer_authority()
+		)
+
+		if player_order != null:
+			order_owner_peer_id = player.get_multiplayer_authority()
+
+		_clear_player_held_item(player)
+		_broadcast_cart_state(player)
+		return
+
+	if order_owner_peer_id != 0:
+		var player_order: OrderData = OrderManager.get_player_order(
+			player.get_multiplayer_authority()
+		)
+
+		if player_order != null:
+			if player.get_multiplayer_authority() != order_owner_peer_id:
+				return
+
+		var cart_owner_order: OrderData = OrderManager.get_player_order(
+			order_owner_peer_id
+		)
+
+		if cart_owner_order == null:
+			return
+
+		var item_allowed: bool = false
+
+		for order_item: OrderItem in cart_owner_order.items:
+			if order_item.product == product:
+				if not order_item.is_complete():
+					item_allowed = true
+					break
+
+		if not item_allowed:
+			return
+		
+		
 	if not add_item(product):
 		return
 
 	_clear_player_held_item(player)
 
-	_broadcast_cart_state()
+	_broadcast_cart_state(player)
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -1122,7 +1221,7 @@ func _take_item_for_player(
 		product
 	)
 
-	_broadcast_cart_state()
+	_broadcast_cart_state(player)
 
 
 func _give_product_to_player(
@@ -1174,7 +1273,7 @@ func _clear_player_held_item(
 # Multiplayer cart synchronization
 # -------------------------------------------------------------------
 
-func _broadcast_cart_state() -> void:
+func _broadcast_cart_state(player: CharacterBody3D) -> void:
 	if not multiplayer.is_server():
 		return
 
@@ -1187,18 +1286,26 @@ func _broadcast_cart_state() -> void:
 			product_paths.append(product.resource_path)
 
 	_apply_cart_state(product_paths)
-
+	
 	sync_cart_state.rpc(product_paths)
 
-	cart_contents_changed.emit(self)
+	if player.get_multiplayer_authority() == multiplayer.get_unique_id():
+		cart_contents_changed.emit(self)
+	else:
+		notify_cart_tablet.rpc_id(
+			player.get_multiplayer_authority()
+		)
 
 
 @rpc("authority", "call_remote", "reliable")
 func sync_cart_state(
-	product_paths: Array[String]
+	product_paths: Array[String],
 	) -> void:
 	_apply_cart_state(product_paths)
 
+
+@rpc("authority", "call_remote", "reliable")
+func notify_cart_tablet() -> void:
 	cart_contents_changed.emit(self)
 
 
@@ -1251,7 +1358,7 @@ func _apply_incremental_cart_state(
 
 			if is_instance_valid(visual):
 				visual.queue_free()
-
+		
 	while cart_items.size() < target_count:
 		var index: int = cart_items.size()
 

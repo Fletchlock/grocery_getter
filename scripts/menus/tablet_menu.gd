@@ -170,6 +170,20 @@ func _get_cart_quantity(product: ProductData) -> int:
 
 
 func _on_cart_contents_changed(cart_grid: CartGrid) -> void:
+	var player: CharacterBody3D = _get_local_player()
+
+	if player == null:
+		return
+
+	print(
+		"Tablet ",
+		multiplayer.get_unique_id(),
+		" | incoming: ",
+		cart_grid.get_parent().name,
+		" | attached: ",
+		player.attached_cart.name if player.attached_cart else "NONE"
+	)
+	
 	active_cart = cart_grid
 
 	if not visible:

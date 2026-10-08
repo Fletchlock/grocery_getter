@@ -1449,12 +1449,6 @@ func play_footstep() -> void:
 
 @rpc("any_peer", "call_local", "unreliable")
 func network_play_footstep(volume: float, pitch: float) -> void:
-	print(
-		"FOOTSTEP RPC | peer=", multiplayer.get_unique_id(),
-		" player=", name,
-		" authority=", get_multiplayer_authority(),
-		" footstep_player=", footstep_player
-	)
 
 	if footstep_player:
 		footstep_player.volume_db = volume
