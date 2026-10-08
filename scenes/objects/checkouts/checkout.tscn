@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://c6j4kh3t5ngnw"]
+
+[ext_resource type="Script" uid="uid://cw8gy08k5p7ey" path="res://scripts/checkouts/checkout.gd" id="1_ibuna"]
+[ext_resource type="Script" uid="uid://c775jll8k0omd" path="res://scripts/checkouts/checkout_grid.gd" id="2_36puo"]
+[ext_resource type="Script" uid="uid://cjpcpdqhqpcgo" path="res://scripts/carts/cart_grid.gd" id="3_uqttr"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ibuna"]
+size = Vector3(0.75454557, 0.7067013, 1.6119537)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_36puo"]
+size = Vector3(0.75454557, 0.7067013, 1.6119537)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
+
+[node name="Checkout" type="Node3D" unique_id=2036172686]
+script = ExtResource("1_ibuna")
+
+[node name="CheckoutPoint" type="Marker3D" parent="." unique_id=875041205]
+
+[node name="WaitingPoints" type="Node3D" parent="." unique_id=1052031460]
+
+[node name="WaitingPoint1" type="Marker3D" parent="WaitingPoints" unique_id=1115280265]
+
+[node name="WaitingPoint2" type="Marker3D" parent="WaitingPoints" unique_id=611916992]
+
+[node name="WaitingPoint3" type="Marker3D" parent="WaitingPoints" unique_id=239014317]
+
+[node name="CheckoutGrid" type="Node3D" parent="." unique_id=634095526]
+script = ExtResource("2_36puo")
+metadata/_custom_type_script = "uid://c775jll8k0omd"
+
+[node name="InteractionArea" type="Area3D" parent="CheckoutGrid" unique_id=1880803924]
+collision_layer = 257
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CheckoutGrid/InteractionArea" unique_id=437933255]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.016851068, 0.64090204, 0.69018066)
+shape = SubResource("BoxShape3D_ibuna")
+debug_color = Color(0.9847451, 0.4989375, 0.4725191, 1)
+
+[node name="BagGrid" type="Node3D" parent="." unique_id=2061227671]
+script = ExtResource("3_uqttr")
+metadata/_custom_type_script = "uid://cjpcpdqhqpcgo"
+
+[node name="InteractionArea" type="Area3D" parent="BagGrid" unique_id=514614208]
+collision_layer = 257
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BagGrid/InteractionArea" unique_id=1370761931]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.016851068, 0.64090204, 0.69018066)
+shape = SubResource("BoxShape3D_36puo")
+debug_color = Color(0.9847451, 0.4989375, 0.4725191, 1)
+
+[node name="BagPoint" type="Marker3D" parent="." unique_id=1567782599]
+
+[node name="CheckoutArea" type="Area3D" parent="." unique_id=957745189]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CheckoutArea" unique_id=741477035]
+shape = SubResource("BoxShape3D_6aigx")
+debug_color = Color(0, 0.62352943, 0.5411765, 0.8627451)

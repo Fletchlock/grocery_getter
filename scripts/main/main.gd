@@ -31,6 +31,14 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 	if new_state == GameManager.GameState.MAIN_MENU:
 		print("MAIN: Returning to main menu.")
 		
+		var pause_menu = get_node_or_null("UI/PauseMenu")
+		if pause_menu:
+			pause_menu.free()
+		
+		var tablet_menu = get_node_or_null("UI/TabletMenu")
+		if tablet_menu:
+			tablet_menu.free()
+		
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		
 		if is_instance_valid(lobby):
@@ -51,11 +59,20 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 
 	if new_state == GameManager.GameState.LOBBY:
 		print("MAIN: Opening lobby")
+		
+		# Close pause and or tablet menu when GameState changes to LOBBY
+		var pause_menu = get_node_or_null("UI/PauseMenu")
+		if pause_menu:
+			pause_menu.free()
 
+		var tablet_menu = get_node_or_null("UI/TabletMenu")
+		if tablet_menu:
+			tablet_menu.free()
+		
 		if is_instance_valid(main_menu):
 			print("MAIN: Hiding main menu")
 			main_menu.hide()
-
+		
 		if not is_instance_valid(lobby):
 			open_lobby()
 
@@ -83,6 +100,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			_toggle_tablet_menu()	
 
 func _open_pause_menu() -> void:
+	var tablet_menu = get_node_or_null("UI/TabletMenu")
+
+	if tablet_menu:
+		tablet_menu.queue_free()
+	
 	var pause_scene := load(PAUSE_MENU) as PackedScene
 	
 	if pause_scene == null:
