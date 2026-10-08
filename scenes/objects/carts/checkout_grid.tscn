@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://cpdkrnhmfu74p"]
+
+[ext_resource type="Script" uid="uid://c775jll8k0omd" path="res://scripts/checkouts/checkout_grid.gd" id="1_4245v"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2bvqw"]
+size = Vector3(0.75454557, 0.7067013, 1.6119537)
+
+[node name="CheckoutGrid" type="Node3D" unique_id=925843198]
+script = ExtResource("1_4245v")
+horizontal_spacing = 0.0
+vertical_spacing = 0.0
+depth_spacing = 0.0
+metadata/_custom_type_script = "uid://cjpcpdqhqpcgo"
+
+[node name="InteractionArea" type="Area3D" parent="." unique_id=2127909686]
+collision_layer = 257
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea" unique_id=1039239870]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.016851068, 0.64090204, 0.69018066)
+shape = SubResource("BoxShape3D_2bvqw")
+debug_color = Color(0.9847451, 0.4989375, 0.4725191, 1)

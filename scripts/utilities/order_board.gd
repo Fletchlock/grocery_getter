@@ -193,11 +193,7 @@ func _submit_product(player: CharacterBody3D) -> void:
 	else:
 		player.clear_held_item.rpc_id(player_peer_id)
 
-	scanner_beep_player.pitch_scale = randf_range(
-		1.0,
-		1.05
-	)
-	scanner_beep_player.play()
+	_play_scanner_beep.rpc()
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -264,6 +260,11 @@ func request_submit_product(
 	else:
 		player.clear_held_item.rpc_id(player_peer_id)
 
+	_play_scanner_beep.rpc()
+
+
+@rpc("authority", "call_local", "reliable")
+func _play_scanner_beep() -> void:
 	scanner_beep_player.pitch_scale = randf_range(
 		1.0,
 		1.05

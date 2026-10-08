@@ -663,11 +663,12 @@ func _physics_process(delta: float) -> void:
 			_camera_input_direction.y
 			* delta
 		)
-
+		
+		# First person look up /down limits
 		_first_person_pivot.rotation.x = clamp(
 			_first_person_pivot.rotation.x,
-			-PI / 2.75,
-			PI / 2.75
+			deg_to_rad(-80.0), #up
+			deg_to_rad(80.0)   #down
 		)
 
 	else:
@@ -675,11 +676,12 @@ func _physics_process(delta: float) -> void:
 			_camera_input_direction.y
 			* delta
 		)
-
+		
+		# 3rd person look up / down limits
 		_spring_arm_pivot.rotation.x = clamp(
 			_spring_arm_pivot.rotation.x,
-			-PI / 2.75,
-			PI / 4.5
+			deg_to_rad(-65.0), #up
+			deg_to_rad(40.0)   #down
 		)
 
 		_spring_arm_pivot.rotation.y -= (
