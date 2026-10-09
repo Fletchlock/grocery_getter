@@ -9,4 +9,5 @@ item_id = "grapefruit"
 display_name = "Grapefruit"
 product_mesh = ExtResource("1_wcqqe")
 product_price = 0.7
+reorder_cost = 0.56
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

@@ -8,5 +8,6 @@ script = ExtResource("1_v4vbk")
 item_id = "can_beans"
 display_name = "Beans"
 product_mesh = ExtResource("1_kmfih")
-product_price = 1.99
+product_price = 2.0
+reorder_cost = 1.6
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

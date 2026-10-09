@@ -9,4 +9,5 @@ item_id = "apple_green"
 display_name = "Granny Smith Apple"
 product_mesh = ExtResource("1_fva2l")
 product_price = 0.5
+reorder_cost = 0.4
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

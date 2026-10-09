@@ -129,6 +129,9 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 	if player.network_holding_item:
 		return ""
 	
+	if player.held_restock_box != null:
+		return ""
+	
 	if player_character != null:
 		return "[E] Release cart"
 	

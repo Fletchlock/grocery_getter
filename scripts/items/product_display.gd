@@ -76,6 +76,29 @@ func _process(_delta: float) -> void:
 		_update_product_display()
 		_update_interaction_zone()
 
+# Handles restocking when a player interacts
+func _restock_from_box(player: CharacterBody3D) -> void:
+	if player == null:
+		return
+
+	var box: RestockBox = player.held_restock_box
+
+	if box == null:
+		return
+
+	if box.product_data != product_data:
+		return
+
+	if quantity + box.quantity > max_quantity:
+		return
+
+	quantity += box.quantity
+
+	player.held_restock_box = null
+	player.held_restock_box_visual = null
+
+	box.queue_free()
+
 
 func request_interact(player: CharacterBody3D) -> void:
 	if product_data == null:
@@ -83,7 +106,12 @@ func request_interact(player: CharacterBody3D) -> void:
 
 	if player == null:
 		return
-
+	
+	# Holding a restock box means we are restocking the display.
+	if player.held_restock_box != null:
+		_restock_from_box(player)
+		return
+	
 	# Holding an item means we are trying to put it back.
 	if player.held_item != null:
 		if player.held_item != product_data:
@@ -474,7 +502,22 @@ func get_interaction_prompt_for_player(
 
 	if product_data == null:
 		return ""
-
+	
+	# Player is holding a restock box.
+	if player.held_restock_box != null:
+		var box: RestockBox = player.held_restock_box
+		
+		if box.product_data != product_data:
+			return ""
+			
+		if quantity + box. quantity > max_quantity:
+			return ""
+			
+		if product_data.display_name.is_empty():
+			return "[E] Restock Product"
+			
+		return "[E] Restock" + product_data.display_name
+	
 	# Player is holding something.
 	if player.held_item != null:
 		# Wrong product.

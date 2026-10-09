@@ -8,6 +8,7 @@ class_name ProductData
 @export var product_category: String = ""
 @export var product_mesh: Mesh
 @export var product_price: float = 0.00
+@export var reorder_cost: float = 0.00
 
 @export_group("Held Item")
 @export var hand_position: Vector3 = Vector3.ZERO

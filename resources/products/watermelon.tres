@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://bhmjxb87ib43y"]
 
-[ext_resource type="ArrayMesh" uid="uid://dsvc58uq0hn4r" path="res://assets/models/items/watermelon_Cube_066.res" id="1_jhwc5"]
+[ext_resource type="ArrayMesh" uid="uid://u2cdue5tmjow" path="res://assets/models/items/watermelon_Cube_066.res" id="1_jhwc5"]
 [ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_ljogh"]
 
 [resource]
@@ -9,4 +9,5 @@ item_id = "watermelon"
 display_name = "Watermelon"
 product_mesh = ExtResource("1_jhwc5")
 product_price = 5.99
+reorder_cost = 4.79
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

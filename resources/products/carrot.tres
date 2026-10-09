@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://cu3tkubye16rr"]
 
 [ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_g56dg"]
-[ext_resource type="ArrayMesh" uid="uid://dbpgm7kujkiwm" path="res://assets/models/items/carrot_Cube_065.res" id="1_xoqpf"]
+[ext_resource type="ArrayMesh" uid="uid://xwaadxvr0g5j" path="res://assets/models/items/carrot_Cube_065.res" id="1_xoqpf"]
 
 [resource]
 script = ExtResource("1_g56dg")
@@ -9,4 +9,5 @@ item_id = "carrot"
 display_name = "Carrot"
 product_mesh = ExtResource("1_xoqpf")
 product_price = 1.09
+reorder_cost = 0.88
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

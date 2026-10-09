@@ -9,4 +9,5 @@ item_id = "lime"
 display_name = "Lime"
 product_mesh = ExtResource("1_q7e6n")
 product_price = 0.5
+reorder_cost = 0.4
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"
