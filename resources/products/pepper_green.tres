@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://cbyww3278lwgu"]
 
-[ext_resource type="ArrayMesh" uid="uid://bm4pdr7o11vd7" path="res://assets/models/items/pepper_green_Cube_063.res" id="1_atb1y"]
+[ext_resource type="ArrayMesh" uid="uid://bn1a7depov6sq" path="res://assets/models/items/pepper_green_Cube_063.res" id="1_atb1y"]
 [ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_sht22"]
 
 [resource]
@@ -9,4 +9,5 @@ item_id = "pepper_green"
 display_name = "Green Bell Pepper"
 product_mesh = ExtResource("1_atb1y")
 product_price = 1.08
+reorder_cost = 0.86
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

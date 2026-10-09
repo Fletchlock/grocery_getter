@@ -9,4 +9,5 @@ item_id = "apple_red2"
 display_name = "Red Delicious Apple"
 product_mesh = ExtResource("1_x8axs")
 product_price = 0.5
+reorder_cost = 0.4
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

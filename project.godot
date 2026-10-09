@@ -45,6 +45,17 @@ window/size/borderless=true
 
 enabled=PackedStringArray("res://addons/drop_to_floor/plugin.cfg", "res://addons/godotsteam/plugin.cfg")
 
+[file_customization]
+
+folder_colors={
+"res://addons/": "gray",
+"res://assets/": "purple",
+"res://data/": "gray",
+"res://resources/": "yellow",
+"res://scenes/": "red",
+"res://scripts/": "blue"
+}
+
 [input]
 
 left={

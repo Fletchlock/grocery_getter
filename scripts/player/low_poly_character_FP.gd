@@ -125,6 +125,10 @@ var _smoothed_crouch_blend: float = 0.0
 var held_item: ProductData = null
 var held_item_visual: MeshInstance3D = null
 
+# === Held Restock Box Variables ===
+var held_restock_box: RestockBox = null
+var held_restock_box_visual: Node3D = null
+
 @onready var held_item_hand_target: Node3D = $Armature/HeldItemHandTarget
 @onready var held_item_target: Node3D = $Armature/HeldItemTarget
 @onready var held_item_network_visual: MeshInstance3D = $Armature/HeldItemTarget/HeldItemNetworkVisual
@@ -1319,6 +1323,33 @@ func get_camera_forward() -> Vector3:
 	return forward_dir
 
 
+func try_pickup_restock_box(box: RestockBox) -> void:
+	if box == null:
+		return
+
+	if held_restock_box != null:
+		return
+
+	if held_item != null:
+		return
+
+	if attached_cart != null:
+		return
+
+	held_restock_box = box
+
+	var box_parent: Node = box.get_parent()
+
+	if box_parent != null:
+		box_parent.remove_child(box)
+
+	held_item_holder.add_child(box)
+	box.transform = Transform3D.IDENTITY
+	box.scale = Vector3(0.65,0.65,0.65)
+
+	held_restock_box_visual = box
+
+
 func interact_with_item(item: Node3D) -> void:
 	if item == null:
 		return
@@ -1326,7 +1357,10 @@ func interact_with_item(item: Node3D) -> void:
 	if item is RigidBody3D and item.has_method("grab_cart"):
 		if held_item != null:
 			return
-
+		
+		if held_restock_box != null:
+			return
+		
 		try_grab_cart(item as RigidBody3D)
 		return
 
