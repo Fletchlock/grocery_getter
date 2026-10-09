@@ -20,8 +20,18 @@ material_override = SubResource("StandardMaterial3D_hemuh")
 mesh = SubResource("BoxMesh_hd853")
 
 [node name="ProductLabel" type="Label3D" parent="." unique_id=889442548]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.26812482, 0.251)
-texture_filter = 2
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.30731136, 0.251)
+texture_filter = 4
+text = "Product Name
+Qty: 10"
+font_size = 16
+outline_size = 4
+autowrap_mode = 2
+width = 130.0
+
+[node name="ProductLabelBack" type="Label3D" parent="." unique_id=337634293]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0.30718654, -0.251)
+texture_filter = 4
 text = "Product Name
 Qty: 10"
 font_size = 16

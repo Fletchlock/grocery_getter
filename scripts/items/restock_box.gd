@@ -7,6 +7,7 @@ class_name RestockBox
 @export_range(1, 400, 1) var quantity: int = 10
 
 @onready var product_label: Label3D = $ProductLabel
+@onready var product_label_back: Label3D = $ProductLabelBack
 
 
 func _ready() -> void:
@@ -14,14 +15,18 @@ func _ready() -> void:
 
 
 func _update_label() -> void:
-	if product_data == null:
-		product_label.text = "Unassigned Product\nQty: %d" % quantity
-		return
+	var label_text: String
 
-	product_label.text = "%s\nQty: %d" % [
-		product_data.display_name,
-		quantity
-	]
+	if product_data == null:
+		label_text = "Unassigned Product\nQty: %d" % quantity
+	else:
+		label_text = "%s\nQty: %d" % [
+			product_data.display_name,
+			quantity
+		]
+
+	product_label.text = label_text
+	product_label_back.text = label_text
 
 
 func get_interaction_prompt_for_player( _player: CharacterBody3D) -> String:
