@@ -565,6 +565,17 @@ func _physics_process(delta: float) -> void:
 			_network_held_item_path_last_received = network_held_item_path
 			_update_network_held_item_visual()
 		
+			# Network holding_restock_box visual
+		if (
+			network_holding_restock_box != _network_holding_restock_box_last_received
+			or network_restock_box_product_path != _network_restock_box_product_path_last_received
+			or network_restock_box_quantity != _network_restock_box_quantity_last_received
+		):
+			_network_holding_restock_box_last_received = network_holding_restock_box
+			_network_restock_box_product_path_last_received = network_restock_box_product_path
+			_network_restock_box_quantity_last_received = network_restock_box_quantity
+			_update_network_restock_box_visual()
+		
 		# Detect a new received network state...
 		if (
 			network_position != _network_position_last_received
@@ -1004,16 +1015,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		network_held_item_path = ""
 	
-	# Network holding_restock_box visual
-	if (
-		network_holding_restock_box != _network_holding_restock_box_last_received
-		or network_restock_box_product_path != _network_restock_box_product_path_last_received
-		or network_restock_box_quantity != _network_restock_box_quantity_last_received
-	):
-		_network_holding_restock_box_last_received = network_holding_restock_box
-		_network_restock_box_product_path_last_received = network_restock_box_product_path
-		_network_restock_box_quantity_last_received = network_restock_box_quantity
-		_update_network_restock_box_visual()
+
 
 func set_character(character_id: int) -> void:
 
