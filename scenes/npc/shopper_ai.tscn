@@ -85,11 +85,12 @@ radius = 0.5971316
 
 [node name="Shopper AI" type="CharacterBody3D" unique_id=810827079]
 script = ExtResource("1_h2sg7")
+shopping_wait_max = 5.0
 look_speed = 1.5
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=131252810]
-path_desired_distance = 0.25
-target_desired_distance = 0.5
+path_desired_distance = 0.5
+target_desired_distance = 0.4
 avoidance_enabled = true
 radius = 0.3
 neighbor_distance = 5.0
