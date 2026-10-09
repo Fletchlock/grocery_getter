@@ -115,12 +115,24 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 		if player.held_item == null:
 			return ""
 
-		if OrderManager.get_player_order(
-			player.get_multiplayer_authority()
-		) == null:
-			return ""
+		var player_peer_id: int = player.get_multiplayer_authority()
 
-		return "[E] Checkout " + player.held_item.display_name
+		# Preserve online-order checkout when the player owns an order.
+		if OrderManager.get_player_order(player_peer_id) != null:
+			return "[E] Checkout " + player.held_item.display_name
+
+		# Otherwise, allow scanning for the active AI shopper.
+		var checkout: Checkout = (
+			get_tree().get_first_node_in_group("checkout")
+			as Checkout
+		)
+
+		if checkout != null and checkout.can_scan_ai_product(
+			player.held_item
+		):
+			return "[E] Scan " + player.held_item.display_name
+
+		return ""
 
 	if OrderManager.get_player_order(
 		player.get_multiplayer_authority()
@@ -178,22 +190,10 @@ func interact(player: CharacterBody3D) -> void:
 
 
 func _submit_product(player: CharacterBody3D) -> void:
-	var submitted: bool = OrderManager.submit_product(
-		player,
-		player.held_item
-	)
-
-	if not submitted:
+	if player.held_item == null:
 		return
 
-	var player_peer_id: int = player.get_multiplayer_authority()
-
-	if player_peer_id == multiplayer.get_unique_id():
-		player._clear_held_item()
-	else:
-		player.clear_held_item.rpc_id(player_peer_id)
-
-	_play_scanner_beep.rpc()
+	_submit_product_to_checkout(player, player.held_item)
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -238,22 +238,42 @@ func request_submit_product(
 	if player.get_multiplayer_authority() != requesting_peer_id:
 		return
 
-	var product: ProductData = load(
-		product_path
-	) as ProductData
-
-	if product == null:
+	if player.held_item == null:
 		return
 
-	var submitted: bool = OrderManager.submit_product(
-		player,
-		product
+	# Only accept the product the player is actually holding.
+	if player.held_item.resource_path != product_path:
+		return
+
+	_submit_product_to_checkout(player, player.held_item)
+
+
+func _submit_product_to_checkout(
+	player: CharacterBody3D,
+	product: ProductData
+) -> bool:
+	var player_peer_id: int = player.get_multiplayer_authority()
+	var player_order: OrderData = OrderManager.get_player_order(
+		player_peer_id
 	)
 
-	if not submitted:
-		return
+	var submitted: bool = false
 
-	var player_peer_id: int = player.get_multiplayer_authority()
+	if player_order != null:
+		# Existing online-order flow.
+		submitted = OrderManager.submit_product(player, product)
+	else:
+		# AI shopper checkout flow.
+		var checkout: Checkout = (
+			get_tree().get_first_node_in_group("checkout")
+			as Checkout
+		)
+
+		if checkout != null:
+			submitted = checkout.scan_ai_product(product)
+
+	if not submitted:
+		return false
 
 	if player_peer_id == multiplayer.get_unique_id():
 		player._clear_held_item()
@@ -261,6 +281,8 @@ func request_submit_product(
 		player.clear_held_item.rpc_id(player_peer_id)
 
 	_play_scanner_beep.rpc()
+
+	return true
 
 
 @rpc("authority", "call_local", "reliable")

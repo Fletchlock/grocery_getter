@@ -98,7 +98,10 @@ func spawn_shopper() -> void:
 		shopper.finished_shopping.connect(
 			_on_shopper_finished_shopping
 		)
-
+	if shopper.has_signal("checkout_completed"):
+		shopper.checkout_completed.connect(
+			_on_shopper_checkout_completed
+		)
 
 func _spawn_shopper(data: Variant) -> Node:
 	var shopper_index: int = int(data)
@@ -109,9 +112,20 @@ func _spawn_shopper(data: Variant) -> Node:
 	return shopper_scenes[shopper_index].instantiate()
 
 
-func _on_shopper_finished_shopping(purchase_total: float) -> void:
-	shopper_stats.current_shoppers -= 1
+func _on_shopper_checkout_completed(
+	purchase_total: float
+) -> void:
+	if not multiplayer.is_server():
+		return
+
 	shopper_stats.record_purchase(purchase_total)
+
+
+func _on_shopper_finished_shopping() -> void:
+	if not multiplayer.is_server():
+		return
+
+	shopper_stats.current_shoppers -= 1
 	
 
 func _on_shopper_reached_enter_point() -> void:

@@ -4,7 +4,9 @@ class_name ShopperAI
 
 # Signals
 signal reached_enter_point
-signal finished_shopping(purchase_total: float)
+signal checkout_completed(purchase_total: float)
+signal finished_shopping
+
 
 # Character refs
 @onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/npc_shopper_01
@@ -37,6 +39,7 @@ var purchased_items: Array[ProductData] = [] # The items the AI has taken. Produ
 var current_shopping_index: int = 0
 var shopping_idle_timer: float = 0.0
 var shopping_wait_timer: float = 0.0
+var checkout_sale_recorded: bool = false
 var current_shopping_point: Node3D = null
 var shopping_point_checked: bool = false
 
@@ -61,6 +64,7 @@ var current_animation: StringName = &""
 var blink_timer := 0.0
 var blink_progress := -1.0
 var double_blink_pending := false
+var bagging_timer: float = 0.0
 
 # Look at others when in proximity
 @export_group("Idle Look")
@@ -92,6 +96,10 @@ enum State {
 	SHOPPING_WAITING,
 	SHOPPING_WAITING_IDLE,
 	CHECKOUT,
+	CHECKOUT_IDLE,
+	BAGGING,
+	BAGGING_IDLE,
+	CHECKOUT_LINEUP,
 	CHECKOUT_WAITING,
 	CHECKOUT_QUEUE_FULL,
 	EXITING
@@ -174,8 +182,14 @@ func _physics_process(delta: float) -> void:
 			
 		State.CHECKOUT:
 			_on_moving(delta)
+		
+		State.BAGGING:
+			_on_moving(delta)
 			
-		State.CHECKOUT_WAITING:
+		State.BAGGING_IDLE:
+			_on_bagging_idle(delta)
+			
+		State.CHECKOUT_LINEUP:
 			_on_moving(delta)
 			
 		State.CHECKOUT_QUEUE_FULL:
@@ -193,7 +207,8 @@ func _physics_process(delta: float) -> void:
 		State.SHOPPING,
 		State.SHOPPING_WAITING,
 		State.CHECKOUT,
-		State.CHECKOUT_WAITING,
+		State.CHECKOUT_LINEUP,
+		State.BAGGING,
 		State.EXITING
 	]:
 		move_and_slide()
@@ -320,7 +335,38 @@ func go_to_checkout() -> void:
 	if target_point == checkout.checkout_point:
 		state = State.CHECKOUT
 	else:
-		state = State.CHECKOUT_WAITING
+		state = State.CHECKOUT_LINEUP
+
+
+func checkout_scanning_completed() -> void:
+	if not multiplayer.is_server():
+		return
+
+	if checkout_sale_recorded:
+		return
+
+	if not purchased_items.is_empty():
+		for product: ProductData in purchased_items:
+			if product == null:
+				return
+
+	# Calculate and record the purchase total after all items are scanned.
+	var purchase_total: float = 0.0
+
+	for product: ProductData in purchased_items:
+		purchase_total += product.product_price
+
+	checkout_sale_recorded = true
+	checkout_completed.emit(purchase_total)
+
+	var checkout: Checkout = (
+		get_tree().get_first_node_in_group("checkout")
+		as Checkout
+	)
+
+	if checkout != null:
+		checkout.customer_finished_checkout(self)
+
 
 
 func _on_checkout_queue_full(delta: float) -> void:
@@ -365,6 +411,16 @@ func _on_shopping_waiting_idle(delta: float) -> void:
 
 	if shopping_wait_timer <= 0.0:
 		go_to_next_shopping_point()
+
+
+func _on_bagging_idle(delta: float) -> void:
+	velocity = Vector3.ZERO
+	navigation_agent_3d.velocity = Vector3.ZERO
+
+	bagging_timer -= delta
+
+	if bagging_timer <= 0.0:
+		go_to_exit()
 
 
 func go_to_enter() -> void:
@@ -448,7 +504,7 @@ func _on_moving(delta: float) -> void:
 
 				state = State.SHOPPING_WAITING
 				return
-
+	
 	var direction: Vector3 = (
 		next_position - current_position
 	).normalized()
@@ -464,7 +520,8 @@ func _on_moving(delta: float) -> void:
 		State.SHOPPING,
 		State.SHOPPING_WAITING,
 		State.CHECKOUT,
-		State.CHECKOUT_WAITING,
+		State.BAGGING,
+		State.CHECKOUT_LINEUP,
 		State.EXITING
 	]:
 		target_rotation = atan2(direction.x, direction.z)
@@ -492,17 +549,32 @@ func handle_stuck() -> void:
 		set_navigation_target(wander_target)
 	
 	elif state == State.EXITING:
-		# Give the exit another attempt.
-		set_navigation_target(exit_point.global_position)
+		remove_from_group("shopper_in_store")
+		finished_shopping.emit()
+		queue_free()
+		return
 	
 	elif state == State.CHECKOUT:
 		pass
+		
+	elif state == State.BAGGING:
+		go_to_exit()
+		return
 
-	elif state == State.CHECKOUT_WAITING:
+	elif state == State.CHECKOUT_LINEUP:
 		pass
 	
 	else:
 		state = State.IDLE
+
+
+func face_marker(marker: Marker3D) -> void:
+	var forward: Vector3 = marker.global_transform.basis.z
+	forward.y = 0.0
+	forward = forward.normalized()
+
+	target_rotation = atan2(forward.x, forward.z)
+	rotation.y = target_rotation
 
 
 func _on_navigation_agent_3d_target_reached() -> void:
@@ -535,33 +607,36 @@ func _on_navigation_agent_3d_target_reached() -> void:
 			shopping_idle_min,
 			shopping_idle_max
 		)
-
-
 	
 		state = State.SHOPPING_IDLE
 		return
 
 	if state == State.EXITING:
-		# Calculate total purchase price of products in purchased_items array
-		var purchase_total: float = 0.0
-		
-		for product: ProductData in purchased_items:
-			purchase_total += product.product_price
-			
-		print("AI PURCHASE TOTAL: $", purchase_total)
-		
 		remove_from_group("shopper_in_store")
 		queue_free()
-		finished_shopping.emit(purchase_total)
+		finished_shopping.emit()
 		return
 	
 	if state == State.CHECKOUT:
-		# reached CheckoutPoint
-		return
-
-	if state == State.CHECKOUT_WAITING:
 		velocity = Vector3.ZERO
 		navigation_agent_3d.velocity = Vector3.ZERO
+
+		var checkout: Checkout = (
+			get_tree().get_first_node_in_group("checkout")
+			as Checkout
+		)
+
+		if checkout != null:
+			face_marker(checkout.checkout_point)
+			state = State.CHECKOUT_IDLE
+			checkout.customer_arrived_at_checkout(self)
+
+		return
+
+	if state == State.CHECKOUT_LINEUP:
+		velocity = Vector3.ZERO
+		navigation_agent_3d.velocity = Vector3.ZERO
+		state = State.CHECKOUT_WAITING
 		return
 	
 	if state == State.SHOPPING_WAITING:
@@ -572,12 +647,27 @@ func _on_navigation_agent_3d_target_reached() -> void:
 			shopping_wait_min,
 			shopping_wait_max
 		)
-
+	
 		state = State.SHOPPING_WAITING_IDLE
 		return
-		
-	state = State.IDLE
+	
+	if state == State.BAGGING:
+		velocity = Vector3.ZERO
+		navigation_agent_3d.velocity = Vector3.ZERO
 
+		var checkout: Checkout = (
+			get_tree().get_first_node_in_group("checkout")
+			as Checkout
+		)
+
+		if checkout != null:
+			face_marker(checkout.bag_point)
+
+		bagging_timer = 2.0
+		state = State.BAGGING_IDLE
+		return
+				
+	state = State.IDLE
 
 
 func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
@@ -587,7 +677,8 @@ func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
 		State.SHOPPING,
 		State.SHOPPING_WAITING,
 		State.CHECKOUT,
-		State.CHECKOUT_WAITING,
+		State.CHECKOUT_LINEUP,
+		State.BAGGING,
 		State.EXITING
 	]:
 		velocity.x = move_toward(velocity.x, safe_velocity.x, 0.55)
@@ -604,42 +695,25 @@ func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
 func update_animation() -> void:
 	if not is_node_ready():
 		await ready
-	
+
 	var new_animation: StringName = &"low_poly_character_anims/idle"
 
 	match state:
-		State.IDLE:
+		State.IDLE, State.WAITING_TO_MOVE, State.CHECKOUT_IDLE, \
+		State.CHECKOUT_WAITING, State.CHECKOUT_QUEUE_FULL:
 			new_animation = &"low_poly_character_anims/idle"
 
-		State.WAITING_TO_MOVE:
-			new_animation = &"low_poly_character_anims/idle"
-
-		State.SHOPPING_IDLE:
+		State.SHOPPING_IDLE, State.BAGGING_IDLE:
 			new_animation = &"low_poly_character_anims/crouch_idle"
-			
-		State.SHOPPING_WAITING:
-			new_animation = &"low_poly_character_anims/Walk"
-			
+
 		State.SHOPPING_WAITING_IDLE:
 			new_animation = &"low_poly_character_anims/idle"
 
-		State.MOVING:
-			new_animation = &"low_poly_character_anims/Walk"
-			
-		State.ENTERING:
+		State.MOVING, State.ENTERING, State.SHOPPING, \
+		State.SHOPPING_WAITING, State.CHECKOUT, \
+		State.CHECKOUT_LINEUP, State.BAGGING, State.EXITING:
 			new_animation = &"low_poly_character_anims/Walk"
 
-		State.SHOPPING:
-			new_animation = &"low_poly_character_anims/Walk"
-		
-		State.CHECKOUT:
-			new_animation = &"low_poly_character_anims/Walk"
-			
-		State.CHECKOUT_WAITING:
-			new_animation = &"low_poly_character_anims/idle"
-			
-		State.EXITING:
-			new_animation = &"low_poly_character_anims/Walk"
 
 	if new_animation != current_animation:
 		$AnimationPlayer.play(new_animation)
