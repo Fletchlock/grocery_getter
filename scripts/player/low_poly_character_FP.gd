@@ -1357,22 +1357,118 @@ func try_pickup_restock_box(box: RestockBox) -> void:
 	if attached_cart != null:
 		return
 
-	held_restock_box = box
+	var box_path: NodePath = box.get_path()
 
-	var box_parent: Node = box.get_parent()
+	# Create a separate copy for the player's hand.
+	var box_scene: PackedScene = preload(
+		"res://scenes/items/restock_box.tscn"
+	)
 
-	if box_parent != null:
-		box_parent.remove_child(box)
+	var held_box: RestockBox = box_scene.instantiate() as RestockBox
 
-	held_item_holder.add_child(box)
-	box.transform = Transform3D.IDENTITY
-	box.scale = Vector3(0.65,0.65,0.65)
+	if held_box == null:
+		return
 
-	held_restock_box_visual = box
-	
+	held_box.product_data = box.product_data
+	held_box.quantity = box.quantity
+
+	var box_body: StaticBody3D = held_box.get_node_or_null(
+		"StaticBody3D"
+	) as StaticBody3D
+
+	if box_body != null:
+		box_body.collision_layer = 0
+		box_body.collision_mask = 0
+
+	held_item_holder.add_child(held_box)
+	held_box.transform = Transform3D.IDENTITY
+	held_box.scale = Vector3(0.65, 0.65, 0.65)
+
+	held_restock_box = held_box
+	held_restock_box_visual = held_box
+
 	network_holding_restock_box = true
-	network_restock_box_product_path = box.product_data.resource_path if box.product_data != null else ""
+	network_restock_box_product_path = (
+		box.product_data.resource_path
+		if box.product_data != null
+		else ""
+	)
 	network_restock_box_quantity = box.quantity
+
+	# Ask the server to remove the original world box.
+	if multiplayer.is_server():
+		_server_pickup_restock_box(
+			box_path,
+			get_multiplayer_authority()
+		)
+	else:
+		request_pickup_restock_box.rpc_id(
+			1,
+			box_path
+		)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_pickup_restock_box(box_path: NodePath) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
+
+	if get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	_server_pickup_restock_box(
+		box_path,
+		requesting_peer_id
+	)
+
+
+func _server_pickup_restock_box(
+	box_path: NodePath,
+	requesting_peer_id: int
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	var box_node: Node = get_node_or_null(box_path)
+
+	if box_node == null:
+		return
+
+	if not box_node is RestockBox:
+		return
+
+	var box: RestockBox = box_node as RestockBox
+
+	if box.get_meta("picked_up", false):
+		return
+
+	box.set_meta("picked_up", true)
+
+	remove_world_restock_box.rpc(box_path)
+
+
+@rpc("any_peer", "call_local", "reliable")
+func remove_world_restock_box(box_path: NodePath) -> void:
+	var sender_id: int = multiplayer.get_remote_sender_id()
+
+	if sender_id != 0 and sender_id != 1:
+		return
+
+	var box_node: Node = get_node_or_null(box_path)
+
+	if box_node == null:
+		return
+
+	if not box_node is RestockBox:
+		return
+
+	box_node.queue_free()
+
 
 func interact_with_item(item: Node3D) -> void:
 	if item == null:
@@ -1461,6 +1557,26 @@ func _update_network_held_item_visual() -> void:
 	if right_hand_ik and held_item_target:
 		right_hand_ik.set_target_node(0, held_item_hand_target.get_path())
 		right_hand_ik.influence = 1.0
+
+
+func _clear_held_restock_box() -> void:
+	if held_restock_box != null:
+		held_restock_box.queue_free()
+
+	held_restock_box = null
+	held_restock_box_visual = null
+
+	network_holding_restock_box = false
+	network_restock_box_product_path = ""
+	network_restock_box_quantity = 0
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func clear_held_restock_box() -> void:
+	if multiplayer.get_remote_sender_id() != 1:
+		return
+
+	_clear_held_restock_box()
 
 
 func _update_network_restock_box_visual() -> void:

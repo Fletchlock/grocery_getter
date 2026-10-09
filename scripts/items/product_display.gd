@@ -76,33 +76,65 @@ func _process(_delta: float) -> void:
 		_update_product_display()
 		_update_interaction_zone()
 
-# Handles restocking when a player interacts
-func _restock_from_box(player: CharacterBody3D) -> void:
+@rpc("any_peer", "call_remote", "reliable")
+func request_restock_from_box(
+	player_path: NodePath,
+	box_product_path: String,
+	box_quantity: int
+	) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
+	var player_node: Node = get_node_or_null(player_path)
+
+	if player_node == null:
+		return
+
+	if not player_node is CharacterBody3D:
+		return
+
+	var player: CharacterBody3D = player_node as CharacterBody3D
+
+	if player.get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	if product_data == null:
+		return
+
+	if box_product_path != product_data.resource_path:
+		return
+
+	if box_quantity <= 0 or box_quantity > 400:
+		return
+
+	if quantity + box_quantity > max_quantity:
+		return
+
+	_restock_from_box(player, box_quantity)
+
+
+func _restock_from_box(
+	player: CharacterBody3D,
+	box_quantity: int
+	) -> void:
 	if player == null:
 		return
 
-	var box: RestockBox = player.held_restock_box
-
-	if box == null:
+	if box_quantity <= 0:
 		return
 
-	if box.product_data != product_data:
+	if quantity + box_quantity > max_quantity:
 		return
 
-	if quantity + box.quantity > max_quantity:
-		return
+	quantity += box_quantity
 
-	quantity += box.quantity
+	var player_peer_id: int = player.get_multiplayer_authority()
 
-	player.held_restock_box = null
-	player.held_restock_box_visual = null
-
-	player.network_holding_restock_box = false
-	player.network_restock_box_product_path = ""
-	player.network_restock_box_quantity = 0
-
-	box.queue_free()
-
+	if player_peer_id == multiplayer.get_unique_id():
+		player._clear_held_restock_box()
+	else:
+		player.clear_held_restock_box.rpc_id(player_peer_id)
 
 func request_interact(player: CharacterBody3D) -> void:
 	if product_data == null:
@@ -113,7 +145,24 @@ func request_interact(player: CharacterBody3D) -> void:
 	
 	# Holding a restock box means we are restocking the display.
 	if player.held_restock_box != null:
-		_restock_from_box(player)
+		var box: RestockBox = player.held_restock_box
+
+		if box.product_data != product_data:
+			return
+
+		if quantity + box.quantity > max_quantity:
+			return
+
+		if multiplayer.is_server():
+			_restock_from_box(player, box.quantity)
+		else:
+			request_restock_from_box.rpc_id(
+				1,
+				player.get_path(),
+				box.product_data.resource_path,
+				box.quantity
+			)
+
 		return
 	
 	# Holding an item means we are trying to put it back.
