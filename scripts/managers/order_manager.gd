@@ -241,10 +241,10 @@ func complete_order(order: OrderData) -> void:
 
 	order.state = OrderData.OrderState.COMPLETED
 	
-	var shopper_stats: Node3D = get_tree().get_first_node_in_group("shopper_stats")
+	var _shopper_stats: Node3D = get_tree().get_first_node_in_group("shopper_stats")
 	
-	if shopper_stats != null:
-		shopper_stats.record_order(
+	if _shopper_stats != null:
+		_shopper_stats.record_order(
 			order.current_profit
 		)
 

@@ -97,6 +97,10 @@ func _restock_from_box(player: CharacterBody3D) -> void:
 	player.held_restock_box = null
 	player.held_restock_box_visual = null
 
+	player.network_holding_restock_box = false
+	player.network_restock_box_product_path = ""
+	player.network_restock_box_quantity = 0
+
 	box.queue_free()
 
 
