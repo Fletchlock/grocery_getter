@@ -7,6 +7,7 @@ extends CharacterBody3D
 @onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
 @onready var interact_raycast_3d: RayCast3D = $FirstPersonCameraPivot/FirstPersonCamera/InteractRaycast3D
 @onready var held_item_holder: Node3D = $FirstPersonCameraPivot/HeldItemHolder
+@onready var held_box_holder: Node3D = $FirstPersonCameraPivot/HeldBoxHolder
 
 # Audio
 @onready var footstep_player: AudioStreamPlayer3D = $FirstPersonCameraPivot/FirstPersonCamera/FootstepPlayer
@@ -133,6 +134,9 @@ var held_restock_box_visual: Node3D = null
 @onready var held_item_target: Node3D = $Armature/HeldItemTarget
 @onready var held_item_network_visual: MeshInstance3D = $Armature/HeldItemTarget/HeldItemNetworkVisual
 @onready var held_restock_box_network_visual: Node3D = $Armature/HeldItemTarget/HeldRestockBoxNetworkVisual
+@onready var held_box_hand_target_right: Node3D = $Armature/HeldBoxHandTargetRight
+@onready var held_box_hand_target_left: Node3D = $Armature/HeldBoxHandTargetLeft
+
 
 @export var network_holding_item: bool = false
 @export var network_held_item_path: String = ""
@@ -1380,9 +1384,9 @@ func try_pickup_restock_box(box: RestockBox) -> void:
 		box_body.collision_layer = 0
 		box_body.collision_mask = 0
 
-	held_item_holder.add_child(held_box)
+	held_box_holder.add_child(held_box)
 	held_box.transform = Transform3D.IDENTITY
-	held_box.scale = Vector3(0.65, 0.65, 0.65)
+	held_box.scale = Vector3(0.8, 0.8, 0.8)
 
 	held_restock_box = held_box
 	held_restock_box_visual = held_box
@@ -1592,6 +1596,13 @@ func _update_network_restock_box_visual() -> void:
 		or network_restock_box_product_path.is_empty()
 	):
 		held_restock_box_network_visual.visible = false
+		
+		if right_hand_ik and left_hand_ik:
+			right_hand_ik.influence = 0.0
+			right_hand_ik.set_target_node(0, NodePath(""))
+			left_hand_ik.influence = 0.0
+			left_hand_ik.set_target_node(0, NodePath(""))
+			
 		return
 
 	var loaded_resource: Resource = load(
@@ -1629,7 +1640,12 @@ func _update_network_restock_box_visual() -> void:
 	held_restock_box_network_visual.add_child(visual_box)
 	visual_box.transform = Transform3D.IDENTITY
 	held_restock_box_network_visual.visible = true
-
+	
+	if right_hand_ik and left_hand_ik and held_item_target:
+		right_hand_ik.set_target_node(0, held_box_hand_target_right.get_path())
+		right_hand_ik.influence = 1.0
+		left_hand_ik.set_target_node(0, held_box_hand_target_left.get_path())
+		left_hand_ik.influence = 1.0
 
 @rpc("any_peer", "call_remote", "reliable")
 func clear_held_item() -> void:

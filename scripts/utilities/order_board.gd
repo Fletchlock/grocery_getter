@@ -240,16 +240,15 @@ func request_submit_product(
 	if player.get_multiplayer_authority() != requesting_peer_id:
 		return
 
-	if player.held_item == null:
-		return
-
+	# Validate the replicated held-item state.
 	if not player.network_holding_item:
 		return
 
-	# Verify the requested product matches the replicated held item.
 	if player.network_held_item_path != product_path:
 		return
 
+	# Load the product on the server instead of relying on held_item,
+	# which is local to the owning player.
 	var loaded_resource: Resource = load(product_path)
 
 	if loaded_resource == null:
