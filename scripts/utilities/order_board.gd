@@ -127,10 +127,12 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 			as Checkout
 		)
 
-		if checkout != null and checkout.can_scan_ai_product(
-			player.held_item
-		):
-			return "[E] Scan " + player.held_item.display_name
+		if checkout != null:
+			if not multiplayer.is_server():
+				return "[E] Scan " + player.held_item.display_name
+
+			if checkout.can_scan_ai_product(player.held_item):
+				return "[E] Scan " + player.held_item.display_name
 
 		return ""
 
@@ -241,11 +243,24 @@ func request_submit_product(
 	if player.held_item == null:
 		return
 
-	# Only accept the product the player is actually holding.
-	if player.held_item.resource_path != product_path:
+	if not player.network_holding_item:
 		return
 
-	_submit_product_to_checkout(player, player.held_item)
+	# Verify the requested product matches the replicated held item.
+	if player.network_held_item_path != product_path:
+		return
+
+	var loaded_resource: Resource = load(product_path)
+
+	if loaded_resource == null:
+		return
+
+	if not loaded_resource is ProductData:
+		return
+
+	var product: ProductData = loaded_resource as ProductData
+
+	_submit_product_to_checkout(player, product)
 
 
 func _submit_product_to_checkout(
