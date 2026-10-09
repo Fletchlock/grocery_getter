@@ -408,6 +408,15 @@ properties/8/replication_mode = 1
 properties/9/path = NodePath(".:network_is_crouching")
 properties/9/spawn = true
 properties/9/replication_mode = 1
+properties/10/path = NodePath(".:network_holding_restock_box")
+properties/10/spawn = true
+properties/10/replication_mode = 1
+properties/11/path = NodePath(".:network_restock_box_product_path")
+properties/11/spawn = true
+properties/11/replication_mode = 1
+properties/12/path = NodePath(".:network_restock_box_quantity")
+properties/12/spawn = true
+properties/12/replication_mode = 1
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_qgfk6"]
 radius = 0.57096505
@@ -415,9 +424,47 @@ radius = 0.57096505
 [node name="low_poly_character_fp" type="CharacterBody3D" unique_id=51086098 groups=["player"]]
 process_mode = 1
 script = ExtResource("1_lslaa")
+network_first_person = null
+strafe_rotation = null
+mouse_sensitivity = null
+gamepad_sensitivty = null
+zoom_speed = null
+gamepad_zoom_speed = null
+min_zoom = null
+max_zoom = null
+walk_speed = null
+sprint_speed = null
+crouch_speed = null
+acceleration = null
+rotation_speed = null
+jump_strength = null
+air_acceleration = null
+network_position = null
+network_velocity = null
+network_rotation_y = null
+network_anim_blend = null
+network_is_falling = null
+network_is_grounded = null
+network_is_crouching = null
+network_hat_visible = null
+network_on_moving_platform = null
+network_is_pushing_cart = null
+gamepad_cursor_speed = null
+blink_min_time = null
+blink_max_time = null
+blink_duration = null
+blink_min_value = null
+blink_max_value = null
+double_blink_chance = null
+double_blink_delay = null
 look_distance = 4.0
 look_speed = 1.5
 look_angle = 70.0
+network_holding_item = null
+network_held_item_path = null
+network_holding_restock_box = null
+network_restock_box_product_path = null
+network_restock_box_quantity = null
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2138151857]
 libraries/ = SubResource("AnimationLibrary_s7efu")
@@ -661,6 +708,9 @@ transform = Transform3D(3.8096997e-09, 4.3545054e-08, -0.99999994, 0.9961947, -0
 transform = Transform3D(0.99904877, 0, -0.043606695, 0, 1, 0, 0.043606695, 0, 0.99904877, 0.3262685, 1.1, -0.4832602)
 
 [node name="HeldItemNetworkVisual" type="MeshInstance3D" parent="Armature/HeldItemTarget" unique_id=753128070]
+
+[node name="HeldRestockBoxNetworkVisual" type="Node3D" parent="Armature/HeldItemTarget" unique_id=2061806185]
+visible = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=795921799]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

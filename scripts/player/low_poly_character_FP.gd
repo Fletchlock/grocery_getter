@@ -132,12 +132,21 @@ var held_restock_box_visual: Node3D = null
 @onready var held_item_hand_target: Node3D = $Armature/HeldItemHandTarget
 @onready var held_item_target: Node3D = $Armature/HeldItemTarget
 @onready var held_item_network_visual: MeshInstance3D = $Armature/HeldItemTarget/HeldItemNetworkVisual
+@onready var held_restock_box_network_visual: Node3D = $Armature/HeldItemTarget/HeldRestockBoxNetworkVisual
 
 @export var network_holding_item: bool = false
 @export var network_held_item_path: String = ""
 
+@export var network_holding_restock_box: bool = false
+@export var network_restock_box_product_path: String = ""
+@export var network_restock_box_quantity: int = 0
+
 var _network_holding_item_last_received: bool = false
 var _network_held_item_path_last_received: String = ""
+
+var _network_holding_restock_box_last_received: bool = false
+var _network_restock_box_product_path_last_received: String = ""
+var _network_restock_box_quantity_last_received: int = 0
 
 # === Player Scene Reference ===
 const PLAYER_SCENE = preload(
@@ -994,7 +1003,17 @@ func _physics_process(delta: float) -> void:
 		network_held_item_path = held_item.resource_path
 	else:
 		network_held_item_path = ""
-
+	
+	# Network holding_restock_box visual
+	if (
+		network_holding_restock_box != _network_holding_restock_box_last_received
+		or network_restock_box_product_path != _network_restock_box_product_path_last_received
+		or network_restock_box_quantity != _network_restock_box_quantity_last_received
+	):
+		_network_holding_restock_box_last_received = network_holding_restock_box
+		_network_restock_box_product_path_last_received = network_restock_box_product_path
+		_network_restock_box_quantity_last_received = network_restock_box_quantity
+		_update_network_restock_box_visual()
 
 func set_character(character_id: int) -> void:
 
@@ -1348,7 +1367,10 @@ func try_pickup_restock_box(box: RestockBox) -> void:
 	box.scale = Vector3(0.65,0.65,0.65)
 
 	held_restock_box_visual = box
-
+	
+	network_holding_restock_box = true
+	network_restock_box_product_path = box.product_data.resource_path if box.product_data != null else ""
+	network_restock_box_quantity = box.quantity
 
 func interact_with_item(item: Node3D) -> void:
 	if item == null:
@@ -1437,6 +1459,58 @@ func _update_network_held_item_visual() -> void:
 	if right_hand_ik and held_item_target:
 		right_hand_ik.set_target_node(0, held_item_hand_target.get_path())
 		right_hand_ik.influence = 1.0
+
+
+func _update_network_restock_box_visual() -> void:
+	if is_multiplayer_authority():
+		return
+
+	# Remove the previous box visual.
+	for child in held_restock_box_network_visual.get_children():
+		child.queue_free()
+
+	if (
+		not network_holding_restock_box
+		or network_restock_box_product_path.is_empty()
+	):
+		held_restock_box_network_visual.visible = false
+		return
+
+	var loaded_resource: Resource = load(
+		network_restock_box_product_path
+	)
+
+	if not loaded_resource is ProductData:
+		held_restock_box_network_visual.visible = false
+		return
+
+	# Create a visual copy of the restock box.
+	var box_scene: PackedScene = preload(
+		"res://scenes/items/restock_box.tscn"
+	)
+
+	var visual_box: RestockBox = box_scene.instantiate() as RestockBox
+
+	if visual_box == null:
+		held_restock_box_network_visual.visible = false
+		return
+
+	visual_box.product_data = loaded_resource as ProductData
+	visual_box.quantity = network_restock_box_quantity
+	visual_box.scale = Vector3(0.65, 0.65, 0.65)
+
+	# Prevent the remote visual from interfering with physics.
+	var box_body: StaticBody3D = visual_box.get_node_or_null(
+		"StaticBody3D"
+	) as StaticBody3D
+
+	if box_body != null:
+		box_body.collision_layer = 0
+		box_body.collision_mask = 0
+
+	held_restock_box_network_visual.add_child(visual_box)
+	visual_box.transform = Transform3D.IDENTITY
+	held_restock_box_network_visual.visible = true
 
 
 @rpc("any_peer", "call_remote", "reliable")

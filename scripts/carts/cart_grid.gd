@@ -718,7 +718,7 @@ func _find_position_for_new_item(
 	
 func _score_candidate_position(
 	candidate: Vector3,
-	product_size: Vector3,
+	_product_size: Vector3,
 	bounds: AABB
 	) -> float:
 	var score: float = 0.0
