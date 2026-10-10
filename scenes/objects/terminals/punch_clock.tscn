@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://dsfutqoanfei1"]
+
+[ext_resource type="ArrayMesh" uid="uid://ch86m1t2hy2e1" path="res://assets/models/checkouts/punch_clock_Cube_013.res" id="1_6wwkt"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
+size = Vector3(0.3034668, 0.40197754, 0.23925781)
+
+[node name="PunchClock" type="Node3D" unique_id=167766037]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=79886923]
+mesh = ExtResource("1_6wwkt")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=412330492]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=883834627]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0018310547, 0.2008667, 0.021972656)
+shape = SubResource("BoxShape3D_6aigx")

@@ -110,7 +110,7 @@ enum State {
 @export var idle_wait_time_min: float = 3.0
 @export var idle_wait_time_max: float = 6.0
 var idle_timer_count: float = 0 # internal countdown timer
-var stuck_timer: float = 1.5 # If AI gets stuck in avoidance hell
+var stuck_timer: float = 2.0 # If AI gets stuck in avoidance hell
 var last_position: Vector3 = Vector3.ZERO
 var checkout_retry_timer: float = 0.0
 
@@ -312,6 +312,40 @@ func go_to_next_shopping_point() -> void:
 	state = State.SHOPPING
 
 
+func try_replace_failed_shopping_point() -> bool:
+	release_shopping_point()
+
+	if current_shopping_index >= shopping_list.size():
+		return false
+
+	for candidate: Node3D in shopping_points:
+		if shopping_list.has(candidate):
+			continue
+
+		if not candidate.has_method("ai_take_product"):
+			continue
+
+		var candidate_product: ProductData = (
+			candidate.get("product_data") as ProductData
+		)
+
+		if candidate_product == null:
+			continue
+
+		var candidate_quantity: int = int(candidate.get("quantity"))
+
+		if candidate_quantity <= 0:
+			continue
+
+		if not is_shopping_point_available(candidate):
+			continue
+
+		shopping_list[current_shopping_index] = candidate
+		return true
+
+	return false
+
+
 func go_to_checkout() -> void:
 	var checkout: Checkout = (
 		get_tree().get_first_node_in_group("checkout") as Checkout
@@ -385,18 +419,33 @@ func _on_shopping_idle(delta: float) -> void:
 
 	shopping_idle_timer -= delta
 
-	if shopping_idle_timer <= 0.0:
-		# AI takes product just before moving on and adds it to purchased_item array
+	if shopping_idle_timer > 0.0:
+		return
+
+	var purchased_product: ProductData = null
+
+	if is_instance_valid(current_shopping_point):
 		if current_shopping_point.has_method("ai_take_product"):
-			var purchased_product: ProductData = current_shopping_point.ai_take_product()
-			
-			if purchased_product != null:
-				purchased_items.append(purchased_product)
+			purchased_product = (
+				current_shopping_point.ai_take_product()
+			)
 
+	if purchased_product != null:
+		purchased_items.append(purchased_product)
 		release_shopping_point()
-
 		current_shopping_index += 1
 		go_to_next_shopping_point()
+		return
+
+	# The shelf was empty or the pickup failed.
+	# Try another stocked shelf without counting this stop.
+	if try_replace_failed_shopping_point():
+		go_to_next_shopping_point()
+		return
+
+	# No replacement is available. Continue without adding an item.
+	current_shopping_index += 1
+	go_to_next_shopping_point()
 
 
 func _on_shopping_waiting(delta: float) -> void:
@@ -540,9 +589,11 @@ func handle_stuck() -> void:
 	stuck_timer = 0.0
 
 	if state == State.SHOPPING:
-		# Skip a shopping point that cannot be reached.
-		current_shopping_index += 1
-		go_to_next_shopping_point()
+		if try_replace_failed_shopping_point():
+			go_to_next_shopping_point()
+		else:
+			current_shopping_index += 1
+			go_to_next_shopping_point()
 	
 	elif state == State.SHOPPING_WAITING:
 		var wander_target: Vector3 = get_new_target_location()
