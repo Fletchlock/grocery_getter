@@ -25,7 +25,7 @@ texture_filter = 4
 text = "Product Name
 Qty: 10"
 font_size = 16
-outline_size = 4
+outline_size = 5
 autowrap_mode = 2
 width = 130.0
 
@@ -35,7 +35,7 @@ texture_filter = 4
 text = "Product Name
 Qty: 10"
 font_size = 16
-outline_size = 4
+outline_size = 5
 autowrap_mode = 2
 width = 130.0
 

@@ -90,7 +90,7 @@ func start_multiplayer_game() -> void:
 	# Start the game locally for the host.
 	set_game_state(GameState.PLAYING)
 	LevelManager.load_level("res://scenes/levels/third_person_level.tscn")
-
+	DayManager.start_day()
 
 @rpc("authority", "reliable")
 func start_multiplayer_game_rpc() -> void:

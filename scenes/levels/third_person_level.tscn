@@ -243,9 +243,6 @@ navigation_mesh = SubResource("NavigationMesh_6aigx")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06434679, 1.4540367, 19.198765)
 script = ExtResource("2_8sngb")
 shopper_scenes = Array[PackedScene]([ExtResource("3_y7eyy"), ExtResource("4_m5ay7"), ExtResource("5_ghqei")])
-max_shoppers = 4
-spawn_interval_min = 30.0
-spawn_interval_max = 60.0
 spawn_points = [NodePath("../ShopperSpawnPoint"), NodePath("../ShopperSpawnPoint2"), NodePath("../ShopperSpawnPoint3"), NodePath("../ShopperSpawnPoint4"), NodePath("../ShopperSpawnPoint5"), NodePath("../ShopperSpawnPoint6")]
 
 [node name="MultiplayerShopperSpawner" type="MultiplayerSpawner" parent="NavigationRegion3D" unique_id=978657063]

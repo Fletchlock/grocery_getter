@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://c44hb0trq21c"]
+
+[ext_resource type="Script" uid="uid://dprt0032q18ck" path="res://scripts/UI/day_time_hud.gd" id="1_prtv8"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_prtv8"]
+bg_color = Color(0, 0, 0, 0.78431374)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+expand_margin_left = 10.0
+expand_margin_top = 5.0
+expand_margin_right = 10.0
+expand_margin_bottom = 5.0
+
+[node name="DayTimeHud" type="Control" unique_id=1121544524]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_prtv8")
+
+[node name="TopCenterContainer" type="CenterContainer" parent="." unique_id=2095835545]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 120.0
+grow_horizontal = 2
+offset_transform_enabled = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TopCenterContainer" unique_id=599350374]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="TopCenterContainer/VBoxContainer" unique_id=1661235052]
+layout_mode = 2
+offset_transform_enabled = true
+theme_override_styles/panel = SubResource("StyleBoxFlat_prtv8")
+
+[node name="ClockLabel" type="Label" parent="TopCenterContainer/VBoxContainer/PanelContainer" unique_id=978800866]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 22
+text = "DAY: 01    TIME: 07:00 AM"
+
+[node name="PanelContainer2" type="PanelContainer" parent="TopCenterContainer/VBoxContainer" unique_id=847848388]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+offset_transform_enabled = true
+theme_override_styles/panel = SubResource("StyleBoxFlat_prtv8")
+
+[node name="ClockOutLabel" type="Label" parent="TopCenterContainer/VBoxContainer/PanelContainer2" unique_id=644511282]
+layout_mode = 2
+size_flags_vertical = 8
+offset_transform_enabled = true
+theme_override_colors/font_color = Color(0.99999994, 0.20471898, 0.41962045, 1)
+theme_override_font_sizes/font_size = 22
+text = "CLOCK OUT TO END DAY"
