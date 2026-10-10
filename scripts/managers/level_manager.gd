@@ -41,7 +41,18 @@ func load_level(level_path: String) -> void:
 
 	# Add the level to the Game node.
 	game.add_child(current_level)
+	
+	var hud_scene: PackedScene = load(
+		"res://scenes/UI/day_time_hud.tscn"
+	) as PackedScene
 
+	if hud_scene == null:
+		push_error("Could not load DayTimeHUD scene.")
+		return
+
+	var hud: Control = hud_scene.instantiate() as Control
+	current_level.add_child(hud)
+	
 
 func unload_level() -> void:
 	if current_level:

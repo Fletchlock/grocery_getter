@@ -4,8 +4,8 @@ extends Node3D
 @export_group("Shopper Spawning")
 @export var shopper_scenes: Array[PackedScene]
 @export var max_shoppers: int = 10
-@export var spawn_interval_min: float = 10.0
-@export var spawn_interval_max: float = 30.0
+@export var spawn_interval_min: float = 30.0
+@export var spawn_interval_max: float = 60.0
 @export var spawn_points: Array[Marker3D]
 
 @onready var multiplayer_shopper_spawner: MultiplayerSpawner = $"../MultiplayerShopperSpawner"
@@ -31,7 +31,19 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if not multiplayer.is_server():
 		return
-
+	
+	#Check if store open before spawning shoppers.
+	if not DayManager.store_open:
+		return
+	
+	# Check if rush hour
+	if DayManager.rush_hour:
+		spawn_interval_min = 5
+		spawn_interval_max = 10
+	else:
+		spawn_interval_min = 30
+		spawn_interval_max = 60
+	
 	spawn_timer -= delta
 
 	if spawn_timer <= 0.0:
