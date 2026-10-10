@@ -48,27 +48,27 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_umdtr"]
 size = Vector3(63, 1, 63)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_amoyh"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_0sqwg"]
 resource_local_to_scene = true
 size = Vector3(0.8116051, 0.094916426, 1.7471609)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_s8v7g"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_amoyh"]
 resource_local_to_scene = true
 size = Vector3(0.68763036, 0.037192717, 0.6209756)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_c0ula"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_s8v7g"]
 resource_local_to_scene = true
 size = Vector3(0.48, 0.80499995, 0.88)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_n8giy"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_df8n4"]
 resource_local_to_scene = true
 size = Vector3(1.7953141, 0.12579845, 0.62)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_rs4b4"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_0ni15"]
 resource_local_to_scene = true
 size = Vector3(1.7953141, 0.2515969, 0.62)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_0sqwg"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_kd8t7"]
 resource_local_to_scene = true
 size = Vector3(1.1439803, 0.21921843, 1.4153109)
 
@@ -761,7 +761,7 @@ quantity = 136
 
 [node name="CollisionShape3D" parent="Product Displays/Apple_Display/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36382723, 0.047458213, 0.83160514)
-shape = SubResource("BoxShape3D_amoyh")
+shape = SubResource("BoxShape3D_0sqwg")
 
 [node name="ProductDisplay2" parent="Product Displays" unique_id=2054152866 instance=ExtResource("15_jakac")]
 transform = Transform3D(0.0004999132, -0.18962891, -0.98185587, -0.0025886304, 0.98185235, -0.18962954, 0.9999965, 0.0026364597, -3.8168853e-08, 30.667828, 1.2993486, -12.828228)
@@ -778,7 +778,7 @@ quantity = 55
 
 [node name="CollisionShape3D" parent="Product Displays/ProductDisplay2/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32165015, 0.018596359, 0.25639024)
-shape = SubResource("BoxShape3D_s8v7g")
+shape = SubResource("BoxShape3D_amoyh")
 
 [node name="ProductDisplay" parent="Product Displays" unique_id=1658817678 groups=["interactable_items"] instance=ExtResource("15_jakac")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 15.9, 1.7751652, 3.9)
@@ -794,7 +794,7 @@ quantity = 180
 
 [node name="CollisionShape3D" parent="Product Displays/ProductDisplay/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.40249997, 0.4)
-shape = SubResource("BoxShape3D_c0ula")
+shape = SubResource("BoxShape3D_s8v7g")
 
 [node name="ProductDisplay3" parent="Product Displays" unique_id=1370885838 instance=ExtResource("15_jakac")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.180155, 1.6937951, -17.8)
@@ -807,7 +807,7 @@ quantity = 26
 
 [node name="CollisionShape3D" parent="Product Displays/ProductDisplay3/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8378373, 0.062899224, 0.16000001)
-shape = SubResource("BoxShape3D_n8giy")
+shape = SubResource("BoxShape3D_df8n4")
 
 [node name="ProductDisplay4" parent="Product Displays" unique_id=2025777821 instance=ExtResource("15_jakac")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.180155, 1.37759, -17.8)
@@ -822,7 +822,7 @@ quantity = 52
 
 [node name="CollisionShape3D" parent="Product Displays/ProductDisplay4/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8378373, 0.12579845, 0.16000001)
-shape = SubResource("BoxShape3D_rs4b4")
+shape = SubResource("BoxShape3D_0ni15")
 
 [node name="Watermelon" parent="Product Displays" unique_id=1178636710 instance=ExtResource("15_jakac")]
 transform = Transform3D(-0.9999779, 0.0066477503, 8.742277e-08, 0.0066477503, 0.9999779, 0, -8.742085e-08, 5.8116484e-10, -1, 30.869867, 0.50176215, -11.624929)
@@ -839,7 +839,7 @@ quantity = 24
 
 [node name="CollisionShape3D" parent="Product Displays/Watermelon/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.43649262, 0.10960922, 0.5980462)
-shape = SubResource("BoxShape3D_0sqwg")
+shape = SubResource("BoxShape3D_kd8t7")
 
 [node name="Roof" type="Node" parent="." unique_id=789368174]
 
