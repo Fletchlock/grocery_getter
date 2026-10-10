@@ -1,17 +1,44 @@
 [gd_scene format=3 uid="uid://dsfutqoanfei1"]
 
-[ext_resource type="ArrayMesh" uid="uid://ch86m1t2hy2e1" path="res://assets/models/checkouts/punch_clock_Cube_013.res" id="1_6wwkt"]
+[ext_resource type="ArrayMesh" uid="uid://cm6vqpcm5aamq" path="res://assets/models/checkouts/punch_clock_Cube_013.res" id="1_6wwkt"]
+[ext_resource type="Script" uid="uid://clixjvdcoi34x" path="res://scripts/objects/terminals/punch_clock.gd" id="1_abvl0"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_abvl0"]
+points = PackedVector3Array(-0.15, -1.4901161e-08, -0.1, 0.15, -1.4901161e-08, -0.1, -0.15, -1.4901161e-08, 0.08999608, -0.15, 0.39996082, -0.1, 0.15, -1.4901161e-08, 0.08999608, 0.15, 0.39996082, -0.1, -0.15, 0.009984323, 0.1, -0.15, 0.39996082, 0.08999608, 0.15, 0.009984323, 0.1, 0.15, 0.39996082, 0.08999608, -0.15, 0.3899765, 0.1, 0.15, 0.3899765, 0.1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
 size = Vector3(0.3034668, 0.40197754, 0.23925781)
 
 [node name="PunchClock" type="Node3D" unique_id=167766037]
+script = ExtResource("1_abvl0")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=79886923]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 mesh = ExtResource("1_6wwkt")
 
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D" unique_id=478260617]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D" unique_id=1871128353]
+shape = SubResource("ConvexPolygonShape3D_abvl0")
+
 [node name="Area3D" type="Area3D" parent="." unique_id=412330492]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+collision_layer = 257
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=883834627]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0018310547, 0.2008667, 0.021972656)
 shape = SubResource("BoxShape3D_6aigx")
+
+[node name="Label3D" type="Label3D" parent="." unique_id=201952048]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.23303548, 0.50081426, 0.17224771)
+texture_filter = 4
+modulate = Color(0.8891698, 0.76547086, 1.540184e-06, 1)
+text = "DAY 01   11:35 PM
+
+Player 1 - IN
+Player 2 = OUT
+Player 3 - IN
+Player 4 - OUT"
+font_size = 10
+outline_size = 5
+horizontal_alignment = 0

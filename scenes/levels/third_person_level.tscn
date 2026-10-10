@@ -57,6 +57,7 @@
 [ext_resource type="Script" uid="uid://c775jll8k0omd" path="res://scripts/checkouts/checkout_grid.gd" id="39_tq13k"]
 [ext_resource type="Material" uid="uid://d3iscxpv066o5" path="res://assets/materials/outline_standard_material_3d.tres" id="40_62gvq"]
 [ext_resource type="PackedScene" uid="uid://c17hhwklek56j" path="res://assets/models/checkouts/checkout_sm_left.glb" id="48_8jmo3"]
+[ext_resource type="PackedScene" uid="uid://dsfutqoanfei1" path="res://scenes/objects/terminals/punch_clock.tscn" id="50_smqka"]
 [ext_resource type="PackedScene" uid="uid://1hei66lsnpc5" path="res://scenes/objects/carts/cart_small.tscn" id="51_k3xn1"]
 [ext_resource type="PackedScene" uid="uid://c88mc0n2e36gd" path="res://scenes/items/restock_box.tscn" id="58_32gdb"]
 [ext_resource type="Resource" uid="uid://d3jqvdkoelkwc" path="res://resources/products/pop_canuck_cola.tres" id="59_smqka"]
@@ -1023,6 +1024,9 @@ collision_layer = 257
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011359692, 0.19892406, -0.029371023)
 shape = SubResource("BoxShape3D_2bvqw")
 debug_color = Color(0.9847451, 0.4989375, 0.4725191, 1)
+
+[node name="PunchClock" parent="NavigationRegion3D" unique_id=167766037 instance=ExtResource("50_smqka")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.405, 1.2, 20.598)
 
 [node name="DesertGround" parent="." unique_id=2134704437 groups=["level_geo"] instance=ExtResource("15_17biw")]
 transform = Transform3D(0.93267465, 0, -0.36071923, 0, 1, 0, 0.36071923, 0, 0.93267465, 0, -1.51, -11.964)
