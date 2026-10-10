@@ -44,7 +44,7 @@ window/size/borderless=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/drop_to_floor/plugin.cfg", "res://addons/godotsteam/plugin.cfg")
+enabled=PackedStringArray("res://addons/drop_to_floor/plugin.cfg", "res://addons/godot_shader_linker_(gsl)/plugin.cfg", "res://addons/godotsteam/plugin.cfg")
 
 [file_customization]
 
