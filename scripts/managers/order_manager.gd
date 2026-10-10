@@ -38,11 +38,14 @@ func _process(delta: float) -> void:
 	if not multiplayer.is_server():
 		return
 
-	for order: OrderData in orders:
-		if order.state != OrderData.OrderState.ACTIVE:
-			continue
+	if DayManager.store_open:
+		for order: OrderData in orders:
+			if order.state != OrderData.OrderState.ACTIVE:
+				continue
 
-		_update_order_timer(order, delta)
+			_update_order_timer(order, delta)
+
+
 
 	_sync_completed_orders()
 
@@ -151,7 +154,10 @@ func get_available_order() -> OrderData:
 func accept_order(player: CharacterBody3D) -> void:
 	if not multiplayer.is_server():
 		return
-
+	
+	if not DayManager.store_open:
+		return
+	
 	var peer_id: int = player.get_multiplayer_authority()
 
 	# A player can only own one active order.
@@ -300,10 +306,16 @@ func _sync_completed_orders() -> void:
 
 func _create_replacement_order(
 	completed_order_id: int
-) -> void:
+	) -> void:
 	if not multiplayer.is_server():
 		return
-
+	
+	if not DayManager.store_open:
+		return
+	
+	if DayManager.current_hour >= DayManager.STORE_CLOSE_HOUR:
+		return
+	
 	var completed_order: OrderData = get_order(
 		completed_order_id
 	)

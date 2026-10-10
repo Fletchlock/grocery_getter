@@ -93,15 +93,7 @@ func _get_local_player() -> CharacterBody3D:
 func _update_local_order() -> void:
 	var local_peer_id: int = multiplayer.get_unique_id()
 
-	var player_order: OrderData = OrderManager.get_player_order_any_state(
-		local_peer_id
-	)
-
-	if player_order != null:
-		displayed_order = player_order
-		return
-
-	displayed_order = null
+	displayed_order = OrderManager.get_player_order(local_peer_id)
 
 
 func _update_display(order: OrderData) -> void:
