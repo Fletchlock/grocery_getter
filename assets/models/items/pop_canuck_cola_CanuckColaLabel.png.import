@@ -2,14 +2,14 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b5cgpb5hk3fw5"
+uid="uid://ddgutvgn884m6"
 path.s3tc="res://godot/imported/pop_canuck_cola_CanuckColaLabel.png-b5ba3cd69218afb79d68687f28368ec4.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "5bc51d34d7749dbda573f1ac89c2ca7b"
+"md5": "aa959be0aa84e8d9bbc12252098f1684"
 }
 
 [deps]

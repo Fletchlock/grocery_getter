@@ -50,6 +50,7 @@
 [ext_resource type="Resource" uid="uid://bqhxyo1vjvcki" path="res://resources/products/pear_brown.tres" id="33_x5hmh"]
 [ext_resource type="PackedScene" uid="uid://b8a84fyitui5m" path="res://assets/models/shelves/Basket_Round_Large.glb" id="34_x5hmh"]
 [ext_resource type="PackedScene" uid="uid://fya65aoeosuc" path="res://assets/models/shelves/Basket_Square_Small.glb" id="35_dpvep"]
+[ext_resource type="Resource" uid="uid://cu3tkubye16rr" path="res://resources/products/carrot.tres" id="35_tjbrl"]
 [ext_resource type="PackedScene" uid="uid://cmmgsv7wgnpms" path="res://scenes/objects/shelves/freezer_left_5_row.tscn" id="36_32gdb"]
 [ext_resource type="PackedScene" uid="uid://dlukamev28f1f" path="res://scenes/objects/shelves/freezer_right_5_row.tscn" id="37_32gdb"]
 [ext_resource type="PackedScene" uid="uid://c6j4kh3t5ngnw" path="res://scenes/objects/checkouts/checkout.tscn" id="39_gd03f"]
@@ -184,9 +185,17 @@ size = Vector3(0.60247105, 0.15987545, 0.85145944)
 resource_local_to_scene = true
 size = Vector3(1.7259705, 0.43843687, 0.69765544)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_cbg0i"]
+resource_local_to_scene = true
+size = Vector3(0.8202428, 0.21095532, 0.90426713)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_hiidl"]
 resource_local_to_scene = true
 size = Vector3(0.6233003, 0.037192717, 0.6209756)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_exc4y"]
+resource_local_to_scene = true
+size = Vector3(0.68504757, 0.03036055, 0.55041945)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4av8r"]
 size = Vector3(1.1532593, 2.4024658, 3)
@@ -744,6 +753,21 @@ quantity = 36
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7274877, 0.21921843, 0.23921847)
 shape = SubResource("BoxShape3D_a51l3")
 
+[node name="Canuck Cola" parent="NavigationRegion3D/Items" unique_id=2109163323 instance=ExtResource("16_om5ry")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.950366, 0.2830968, -1.6984406)
+product_data = ExtResource("59_smqka")
+grid_columns = 10
+grid_rows = 11
+max_quantity = 110
+quantity = 110
+
+[node name="CollisionShape3D" parent="NavigationRegion3D/Items/Canuck Cola/Area3D" parent_id_path=PackedInt32Array(2109163323, 1400837386) index="0" unique_id=211993197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37810928, 0.10547766, 0.42012143)
+shape = SubResource("BoxShape3D_cbg0i")
+
+[node name="AIShopperPoint" parent="NavigationRegion3D/Items/Canuck Cola" index="4" unique_id=2005891054]
+transform = Transform3D(-1, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -1, 0.5, -0.54807055, 1.3966641)
+
 [node name="Jalapeno" parent="NavigationRegion3D/Items" unique_id=621968759 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.73535323, -0.9008246, 1.0904896)
 product_data = ExtResource("33_smqka")
@@ -761,6 +785,23 @@ shape = SubResource("BoxShape3D_hiidl")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Jalapeno" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.24660537, 0, 1.0469974)
+
+[node name="Carrots" parent="NavigationRegion3D/Items" unique_id=456296455 instance=ExtResource("16_om5ry")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -1.0887293, -0.8963845, 1.0111307)
+product_data = ExtResource("35_tjbrl")
+grid_columns = 14
+grid_rows = 3
+position_variation = 0.015
+variation_seed = 12298
+max_quantity = 42
+quantity = 42
+
+[node name="CollisionShape3D" parent="NavigationRegion3D/Items/Carrots/Area3D" parent_id_path=PackedInt32Array(456296455, 1400837386) index="0" unique_id=211993197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32734352, 0.015180275, 0.19013982)
+shape = SubResource("BoxShape3D_exc4y")
+
+[node name="AIShopperPoint" parent="NavigationRegion3D/Items/Carrots" index="4" unique_id=2005891054]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.5, 0, 0.891417)
 
 [node name="Shelves" type="Node3D" parent="NavigationRegion3D" unique_id=489182429]
 
@@ -1137,14 +1178,6 @@ product_data = ExtResource("13_ghqei")
 transform = Transform3D(-5.9604645e-08, 0, 1, 0, 1, 0, -1, 0, -5.9604645e-08, -7.249952, -1.321, 3.957512)
 product_data = ExtResource("13_ghqei")
 
-[node name="ProductDisplay" parent="." unique_id=2109163323 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.950366, -0.26754224, -7.10335)
-product_data = ExtResource("59_smqka")
-grid_columns = 10
-grid_rows = 11
-max_quantity = 110
-quantity = 110
-
 [editable path="NavigationRegion3D/Items/Bread"]
 [editable path="NavigationRegion3D/Items/Cereal"]
 [editable path="NavigationRegion3D/Items/Corn Can"]
@@ -1170,7 +1203,9 @@ quantity = 110
 [editable path="NavigationRegion3D/Items/Pepper Yellow"]
 [editable path="NavigationRegion3D/Items/Pepper Orange"]
 [editable path="NavigationRegion3D/Items/Watermelon"]
+[editable path="NavigationRegion3D/Items/Canuck Cola"]
 [editable path="NavigationRegion3D/Items/Jalapeno"]
+[editable path="NavigationRegion3D/Items/Carrots"]
 [editable path="NavigationRegion3D/Shelves/Produce_2row_col3"]
 [editable path="NavigationRegion3D/Shelves/Freezer_Left_5row3"]
 [editable path="NavigationRegion3D/Shelves/Freezer_Right_5row3"]

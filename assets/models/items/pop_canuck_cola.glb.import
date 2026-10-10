@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dmye044te5uio"
+uid="uid://b3jmm68hotqam"
 path="res://godot/imported/pop_canuck_cola.glb-9c9b51c58d9895612e4803729993d273.scn"
 
 [deps]
@@ -41,14 +41,14 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "meshes": {
-"pop_canuck_cola_Cylinder_003": {
+"pop_canuck_cola_Cylinder_004": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/items/pop_canuck_cola_Cylinder_003.res",
-"save_to_file/path": "uid://cn7ysnn3o6nak"
+"save_to_file/fallback_path": "res://assets/models/items/pop_canuck_cola_Cylinder_004.res",
+"save_to_file/path": "uid://c571dvvmlixpd"
 }
 }
 }
