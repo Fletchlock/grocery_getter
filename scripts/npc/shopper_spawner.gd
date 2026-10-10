@@ -41,8 +41,8 @@ func _process(delta: float) -> void:
 		spawn_interval_min = 5
 		spawn_interval_max = 10
 	else:
-		spawn_interval_min = 30
-		spawn_interval_max = 60
+		spawn_interval_min = 20
+		spawn_interval_max = 50
 	
 	spawn_timer -= delta
 

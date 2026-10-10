@@ -50,10 +50,10 @@ func customer_arrived_at_checkout(customer: ShopperAI) -> void:
 	if not multiplayer.is_server():
 		return
 	
-	unscanned_items = customer.purchased_items.duplicate()
-	
 	if customer != checkout_customer:
 		return
+	
+	unscanned_items = customer.purchased_items.duplicate()
 
 	_clear_grid(checkout_grid)
 
