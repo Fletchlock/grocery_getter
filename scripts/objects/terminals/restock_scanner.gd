@@ -80,3 +80,11 @@ func return_scanner_to_holder(available: bool) -> void:
 	if area != null:
 		area.monitoring = available
 		area.monitorable = available
+
+		var collision_shape: CollisionShape3D = (
+			area.get_node_or_null("CollisionShape3D")
+			as CollisionShape3D
+		)
+
+		if collision_shape != null:
+			collision_shape.set_deferred("disabled", not available)

@@ -133,6 +133,7 @@ var held_restock_box_visual: Node3D = null
 # === Held Restock Scanner Variables ===
 var held_restock_scanner: Node3D = null
 var held_restock_scanner_visual: Node3D = null
+var held_restock_scanner_holder: Node3D = null
 
 @export var network_holding_restock_scanner: bool = false
 
@@ -266,6 +267,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
 		if attached_cart != null:
 			try_release_cart()
+		elif held_restock_scanner != null:
+			if interact_raycast_3d.has_method("interact"):
+				interact_raycast_3d.interact()
 		else:
 			if interact_raycast_3d.has_method("interact"):
 				interact_raycast_3d.interact()
@@ -1574,8 +1578,74 @@ func _server_pickup_restock_scanner(
 	if not scanner_node.server_claim():
 		return
 
+	held_restock_scanner_holder = scanner_node.get_parent() as Node3D
+
 	_grant_restock_scanner.rpc()
 
+
+func request_return_restock_scanner() -> void:
+	if held_restock_scanner == null:
+		return
+
+	if multiplayer.is_server():
+		_server_return_restock_scanner(
+			get_multiplayer_authority()
+		)
+	else:
+		request_return_restock_scanner_rpc.rpc_id(1)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_return_restock_scanner_rpc() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
+
+	if get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	_server_return_restock_scanner(requesting_peer_id)
+
+
+func _server_return_restock_scanner(requesting_peer_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	if held_restock_scanner_holder == null:
+		return
+	
+	var scanner_node: Node3D = (
+		held_restock_scanner_holder.get_node_or_null("RestockScanner")
+		as Node3D
+	)
+
+	if scanner_node == null:
+		return
+
+	if not scanner_node.has_method("return_scanner_to_holder"):
+		return
+
+	scanner_node.return_scanner_to_holder.rpc(true)
+
+	held_restock_scanner_holder = null
+	
+	_clear_restock_scanner.rpc()
+
+
+@rpc("any_peer", "call_local", "reliable")
+func _clear_restock_scanner() -> void:
+	if not is_multiplayer_authority():
+		return
+
+	if held_restock_scanner != null:
+		held_restock_scanner.queue_free()
+		held_restock_scanner = null
+
+	network_holding_restock_scanner = false
 
 @rpc("any_peer", "call_local", "reliable")
 func _grant_restock_scanner() -> void:

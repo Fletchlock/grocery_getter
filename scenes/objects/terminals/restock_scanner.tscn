@@ -16,7 +16,7 @@ mesh = ExtResource("1_to5as")
 collision_layer = 256
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1347022100]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00093078613, 0.17451477, 0.05529785)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00093078613, 0.17451477, -0.007683784)
 shape = SubResource("BoxShape3D_6aigx")
 
 [node name="MeshOutline" type="Node3D" parent="Area3D" unique_id=322965575]
