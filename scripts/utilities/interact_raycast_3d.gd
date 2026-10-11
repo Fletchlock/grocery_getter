@@ -49,7 +49,9 @@ func _process(_delta: float) -> void:
 	interact_raycast_3d.force_raycast_update()
 
 	var collider: Node3D = get_collider() as Node3D
-
+	
+	print(collider.get_path() if collider != null else "No collider")
+	
 	if collider == null:
 		_clear_interaction()
 		return
