@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://clwkhisl0383x"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
+
+[node name="ScannerHolder" type="Node3D" unique_id=1085281955]
+
+[node name="ScannerHolderArea" type="Area3D" parent="." unique_id=1043357233]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ScannerHolderArea" unique_id=500106047]
+shape = SubResource("BoxShape3D_6aigx")
