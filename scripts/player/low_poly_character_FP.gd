@@ -130,6 +130,15 @@ var held_item_visual: MeshInstance3D = null
 var held_restock_box: RestockBox = null
 var held_restock_box_visual: Node3D = null
 
+# === Held Restock Scanner Variables ===
+var held_restock_scanner: Node3D = null
+var held_restock_scanner_visual: Node3D = null
+
+@export var network_holding_restock_scanner: bool = false
+
+var _network_holding_restock_scanner_last_received: bool = false
+
+
 @onready var held_item_hand_target: Node3D = $Armature/HeldItemHandTarget
 @onready var held_item_target: Node3D = $Armature/HeldItemTarget
 @onready var held_item_network_visual: MeshInstance3D = $Armature/HeldItemTarget/HeldItemNetworkVisual
@@ -579,6 +588,16 @@ func _physics_process(delta: float) -> void:
 			_network_restock_box_product_path_last_received = network_restock_box_product_path
 			_network_restock_box_quantity_last_received = network_restock_box_quantity
 			_update_network_restock_box_visual()
+		
+				# Network holding restock scanner visual
+		if (
+			network_holding_restock_scanner
+			!= _network_holding_restock_scanner_last_received
+		):
+			_network_holding_restock_scanner_last_received = (
+				network_holding_restock_scanner
+			)
+			_update_network_restock_scanner_visual()
 		
 		# Detect a new received network state...
 		if (
@@ -1474,6 +1493,115 @@ func remove_world_restock_box(box_path: NodePath) -> void:
 	box_node.queue_free()
 
 
+func request_pickup_restock_scanner(scanner: Node3D) -> void:
+	if scanner == null:
+		return
+
+	if held_restock_scanner != null:
+		return
+
+	if held_restock_box != null:
+		return
+
+	if held_item != null:
+		return
+
+	if attached_cart != null:
+		return
+
+	var scanner_path: NodePath = scanner.get_path()
+
+	if multiplayer.is_server():
+		_server_pickup_restock_scanner(
+			scanner_path,
+			get_multiplayer_authority()
+		)
+	else:
+		request_pickup_restock_scanner_rpc.rpc_id(
+			1,
+			scanner_path
+		)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_pickup_restock_scanner_rpc(
+	scanner_path: NodePath
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
+
+	if get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	_server_pickup_restock_scanner(
+		scanner_path,
+		requesting_peer_id
+	)
+
+
+func _server_pickup_restock_scanner(
+	scanner_path: NodePath,
+	requesting_peer_id: int
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	if held_restock_scanner != null:
+		return
+
+	if held_restock_box != null:
+		return
+
+	if held_item != null:
+		return
+
+	if attached_cart != null:
+		return
+
+	var scanner_node: Node = get_node_or_null(scanner_path)
+
+	if scanner_node == null:
+		return
+
+	if not scanner_node.has_method("server_claim"):
+		return
+
+	if not scanner_node.server_claim():
+		return
+
+	_grant_restock_scanner.rpc()
+
+
+@rpc("any_peer", "call_local", "reliable")
+func _grant_restock_scanner() -> void:
+	# Only create the actual held scanner for its owning player.
+	if not is_multiplayer_authority():
+		return
+
+	if held_restock_scanner != null:
+		return
+
+	var scanner_scene: PackedScene = preload(
+		"res://scenes/objects/terminals/restock_scanner.tscn"
+	)
+
+	var scanner_visual: Node3D = scanner_scene.instantiate() as Node3D
+
+	if scanner_visual == null:
+		return
+
+	held_restock_scanner = scanner_visual
+	held_item_holder.add_child(held_restock_scanner)
+	held_restock_scanner.transform = Transform3D.IDENTITY
+
+	network_holding_restock_scanner = true
+
+
 func interact_with_item(item: Node3D) -> void:
 	if item == null:
 		return
@@ -1646,6 +1774,53 @@ func _update_network_restock_box_visual() -> void:
 		right_hand_ik.influence = 1.0
 		left_hand_ik.set_target_node(0, held_box_hand_target_left.get_path())
 		left_hand_ik.influence = 1.0
+
+
+func _update_network_restock_scanner_visual() -> void:
+	if is_multiplayer_authority():
+		return
+
+	# Remove the previous scanner visual.
+	if held_restock_scanner_visual != null:
+		held_restock_scanner_visual.queue_free()
+		held_restock_scanner_visual = null
+
+	if not network_holding_restock_scanner:
+		return
+
+	# Create a visual copy of the scanner.
+	var scanner_scene: PackedScene = preload(
+		"res://scenes/objects/terminals/restock_scanner.tscn"
+	)
+
+	var scanner_visual: Node3D = scanner_scene.instantiate() as Node3D
+
+	if scanner_visual == null:
+		return
+
+	# Disable interaction and collision on the visual copy.
+	var area: Area3D = scanner_visual.get_node_or_null(
+		"Area3D"
+	) as Area3D
+
+	if area != null:
+		area.monitoring = false
+		area.monitorable = false
+
+		var _collision_shape: CollisionShape3D = (
+			area.get_node_or_null("CollisionShape3D")
+			as CollisionShape3D
+		)
+
+		if _collision_shape != null:
+			_collision_shape.disabled = true
+
+	# Attach the scanner to the remote player's hand visual.
+	held_item_target.add_child(scanner_visual)
+	scanner_visual.transform = Transform3D.IDENTITY
+
+	held_restock_scanner_visual = scanner_visual
+
 
 @rpc("any_peer", "call_remote", "reliable")
 func clear_held_item() -> void:

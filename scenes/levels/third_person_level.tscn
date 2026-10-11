@@ -1198,6 +1198,10 @@ shape = SubResource("BoxShape3D_iteik")
 debug_color = Color(0, 0.6, 0.69803923, 0.92156863)
 
 [node name="RestockScanner" parent="ScannerHolder" unique_id=542482909 instance=ExtResource("63_8865k")]
+outline_material = ExtResource("40_62gvq")
+
+[node name="MeshOutline" parent="ScannerHolder/RestockScanner/Area3D" parent_id_path=PackedInt32Array(542482909, 14597974) index="1" unique_id=322965575]
+visible = false
 
 [editable path="NavigationRegion3D/Items/Bread"]
 [editable path="NavigationRegion3D/Items/Cereal"]
