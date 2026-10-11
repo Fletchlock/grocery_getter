@@ -29,7 +29,9 @@
 [ext_resource type="PackedScene" uid="uid://dvw8l3tpg6gj6" path="res://scenes/objects/shelves/basket_long.tscn" id="26_j2gd6"]
 [ext_resource type="PackedScene" uid="uid://dy25tekp2ydsl" path="res://scenes/objects/shelves/freezer_open_2_row_col.tscn" id="27_h6vbw"]
 [ext_resource type="PackedScene" uid="uid://gcayaa0iaxb" path="res://scenes/objects/shelves/freezer_open_3_row_col.tscn" id="28_l2sts"]
+[ext_resource type="Resource" uid="uid://d3jqvdkoelkwc" path="res://resources/products/pop_canuck_cola.tres" id="28_s8v7g"]
 [ext_resource type="PackedScene" uid="uid://cqpyjdg4371lm" path="res://scenes/objects/shelves/freezer_open_4_row_col.tscn" id="29_c0ula"]
+[ext_resource type="Resource" uid="uid://c6yf2773qdknm" path="res://resources/products/pop_faerie_dust.tres" id="29_df8n4"]
 [ext_resource type="PackedScene" uid="uid://dm8p4716p85b8" path="res://scenes/objects/buildings/roof_corner_lights.tscn" id="30_j2gd6"]
 [ext_resource type="PackedScene" uid="uid://7gajvejsapd6" path="res://scenes/objects/buildings/roof_edge.tscn" id="31_h6vbw"]
 [ext_resource type="PackedScene" uid="uid://cgav4385jpdun" path="res://scenes/objects/buildings/roof_edge_lights.tscn" id="32_l2sts"]
@@ -48,29 +50,37 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_umdtr"]
 size = Vector3(63, 1, 63)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_0sqwg"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_s8v7g"]
 resource_local_to_scene = true
 size = Vector3(0.8116051, 0.094916426, 1.7471609)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_amoyh"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_df8n4"]
 resource_local_to_scene = true
 size = Vector3(0.68763036, 0.037192717, 0.6209756)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_s8v7g"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_0ni15"]
 resource_local_to_scene = true
 size = Vector3(0.48, 0.80499995, 0.88)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_df8n4"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_kd8t7"]
 resource_local_to_scene = true
 size = Vector3(1.7953141, 0.12579845, 0.62)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_0ni15"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_0jpla"]
 resource_local_to_scene = true
 size = Vector3(1.7953141, 0.2515969, 0.62)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_kd8t7"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_bf2ym"]
 resource_local_to_scene = true
 size = Vector3(1.1439803, 0.21921843, 1.4153109)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sx1ue"]
+resource_local_to_scene = true
+size = Vector3(0.98829144, 0.21095532, 0.90426713)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bwuie"]
+resource_local_to_scene = true
+size = Vector3(0.98829144, 0.21095532, 0.90426713)
 
 [node name="dylan_test_level" type="Node3D" unique_id=677027071]
 
@@ -761,7 +771,7 @@ quantity = 136
 
 [node name="CollisionShape3D" parent="Product Displays/Apple_Display/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36382723, 0.047458213, 0.83160514)
-shape = SubResource("BoxShape3D_0sqwg")
+shape = SubResource("BoxShape3D_s8v7g")
 
 [node name="ProductDisplay2" parent="Product Displays" unique_id=2054152866 instance=ExtResource("15_jakac")]
 transform = Transform3D(0.0004999132, -0.18962891, -0.98185587, -0.0025886304, 0.98185235, -0.18962954, 0.9999965, 0.0026364597, -3.8168853e-08, 30.667828, 1.2993486, -12.828228)
@@ -778,7 +788,7 @@ quantity = 55
 
 [node name="CollisionShape3D" parent="Product Displays/ProductDisplay2/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32165015, 0.018596359, 0.25639024)
-shape = SubResource("BoxShape3D_amoyh")
+shape = SubResource("BoxShape3D_df8n4")
 
 [node name="ProductDisplay" parent="Product Displays" unique_id=1658817678 groups=["interactable_items"] instance=ExtResource("15_jakac")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 15.9, 1.7751652, 3.9)
@@ -794,7 +804,7 @@ quantity = 180
 
 [node name="CollisionShape3D" parent="Product Displays/ProductDisplay/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.40249997, 0.4)
-shape = SubResource("BoxShape3D_s8v7g")
+shape = SubResource("BoxShape3D_0ni15")
 
 [node name="ProductDisplay3" parent="Product Displays" unique_id=1370885838 instance=ExtResource("15_jakac")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.180155, 1.6937951, -17.8)
@@ -807,7 +817,7 @@ quantity = 26
 
 [node name="CollisionShape3D" parent="Product Displays/ProductDisplay3/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8378373, 0.062899224, 0.16000001)
-shape = SubResource("BoxShape3D_df8n4")
+shape = SubResource("BoxShape3D_kd8t7")
 
 [node name="ProductDisplay4" parent="Product Displays" unique_id=2025777821 instance=ExtResource("15_jakac")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.180155, 1.37759, -17.8)
@@ -822,7 +832,7 @@ quantity = 52
 
 [node name="CollisionShape3D" parent="Product Displays/ProductDisplay4/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8378373, 0.12579845, 0.16000001)
-shape = SubResource("BoxShape3D_0ni15")
+shape = SubResource("BoxShape3D_0jpla")
 
 [node name="Watermelon" parent="Product Displays" unique_id=1178636710 instance=ExtResource("15_jakac")]
 transform = Transform3D(-0.9999779, 0.0066477503, 8.742277e-08, 0.0066477503, 0.9999779, 0, -8.742085e-08, 5.8116484e-10, -1, 30.869867, 0.50176215, -11.624929)
@@ -839,7 +849,39 @@ quantity = 24
 
 [node name="CollisionShape3D" parent="Product Displays/Watermelon/Area3D" index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.43649262, 0.10960922, 0.5980462)
-shape = SubResource("BoxShape3D_kd8t7")
+shape = SubResource("BoxShape3D_bf2ym")
+
+[node name="canuck cola" parent="Product Displays" unique_id=2069672785 instance=ExtResource("15_jakac")]
+transform = Transform3D(1.3311836e-07, 0, -1, 0, 1, 0, 1, 0, 1.3311836e-07, -13.085, 1.8937309, -20.928741)
+product_data = ExtResource("28_s8v7g")
+grid_columns = 12
+grid_rows = 11
+position_variation = 0.005
+max_quantity = 132
+quantity = 132
+
+[node name="CollisionShape3D" parent="Product Displays/canuck cola/Area3D" parent_id_path=PackedInt32Array(2069672785, 1400837386) index="0" unique_id=211993197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.46213356, 0.10547766, 0.42012143)
+shape = SubResource("BoxShape3D_sx1ue")
+
+[node name="AIShopperPoint" parent="Product Displays/canuck cola" index="4" unique_id=2005891054]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.5, -0.49919677, 1.3132086)
+
+[node name="faerie dust" parent="Product Displays" unique_id=2037303603 instance=ExtResource("15_jakac")]
+transform = Transform3D(1.3311836e-07, 0, -1, 0, 1, 0, 1, 0, 1.3311836e-07, -13.085, 1.6097113, -20.928741)
+product_data = ExtResource("29_df8n4")
+grid_columns = 12
+grid_rows = 11
+position_variation = 0.005
+max_quantity = 132
+quantity = 132
+
+[node name="CollisionShape3D" parent="Product Displays/faerie dust/Area3D" parent_id_path=PackedInt32Array(2037303603, 1400837386) index="0" unique_id=211993197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.46213356, 0.10547766, 0.42012143)
+shape = SubResource("BoxShape3D_bwuie")
+
+[node name="AIShopperPoint" parent="Product Displays/faerie dust" index="4" unique_id=2005891054]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.5, -0.49919677, 1.3132086)
 
 [node name="Roof" type="Node" parent="." unique_id=789368174]
 
@@ -1026,6 +1068,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 12, 12)
 [node name="Roof_Side_Lights4" parent="Roof" unique_id=363799408 instance=ExtResource("36_0sqwg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 12, 20)
 
+[node name="Roof_Corner_Alt2" parent="Roof" unique_id=321503567 instance=ExtResource("40_rs4b4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28, 12, -28)
+
+[node name="Roof_Corner_Alt3" parent="Roof" unique_id=1010506013 instance=ExtResource("40_rs4b4")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 12, 28)
+
+[node name="Roof_Corner2" parent="Roof" unique_id=872444552 instance=ExtResource("41_0sqwg")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -28, 12, 28)
+
 [node name="Basket_Round_Small2" parent="." unique_id=170338066 instance=ExtResource("22_omwi6")]
 transform = Transform3D(0.9693528, -0.24567302, 0, 0.24567302, 0.9693528, 0, 0, 0, 1, 30.00454, 2.2390244, -10.00016)
 
@@ -1041,15 +1092,6 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 23, 
 [node name="Basket_Long2" parent="." unique_id=80019029 instance=ExtResource("26_j2gd6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 0, -11)
 
-[node name="Roof_Corner_Alt2" parent="." unique_id=321503567 instance=ExtResource("40_rs4b4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28, 12, -28)
-
-[node name="Roof_Corner_Alt3" parent="." unique_id=1010506013 instance=ExtResource("40_rs4b4")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 28, 12, 28)
-
-[node name="Roof_Corner2" parent="." unique_id=872444552 instance=ExtResource("41_0sqwg")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -28, 12, 28)
-
 [node name="Shelf_2row_shortTest_col2" parent="." unique_id=1738954773 instance=ExtResource("42_0sqwg")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 31, 0, 23)
 
@@ -1059,3 +1101,5 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 31, 
 [editable path="Product Displays/ProductDisplay3"]
 [editable path="Product Displays/ProductDisplay4"]
 [editable path="Product Displays/Watermelon"]
+[editable path="Product Displays/canuck cola"]
+[editable path="Product Displays/faerie dust"]

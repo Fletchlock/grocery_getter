@@ -1,14 +1,29 @@
 [gd_scene format=3 uid="uid://dlukamev28f1f"]
 
 [ext_resource type="PackedScene" uid="uid://db3jljsj54b6t" path="res://assets/models/shelves/Freezer_Right_5row.glb" id="1_sms5c"]
+[ext_resource type="Material" uid="uid://gcl0wh5fpeug" path="res://assets/materials/glow_test.tres" id="2_8dtyf"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ap32a"]
 size = Vector3(1.1532593, 3, 3)
 
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_o7v27"]
+
 [node name="Freezer_Right_5row2" unique_id=825118052 instance=ExtResource("1_sms5c")]
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Freezer_Right_5row" parent_id_path=PackedInt32Array(1778724214) index="0" unique_id=83913552]
+[node name="StaticBody3D" type="StaticBody3D" parent="Freezer_Right_5row" parent_id_path=PackedInt32Array(820721921) index="0" unique_id=83913552]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Freezer_Right_5row/StaticBody3D" index="0" unique_id=286493962]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.57662964, 1.5, -1.5)
 shape = SubResource("BoxShape3D_ap32a")
+
+[node name="EmissiveBulb02" type="CSGMesh3D" parent="." index="1" unique_id=736349524]
+transform = Transform3D(0.055, 0, 0, 0, -6.3818625e-08, 0.055, 0, -1.46, -2.4041265e-09, 0.12634075, 2.213751, -1.5123625)
+material_override = ExtResource("2_8dtyf")
+cast_shadow = 0
+mesh = SubResource("CapsuleMesh_o7v27")
+
+[node name="EmissiveBulb03" type="CSGMesh3D" parent="." index="2" unique_id=1037364472]
+transform = Transform3D(0.055, 0, 0, 0, -6.3818625e-08, 0.055, 0, -1.46, -2.4041265e-09, 0.96978474, 2.213751, -1.5123625)
+material_override = ExtResource("2_8dtyf")
+cast_shadow = 0
+mesh = SubResource("CapsuleMesh_o7v27")

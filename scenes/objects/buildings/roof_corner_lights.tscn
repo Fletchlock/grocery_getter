@@ -4,10 +4,98 @@
 
 [node name="Roof_Corner_Lights2" unique_id=1937312725 instance=ExtResource("1_jsyn5")]
 
-[node name="SpotLight3D" type="SpotLight3D" parent="." index="1" unique_id=163125337]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.1095202, -2.607366, 1.9930599)
-spot_angle = 19.30074
+[node name="OmniLight3D" type="OmniLight3D" parent="Roof_Corner_Lights" parent_id_path=PackedInt32Array(202156239) index="0" unique_id=334326666]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5777257, -2.7286084, 1.9865872)
+light_color = Color(0.9098039, 1, 1, 1)
+light_energy = 0.127
+light_size = 0.219
+light_bake_mode = 1
+shadow_enabled = true
 
-[node name="SpotLight3D2" type="SpotLight3D" parent="." index="2" unique_id=33154834]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.1095202, -2.607366, -1.9806474)
-spot_angle = 19.30074
+[node name="OmniLight3D5" type="OmniLight3D" parent="Roof_Corner_Lights" parent_id_path=PackedInt32Array(202156239) index="1" unique_id=123515240]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7299907, -2.7286084, 1.9865872)
+light_color = Color(0.9098039, 1, 1, 1)
+light_energy = 0.127
+light_size = 0.219
+light_bake_mode = 1
+shadow_enabled = true
+
+[node name="OmniLight3D6" type="OmniLight3D" parent="Roof_Corner_Lights" parent_id_path=PackedInt32Array(202156239) index="2" unique_id=1400071426]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8701515, -2.7286084, 1.9865872)
+light_color = Color(0.9098039, 1, 1, 1)
+light_energy = 0.127
+light_size = 0.219
+light_bake_mode = 1
+shadow_enabled = true
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="Roof_Corner_Lights" parent_id_path=PackedInt32Array(202156239) index="3" unique_id=87008160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5884226, -2.7286084, 1.9865872)
+light_color = Color(0.9098039, 1, 1, 1)
+light_energy = 0.127
+light_size = 0.219
+light_bake_mode = 1
+shadow_enabled = true
+
+[node name="OmniLight3D3" type="OmniLight3D" parent="Roof_Corner_Lights" parent_id_path=PackedInt32Array(202156239) index="4" unique_id=1339543776]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7198133, -2.7286084, 1.9865872)
+light_color = Color(0.9098039, 1, 1, 1)
+light_energy = 0.127
+light_size = 0.219
+light_bake_mode = 1
+shadow_enabled = true
+
+[node name="OmniLight3D4" type="OmniLight3D" parent="Roof_Corner_Lights" parent_id_path=PackedInt32Array(202156239) index="5" unique_id=713461475]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8500166, -2.7286084, 1.9865872)
+light_color = Color(0.9098039, 1, 1, 1)
+light_energy = 0.127
+light_size = 0.219
+light_bake_mode = 1
+shadow_enabled = true
+
+[node name="OmniLight3D7" type="OmniLight3D" parent="Roof_Corner_Lights" parent_id_path=PackedInt32Array(202156239) index="6" unique_id=1860330117]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5777257, -2.7286084, -2.027176)
+light_color = Color(0.9098039, 1, 1, 1)
+light_energy = 0.127
+light_size = 0.219
+light_bake_mode = 1
+shadow_enabled = true
+
+[node name="OmniLight3D8" type="OmniLight3D" parent="Roof_Corner_Lights" parent_id_path=PackedInt32Array(202156239) index="7" unique_id=1549290176]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7299907, -2.7286084, -2.027176)
+light_color = Color(0.9098039, 1, 1, 1)
+light_energy = 0.127
+light_size = 0.219
+light_bake_mode = 1
+shadow_enabled = true
+
+[node name="OmniLight3D9" type="OmniLight3D" parent="Roof_Corner_Lights" parent_id_path=PackedInt32Array(202156239) index="8" unique_id=1301296809]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8701515, -2.7286084, -2.027176)
+light_color = Color(0.9098039, 1, 1, 1)
+light_energy = 0.127
+light_size = 0.219
+light_bake_mode = 1
+shadow_enabled = true
+
+[node name="OmniLight3D10" type="OmniLight3D" parent="Roof_Corner_Lights" parent_id_path=PackedInt32Array(202156239) index="9" unique_id=296186922]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5884226, -2.7286084, -2.027176)
+light_color = Color(0.9098039, 1, 1, 1)
+light_energy = 0.127
+light_size = 0.219
+light_bake_mode = 1
+shadow_enabled = true
+
+[node name="OmniLight3D11" type="OmniLight3D" parent="Roof_Corner_Lights" parent_id_path=PackedInt32Array(202156239) index="10" unique_id=1948327201]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7198133, -2.7286084, -2.027176)
+light_color = Color(0.9098039, 1, 1, 1)
+light_energy = 0.127
+light_size = 0.219
+light_bake_mode = 1
+shadow_enabled = true
+
+[node name="OmniLight3D12" type="OmniLight3D" parent="Roof_Corner_Lights" parent_id_path=PackedInt32Array(202156239) index="11" unique_id=1453343202]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8500166, -2.7286084, -2.027176)
+light_color = Color(0.9098039, 1, 1, 1)
+light_energy = 0.127
+light_size = 0.219
+light_bake_mode = 1
+shadow_enabled = true
