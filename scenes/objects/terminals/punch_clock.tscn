@@ -2,9 +2,14 @@
 
 [ext_resource type="ArrayMesh" uid="uid://cm6vqpcm5aamq" path="res://assets/models/checkouts/punch_clock_Cube_013.res" id="1_6wwkt"]
 [ext_resource type="Script" uid="uid://clixjvdcoi34x" path="res://scripts/objects/terminals/punch_clock.gd" id="1_abvl0"]
+[ext_resource type="Script" uid="uid://dy66e2cvb5xcf" path="res://scripts/objects/terminals/sub_viewport.gd" id="3_txkql"]
+[ext_resource type="Script" uid="uid://n8eqygospylh" path="res://scripts/objects/terminals/mesh_instance_3d.gd" id="3_uqy2x"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_abvl0"]
 points = PackedVector3Array(-0.15, -1.4901161e-08, -0.1, 0.15, -1.4901161e-08, -0.1, -0.15, -1.4901161e-08, 0.08999608, -0.15, 0.39996082, -0.1, 0.15, -1.4901161e-08, 0.08999608, 0.15, 0.39996082, -0.1, -0.15, 0.009984323, 0.1, -0.15, 0.39996082, 0.08999608, 0.15, 0.009984323, 0.1, 0.15, 0.39996082, 0.08999608, -0.15, 0.3899765, 0.1, 0.15, 0.3899765, 0.1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wsknd"]
+bg_color = Color(0.08701607, 0.08701608, 0.08701601, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
 size = Vector3(0.3034668, 0.40197754, 0.23925781)
@@ -12,14 +17,42 @@ size = Vector3(0.3034668, 0.40197754, 0.23925781)
 [node name="PunchClock" type="Node3D" unique_id=167766037]
 script = ExtResource("1_abvl0")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=79886923]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=79886923 node_paths=PackedStringArray("target_viewport")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 mesh = ExtResource("1_6wwkt")
+script = ExtResource("3_uqy2x")
+target_viewport = NodePath("SubViewport")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D" unique_id=478260617]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D" unique_id=1871128353]
 shape = SubResource("ConvexPolygonShape3D_abvl0")
+
+[node name="SubViewport" type="SubViewport" parent="MeshInstance3D" unique_id=1748640299]
+render_target_update_mode = 4
+script = ExtResource("3_txkql")
+
+[node name="PanelContainer" type="PanelContainer" parent="MeshInstance3D/SubViewport" unique_id=1215096040]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wsknd")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MeshInstance3D/SubViewport/PanelContainer" unique_id=1479683113]
+layout_mode = 2
+
+[node name="TimeLabel" type="Label" parent="MeshInstance3D/SubViewport/PanelContainer/VBoxContainer" unique_id=1742541549]
+layout_mode = 2
+text = "Day 01 TIME: 11:34 AM"
+
+[node name="HSeparator" type="HSeparator" parent="MeshInstance3D/SubViewport/PanelContainer/VBoxContainer" unique_id=1913178504]
+layout_mode = 2
+
+[node name="PlayerGrid" type="GridContainer" parent="MeshInstance3D/SubViewport/PanelContainer/VBoxContainer" unique_id=564597576]
+layout_mode = 2
+columns = 2
 
 [node name="Area3D" type="Area3D" parent="." unique_id=412330492]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
@@ -31,6 +64,7 @@ shape = SubResource("BoxShape3D_6aigx")
 
 [node name="Label3D" type="Label3D" parent="." unique_id=201952048]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.23303548, 0.50081426, 0.17224771)
+visible = false
 texture_filter = 4
 modulate = Color(0.8891698, 0.76547086, 1.540184e-06, 1)
 text = "DAY 01   11:35 PM

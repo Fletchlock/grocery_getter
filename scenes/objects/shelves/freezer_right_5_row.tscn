@@ -7,7 +7,7 @@ size = Vector3(1.1532593, 3, 3)
 
 [node name="Freezer_Right_5row2" unique_id=825118052 instance=ExtResource("1_sms5c")]
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Freezer_Right_5row" parent_id_path=PackedInt32Array(853516796) index="0" unique_id=83913552]
+[node name="StaticBody3D" type="StaticBody3D" parent="Freezer_Right_5row" parent_id_path=PackedInt32Array(1778724214) index="0" unique_id=83913552]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Freezer_Right_5row/StaticBody3D" index="0" unique_id=286493962]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.57662964, 1.5, -1.5)
