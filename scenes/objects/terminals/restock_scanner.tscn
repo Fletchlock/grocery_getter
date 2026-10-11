@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://dccshi4p6fj81"]
+
+[ext_resource type="ArrayMesh" uid="uid://5vspnq40utf1" path="res://assets/models/checkouts/hand_scanner_Cube_020.res" id="1_to5as"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
+size = Vector3(0.15701294, 0.3510437, 0.21118164)
+
+[node name="RestockScanner" type="Node3D" unique_id=542482909]
+
+[node name="ScannerMesh" type="MeshInstance3D" parent="." unique_id=2048502158]
+mesh = ExtResource("1_to5as")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=14597974]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1347022100]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00093078613, 0.17451477, 0.05529785)
+shape = SubResource("BoxShape3D_6aigx")
+
+[node name="MeshOutline" type="Node3D" parent="Area3D" unique_id=322965575]

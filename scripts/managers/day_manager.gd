@@ -7,7 +7,8 @@ signal punch_out_state_changed
 
 const START_HOUR: int = 7
 const STORE_CLOSE_HOUR: int = 22
-const END_OF_DAY_HOUR: int = 24
+const END_OF_DAY_HOUR: int = 23
+const END_OF_DAY_MINUTE: int = 59
 const REAL_SECONDS_PER_GAME_MINUTE: float = 1.0
 
 var current_day: int = 1
@@ -167,9 +168,9 @@ func _advance_game_minute() -> void:
 		current_minute = 0
 		current_hour += 1
 		
-	if current_hour >= END_OF_DAY_HOUR:
+	if (current_hour >= END_OF_DAY_HOUR) and (current_minute == END_OF_DAY_MINUTE):
 		current_hour = END_OF_DAY_HOUR
-		current_minute = 0
+		current_minute = END_OF_DAY_MINUTE
 		clock_running = false
 	
 	_sync_clock.rpc(

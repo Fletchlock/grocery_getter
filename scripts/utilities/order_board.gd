@@ -3,6 +3,7 @@ extends Node3D
 
 @export_group("Interaction Area")
 @export var interaction_top_padding: float = 0.0
+@export var allow_orders: bool = true
 
 @onready var order_label: Label3D = $Label3D
 @onready var scanner_beep_player: AudioStreamPlayer3D = $AcceptOrderArea/ScannerBeepPlayer
@@ -143,7 +144,10 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 
 	if OrderManager.get_available_order() == null:
 		return ""
-
+	
+	if not allow_orders:
+		return ""
+	
 	return "[E] Accept Order"
 
 
@@ -181,7 +185,7 @@ func interact(player: CharacterBody3D) -> void:
 
 		return
 
-	if multiplayer.is_server():
+	if multiplayer.is_server() and allow_orders:
 		OrderManager.accept_order(player)
 
 	else:
