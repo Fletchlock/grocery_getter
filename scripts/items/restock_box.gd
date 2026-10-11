@@ -33,6 +33,10 @@ func get_interaction_prompt_for_player( _player: CharacterBody3D) -> String:
 	return "Pick Up Restock Box"
 	
 
+func get_interaction_prompt_position(_collision_shape: CollisionShape3D) -> Vector3:
+	return global_position + Vector3.UP * .35
+
+
 func request_interact(player: CharacterBody3D) -> void:
 	if player == null:
 		return

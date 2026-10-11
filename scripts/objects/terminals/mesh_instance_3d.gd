@@ -25,7 +25,8 @@ func _ready() -> void:
 	# 6. Apply settings that bypass uninitialized frame caching
 	runtime_material.albedo_texture = live_texture
 	runtime_material.shading_mode = StandardMaterial3D.SHADING_MODE_UNSHADED # Fixes lighting washouts
-	
+		
+		
 	# 7. Bind to your second surface slot (Surface 1)
 	set_surface_override_material(1, runtime_material)
 	

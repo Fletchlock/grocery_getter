@@ -1,10 +1,11 @@
 
 extends Node3D
 
-@onready var display: Label3D = $Label3D
-
+@onready var time_label: Label = $MeshInstance3D/SubViewport/PanelContainer/MarginContainer/VBoxContainer/TimeLabel
+@onready var player_grid: GridContainer = $MeshInstance3D/SubViewport/PanelContainer/MarginContainer/VBoxContainer/PlayerGrid
 
 func _ready() -> void:
+	print_tree_pretty()
 	if not DayManager.clock_updated.is_connected(_on_clock_updated):
 		DayManager.clock_updated.connect(_on_clock_updated)
 
@@ -36,6 +37,10 @@ func get_interaction_prompt_for_player(_player: Node3D) -> String:
 		return reason
 
 	return "Punch Out"
+
+
+func get_interaction_prompt_position(_collision_shape: CollisionShape3D) -> Vector3:
+	return global_position + Vector3.UP * 0.00
 
 
 func request_interact(player: Node3D) -> void:
@@ -116,16 +121,18 @@ func _refresh_display() -> void:
 
 	var period: String = "AM" if hour < 12 else "PM"
 
-	var lines: PackedStringArray = []
-	lines.append("DAY %02d  |  %02d:%02d %s" % [
+	time_label.text = "DAY %02d  |  %02d:%02d %s" % [
 		day,
 		display_hour,
 		minute,
 		period
-	])
+	]
 
-	lines.append("")
+	# Remove the previous player rows.
+	for child: Node in player_grid.get_children():
+		child.queue_free()
 
+	# Rebuild the grid using the current lobby players.
 	var players: Dictionary = LobbyManager.get_players()
 	var player_ids: Array = players.keys()
 	player_ids.sort()
@@ -137,6 +144,16 @@ func _refresh_display() -> void:
 			player_name = "Player %s" % str(peer_id)
 
 		var status: String = "OUT" if DayManager.is_player_punched_out(peer_id) else "IN"
-		lines.append("%s: %s" % [player_name, status])
 
-	display.text = "\n".join(lines)
+		var name_label := Label.new()
+		name_label.add_theme_font_size_override("font_size", 30)
+		name_label.text = player_name
+		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		player_grid.add_child(name_label)
+
+		var status_label := Label.new()
+		status_label.add_theme_font_size_override("font_size", 30)
+		status_label.text = status
+		status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		player_grid.add_child(status_label)
