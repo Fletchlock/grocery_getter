@@ -4,10 +4,10 @@
 
 [node name="StoreSmallGreybox" unique_id=253599967 instance=ExtResource("1_daxh7")]
 
-[node name="CollisionShape3D" parent="store_small/StaticBody3D" parent_id_path=PackedInt32Array(261957936) index="0" unique_id=852573418]
+[node name="CollisionShape3D" parent="store_small/StaticBody3D" parent_id_path=PackedInt32Array(165818654) index="0" unique_id=633450545]
 debug_color = Color(0.7058824, 0.4745098, 0.35686275, 0.8235294)
 
-[node name="store_small_windows" parent="." index="1" unique_id=793886628]
+[node name="store_small_windows" parent="." index="1" unique_id=631885391]
 cast_shadow = 0
 
 [node name="MainLight" type="OmniLight3D" parent="." index="2" unique_id=1812318711]

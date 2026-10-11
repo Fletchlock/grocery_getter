@@ -559,9 +559,12 @@ tree_root = ExtResource("3_airpo")
 anim_player = NodePath("../AnimationPlayer")
 parameters/conditions/is_falling = false
 parameters/conditions/is_grounded = false
-parameters/BlendSpace1D/blend_position = 0.0
-parameters/BlendTree/PushBlend/blend_amount = 0.0
+parameters/CrouchingState/BlendSpace1D/blend_position = 0.0
+parameters/CrouchingState/TimeScale/scale = 1.0
 parameters/FallingState/TimeScale/scale = 1.5
+parameters/MovementState/BlendSpace1D/blend_position = 0.0
+parameters/MovementState/TimeScale/scale = 1.0
+parameters/MovementState/PushCartBlend/blend_amount = 0.0
 
 [node name="SpringArmPivot" type="Node3D" parent="." unique_id=1560238884]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.723, 0)

@@ -1849,10 +1849,10 @@ font_size = 64
 [node name="low_poly_character" parent="Players" unique_id=51086098 instance=ExtResource("8_hp4pk")]
 transform = Transform3D(0.7099662, 0, 0.7042358, 0, 1, 0, -0.7042358, 0, 0.7099662, 19.6507, -7.2209644, 1.6544709)
 
-[node name="GroceryRed" parent="Players/low_poly_character/Armature/Skeleton3D" parent_id_path=PackedInt32Array(51086098, 972510031) index="2" unique_id=1109459962]
+[node name="GroceryRed" parent="Players/low_poly_character/Armature/Skeleton3D" parent_id_path=PackedInt32Array(51086098, 972510031) index="6" unique_id=1109459962]
 blend_shapes/Blink = 0.0
 
-[node name="GroceryBlue" parent="Players/low_poly_character/Armature/Skeleton3D" parent_id_path=PackedInt32Array(51086098, 972510031) index="3" unique_id=1076076089]
+[node name="GroceryBlue" parent="Players/low_poly_character/Armature/Skeleton3D" parent_id_path=PackedInt32Array(51086098, 972510031) index="7" unique_id=1076076089]
 blend_shapes/Blink = 0.0
 
 [node name="FootstepPlayer" parent="Players/low_poly_character/FirstPersonCameraPivot/FirstPersonCamera" parent_id_path=PackedInt32Array(51086098, 2139662967) index="0" unique_id=1219873977]
