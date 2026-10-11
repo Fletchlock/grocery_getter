@@ -396,11 +396,10 @@ func checkout_scanning_completed() -> void:
 	var checkout: Checkout = (
 		get_tree().get_first_node_in_group("checkout")
 		as Checkout
-	)
+		)
 
 	if checkout != null:
 		checkout.customer_finished_checkout(self)
-
 
 
 func _on_checkout_queue_full(delta: float) -> void:
