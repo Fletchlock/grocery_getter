@@ -18,7 +18,6 @@ size = Vector3(0.3034668, 0.40197754, 0.23925781)
 script = ExtResource("1_abvl0")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=79886923 node_paths=PackedStringArray("target_viewport")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 mesh = ExtResource("1_6wwkt")
 script = ExtResource("3_uqy2x")
 target_viewport = NodePath("SubViewport")
@@ -45,6 +44,7 @@ layout_mode = 2
 
 [node name="TimeLabel" type="Label" parent="MeshInstance3D/SubViewport/PanelContainer/VBoxContainer" unique_id=1742541549]
 layout_mode = 2
+theme_override_font_sizes/font_size = 28
 text = "Day 01 TIME: 11:34 AM"
 
 [node name="HSeparator" type="HSeparator" parent="MeshInstance3D/SubViewport/PanelContainer/VBoxContainer" unique_id=1913178504]
@@ -55,7 +55,6 @@ layout_mode = 2
 columns = 2
 
 [node name="Area3D" type="Area3D" parent="." unique_id=412330492]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 collision_layer = 257
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=883834627]

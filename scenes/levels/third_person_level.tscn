@@ -228,6 +228,7 @@ sky_material = SubResource("ProceduralSkyMaterial_ta2qt")
 [sub_resource type="Environment" id="Environment_yliug"]
 background_mode = 2
 sky = SubResource("Sky_ltnn2")
+glow_enabled = true
 fog_light_energy = 0.37
 fog_sun_scatter = 0.21
 fog_sky_affect = 0.16
@@ -1026,7 +1027,7 @@ shape = SubResource("BoxShape3D_2bvqw")
 debug_color = Color(0.9847451, 0.4989375, 0.4725191, 1)
 
 [node name="PunchClock" parent="NavigationRegion3D" unique_id=167766037 instance=ExtResource("50_smqka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.405, 1.2, 20.598)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.405, 1.5, 20.598)
 
 [node name="DesertGround" parent="." unique_id=2134704437 groups=["level_geo"] instance=ExtResource("15_17biw")]
 transform = Transform3D(0.93267465, 0, -0.36071923, 0, 1, 0, 0.36071923, 0, 0.93267465, 0, -1.51, -11.964)

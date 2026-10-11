@@ -16,6 +16,7 @@ func _ready() -> void:
 	# 2. Add an internal margin so text never hugs the physical screen edge
 	# This adds a 20-pixel safe buffer all around the screen
 	var margin_container = MarginContainer.new()
+	margin_container.name = "MarginContainer"
 	margin_container.add_theme_constant_override("margin_top", 20)
 	margin_container.add_theme_constant_override("margin_bottom", 20)
 	margin_container.add_theme_constant_override("margin_left", 20)
@@ -34,7 +35,7 @@ func _ready() -> void:
 	
 	# 4. Apply our dark monitor styling
 	var style_box = StyleBoxFlat.new()
-	style_box.bg_color = Color.hex(0x111116) 
+	style_box.bg_color = Color(0.1, 0.35, 0.95, 1.0)
 	panel.add_theme_stylebox_override("panel", style_box)
 	
 	_load_debug_ui()
@@ -45,4 +46,4 @@ func _load_debug_ui() -> void:
 	if time_label:
 		time_label.text = "Day 1 — 12:00 PM"
 		time_label.add_theme_color_override("font_color", Color.WHITE)
-		time_label.add_theme_font_size_override("font_size", 36) # Ensure it's large enough to see
+		time_label.add_theme_font_size_override("font_size", 58) # Ensure it's large enough to see
