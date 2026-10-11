@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dccshi4p6fj81"]
 
-[ext_resource type="ArrayMesh" uid="uid://5vspnq40utf1" path="res://assets/models/checkouts/hand_scanner_Cube_020.res" id="1_to5as"]
+[ext_resource type="ArrayMesh" uid="uid://d2bfhd1u8lqkr" path="res://assets/models/checkouts/hand_scanner_Cube_020.res" id="1_to5as"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
 size = Vector3(0.15701294, 0.3510437, 0.21118164)
