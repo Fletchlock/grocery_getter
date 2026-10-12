@@ -3,6 +3,7 @@ extends Control
 
 @onready var clock_label: Label = $TopCenterContainer/VBoxContainer/PanelContainer/ClockLabel
 @onready var panel_container_2: PanelContainer = $TopCenterContainer/VBoxContainer/PanelContainer2
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 
 
@@ -50,3 +51,10 @@ func _on_clock_updated(
 	# Turn the clock out panel to visible when the day is done.
 	panel_container_2.modulate.a = 1.0 if not DayManager.clock_running else 0.0
 	
+		# Show the restock banner when the ordering window opens.
+	if hour == 8 and minute == 0:
+		animation_player.play("restock banner in")
+
+	# Hide the restock banner when the ordering window closes.
+	elif hour == 20 and minute == 0:
+		animation_player.play("restock banner out")
