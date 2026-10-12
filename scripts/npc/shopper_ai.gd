@@ -119,14 +119,6 @@ var checkout_retry_timer: float = 0.0
 
 
 func _ready() -> void:
-	print(
-			"SHOPPER READY | peer=",
-			multiplayer.get_unique_id(),
-			" authority=",
-			is_multiplayer_authority(),
-			" parent=",
-			get_parent().get_path()
-		)
 	
 	add_to_group("shopper_ai")
 	
@@ -288,8 +280,6 @@ func start_shopping() -> void:
 
 	for i: int in range(shopping_count):
 		shopping_list.append(available_points[i])
-
-	print("SHOPPING LIST: ", shopping_list.size())
 
 	current_shopping_index = 0
 

@@ -52,7 +52,7 @@ func _on_clock_updated(
 	panel_container_2.modulate.a = 1.0 if not DayManager.clock_running else 0.0
 	
 		# Show the restock banner when the ordering window opens.
-	if hour == 8 and minute == 0:
+	if hour == 18 and minute == 0:
 		animation_player.play("restock banner in")
 
 	# Hide the restock banner when the ordering window closes.

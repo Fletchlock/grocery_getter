@@ -38,8 +38,8 @@ func _process(delta: float) -> void:
 	
 	# Check if rush hour
 	if DayManager.rush_hour:
-		spawn_interval_min = 5
-		spawn_interval_max = 10
+		spawn_interval_min = 10
+		spawn_interval_max = 25
 	else:
 		spawn_interval_min = 20
 		spawn_interval_max = 50
@@ -141,7 +141,6 @@ func _on_shopper_finished_shopping() -> void:
 	
 
 func _on_shopper_reached_enter_point() -> void:
-	print("SHOPPER ENTERED | PEER: ", multiplayer.get_unique_id())
 	if multiplayer.is_server():
 		shopper_stats.current_shoppers += 1
 	else:
