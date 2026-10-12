@@ -11,8 +11,22 @@ var pending_order_paths: Array[String] = []
 
 # Product resource path -> quantity purchased, awaiting future delivery.
 var confirmed_orders: Dictionary = {}
-
 var last_processed_day: int = -1
+
+const RESTOCK_BOX_SCENE: PackedScene = preload(
+	"res://scenes/items/restock_box.tscn"
+)
+const DELIVERY_START_HOUR: int = 10
+const DELIVERY_BOX_CAPACITY: int = 400
+var last_delivery_day: int = -1
+const DELIVERY_SPAWN_POINT_PATH: NodePath = NodePath(
+	"/root/Main/ThirdPersonLevel/Deliveries/DeliverySpawnPoint"
+)
+
+@export_group("Delivery Stacking")
+@export_range(1, 20, 1) var delivery_stack_height: int = 4
+@export var delivery_horizontal_spacing: float = 0.12
+@export var delivery_vertical_spacing: float = 0.25
 
 
 func _ready() -> void:
@@ -24,7 +38,8 @@ func _ready() -> void:
 	)
 	if not DayManager.clock_updated.is_connected(_on_clock_updated):
 		DayManager.clock_updated.connect(_on_clock_updated)
-
+	
+	get_tree().node_added.connect(_on_node_added)
 
 func set_pending_quantity(
 	product_path: String,
@@ -89,13 +104,11 @@ func _on_clock_updated(
 	if not multiplayer.is_server():
 		return
 
-	if hour != 20 or minute != 0:
-		return
+	if hour == 20 and minute == 0 and last_processed_day != day:
+		_process_pending_orders(day)
 
-	if last_processed_day == day:
-		return
-
-	_process_pending_orders(day)
+	if hour == DELIVERY_START_HOUR and minute == 0 and last_delivery_day != day:
+		_spawn_delivery(day)
 
 
 func _process_pending_orders(day: int) -> void:
@@ -208,3 +221,126 @@ func _sync_pending_orders(data: Dictionary, order_paths: Array) -> void:
 		pending_order_paths.append(str(product_path))
 
 	pending_order_updated.emit(pending_orders)
+
+
+func _spawn_delivery(day: int) -> void:
+	if confirmed_orders.is_empty():
+		return
+
+	var level: Node = get_tree().root.get_node_or_null(
+		"Main/Game/ThirdPersonLevel"
+	)
+
+	if level == null:
+		push_warning("Could not find ThirdPersonLevel.")
+		return
+
+	var delivery_spawn_point: Marker3D = level.get_node_or_null(
+		"Deliveries/DeliverySpawnPoint"
+	) as Marker3D
+
+	if delivery_spawn_point == null:
+		push_warning("Could not find DeliverySpawnPoint.")
+		return
+
+	var box_index: int = 0
+
+	for product_path: String in confirmed_orders:
+		var remaining_quantity: int = int(confirmed_orders[product_path])
+
+		var product: ProductData = load(product_path) as ProductData
+
+		if product == null:
+			continue
+
+		while remaining_quantity > 0:
+			var box_quantity: int = mini(
+				remaining_quantity,
+				DELIVERY_BOX_CAPACITY
+			)
+
+			var deliveries: Node3D = level.get_node_or_null("Deliveries") as Node3D
+
+			if deliveries == null:
+				return
+
+			var spawner: MultiplayerSpawner = deliveries.get_node_or_null(
+				"MultiplayerSpawner"
+			) as MultiplayerSpawner
+
+			if spawner == null:
+				return
+
+			var box_width: float = 0.5
+			var box_height: float = 0.5
+
+			var stack_column: int = box_index / delivery_stack_height
+			var stack_row: int = box_index % delivery_stack_height
+
+			var local_offset: Vector3 = Vector3(
+				float(stack_column) * (box_width + delivery_horizontal_spacing),
+				float(stack_row) * (box_height + delivery_vertical_spacing),
+				0.0
+			)
+
+			var box_transform: Transform3D = (
+				delivery_spawn_point.global_transform
+				* Transform3D(Basis.IDENTITY, local_offset)
+			)
+
+			var spawn_position: Vector3 = deliveries.to_local(
+				box_transform.origin
+			)
+
+			var spawn_rotation: Vector3 = (
+				deliveries.global_transform.basis.inverse()
+				* box_transform.basis
+			).get_euler()
+
+			spawner.spawn({
+				"product_path": product_path,
+				"quantity": box_quantity,
+				"position": spawn_position,
+				"rotation": spawn_rotation
+			})
+
+			remaining_quantity -= box_quantity
+			box_index += 1
+
+	last_delivery_day = day
+	confirmed_orders.clear()
+
+
+func _create_delivery_box(data: Variant) -> Node:
+	var product_path: String = str(data["product_path"])
+	var quantity: int = int(data["quantity"])
+	var position: Vector3 = data["position"]
+
+	var product: ProductData = load(product_path) as ProductData
+
+	if product == null:
+		return null
+
+	var box: RestockBox = RESTOCK_BOX_SCENE.instantiate() as RestockBox
+
+	box.product_data = product
+	box.quantity = quantity
+	box.position = position
+	box.rotation = data["rotation"]
+
+	return box
+
+
+func _on_node_added(node: Node) -> void:
+	if node.name != "MultiplayerSpawner":
+		return
+
+	if str(node.get_parent().name) != "Deliveries":
+		return
+
+	var spawner: MultiplayerSpawner = node as MultiplayerSpawner
+
+	if spawner == null:
+		return
+
+	spawner.spawn_function = _create_delivery_box
