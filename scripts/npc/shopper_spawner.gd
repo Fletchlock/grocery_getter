@@ -39,7 +39,7 @@ func _process(delta: float) -> void:
 	# Check if rush hour
 	if DayManager.rush_hour:
 		spawn_interval_min = 10
-		spawn_interval_max = 25
+		spawn_interval_max = 20
 	else:
 		spawn_interval_min = 20
 		spawn_interval_max = 50
