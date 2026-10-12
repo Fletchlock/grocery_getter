@@ -2,6 +2,12 @@ extends Node3D
 class_name RestockBox
 
 
+@export var outline_material: Material
+
+@onready var box_mesh: MeshInstance3D = $BoxMesh
+@onready var mesh_outline: Node3D = $Area3D/MeshOutline
+
+
 @export_group("Contents")
 @export var product_data: ProductData
 @export_range(1, 400, 1) var quantity: int = 10
@@ -11,7 +17,25 @@ class_name RestockBox
 
 
 func _ready() -> void:
+	_create_outline()
 	_update_label()
+
+
+func _create_outline() -> void:
+	if box_mesh.mesh == null:
+		return
+
+	if outline_material == null:
+		return
+
+	var outline_instance: MeshInstance3D = MeshInstance3D.new()
+
+	outline_instance.mesh = box_mesh.mesh
+	outline_instance.transform = box_mesh.transform
+	outline_instance.scale = Vector3(1.02, 1.02, 1.02)
+	outline_instance.material_override = outline_material
+
+	mesh_outline.add_child(outline_instance)
 
 
 func _update_label() -> void:

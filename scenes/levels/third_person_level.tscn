@@ -1184,15 +1184,15 @@ transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.
 shape = SubResource("BoxShape3D_mxygy")
 
 [node name="RestockBox" parent="." unique_id=1485363462 instance=ExtResource("58_32gdb")]
-transform = Transform3D(-0.50000006, 0, 0.8660254, 0, 1, 0, -0.8660254, 0, -0.50000006, -7, -1.321, 6)
+transform = Transform3D(-0.50000006, 0, 0.8660254, 0, 1, 0, -0.8660254, 0, -0.50000006, -7, -1.3205578, 6)
 product_data = ExtResource("31_smqka")
 
 [node name="RestockBox2" parent="." unique_id=1990419682 instance=ExtResource("58_32gdb")]
-transform = Transform3D(-5.9604645e-08, 0, 1, 0, 1, 0, -1, 0, -5.9604645e-08, -7.249952, -1.321, 5.0014224)
+transform = Transform3D(-5.9604645e-08, 0, 1, 0, 1, 0, -1, 0, -5.9604645e-08, -7.249952, -1.3205578, 5.0014224)
 product_data = ExtResource("13_ghqei")
 
 [node name="RestockBox3" parent="." unique_id=1686615721 instance=ExtResource("58_32gdb")]
-transform = Transform3D(-5.9604645e-08, 0, 1, 0, 1, 0, -1, 0, -5.9604645e-08, -7.249952, -1.321, 3.957512)
+transform = Transform3D(-5.9604645e-08, 0, 1, 0, 1, 0, -1, 0, -5.9604645e-08, -7.249952, -1.3205578, 3.957512)
 product_data = ExtResource("13_ghqei")
 
 [node name="ScannerHolder" parent="." unique_id=1085281955 instance=ExtResource("63_0g1cj")]
@@ -1208,7 +1208,6 @@ debug_color = Color(0, 0.6, 0.69803923, 0.92156863)
 
 [node name="RestockScanner" parent="ScannerHolder" unique_id=542482909 instance=ExtResource("63_8865k")]
 transform = Transform3D(-1, 0, -2.6226832e-07, 0, 1, 0, 2.6226832e-07, 0, -1, 0, 0, 0.07011223)
-outline_material = ExtResource("40_62gvq")
 
 [node name="CollisionShape3D" parent="ScannerHolder/RestockScanner/Area3D" parent_id_path=PackedInt32Array(542482909, 14597974) index="0" unique_id=1347022100]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00093078613, 0.17451471, 0.05529785)
@@ -1254,5 +1253,8 @@ visible = false
 [editable path="checkout_sm_left3"]
 [editable path="cart_small"]
 [editable path="cart_small2"]
+[editable path="RestockBox"]
+[editable path="RestockBox2"]
+[editable path="RestockBox3"]
 [editable path="ScannerHolder"]
 [editable path="ScannerHolder/RestockScanner"]
