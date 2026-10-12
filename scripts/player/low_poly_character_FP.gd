@@ -134,6 +134,7 @@ var held_restock_box_visual: Node3D = null
 var held_restock_scanner: Node3D = null
 var held_restock_scanner_visual: Node3D = null
 var held_restock_scanner_holder: Node3D = null
+var last_restock_wheel_time_usec: int = 0
 
 @export var network_holding_restock_scanner: bool = false
 
@@ -258,6 +259,9 @@ func _ready() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():
+		return
+	
+	if handle_restock_scanner_input(event):
 		return
 	
 	if event.is_action_pressed("crouch") and attached_cart == null:
@@ -1670,6 +1674,63 @@ func _grant_restock_scanner() -> void:
 	held_restock_scanner.transform = Transform3D.IDENTITY
 
 	network_holding_restock_scanner = true
+
+
+func handle_restock_scanner_input(event: InputEvent) -> bool:
+	if held_restock_scanner == null:
+		return false
+
+	if not held_restock_scanner.order_selection_active:
+		if event.is_action_pressed("interact"):
+			var display: Node = held_restock_scanner.get_targeted_product_display(
+				interact_raycast_3d
+			)
+
+			if display != null:
+				held_restock_scanner.begin_order_selection(display)
+
+				if held_restock_scanner.order_selection_active:
+					return true
+
+		return false
+
+	if event.is_action_pressed("interact"):
+		held_restock_scanner.confirm_order_selection()
+		return true
+
+	if event is InputEventMouseButton:
+		var mouse_event: InputEventMouseButton = event
+
+		if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			var current_time_usec: int = Time.get_ticks_usec()
+
+			if current_time_usec - last_restock_wheel_time_usec < 150000:
+				return true
+
+			last_restock_wheel_time_usec = current_time_usec
+
+			held_restock_scanner.adjust_order_quantity(1)
+			return true
+
+		if mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			var current_time_usec: int = Time.get_ticks_usec()
+
+			if current_time_usec - last_restock_wheel_time_usec < 150000:
+				return true
+
+			last_restock_wheel_time_usec = current_time_usec
+
+			held_restock_scanner.adjust_order_quantity(-1)
+			return true
+
+		if (
+			mouse_event.button_index == MOUSE_BUTTON_RIGHT
+			and mouse_event.pressed
+		):
+			held_restock_scanner.cancel_order_selection()
+			return true
+
+	return false
 
 
 func interact_with_item(item: Node3D) -> void:

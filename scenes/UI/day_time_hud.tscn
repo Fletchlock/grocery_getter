@@ -2,8 +2,95 @@
 
 [ext_resource type="Script" uid="uid://dprt0032q18ck" path="res://scripts/UI/day_time_hud.gd" id="1_prtv8"]
 
+[sub_resource type="Animation" id="Animation_prtv8"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CenterContainer/VBoxContainer/PanelContainer:offset_transform_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -70)]
+}
+
+[sub_resource type="Animation" id="Animation_8u6ci"]
+resource_name = "restock banner in"
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CenterContainer/VBoxContainer/PanelContainer:position:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(),
+"points": PackedFloat32Array(),
+"times": PackedFloat32Array()
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CenterContainer/VBoxContainer/PanelContainer:offset_transform_position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(-2, 1),
+"update": 0,
+"values": [Vector2(0, -70), Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_glyqf"]
+resource_name = "restock banner out"
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CenterContainer/VBoxContainer/PanelContainer:position:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(),
+"points": PackedFloat32Array(),
+"times": PackedFloat32Array()
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CenterContainer/VBoxContainer/PanelContainer:offset_transform_position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(-2, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -70)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_26j03"]
+_data = {
+&"RESET": SubResource("Animation_prtv8"),
+&"restock banner in": SubResource("Animation_8u6ci"),
+&"restock banner out": SubResource("Animation_glyqf")
+}
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_prtv8"]
+resource_local_to_scene = true
 bg_color = Color(0, 0, 0, 0.78431374)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+expand_margin_left = 10.0
+expand_margin_top = 5.0
+expand_margin_right = 10.0
+expand_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8arff"]
+resource_local_to_scene = true
+bg_color = Color(0.5232661, 0, 0.09202028, 0.78431374)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -22,6 +109,9 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_prtv8")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1127994647]
+libraries/ = SubResource("AnimationLibrary_26j03")
 
 [node name="TopCenterContainer" type="CenterContainer" parent="." unique_id=2095835545]
 custom_minimum_size = Vector2(0, 120)
@@ -60,3 +150,26 @@ offset_transform_enabled = true
 theme_override_colors/font_color = Color(0.99999994, 0.20471898, 0.41962045, 1)
 theme_override_font_sizes/font_size = 22
 text = "CLOCK OUT TO END DAY"
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=2035727072]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 1
+offset_left = 30.0
+offset_top = -18.0
+offset_right = 339.0
+offset_bottom = 102.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=967875566]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CenterContainer/VBoxContainer" unique_id=1218715561]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, -70)
+theme_override_styles/panel = SubResource("StyleBoxFlat_8arff")
+
+[node name="RestockLabel" type="Label" parent="CenterContainer/VBoxContainer/PanelContainer" unique_id=376943300]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 22
+text = "Restock Available Until  8pm!"
