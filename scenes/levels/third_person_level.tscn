@@ -126,7 +126,7 @@ size = Vector3(0.52665436, 0.046109058, 0.5805085)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_riim1"]
 resource_local_to_scene = true
-size = Vector3(0.88, 0.39999998, 0.82000005)
+size = Vector3(0.88, 0.19999999, 0.82000005)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_fnekv"]
 resource_local_to_scene = true
@@ -324,7 +324,7 @@ position_variation = 0.01
 rotation_variation = 5.0
 variation_seed = 46
 max_quantity = 60
-quantity = 60
+quantity = 34
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Bread/Area3D" parent_id_path=PackedInt32Array(1658817678, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.628378, 0.12579845, 0.32000002)
@@ -359,7 +359,7 @@ stack_height = 2
 position_variation = 0.01
 variation_seed = 6564
 max_quantity = 60
-quantity = 60
+quantity = 42
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Corn Can/Area3D" parent_id_path=PackedInt32Array(153784913, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.114999995, 0.25)
@@ -486,15 +486,14 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.82
 product_data = ExtResource("14_ghqei")
 grid_columns = 6
 grid_rows = 7
-stack_height = 2
 position_variation = 0.01
 rotation_variation = 1.0
 variation_seed = 245
-max_quantity = 84
-quantity = 84
+max_quantity = 42
+quantity = 38
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Sugar/Area3D" parent_id_path=PackedInt32Array(267980143, 1400837386) index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.375, 0.19999999, 0.36)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.375, 0.099999994, 0.36)
 shape = SubResource("BoxShape3D_riim1")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Sugar" index="4" unique_id=2005891054]
@@ -529,7 +528,7 @@ product_gap = 0.03
 position_variation = 0.01
 variation_seed = 325
 max_quantity = 60
-quantity = 60
+quantity = 41
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Peas Can/Area3D" parent_id_path=PackedInt32Array(1581059352, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.275, 0.114999995, 0.22)
@@ -548,7 +547,7 @@ product_gap = 0.03
 position_variation = 0.015
 variation_seed = 489
 max_quantity = 60
-quantity = 60
+quantity = 29
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Beans Can/Area3D" parent_id_path=PackedInt32Array(105025190, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.275, 0.114999995, 0.22)
@@ -687,7 +686,7 @@ position_variation = 0.04
 rotation_variation = 45.0
 variation_seed = 626
 max_quantity = 35
-quantity = 35
+quantity = 22
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Pepper Red/Area3D" parent_id_path=PackedInt32Array(549814252, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24898842, 0.08002832, 0.3734826)
@@ -704,7 +703,7 @@ position_variation = 0.04
 rotation_variation = 45.0
 variation_seed = 323
 max_quantity = 35
-quantity = 35
+quantity = 18
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Pepper Green/Area3D" parent_id_path=PackedInt32Array(525088530, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24898842, 0.07946387, 0.3734826)
@@ -721,7 +720,7 @@ position_variation = 0.04
 rotation_variation = 45.0
 variation_seed = 929
 max_quantity = 35
-quantity = 35
+quantity = 19
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Pepper Yellow/Area3D" parent_id_path=PackedInt32Array(1498871279, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24898842, 0.07996883, 0.3734826)
@@ -738,7 +737,7 @@ position_variation = 0.04
 rotation_variation = 45.0
 variation_seed = 911
 max_quantity = 35
-quantity = 25
+quantity = 23
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Pepper Orange/Area3D" parent_id_path=PackedInt32Array(663179368, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24898842, 0.079937726, 0.3734826)
@@ -757,7 +756,7 @@ position_variation = 0.01
 rotation_variation = 25.0
 variation_seed = 999
 max_quantity = 36
-quantity = 36
+quantity = 22
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Watermelon/Area3D" parent_id_path=PackedInt32Array(2023423376, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7274877, 0.21921843, 0.23921847)
@@ -769,7 +768,7 @@ product_data = ExtResource("59_smqka")
 grid_columns = 10
 grid_rows = 11
 max_quantity = 110
-quantity = 110
+quantity = 66
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Canuck Cola/Area3D" parent_id_path=PackedInt32Array(2109163323, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37810928, 0.10547766, 0.42012143)
@@ -802,9 +801,10 @@ product_data = ExtResource("35_tjbrl")
 grid_columns = 14
 grid_rows = 3
 position_variation = 0.015
-variation_seed = 12298
+rotation_variation = 5.0
+variation_seed = 324
 max_quantity = 42
-quantity = 42
+quantity = 31
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Carrots/Area3D" parent_id_path=PackedInt32Array(456296455, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32734352, 0.015180275, 0.19013982)

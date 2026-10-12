@@ -32,8 +32,21 @@ func set_pending_quantity(
 		pending_orders.erase(product_path)
 	else:
 		pending_orders[product_path] = quantity
-
+	
+	print("Pending Stock Orders: ", pending_orders)
+	
 	_sync_pending_orders.rpc(pending_orders)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_set_pending_quantity(
+	product_path: String,
+	quantity: int
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	set_pending_quantity(product_path, quantity)
 
 
 func get_pending_quantity(product_path: String) -> int:

@@ -33,8 +33,6 @@ func _prewarm_interaction_prompt() -> void:
 	interaction_prompt.visible = false
 
 
-
-
 func _process(_delta: float) -> void:
 	if player_character == null:
 		return
@@ -49,13 +47,37 @@ func _process(_delta: float) -> void:
 	interact_raycast_3d.force_raycast_update()
 
 	var collider: Node3D = get_collider() as Node3D
-	
-	print(collider.get_path() if collider != null else "No collider")
-	
+
 	if collider == null:
 		_clear_interaction()
 		return
 
+	# Scanner targeting.
+	if player_character.get("held_restock_scanner") != null:
+		var scanner: Node3D = player_character.get(
+			"held_restock_scanner"
+		) as Node3D
+
+		if scanner != null and scanner.has_method(
+			"get_targeted_product_display"
+		):
+			var display: Node = scanner.get_targeted_product_display(
+				interact_raycast_3d
+			)
+
+			if display != null:
+				if (
+					scanner.order_selection_active
+					and scanner.selected_product_display != display
+				):
+					scanner.cancel_order_selection()
+
+				_show_scanner_prompt(scanner, display)
+				return
+
+			_clear_scanner_order_selection(scanner)
+
+	# Normal interactions.
 	var interactable: Node3D = _get_interactable(collider)
 
 	if interactable == null:
@@ -79,6 +101,116 @@ func _process(_delta: float) -> void:
 			current_outline_mesh.visible = true
 
 	_update_interaction_prompt(collider, interactable)
+
+
+func _show_scanner_prompt(
+	scanner: Node3D,
+	display: Node
+) -> void:
+	if interaction_prompt == null:
+		return
+
+	if (
+		scanner.is_ordering_window_open()
+		and not scanner.order_selection_active
+		and scanner.get_missing_stock(display) > 0
+	):
+		scanner.begin_order_selection(display)
+
+	var prompt_text: String = ""
+
+	if scanner.is_ordering_window_open():
+		if scanner.order_selection_active:
+			prompt_text = scanner.get_order_selection_prompt()
+		else:
+			var product_data: ProductData = display.get(
+				"product_data"
+			) as ProductData
+
+			var missing: int = scanner.get_missing_stock(display)
+
+			if product_data != null and missing > 0:
+				prompt_text = "[E] Place Order %d %s (Scroll +/-)" % [
+					missing,
+					product_data.display_name
+				]
+			elif product_data != null:
+				prompt_text = "%s - Fully Stocked" % product_data.display_name
+	else:
+		prompt_text = scanner.get_stock_order_prompt(display)
+
+	if prompt_text.is_empty():
+		_hide_prompt()
+		return
+
+	var label: Label3D = interaction_prompt.get_node_or_null(
+		"Label3D"
+	) as Label3D
+
+	if label == null:
+		_hide_prompt()
+		return
+
+	if current_outline_mesh:
+		current_outline_mesh.visible = false
+		current_outline_mesh = null
+
+	current_interactable = null
+
+	label.text = prompt_text
+	label.visible = true
+
+	var area: Area3D = display.get_node_or_null(
+		"Area3D"
+	) as Area3D
+
+	var collision_shape: CollisionShape3D = null
+
+	if area != null:
+		collision_shape = area.get_node_or_null(
+			"CollisionShape3D"
+		) as CollisionShape3D
+
+	if collision_shape != null:
+		var box_shape: BoxShape3D = collision_shape.shape as BoxShape3D
+
+		if box_shape != null:
+			var camera_position: Vector3 = global_position
+
+			var local_camera_position: Vector3 = (
+				collision_shape.global_transform.affine_inverse()
+				* camera_position
+			)
+
+			var half_width: float = box_shape.size.x * 0.5
+			var half_depth: float = box_shape.size.z * 0.5
+			var local_offset: Vector3 = Vector3.ZERO
+
+			if absf(local_camera_position.x) > absf(local_camera_position.z):
+				local_offset.x = signf(local_camera_position.x) * half_width
+			else:
+				local_offset.z = signf(local_camera_position.z) * half_depth
+
+			var world_offset: Vector3 = (
+				collision_shape.global_transform.basis
+				* local_offset
+			)
+
+			interaction_prompt.global_position = (
+				collision_shape.global_position
+				+ Vector3.UP * 0.1
+				+ world_offset
+			)
+		else:
+			interaction_prompt.global_position = (
+				collision_shape.global_position + Vector3.UP * 0.1
+			)
+	else:
+		interaction_prompt.global_position = (
+			display.global_position + Vector3.UP * 0.5
+		)
+
+	interaction_prompt.visible = true
 
 
 func interact() -> void:
@@ -135,7 +267,7 @@ func _get_collision_shape(collider: Node3D) -> CollisionShape3D:
 func _update_interaction_prompt(
 	collider: Node3D,
 	interactable: Node3D
-	) -> void:
+) -> void:
 	if interaction_prompt == null:
 		return
 
@@ -232,10 +364,12 @@ func _hide_prompt() -> void:
 
 		interaction_prompt.visible = false
 
+
 func _clear_interaction() -> void:
 	if current_outline_mesh:
 		current_outline_mesh.visible = false
 		current_outline_mesh = null
+
 	current_interactable = null
 
 	_hide_prompt()
@@ -247,3 +381,11 @@ func set_interaction_enabled(interaction_enabled: bool) -> void:
 	if not interaction_enabled:
 		force_raycast_update()
 		_clear_interaction()
+
+
+func _clear_scanner_order_selection(scanner: Node3D) -> void:
+	if scanner == null:
+		return
+
+	if scanner.order_selection_active:
+		scanner.cancel_order_selection()
