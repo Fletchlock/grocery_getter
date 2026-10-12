@@ -107,12 +107,6 @@ func add_item(product: ProductData) -> bool:
 		item_visuals.size()
 	)
 	
-	print(
-		"ADD DEBUG | cart_items=", cart_items.size(),
-		" item_positions=", item_positions.size(),
-		" item_visuals=", item_visuals.size()
-	)
-	
 	return true
 
 

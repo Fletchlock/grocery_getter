@@ -12,12 +12,6 @@ var _last_purchase: float = 0.0
 	get:
 		return _current_shoppers
 	set(value):
-		print(
-		"CURRENT SHOPPERS SET: ",
-		value,
-		" | PEER: ",
-		multiplayer.get_unique_id()
-	)
 		_current_shoppers = value
 		update_label()
 

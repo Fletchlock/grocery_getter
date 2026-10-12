@@ -1213,9 +1213,6 @@ transform = Transform3D(-1, 0, -2.6226832e-07, 0, 1, 0, 2.6226832e-07, 0, -1, 0,
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00093078613, 0.17451471, 0.05529785)
 shape = SubResource("BoxShape3D_a44bd")
 
-[node name="MeshOutline" parent="ScannerHolder/RestockScanner/Area3D" parent_id_path=PackedInt32Array(542482909, 14597974) index="1" unique_id=322965575]
-visible = false
-
 [editable path="NavigationRegion3D/Items/Bread"]
 [editable path="NavigationRegion3D/Items/Cereal"]
 [editable path="NavigationRegion3D/Items/Corn Can"]
