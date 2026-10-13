@@ -92,3 +92,14 @@ func _get_bag_item_scale(product: ProductData) -> Vector3:
 	)
 
 	return item_scale * scale_factor
+
+
+func get_interaction_prompt_for_player(
+	_player: CharacterBody3D
+) -> String:
+	_clear_take_item_outline()
+	return ""
+
+
+func request_interact(_player: CharacterBody3D) -> void:
+	return
