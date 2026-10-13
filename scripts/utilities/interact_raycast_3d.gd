@@ -110,32 +110,47 @@ func _show_scanner_prompt(
 	if interaction_prompt == null:
 		return
 
-	if (
-		scanner.is_ordering_window_open()
-		and not scanner.order_selection_active
-		and scanner.get_missing_stock(display) > 0
-	):
-		scanner.begin_order_selection(display)
+	var product_data: ProductData = display.get(
+		"product_data"
+	) as ProductData
+
+	if product_data == null:
+		return
+
+	var pending_quantity: int = StockOrderManager.get_pending_quantity(
+		product_data.resource_path
+	)
 
 	var prompt_text: String = ""
 
 	if scanner.is_ordering_window_open():
-		if scanner.order_selection_active:
-			prompt_text = scanner.get_order_selection_prompt()
+		if pending_quantity > 0:
+			if scanner.order_selection_active:
+				scanner.cancel_order_selection()
+
+			prompt_text = "[E] Cancel Order? %d %s" % [
+				pending_quantity,
+				product_data.display_name
+			]
 		else:
-			var product_data: ProductData = display.get(
-				"product_data"
-			) as ProductData
+			if (
+				not scanner.order_selection_active
+				and scanner.get_missing_stock(display) > 0
+			):
+				scanner.begin_order_selection(display)
 
-			var missing: int = scanner.get_missing_stock(display)
+			if scanner.order_selection_active:
+				prompt_text = scanner.get_order_selection_prompt()
+			else:
+				var missing: int = scanner.get_missing_stock(display)
 
-			if product_data != null and missing > 0:
-				prompt_text = "[E] Place Order %d %s (Scroll +/-)" % [
-					missing,
-					product_data.display_name
-				]
-			elif product_data != null:
-				prompt_text = "%s - Fully Stocked" % product_data.display_name
+				if missing > 0:
+					prompt_text = "[E] Place Order %d %s (Scroll +/-)" % [
+						missing,
+						product_data.display_name
+					]
+				else:
+					prompt_text = "%s - Fully Stocked" % product_data.display_name
 	else:
 		prompt_text = scanner.get_stock_order_prompt(display)
 
