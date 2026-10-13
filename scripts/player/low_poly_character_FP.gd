@@ -8,29 +8,31 @@ extends CharacterBody3D
 @onready var interact_raycast_3d: RayCast3D = $FirstPersonCameraPivot/FirstPersonCamera/InteractRaycast3D
 @onready var held_item_holder: Node3D = $FirstPersonCameraPivot/HeldItemHolder
 @onready var held_box_holder: Node3D = $FirstPersonCameraPivot/HeldBoxHolder
+@onready var _spring_arm_pivot: Node3D = $SpringArmPivot
+@onready var _first_person_pivot: Node3D = $FirstPersonCameraPivot
+@onready var armature_node: Node3D = $Armature
+@onready var skeleton: Skeleton3D = $Armature/Skeleton3D
+@onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
+@onready var anim_tree = $AnimationTree
+@onready var collision_shape: CollisionShape3D = $CollisionShape3D
+@onready var cart_pusher: RigidBody3D = $CartPusher
+@onready var _mesh_default_y: float = $Armature.position.y
+@onready var grocery_red: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
+@onready var grocery_blue: MeshInstance3D = $Armature/Skeleton3D/GroceryBlue
+@onready var grocery_green: MeshInstance3D = $Armature/Skeleton3D/GroceryGreen
+@onready var crosshair: Control = $FirstPersonCameraPivot/FirstPersonCamera/UI/Crosshair
+
 
 # Audio
 @onready var footstep_player: AudioStreamPlayer3D = $FirstPersonCameraPivot/FirstPersonCamera/FootstepPlayer
 @onready var audio_listener: AudioListener3D = $AudioListener3D
 
 
-@onready var _spring_arm_pivot: Node3D = $SpringArmPivot
-@onready var _first_person_pivot: Node3D = $FirstPersonCameraPivot
-@export var network_first_person: bool = false
+@export_group("Cart")
+@export var strafe_rotation := 35.0
+var nearby_carts: Array[RigidBody3D] = []
+@export var attached_cart: RigidBody3D = null
 
-
-@onready var armature_node: Node3D = $Armature
-@onready var skeleton: Skeleton3D = $Armature/Skeleton3D
-@onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
-@onready var anim_tree = $AnimationTree
-@onready var _mesh_default_y: float = $Armature.position.y
-@onready var collision_shape: CollisionShape3D = $CollisionShape3D
-@onready var cart_pusher: RigidBody3D = $CartPusher
-
-
-@onready var grocery_red: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
-@onready var grocery_blue: MeshInstance3D = $Armature/Skeleton3D/GroceryBlue
-@onready var grocery_green: MeshInstance3D = $Armature/Skeleton3D/GroceryGreen
 
 # Cart IK refs
 @onready var left_hand_ik: TwoBoneIK3D = $Armature/Skeleton3D/LeftTwoBoneIK3D
@@ -38,11 +40,6 @@ extends CharacterBody3D
 @onready var left_hand_rot: CopyTransformModifier3D = $Armature/Skeleton3D/LeftHandRotationModifier
 @onready var right_hand_rot: CopyTransformModifier3D = $Armature/Skeleton3D/RightHandRotatioinModifier
 
-
-@export_group("Cart")
-@export var strafe_rotation := 35.0
-var nearby_carts: Array[RigidBody3D] = []
-@export var attached_cart: RigidBody3D = null
 
 # === Configuration Properties ===
 @export_group("Camera")
@@ -53,6 +50,7 @@ var nearby_carts: Array[RigidBody3D] = []
 @export var min_zoom := 2.0 ## Minimum camera distance.
 @export var max_zoom := 8.0 ## Maximum camera distance.
 
+
 @export_group("Movement")
 @export var walk_speed : float = 3.5 ## Speed while walking.
 @export var sprint_speed : float = 6.0 ## Speed while sprinting
@@ -61,6 +59,7 @@ var nearby_carts: Array[RigidBody3D] = []
 @export var rotation_speed : float= 12.0 ## Character rotation speed.
 @export var jump_strength : float= 12.0 ## Initial upward force when jumping.
 @export var air_acceleration : float= 12.0 ## Movement acceleration while airborne.
+
 
 @export_group("Network Replication")
 @export var network_position := Vector3.ZERO
@@ -73,6 +72,7 @@ var nearby_carts: Array[RigidBody3D] = []
 @export var network_hat_visible : bool = true
 @export var network_on_moving_platform : bool = false
 @export var network_is_pushing_cart: bool = false
+@export var network_first_person: bool = false
 
 var _network_position_history: Array[Dictionary] = []
 var _network_position_last_received := Vector3.ZERO
@@ -101,11 +101,11 @@ var blink_timer := 0.0
 var blink_progress := -1.0
 var double_blink_pending := false
 
+
 @export_group("Idle Look")
 @export var look_distance: float = 5.0 ## Maximum distance to look at another player.
 @export var look_speed: float = 5.0 ## Speed at which the head turns toward another player.
 @export_range(0.0, 180.0) var look_angle: float = 90.0 ## Maximum angle from forward that the character will look.
-
 @onready var look_at_modifier: LookAtModifier3D = $Armature/Skeleton3D/LookAtModifier3D
 var look_target: Node3D = null
 
@@ -131,13 +131,11 @@ var held_restock_box: RestockBox = null
 var held_restock_box_visual: Node3D = null
 
 # === Held Restock Scanner Variables ===
+@export var network_holding_restock_scanner: bool = false
 var held_restock_scanner: Node3D = null
 var held_restock_scanner_visual: Node3D = null
 var held_restock_scanner_holder: Node3D = null
 var last_restock_wheel_time_usec: int = 0
-
-@export var network_holding_restock_scanner: bool = false
-
 var _network_holding_restock_scanner_last_received: bool = false
 
 
@@ -152,12 +150,12 @@ var _network_holding_restock_scanner_last_received: bool = false
 @export var network_holding_item: bool = false
 @export var network_held_item_path: String = ""
 
+var _network_holding_item_last_received: bool = false
+var _network_held_item_path_last_received: String = ""
+
 @export var network_holding_restock_box: bool = false
 @export var network_restock_box_product_path: String = ""
 @export var network_restock_box_quantity: int = 0
-
-var _network_holding_item_last_received: bool = false
-var _network_held_item_path_last_received: String = ""
 
 var _network_holding_restock_box_last_received: bool = false
 var _network_restock_box_product_path_last_received: String = ""
@@ -199,17 +197,9 @@ func _ready() -> void:
 	# Initialize the AnimationTree.
 	anim_tree.advance_expression_base_node = get_path()
 	anim_tree.active = true
-
-	# Capture the initial placement rotation from the level editor.
-	_last_movement_direction = -global_transform.basis.z
-	#_third_person_root_rotation_y = rotation.y
-	grocery_red.rotation.y = 0.0
-
 		
 	# Set the player's selected character.
-	var character := LobbyManager.get_character(
-		get_multiplayer_authority()
-	)
+	var character := LobbyManager.get_character(get_multiplayer_authority())
 
 	match character:
 		"red":
@@ -231,12 +221,8 @@ func _ready() -> void:
 	_network_position_last_received = network_position
 	_network_velocity_last_received = network_velocity
 	_network_rotation_y_last_received = network_rotation_y
-	_network_velocity_received_time = (
-		Time.get_ticks_usec() / 1000000.0
-	)
-
-	# 
-	_network_position_initialized = false # (Your current last line)
+	_network_velocity_received_time = (Time.get_ticks_usec() / 1000000.0)
+	_network_position_initialized = false
 
 	# --- FIXED MULTIPLAYER SYNCHRONIZER TIMING BUFFER ---
 	# We search through the entire character folder hierarchy dynamically, 
@@ -255,7 +241,9 @@ func _ready() -> void:
 	# If found safely, initialize visibility states cleanly
 	if sync_node != null and is_multiplayer_authority():
 		sync_node.public_visibility = true
-
+	
+	# Set crosshair visibility
+	crosshair.visible = true
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():
@@ -342,48 +330,35 @@ func _toggle_perspective() -> void:
 
 func _set_perspective(first_person: bool) -> void:
 	_first_person = first_person
-
+	
+	crosshair.visible = true
 	grocery_red.visible = false
 	grocery_blue.visible = false
 	grocery_green.visible = false
 
 	if _first_person:
-		# Transfer the current third-person camera yaw
-		# to the player root before switching to first person.
 		rotation.y = _spring_arm_pivot.global_rotation.y
-
-		# Keep the same vertical look angle.
 		_first_person_pivot.rotation.x = _spring_arm_pivot.rotation.x
-
 		_first_person_camera.make_current()
-
 		if interact_raycast_3d:
 			interact_raycast_3d.enabled = true
 
 	else:
-		# Transfer the first-person facing to the third-person camera.
+		crosshair.visible = false
 		_spring_arm_pivot.global_rotation.y = rotation.y
-
-		# Keep the same vertical look angle.
 		_spring_arm_pivot.rotation.x = _first_person_pivot.rotation.x
-
-		# Match the character's facing to the camera direction.
 		var camera_yaw: float = _spring_arm_pivot.global_rotation.y
-
 		var flat_camera_forward: Vector3 = (
 			Vector3.FORWARD.rotated(
 				Vector3.UP,
 				camera_yaw
 			).normalized()
 		)
-
 		_last_movement_direction = flat_camera_forward
-
 		var local_camera_dir: Vector3 = (
 			global_transform.basis.inverse()
 			* flat_camera_forward
 		)
-
 		var target_camera_angle: float = (
 			Vector3.FORWARD.signed_angle_to(
 				local_camera_dir,
