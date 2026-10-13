@@ -17,7 +17,7 @@ extends Node3D
 var last_spawn_point: Marker3D = null
 var shopper_mesh_pool: Array[int] = []
 var spawn_timer: float = 0.0
-
+var last_open_day: int = 0
 
 func _ready() -> void:
 	randomize()
@@ -26,6 +26,7 @@ func _ready() -> void:
 
 	refill_mesh_pool()
 	set_next_spawn_timer()
+
 
 
 func _process(delta: float) -> void:
@@ -44,6 +45,16 @@ func _process(delta: float) -> void:
 		spawn_interval_min = 20
 		spawn_interval_max = 50
 
+	# Spawn the first shopper immediately each day.
+	if last_open_day != DayManager.current_day:
+		last_open_day = DayManager.current_day
+
+		if get_spawned_shopper_count() < max_shoppers:
+			spawn_shopper()
+
+		set_next_spawn_timer()
+		return
+
 	spawn_timer -= delta
 
 	if spawn_timer <= 0.0:
@@ -51,6 +62,7 @@ func _process(delta: float) -> void:
 			spawn_shopper()
 
 		set_next_spawn_timer()
+
 
 
 func set_next_spawn_timer() -> void:
