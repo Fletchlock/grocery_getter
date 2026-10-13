@@ -4,9 +4,9 @@
 resource_name = "Material.001"
 transparency = 1
 cull_mode = 2
+depth_draw_mode = 1
 albedo_color = Color(0.3183718, 0.53393126, 0.96782225, 0.19607843)
 metallic = 0.1
 metallic_specular = 0.2
 roughness = 0.1
-refraction_enabled = true
 refraction_scale = 0.0
