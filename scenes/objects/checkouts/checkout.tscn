@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cw8gy08k5p7ey" path="res://scripts/checkouts/checkout.gd" id="1_ibuna"]
 [ext_resource type="Script" uid="uid://c775jll8k0omd" path="res://scripts/checkouts/checkout_grid.gd" id="2_36puo"]
 [ext_resource type="Script" uid="uid://cjpcpdqhqpcgo" path="res://scripts/carts/cart_grid.gd" id="3_uqttr"]
-[ext_resource type="ArrayMesh" uid="uid://5ogdskgqpk8c" path="res://assets/models/checkouts/shopping_bag_Cube_025.res" id="4_36puo"]
+[ext_resource type="ArrayMesh" uid="uid://du45akcvrhur3" path="res://assets/models/checkouts/shopping_bag_Cube_025.res" id="4_36puo"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ibuna"]
 size = Vector3(0.75454557, 0.7067013, 1.6119537)

@@ -13,7 +13,7 @@ class_name Checkout
 @onready var checkout_grid: CheckoutGrid = $CheckoutGrid
 @onready var bag_grid: CartGrid = $BagGrid
 @onready var bag_point: Marker3D = $BagPoint
-
+@onready var bag_mesh: MeshInstance3D = $BagGrid/BagMesh
 
 # Customers
 var checkout_customer: ShopperAI = null
@@ -23,6 +23,7 @@ var unscanned_items: Array[ProductData] = []
 
 func _ready() -> void:
 	add_to_group("checkout")
+	bag_mesh.hide()
 
 
 func request_checkout(customer: ShopperAI) -> Marker3D:
@@ -68,6 +69,43 @@ func customer_arrived_at_checkout(customer: ShopperAI) -> void:
 			)
 
 	_sync_grid_to_clients(checkout_grid)
+	# Show the checkout bag when the shopper places their items.
+	set_bag_visible.rpc(not checkout_grid.cart_items.is_empty())
+
+
+
+func customer_arrived_at_bag_point(customer: ShopperAI) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if customer != checkout_customer:
+		return
+
+	# Shopper collects their bag.
+	_clear_grid(bag_grid)
+	_sync_grid_to_clients(bag_grid)
+
+	# Release checkout for the next shopper.
+	checkout_customer = null
+
+	if waiting_customers.is_empty():
+		return
+
+	# Promote the first waiting shopper.
+	checkout_customer = waiting_customers.pop_front()
+
+	_move_customer(
+		checkout_customer,
+		checkout_point
+	)
+
+	# Move remaining shoppers forward in the queue.
+	for i: int in range(waiting_customers.size()):
+		_move_customer(
+			waiting_customers[i],
+			waiting_points[i]
+		)
+
 
 
 func can_scan_ai_product(product: ProductData) -> bool:
@@ -108,6 +146,9 @@ func _clear_grid(grid: CartGrid) -> void:
 	while grid.has_items():
 		grid.take_item_at_index(0)
 
+	if grid == bag_grid and multiplayer.is_server():
+		set_bag_visible.rpc(false)
+
 
 func _sync_grid_to_clients(grid: CartGrid) -> void:
 	if not multiplayer.is_server():
@@ -124,6 +165,7 @@ func _sync_grid_to_clients(grid: CartGrid) -> void:
 	grid.sync_cart_state.rpc(product_paths)
 
 
+
 func customer_finished_checkout(customer: ShopperAI) -> void:
 	if not multiplayer.is_server():
 		return
@@ -131,37 +173,19 @@ func customer_finished_checkout(customer: ShopperAI) -> void:
 	if customer != checkout_customer:
 		return
 
-	# The shopper leaves the checkout and walks to the bag point.
+	# Shopper walks to BagPoint to collect their products.
 	customer.set_navigation_target(bag_point.global_position)
 	customer.state = customer.State.BAGGING
 
-	# Clear the previous shopper's items before the next shopper scans.
-	_clear_grid(bag_grid)
-	_sync_grid_to_clients(bag_grid)
-
+	# Clear the checkout grid, but leave BagGrid untouched.
 	_clear_grid(checkout_grid)
 	_sync_grid_to_clients(checkout_grid)
 
 	unscanned_items.clear()
-	checkout_customer = null
 
-	if waiting_customers.is_empty():
-		return
+	# Do not advance the queue yet.
+	# The shopper must collect their bag first.
 
-	# Promote the first waiting shopper.
-	checkout_customer = waiting_customers.pop_front()
-
-	_move_customer(
-		checkout_customer,
-		checkout_point
-	)
-
-	# Move the remaining shoppers forward in the queue.
-	for i: int in range(waiting_customers.size()):
-		_move_customer(
-			waiting_customers[i],
-			waiting_points[i]
-		)
 
 
 func _move_customer(
@@ -177,3 +201,9 @@ func _move_customer(
 		customer.state = customer.State.CHECKOUT
 	else:
 		customer.state = customer.State.CHECKOUT_LINEUP
+
+
+
+@rpc("authority", "call_local", "reliable")
+func set_bag_visible(should_show: bool) -> void:
+	bag_mesh.visible = should_show

@@ -12,6 +12,8 @@ signal finished_shopping
 @onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/npc_shopper_01
 @onready var footstep_player: AudioStreamPlayer3D = $FootstepPlayer
 
+var selected_shopper_mesh: Mesh = null
+
 # Shopping
 @export_group("Shopping")
 @export var shopping_min_points: int = 3
@@ -51,6 +53,7 @@ var target_rotation: float = 0.0
 # Animations
 var current_animation: StringName = &""
 @onready var skeleton_ik_node: SkeletonIK3D = $Armature/Skeleton3D/SkeletonIK3D
+@onready var bag_mesh: MeshInstance3D = $Armature/Skeleton3D/BoneAttachment3D/BagMesh
 
 # Blink
 @export_group("Blink")
@@ -79,10 +82,14 @@ var look_target: Node3D = null
 
 # Network replication
 @export var network_is_grounded : bool = true
+
 @export var state: State = State.IDLE:
 	set(value):
 		state = value
 		update_animation()
+
+		if is_node_ready() and value == State.BAGGING_IDLE:
+			set_bag_active(true)
 
 
 # States
@@ -118,11 +125,23 @@ var checkout_retry_timer: float = 0.0
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
 
 
+
+func set_shopper_mesh(new_mesh: Mesh) -> void:
+	selected_shopper_mesh = new_mesh
+
+	if is_node_ready():
+		body_mesh.mesh = selected_shopper_mesh
+	else:
+		$Armature/Skeleton3D/npc_shopper_01.mesh = selected_shopper_mesh
+
+
+
 func _ready() -> void:
 	
 	add_to_group("shopper_ai")
 	
-	skeleton_ik_node.start()
+	skeleton_ik_node.stop()
+	bag_mesh.hide()
 	
 	blink_timer = randf_range(blink_min_time, blink_max_time)
 
@@ -702,8 +721,12 @@ func _on_navigation_agent_3d_target_reached() -> void:
 
 		if checkout != null:
 			face_marker(checkout.bag_point)
-
-		bagging_timer = 2.0
+			checkout.customer_arrived_at_bag_point(self)
+			
+		# Show bag and start arm IK
+		set_bag_active(true)
+		
+		bagging_timer = 1.0
 		state = State.BAGGING_IDLE
 		return
 				
@@ -858,6 +881,17 @@ func find_nearest_player() -> Node3D:
 		nearest_player = player
 
 	return nearest_player
+
+
+
+func set_bag_active(active: bool) -> void:
+	if active:
+		bag_mesh.show()
+		skeleton_ik_node.start()
+	else:
+		bag_mesh.hide()
+		skeleton_ik_node.stop()
+
 
 
 func play_footstep() -> void:

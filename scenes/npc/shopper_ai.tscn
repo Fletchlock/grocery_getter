@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dgcmed1mohop" path="res://scripts/npc/shopper_ai.gd" id="1_h2sg7"]
 [ext_resource type="ArrayMesh" uid="uid://d0uyecyq5s0kf" path="res://assets/models/npc/oldman_Cube_008.res" id="2_h2sg7"]
-[ext_resource type="ArrayMesh" uid="uid://b12mmwxgg3bpw" path="res://assets/models/checkouts/shopping_bag_AI_Cube_026.res" id="3_mrwlh"]
+[ext_resource type="ArrayMesh" uid="uid://mph1dkpij2ei" path="res://assets/models/checkouts/shopping_bag_AI_Cube_026.res" id="3_mrwlh"]
 [ext_resource type="AnimationLibrary" uid="uid://bdlrg1t411fjv" path="res://assets/animations/low_poly_character_anims.tres" id="3_nqtw5"]
 [ext_resource type="AudioStream" uid="uid://bxk6rpou86l15" path="res://assets/sounds/footstep-on-stone-2.wav" id="4_g3uw4"]
 
