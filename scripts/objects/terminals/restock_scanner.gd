@@ -4,7 +4,7 @@ extends Node3D
 
 var is_available: bool = true
 
-var order_window_open_hour: int = 18
+var order_window_open_hour: int = 8
 var order_window_close_hour: int = 20
 
 var order_selection_active: bool = false

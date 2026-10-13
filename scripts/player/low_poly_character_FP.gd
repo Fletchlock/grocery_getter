@@ -1662,6 +1662,31 @@ func handle_restock_scanner_input(event: InputEvent) -> bool:
 			)
 
 			if display != null:
+				var product_data: ProductData = display.get(
+					"product_data"
+				) as ProductData
+
+				if product_data != null:
+					var product_path: String = product_data.resource_path
+					var pending_quantity: int = (
+						StockOrderManager.get_pending_quantity(product_path)
+					)
+
+					if pending_quantity > 0:
+						if multiplayer.is_server():
+							StockOrderManager.set_pending_quantity(
+								product_path,
+								0
+							)
+						else:
+							StockOrderManager.request_set_pending_quantity.rpc_id(
+								1,
+								product_path,
+								0
+							)
+
+						return true
+
 				held_restock_scanner.begin_order_selection(display)
 
 				if held_restock_scanner.order_selection_active:
