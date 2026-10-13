@@ -92,9 +92,9 @@ path_desired_distance = 0.5
 target_desired_distance = 0.4
 avoidance_enabled = true
 radius = 0.3
-neighbor_distance = 5.0
+neighbor_distance = 4.0
 max_neighbors = 9
-time_horizon_agents = 1.5
+time_horizon_agents = 1.25
 debug_path_custom_color = Color(1, 0, 0, 1)
 
 [node name="BodyCollision" type="CollisionShape3D" parent="." unique_id=1289089239]

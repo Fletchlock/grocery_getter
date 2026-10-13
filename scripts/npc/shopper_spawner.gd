@@ -170,7 +170,10 @@ func _on_shopper_finished_shopping() -> void:
 	if not multiplayer.is_server():
 		return
 
-	shopper_stats.current_shoppers -= 1
+	shopper_stats.current_shoppers = maxi(
+		0,
+		shopper_stats.current_shoppers - 1
+	)
 
 
 func _on_shopper_reached_enter_point() -> void:
