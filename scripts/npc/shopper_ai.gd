@@ -68,6 +68,7 @@ var blink_timer := 0.0
 var blink_progress := -1.0
 var double_blink_pending := false
 var bagging_timer: float = 0.0
+var closed_idle_timer: float = 0.0
 
 # Look at others when in proximity
 @export_group("Idle Look")
@@ -98,6 +99,7 @@ enum State {
 	WAITING_TO_MOVE,
 	MOVING,
 	ENTERING,
+	CLOSED_IDLE,
 	SHOPPING,
 	SHOPPING_IDLE,
 	SHOPPING_WAITING,
@@ -178,6 +180,9 @@ func _physics_process(delta: float) -> void:
 			
 		State.ENTERING:
 			_on_moving(delta)
+			
+		State.CLOSED_IDLE:
+			_on_closed_idle(delta)
 
 		State.SHOPPING:
 			_on_moving(delta)
@@ -242,6 +247,17 @@ func _on_waiting_to_move(delta: float) -> void:
 		var target: Vector3 = get_new_target_location()
 		set_navigation_target(target)
 		state = State.MOVING
+
+
+
+func _on_closed_idle(delta: float) -> void:
+	velocity = Vector3.ZERO
+	navigation_agent_3d.velocity = Vector3.ZERO
+
+	closed_idle_timer -= delta
+
+	if closed_idle_timer <= 0.0:
+		go_to_exit()
 
 
 func get_new_target_location(shopping_wander: bool = false) -> Vector3:
@@ -638,13 +654,30 @@ func face_marker(marker: Marker3D) -> void:
 
 func _on_navigation_agent_3d_target_reached() -> void:
 
+	
 	if state == State.ENTERING:
+		velocity = Vector3.ZERO
+		navigation_agent_3d.velocity = Vector3.ZERO
+
+		# Store closed while shopper was walking to the entrance.
+		if not DayManager.store_open:
+			shopping_list.clear()
+			current_shopping_index = 0
+			current_shopping_point = null
+			shopping_point_checked = false
+
+			closed_idle_timer = 2.0
+			state = State.CLOSED_IDLE
+			return
+
+		# Store is still open. Continue normally.
 		add_to_group("shopper_in_store")
 		reached_enter_point.emit()
-		
+
 		await get_tree().process_frame
 		start_shopping()
 		return
+
 	
 	if state == State.SHOPPING:
 		velocity = Vector3.ZERO
@@ -744,9 +777,23 @@ func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
 		State.BAGGING,
 		State.EXITING
 	]:
-		velocity.x = move_toward(velocity.x, safe_velocity.x, 0.55)
-		velocity.z = move_toward(velocity.z, safe_velocity.z, 0.55)
+		#velocity.x = move_toward(velocity.x, safe_velocity.x, 0.55)
+		#velocity.z = move_toward(velocity.z, safe_velocity.z, 0.55)
+		var acceleration: float = 12.0
+		var delta: float = get_physics_process_delta_time()
 
+		velocity.x = move_toward(
+			velocity.x,
+			safe_velocity.x,
+			acceleration * delta
+		)
+
+		velocity.z = move_toward(
+			velocity.z,
+			safe_velocity.z,
+			acceleration * delta
+		)
+		
 		move_and_slide()
 
 		
@@ -762,8 +809,8 @@ func update_animation() -> void:
 	var new_animation: StringName = &"low_poly_character_anims/idle"
 
 	match state:
-		State.IDLE, State.WAITING_TO_MOVE, State.CHECKOUT_IDLE, \
-		State.CHECKOUT_WAITING, State.CHECKOUT_QUEUE_FULL:
+		State.IDLE, State.WAITING_TO_MOVE, State.CLOSED_IDLE, \
+		State.CHECKOUT_IDLE, State.CHECKOUT_WAITING, State.CHECKOUT_QUEUE_FULL:
 			new_animation = &"low_poly_character_anims/idle"
 
 		State.SHOPPING_IDLE, State.BAGGING_IDLE:
@@ -824,19 +871,6 @@ func blink(delta: float) -> void:
 
 
 func update_idle_look(delta: float) -> void:
-	#var grounded: bool = network_is_grounded
-
-	#if is_multiplayer_authority():
-		#grounded = is_on_floor()
-#
-	#if not grounded:
-		#look_target = null
-		#look_at_modifier.influence = move_toward(
-			#look_at_modifier.influence,
-			#0.0,
-			#look_speed * delta
-		#)
-		#return
 
 	look_target = find_nearest_player()
 
