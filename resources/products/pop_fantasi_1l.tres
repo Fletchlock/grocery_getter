@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://botj1e0segkbb"]
+
+[ext_resource type="ArrayMesh" uid="uid://bobdgqg2j3idp" path="res://assets/models/items/pop_fantasi_1l_Cylinder_013.res" id="1_81mul"]
+[ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_w78rg"]
+
+[resource]
+script = ExtResource("1_w78rg")
+item_id = "pop_fantasi_1l"
+display_name = "Fantasi (1L)"
+product_mesh = ExtResource("1_81mul")
+product_price = 4.0
+reorder_cost = 3.2
+metadata/_custom_type_script = "uid://ce7xl2fesyef6"

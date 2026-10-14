@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://crsgoqps28ved"]
+
+[ext_resource type="ArrayMesh" uid="uid://cbxjw20wxr7mu" path="res://assets/models/items/pop_prof_paprika_can_Cylinder_029.res" id="1_j1xme"]
+[ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_ktxe0"]
+
+[resource]
+script = ExtResource("1_ktxe0")
+item_id = "pop_prof_paprika_can"
+display_name = "Prof Paprika (can)"
+product_mesh = ExtResource("1_j1xme")
+product_price = 2.0
+reorder_cost = 1.6
+metadata/_custom_type_script = "uid://ce7xl2fesyef6"
