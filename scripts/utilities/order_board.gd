@@ -184,7 +184,8 @@ func interact(player: CharacterBody3D) -> void:
 			)
 
 		return
-
+	
+	
 	if multiplayer.is_server() and allow_orders:
 		OrderManager.accept_order(player)
 
