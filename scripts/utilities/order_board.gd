@@ -6,7 +6,7 @@ extends Node3D
 @export var allow_orders: bool = true
 
 @onready var order_label: Label3D = $Label3D
-@onready var scanner_beep_player: AudioStreamPlayer3D = $AcceptOrderArea/ScannerBeepPlayer
+@onready var order_scanner_beep_player: AudioStreamPlayer3D = $AcceptOrderArea/OrderScannerBeepPlayer
 
 
 func _ready() -> void:
@@ -275,20 +275,19 @@ func _submit_product_to_checkout(
 		player_peer_id
 	)
 
+	var checkout: Checkout = (
+		get_tree().get_first_node_in_group("checkout")
+		as Checkout
+	)
+
 	var submitted: bool = false
 
 	if player_order != null:
 		# Existing online-order flow.
 		submitted = OrderManager.submit_product(player, product)
-	else:
+	elif checkout != null:
 		# AI shopper checkout flow.
-		var checkout: Checkout = (
-			get_tree().get_first_node_in_group("checkout")
-			as Checkout
-		)
-
-		if checkout != null:
-			submitted = checkout.scan_ai_product(product)
+		submitted = checkout.scan_ai_product(product)
 
 	if not submitted:
 		return false
@@ -297,16 +296,16 @@ func _submit_product_to_checkout(
 		player._clear_held_item()
 	else:
 		player.clear_held_item.rpc_id(player_peer_id)
-
-	_play_scanner_beep.rpc()
-
+	
+	_play_order_scanner_beep.rpc()
+	
 	return true
 
 
 @rpc("authority", "call_local", "reliable")
-func _play_scanner_beep() -> void:
-	scanner_beep_player.pitch_scale = randf_range(
+func _play_order_scanner_beep() -> void:
+	order_scanner_beep_player.pitch_scale = randf_range(
 		1.0,
 		1.05
 	)
-	scanner_beep_player.play()
+	order_scanner_beep_player.play()

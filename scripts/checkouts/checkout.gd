@@ -20,10 +20,21 @@ var checkout_customer: ShopperAI = null
 var waiting_customers: Array[ShopperAI] = []
 var unscanned_items: Array[ProductData] = []
 
+# Desk Bell
+@onready var desk_bell: AudioStreamPlayer3D = $DeskBellPlayer
+const BELL_WAIT_MINUTES: int = 10
+var last_scan_game_minute: int = 0
+var checkout_active: bool = false
+
 
 func _ready() -> void:
 	add_to_group("checkout")
 	bag_mesh.hide()
+
+
+func _process(_delta: float) -> void:
+	if multiplayer.is_server():
+		_check_checkout_bell()
 
 
 func request_checkout(customer: ShopperAI) -> Marker3D:
@@ -71,7 +82,11 @@ func customer_arrived_at_checkout(customer: ShopperAI) -> void:
 	_sync_grid_to_clients(checkout_grid)
 	# Show the checkout bag when the shopper places their items.
 	set_bag_visible.rpc(not checkout_grid.cart_items.is_empty())
-
+	
+	if not unscanned_items.is_empty():
+		_start_checkout_wait()
+	else:
+		_stop_checkout_wait()
 
 
 func customer_arrived_at_bag_point(customer: ShopperAI) -> void:
@@ -80,7 +95,9 @@ func customer_arrived_at_bag_point(customer: ShopperAI) -> void:
 
 	if customer != checkout_customer:
 		return
-
+	
+	_stop_checkout_wait()
+	
 	# Shopper collects their bag.
 	_clear_grid(bag_grid)
 	_sync_grid_to_clients(bag_grid)
@@ -136,7 +153,10 @@ func scan_ai_product(product: ProductData) -> bool:
 
 	_sync_grid_to_clients(bag_grid)
 
+	_reset_checkout_wait()
+
 	if unscanned_items.is_empty() and checkout_customer != null:
+		_stop_checkout_wait()
 		checkout_customer.checkout_scanning_completed()
 
 	return true
@@ -172,7 +192,9 @@ func customer_finished_checkout(customer: ShopperAI) -> void:
 
 	if customer != checkout_customer:
 		return
-
+	
+	_stop_checkout_wait()
+	
 	# Shopper walks to BagPoint to collect their products.
 	customer.set_navigation_target(bag_point.global_position)
 	customer.state = customer.State.BAGGING
@@ -207,3 +229,53 @@ func _move_customer(
 @rpc("authority", "call_local", "reliable")
 func set_bag_visible(should_show: bool) -> void:
 	bag_mesh.visible = should_show
+
+
+# Bell functions
+func _get_game_minutes() -> int:
+	return (
+		DayManager.current_day * 1440
+		+ DayManager.current_hour * 60
+		+ DayManager.current_minute
+	)
+
+
+func _start_checkout_wait() -> void:
+	if not multiplayer.is_server():
+		return
+
+	checkout_active = true
+	last_scan_game_minute = _get_game_minutes()
+
+
+func _reset_checkout_wait() -> void:
+	if not multiplayer.is_server():
+		return
+
+	last_scan_game_minute = _get_game_minutes()
+
+
+func _stop_checkout_wait() -> void:
+	checkout_active = false
+
+
+func _check_checkout_bell() -> void:
+	if not multiplayer.is_server():
+		return
+
+	if not checkout_active:
+		return
+
+	if checkout_customer == null:
+		return
+
+	if _get_game_minutes() - last_scan_game_minute < BELL_WAIT_MINUTES:
+		return
+
+	_reset_checkout_wait()
+	_play_desk_bell.rpc()
+
+
+@rpc("authority", "call_local", "reliable")
+func _play_desk_bell() -> void:
+	desk_bell.play()
