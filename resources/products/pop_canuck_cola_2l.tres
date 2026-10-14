@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://brt5gnnp1o778"]
+
+[ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_1ynhw"]
+[ext_resource type="ArrayMesh" uid="uid://dnplhvk5ufil8" path="res://assets/models/items/pop_canuck_cola_2l_Cylinder_018.res" id="1_l7joi"]
+
+[resource]
+script = ExtResource("1_1ynhw")
+item_id = "pop_canuck_cola_2l"
+display_name = "Canuck Cola (2L)"
+product_mesh = ExtResource("1_l7joi")
+product_price = 5.0
+reorder_cost = 4.0
+metadata/_custom_type_script = "uid://ce7xl2fesyef6"

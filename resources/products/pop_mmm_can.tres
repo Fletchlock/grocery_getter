@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://ca5pwxswhk0p8"]
+
+[ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_2k2hg"]
+[ext_resource type="ArrayMesh" uid="uid://dqdksa5hxgxen" path="res://assets/models/items/pop_mmm_can_Cylinder_028.res" id="1_jyffe"]
+
+[resource]
+script = ExtResource("1_2k2hg")
+item_id = "pop_mmm_can"
+display_name = "Misty Mountain Mist (can)"
+product_mesh = ExtResource("1_jyffe")
+product_price = 2.0
+reorder_cost = 1.6
+metadata/_custom_type_script = "uid://ce7xl2fesyef6"
