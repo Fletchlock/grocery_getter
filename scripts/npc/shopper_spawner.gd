@@ -6,7 +6,7 @@ extends Node3D
 @export var shopper_scene: PackedScene
 @export var shopper_meshes: Array[Mesh]
 @export var max_shoppers: int = 10
-@export var spawn_interval_min: float = 30.0
+@export var spawn_interval_min: float = 45.0
 @export var spawn_interval_max: float = 60.0
 @export var spawn_points: Array[Marker3D]
 
@@ -39,11 +39,11 @@ func _process(delta: float) -> void:
 
 	# Check if rush hour.
 	if DayManager.rush_hour:
-		spawn_interval_min = 10
-		spawn_interval_max = 20
+		spawn_interval_min = 45
+		spawn_interval_max = 60
 	else:
-		spawn_interval_min = 20
-		spawn_interval_max = 50
+		spawn_interval_min = 60
+		spawn_interval_max = 85
 
 	# Spawn the first shopper immediately each day.
 	if last_open_day != DayManager.current_day:

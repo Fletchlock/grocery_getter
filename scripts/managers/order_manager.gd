@@ -11,21 +11,43 @@ signal order_updated(order: OrderData)
 @export var max_products: int = 6
 @export var min_items: int = 1
 @export var max_items: int = 2
-@export var next_order_delay: float = 30.0
 
+@export_group("Dynamic Order Director")
+@export_range(0, 23) var order_start_hour: int = 8
+@export_range(0, 23) var order_end_hour: int = 21
+
+@export var max_outstanding_orders: int = 2
+
+@export var order_check_interval: float = 30.0
+@export var minimum_order_gap: float = 30.0
+@export var completion_recovery: float = 90.0
+
+@export_range(0.0, 1.0, 0.05) var quiet_order_chance: float = 0.70
+@export_range(0.0, 1.0, 0.05) var normal_order_chance: float = 0.30
+@export_range(0.0, 1.0, 0.05) var rush_order_chance: float = 0.40
+
+@export_group("Order Financial Rules")
+@export var acceptance_time_limit: int = 240
+@export var completion_bonus: float = 0.20
+@export var active_closing_penalty: float = 0.25
+@export var unaccepted_closing_penalty: float = 0.50
 
 var orders: Array[OrderData] = []
 var next_order_id: int = 1
-var shopper_stats: Node3D
+var order_check_timer: float = 0.0
+var time_since_last_order: float = 0.0
+var recovery_timer: float = 0.0
+var order_director_running: bool = false
+var waiting_order_deadlines: Dictionary = {}
+var pending_order_penalties: Dictionary = {}
 
 var timer_sync_accumulator: float = 0.0
-
 const TIMER_SYNC_INTERVAL: float = 0.1
 
 
 func _ready() -> void:
-	#shopper_stats = get_tree().get_first_node_in_group("shopper_stats")
-	pass
+	DayManager.day_started.connect(_on_day_started)
+	DayManager.clock_updated.connect(_on_clock_updated)
 
 func initialize_orders() -> void:
 	if not multiplayer.is_server():
@@ -34,10 +56,49 @@ func initialize_orders() -> void:
 	_initialize_orders()
 
 
+func _initialize_orders() -> void:
+	orders.clear()
+	waiting_order_deadlines.clear()
+	pending_order_penalties.clear()
+	
+	order_check_timer = 0.0
+	time_since_last_order = 0.0
+	recovery_timer = 0.0
+	order_director_running = true
+
+	_sync_orders()
+
+	print("ORDER DIRECTOR: Initialized")
+
+
+func _on_day_started(_day: int) -> void:
+	if not multiplayer.is_server():
+		return
+
+	_initialize_orders()
+
+
+func _on_clock_updated(
+	_day: int,
+	hour: int,
+	minute: int
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if not order_director_running:
+		return
+
+	var current_game_minute: int = hour * 60 + minute
+
+	_check_waiting_order_expiration(current_game_minute)
+
+
 func _process(delta: float) -> void:
 	if not multiplayer.is_server():
 		return
 
+	# Preserve existing active-order timers.
 	if DayManager.store_open:
 		for order: OrderData in orders:
 			if order.state != OrderData.OrderState.ACTIVE:
@@ -45,10 +106,11 @@ func _process(delta: float) -> void:
 
 			_update_order_timer(order, delta)
 
+	# Run the dynamic director.
+	if order_director_running and DayManager.clock_running:
+		_update_order_director(delta)
 
-
-	_sync_completed_orders()
-
+	# Preserve existing multiplayer timer synchronization.
 	timer_sync_accumulator += delta
 
 	if timer_sync_accumulator >= TIMER_SYNC_INTERVAL:
@@ -56,21 +118,144 @@ func _process(delta: float) -> void:
 		_sync_orders()
 
 
-func _initialize_orders() -> void:
-	orders.clear()
+func _update_order_director(delta: float) -> void:
+	# Recovery counts down in real time.
+	if recovery_timer > 0.0:
+		recovery_timer = maxf(recovery_timer - delta, 0.0)
 
-	var player_count: int = LobbyManager.get_players().size()
+	var hour: int = DayManager.current_hour
 
-	print("ORDER MANAGER: Initializing orders")
-	print("ORDER MANAGER: Lobby players = ", player_count)
+	# No new orders outside the generation window.
+	if hour < order_start_hour or hour >= order_end_hour:
+		order_check_timer = 0.0
+		time_since_last_order = 0.0
+		return
 
-	for i: int in player_count:
-		var order: OrderData = _create_order()
-		print("ORDER MANAGER: Created order #", order.order_id)
+	order_check_timer += delta
+	time_since_last_order += delta
 
+	if order_check_timer < order_check_interval:
+		return
+
+	order_check_timer = 0.0
+
+	# Don't generate during recovery.
+	if recovery_timer > 0.0:
+		return
+
+	# Enforce minimum spacing between orders.
+	if time_since_last_order < minimum_order_gap:
+		return
+
+	# Don't exceed the outstanding order limit.
+	if _get_outstanding_order_count() >= max_outstanding_orders:
+		return
+
+	var chance: float = _get_order_arrival_chance(hour)
+
+	if randf() > chance:
+		return
+
+	_create_order()
 	_sync_orders()
 
-	print("ORDER MANAGER: Total orders = ", orders.size())
+	time_since_last_order = 0.0
+
+	print(
+		"ORDER DIRECTOR: Generated order. Outstanding: ",
+		_get_outstanding_order_count()
+	)
+
+
+func _get_outstanding_order_count() -> int:
+	var count: int = 0
+
+	for order: OrderData in orders:
+		if (
+			order.state == OrderData.OrderState.WAITING
+			or order.state == OrderData.OrderState.ACTIVE
+		):
+			count += 1
+
+	return count
+
+
+func _check_waiting_order_expiration(
+	current_game_minute: int
+) -> void:
+	for order: OrderData in orders:
+		if order.state != OrderData.OrderState.WAITING:
+			continue
+
+		if not waiting_order_deadlines.has(order.order_id):
+			continue
+
+		var deadline: int = int(
+			waiting_order_deadlines[order.order_id]
+		)
+
+		if current_game_minute < deadline:
+			continue
+
+		_expire_waiting_order(order)
+
+
+func _expire_waiting_order(order: OrderData) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if order.state != OrderData.OrderState.WAITING:
+		return
+
+	var reorder_cost: float = _get_order_reorder_cost(order)
+
+	var penalty: float = (
+		reorder_cost * unaccepted_closing_penalty
+	)
+
+	pending_order_penalties[order.order_id] = penalty
+
+	waiting_order_deadlines.erase(order.order_id)
+
+	order.state = OrderData.OrderState.CANCELLED
+
+	order_updated.emit(order)
+	_sync_orders()
+
+	print(
+		"ORDER DIRECTOR: Customer cancelled order #",
+		order.order_id,
+		" | Pending penalty: $",
+		snappedf(penalty, 0.01)
+	)
+
+
+func _get_order_reorder_cost(order: OrderData) -> float:
+	var total: float = 0.0
+
+	for item: OrderItem in order.items:
+		if item.product == null:
+			continue
+
+		total += (
+			item.product.reorder_cost
+			* item.quantity
+		)
+
+	return total
+
+
+func _get_order_arrival_chance(hour: int) -> float:
+	if (
+		(hour >= 11 and hour < 13)
+		or (hour >= 16 and hour < 18)
+	):
+		return rush_order_chance
+
+	if hour < 10 or hour >= 20:
+		return quiet_order_chance
+
+	return normal_order_chance
 
 
 func _create_order() -> OrderData:
@@ -104,6 +289,15 @@ func _create_order() -> OrderData:
 		order.items.append(item)
 
 	order.initialize()
+
+	var current_game_minute: int = (
+		DayManager.current_hour * 60
+		+ DayManager.current_minute
+	)
+
+	waiting_order_deadlines[order.order_id] = (
+		current_game_minute + acceptance_time_limit
+	)
 
 	orders.append(order)
 
@@ -170,7 +364,8 @@ func accept_order(player: CharacterBody3D) -> void:
 
 		order.state = OrderData.OrderState.ACTIVE
 		order.accepted_by_peer_id = peer_id
-
+		waiting_order_deadlines.erase(order.order_id)
+		
 		order_updated.emit(order)
 		_sync_orders()
 
@@ -242,20 +437,32 @@ func _update_order_timer(
 
 
 func complete_order(order: OrderData) -> void:
+	if not multiplayer.is_server():
+		return
+
 	if order.state != OrderData.OrderState.ACTIVE:
 		return
 
 	order.state = OrderData.OrderState.COMPLETED
-	
-	var _shopper_stats: Node3D = get_tree().get_first_node_in_group("shopper_stats")
-	
+
+	recovery_timer = completion_recovery
+	order_check_timer = 0.0
+
+	var _shopper_stats: Node3D = get_tree().get_first_node_in_group(
+		"shopper_stats"
+	)
+
 	if _shopper_stats != null:
-		_shopper_stats.record_order(
-			order.current_profit
-		)
+		_shopper_stats.record_order(order.current_profit)
 
 	order_updated.emit(order)
 	_sync_orders()
+
+	print(
+		"ORDER DIRECTOR: Order completed. Recovery: ",
+		completion_recovery,
+		" seconds"
+	)
 
 
 func cancel_order(order: OrderData) -> void:
@@ -274,107 +481,6 @@ func _is_order_complete(order: OrderData) -> bool:
 			return false
 
 	return true
-
-
-func _sync_completed_orders() -> void:
-	var needs_sync: bool = false
-
-	for order: OrderData in orders:
-		if (
-			order.state != OrderData.OrderState.COMPLETED
-			and order.state != OrderData.OrderState.CANCELLED
-		):
-			continue
-
-		if not order.has_meta("replacement_created"):
-			order.set_meta(
-				"replacement_created",
-				true
-			)
-
-			needs_sync = true
-
-			get_tree().create_timer(
-				next_order_delay
-			).timeout.connect(
-				_create_replacement_order.bind(order.order_id)
-			)
-
-	if needs_sync:
-		_sync_orders()
-
-
-func _create_replacement_order(
-	completed_order_id: int
-	) -> void:
-	if not multiplayer.is_server():
-		return
-	
-	if not DayManager.store_open:
-		return
-	
-	if DayManager.current_hour >= DayManager.STORE_CLOSE_HOUR:
-		return
-	
-	var completed_order: OrderData = get_order(
-		completed_order_id
-	)
-
-	if completed_order == null:
-		return
-
-	if (
-		completed_order.state != OrderData.OrderState.COMPLETED
-		and completed_order.state != OrderData.OrderState.CANCELLED
-		):
-		return
-
-	var index: int = orders.find(completed_order)
-
-	if index == -1:
-		return
-
-	var new_order: OrderData = _build_order()
-
-	orders[index] = new_order
-
-	order_generated.emit(new_order)
-	_sync_orders()
-
-
-func _build_order() -> OrderData:
-	var order: OrderData = OrderData.new()
-
-	order.order_id = next_order_id
-	next_order_id += 1
-
-	var item_count: int = randi_range(
-		min_products,
-		max_products
-	)
-
-	var products: Array[ProductData] = available_products.duplicate()
-	products.shuffle()
-
-	item_count = mini(
-		item_count,
-		products.size()
-	)
-
-	for i: int in item_count:
-		var item: OrderItem = OrderItem.new()
-
-		item.product = products[i]
-		item.quantity = randi_range(
-			min_items,
-			max_items
-		)
-
-		order.items.append(item)
-
-	order.initialize()
-
-	return order
 
 
 func _sync_orders() -> void:
