@@ -244,7 +244,11 @@ sky_material = SubResource("ProceduralSkyMaterial_ta2qt")
 background_mode = 2
 sky = SubResource("Sky_ltnn2")
 ambient_light_source = 3
+ssao_enabled = true
+sdfgi_bounce_feedback = 1.19
 glow_enabled = true
+glow_normalized = true
+glow_bloom = 0.15
 fog_enabled = true
 fog_mode = 1
 fog_light_color = Color(0.9607843, 0.9411765, 0.9490196, 1)
@@ -256,6 +260,8 @@ fog_height = -436.59
 fog_height_density = 4.6571
 fog_depth_begin = 0.0
 fog_depth_end = 80.0
+adjustment_enabled = true
+adjustment_saturation = 1.15
 
 [sub_resource type="BoxMesh" id="BoxMesh_8jmo3"]
 
@@ -331,7 +337,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06434679, 1.4540367, 19.198
 script = ExtResource("2_8sngb")
 shopper_scene = ExtResource("3_y7eyy")
 shopper_meshes = Array[Mesh]([ExtResource("4_287kg"), ExtResource("5_a8s8y"), ExtResource("6_riim1")])
-max_shoppers = 0
+max_shoppers = 1
 spawn_points = [NodePath("../ShopperSpawnPoint"), NodePath("../ShopperSpawnPoint2"), NodePath("../ShopperSpawnPoint3"), NodePath("../ShopperSpawnPoint4"), NodePath("../ShopperSpawnPoint5"), NodePath("../ShopperSpawnPoint6")]
 
 [node name="MultiplayerShopperSpawner" type="MultiplayerSpawner" parent="NavigationRegion3D" unique_id=978657063]
@@ -1144,6 +1150,63 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.463, 0, -0.33)
 [node name="CollisionShape3D" parent="StoreSmallGreybox/store_small_windows/StaticBody3D" parent_id_path=PackedInt32Array(253599967, 621884385) index="0" unique_id=65666999]
 shape = SubResource("ConcavePolygonShape3D_mcoed")
 debug_color = Color(0, 0.6, 0.69803923, 1)
+
+[node name="MainLight" parent="StoreSmallGreybox" index="2" unique_id=1812318711]
+light_color = Color(0.688591, 0.73357946, 0.7945195, 1)
+light_energy = 0.4
+light_indirect_energy = 0.3
+
+[node name="MainLight2" parent="StoreSmallGreybox" index="3" unique_id=916032151]
+light_color = Color(0.688591, 0.73357946, 0.7945195, 1)
+light_energy = 0.4
+light_indirect_energy = 0.3
+
+[node name="MainLight3" parent="StoreSmallGreybox" index="4" unique_id=96631742]
+light_color = Color(0.688591, 0.73357946, 0.7945195, 1)
+light_energy = 0.4
+light_indirect_energy = 0.3
+
+[node name="MainLight4" parent="StoreSmallGreybox" index="5" unique_id=1819866197]
+transform = Transform3D(0.9999999, 0, 2.842171e-14, 0, 1, 0, -2.842171e-14, 0, 0.9999999, 0.48378897, 3.6443644, 7.4538264)
+light_color = Color(0.688591, 0.73357946, 0.7945195, 1)
+light_energy = 0.4
+light_indirect_energy = 0.3
+
+[node name="MainLight5" parent="StoreSmallGreybox" index="6" unique_id=1864357828]
+transform = Transform3D(0.9999999, 0, 7.1054274e-15, 0, 1, 0, -7.1054274e-15, 0, 0.9999999, -3.7203097, 3.6443648, 7.449447)
+light_color = Color(0.688591, 0.73357946, 0.7945195, 1)
+light_energy = 0.4
+light_indirect_energy = 0.3
+
+[node name="MainLight6" parent="StoreSmallGreybox" index="7" unique_id=1580914037]
+transform = Transform3D(0.9999999, 0, 2.842171e-14, 0, 1, 0, -2.842171e-14, 0, 0.9999999, 4.5192566, 3.6443644, 7.4538245)
+light_color = Color(0.688591, 0.73357946, 0.7945195, 1)
+light_energy = 0.4
+light_indirect_energy = 0.3
+
+[node name="MainLight7" parent="StoreSmallGreybox" index="8" unique_id=1231384081]
+transform = Transform3D(0.9999999, 0, 7.1054274e-15, 0, 1, 0, -7.1054274e-15, 0, 0.9999999, 0.48678732, 3.6443648, -1.2194507)
+light_color = Color(0.688591, 0.73357946, 0.7945195, 1)
+light_energy = 0.4
+light_indirect_energy = 0.3
+
+[node name="MainLight8" parent="StoreSmallGreybox" index="9" unique_id=215316163]
+transform = Transform3D(0.9999999, 0, 7.1054274e-15, 0, 1, 0, -7.1054274e-15, 0, 0.9999999, -3.7203097, 3.6443648, -1.2194505)
+light_color = Color(0.688591, 0.73357946, 0.7945195, 1)
+light_energy = 0.4
+light_indirect_energy = 0.3
+
+[node name="MainLight9" parent="StoreSmallGreybox" index="10" unique_id=947133882]
+transform = Transform3D(0.9999999, 0, 7.1054274e-15, 0, 1, 0, -7.1054274e-15, 0, 0.9999999, 4.522256, 3.6443648, -1.2194507)
+light_color = Color(0.688591, 0.73357946, 0.7945195, 1)
+light_energy = 0.4
+light_indirect_energy = 0.3
+
+[node name="AreaLight3D" type="AreaLight3D" parent="StoreSmallGreybox" unique_id=1496383947]
+transform = Transform3D(0.9999999, 8.7422634e-08, 8.7422784e-08, -8.7422784e-08, -4.3711385e-08, 1, 8.742264e-08, -0.9999999, -4.3711374e-08, 6.115892, 5.2004457, 7.142899)
+light_color = Color(0.9453657, 0.92488223, 0.9201692, 1)
+light_energy = 6.0
+area_size = Vector2(0.52406883, 2.7724886)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1553420716]
 environment = SubResource("Environment_yliug")

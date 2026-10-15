@@ -3,7 +3,7 @@ extends Node
 
 signal order_generated(order: OrderData)
 signal order_updated(order: OrderData)
-
+signal orders_synced
 
 @export_group("Order Generation")
 @export var available_products: Array[ProductData] = []
@@ -22,7 +22,7 @@ signal order_updated(order: OrderData)
 @export var minimum_order_gap: float = 30.0
 @export var completion_recovery: float = 90.0
 
-@export_range(0.0, 1.0, 0.05) var quiet_order_chance: float = 0.70
+@export_range(0.0, 1.0, 0.05) var quiet_order_chance: float = 0.20
 @export_range(0.0, 1.0, 0.05) var normal_order_chance: float = 0.30
 @export_range(0.0, 1.0, 0.05) var rush_order_chance: float = 0.40
 
@@ -40,6 +40,7 @@ var recovery_timer: float = 0.0
 var order_director_running: bool = false
 var waiting_order_deadlines: Dictionary = {}
 var pending_order_penalties: Dictionary = {}
+var last_settled_day: int = -1
 
 var timer_sync_accumulator: float = 0.0
 const TIMER_SYNC_INTERVAL: float = 0.1
@@ -79,7 +80,7 @@ func _on_day_started(_day: int) -> void:
 
 
 func _on_clock_updated(
-	_day: int,
+	day: int,
 	hour: int,
 	minute: int
 ) -> void:
@@ -91,7 +92,79 @@ func _on_clock_updated(
 
 	var current_game_minute: int = hour * 60 + minute
 
+	if hour >= DayManager.STORE_CLOSE_HOUR:
+		if last_settled_day != day:
+			_settle_closing_orders(day)
+		return
+
 	_check_waiting_order_expiration(current_game_minute)
+
+
+func _settle_closing_orders(day: int) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if last_settled_day == day:
+		return
+
+	var total_penalty: float = 0.0
+
+	# Include orders that expired earlier in the day.
+	for penalty: float in pending_order_penalties.values():
+		total_penalty += penalty
+
+	# Resolve any orders still outstanding at closing.
+	for order: OrderData in orders:
+		var penalty: float = 0.0
+
+		match order.state:
+			OrderData.OrderState.WAITING:
+				penalty = (
+					_get_order_reorder_cost(order)
+					* unaccepted_closing_penalty
+				)
+
+			OrderData.OrderState.ACTIVE:
+				penalty = (
+					_get_order_reorder_cost(order)
+					* active_closing_penalty
+				)
+
+			_:
+				continue
+
+		total_penalty += penalty
+		order.state = OrderData.OrderState.CANCELLED
+
+		waiting_order_deadlines.erase(order.order_id)
+		order_updated.emit(order)
+
+		print(
+			"ORDER CLOSING: Cancelled #",
+			order.order_id,
+			" | Penalty $",
+			snappedf(penalty, 0.01)
+		)
+
+	# Only mark settlement complete after processing the orders.
+	last_settled_day = day
+	pending_order_penalties.clear()
+
+	var stats: Node3D = get_tree().get_first_node_in_group(
+		"shopper_stats"
+	)
+
+	if stats != null and total_penalty > 0.0:
+		stats.adjust_store_cash(-total_penalty)
+
+	_sync_orders()
+
+	print(
+		"ORDER CLOSING: Day ",
+		day,
+		" | Total penalties $",
+		snappedf(total_penalty, 0.01)
+	)
 
 
 func _process(delta: float) -> void:
@@ -453,7 +526,8 @@ func complete_order(order: OrderData) -> void:
 	)
 
 	if _shopper_stats != null:
-		_shopper_stats.record_order(order.current_profit)
+		var payout: float = order.current_profit * (1.0 + completion_bonus)
+		_shopper_stats.record_order(payout)
 
 	order_updated.emit(order)
 	_sync_orders()
@@ -511,6 +585,7 @@ func _sync_orders() -> void:
 		data.append(order_data)
 
 	sync_orders.rpc(data)
+	orders_synced.emit()
 
 
 @rpc("authority", "reliable")
@@ -549,7 +624,8 @@ func sync_orders(
 			)
 
 			order.items.append(item)
-
+		
 		orders.append(order)
-
 		order_updated.emit(order)
+	
+	orders_synced.emit()
