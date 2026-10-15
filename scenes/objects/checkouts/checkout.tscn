@@ -65,7 +65,8 @@ debug_color = Color(0, 0.62352943, 0.5411765, 0.8627451)
 
 [node name="DeskBellPlayer" type="AudioStreamPlayer3D" parent="." unique_id=855594360]
 stream = ExtResource("5_uqttr")
-volume_db = -10.0
+volume_db = -20.0
+unit_size = 8.0
 bus = &"SFX"
 
 [node name="ScannerBeepPlayer" type="AudioStreamPlayer3D" parent="." unique_id=1748470177]

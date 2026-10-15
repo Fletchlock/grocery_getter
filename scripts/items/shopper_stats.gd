@@ -38,34 +38,39 @@ var _last_purchase: float = 0.0
 		
 func _ready() -> void:
 	update_label()
+
+
+func adjust_store_cash(amount: float) -> void:
+	if not multiplayer.is_server():
+		return
+
+	total_sales += amount
+
+	print(
+		"STORE CASH: Change $",
+		snappedf(amount, 0.01),
+		" | Balance $",
+		snappedf(total_sales, 0.01)
+	)
 	
 	
 func record_purchase(purchase_total: float) -> void:
 	if not multiplayer.is_server():
 		return
-		
-	_total_shoppers += 1
-	_total_sales += purchase_total
-	_last_purchase = purchase_total
 
-	update_label()
+	total_shoppers += 1
+	last_purchase = purchase_total
+
+	adjust_store_cash(purchase_total)
 
 
 func record_order(order_total: float) -> void:
 	if not multiplayer.is_server():
 		return
-		
-	_total_sales += order_total
-	_last_purchase = order_total	
-	
-	print(
-		"RECORD ORDER: AFTER TOTAL: $",
-		_total_sales,
-		" | LAST: $",
-		_last_purchase
-	)
-	
-	update_label()
+
+	last_purchase = order_total
+
+	adjust_store_cash(order_total)
 	
 func update_label() -> void:
 	if stats_label == null:

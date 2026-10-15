@@ -78,7 +78,7 @@ _data = {
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_prtv8"]
 resource_local_to_scene = true
-bg_color = Color(0, 0, 0, 0.78431374)
+bg_color = Color(0.07762883, 0.07762881, 0.07762881, 0.7058824)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -91,6 +91,18 @@ expand_margin_bottom = 5.0
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8arff"]
 resource_local_to_scene = true
 bg_color = Color(0.5232661, 0, 0.09202028, 0.78431374)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+expand_margin_left = 10.0
+expand_margin_top = 5.0
+expand_margin_right = 10.0
+expand_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8u6ci"]
+resource_local_to_scene = true
+bg_color = Color(0.18422425, 0.49058664, 0.14325505, 0.7058824)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -127,20 +139,24 @@ layout_mode = 2
 size_flags_vertical = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="TopCenterContainer/VBoxContainer" unique_id=1661235052]
+custom_minimum_size = Vector2(420, 0)
 layout_mode = 2
 offset_transform_enabled = true
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_prtv8")
 
 [node name="ClockLabel" type="Label" parent="TopCenterContainer/VBoxContainer/PanelContainer" unique_id=978800866]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 22
-text = "DAY: 01    TIME: 07:00 AM"
+text = "DAY: 01    TIME: 07:00 AM   $100.00"
+horizontal_alignment = 1
 
 [node name="PanelContainer2" type="PanelContainer" parent="TopCenterContainer/VBoxContainer" unique_id=847848388]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 offset_transform_enabled = true
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_prtv8")
 
 [node name="ClockOutLabel" type="Label" parent="TopCenterContainer/VBoxContainer/PanelContainer2" unique_id=644511282]
@@ -166,10 +182,32 @@ layout_mode = 2
 layout_mode = 2
 offset_transform_enabled = true
 offset_transform_position = Vector2(0, -70)
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_8arff")
 
 [node name="RestockLabel" type="Label" parent="CenterContainer/VBoxContainer/PanelContainer" unique_id=376943300]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 22
-text = "Restock Available Until  8pm!"
+text = "Stock orders close @ 8pm!"
+
+[node name="OnlineOrderPanel" type="PanelContainer" parent="." unique_id=1963261677]
+custom_minimum_size = Vector2(310, 0)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -420.0
+offset_top = 20.0
+offset_right = -110.0
+offset_bottom = 53.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8u6ci")
+
+[node name="OnlineOrderLabel" type="Label" parent="OnlineOrderPanel" unique_id=2090245698]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 22
+text = "Online Order Available (1)"
+horizontal_alignment = 1
