@@ -80,7 +80,7 @@ func start_multiplayer_game() -> void:
 	print("GameManager: Initializing orders in Order Manager.")
 	
 	# Tell order manager to initialize orders.
-	OrderManager.initialize_orders()
+	# Now handled in on_day_started in the order manager OrderManager.initialize_orders()
 	
 	print("GameManager: Starting multiplayer game.")
 
