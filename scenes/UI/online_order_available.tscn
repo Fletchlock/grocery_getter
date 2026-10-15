@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://myobwr6wegii"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8u6ci"]
+resource_local_to_scene = true
+bg_color = Color(0.18422425, 0.49058664, 0.14325505, 0.7058824)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+expand_margin_left = 10.0
+expand_margin_top = 5.0
+expand_margin_right = 10.0
+expand_margin_bottom = 5.0
+
+[node name="OnlineOrderAvailable" type="PanelContainer" unique_id=1388157964]
+custom_minimum_size = Vector2(310, 0)
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -420.0
+offset_top = 20.0
+offset_right = -110.0
+offset_bottom = 53.0
+grow_horizontal = 0
+offset_transform_enabled = true
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8u6ci")
+
+[node name="Label" type="Label" parent="." unique_id=1164776408]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+text = "Online Order Available - 2h30m"
+horizontal_alignment = 1
+vertical_alignment = 1
