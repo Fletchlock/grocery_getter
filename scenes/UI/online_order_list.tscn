@@ -1,18 +1,51 @@
 [gd_scene format=3 uid="uid://c3gc8ev0p8236"]
 
+[ext_resource type="Script" uid="uid://crisj2vxhhv1p" path="res://scripts/UI/online_order_list.gd" id="1_shadn"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_26j03"]
+bg_color = Color(0.24688047, 0.3652949, 0.61561805, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+expand_margin_left = 10.0
+expand_margin_top = 10.0
+expand_margin_right = 10.0
+expand_margin_bottom = 10.0
+
 [node name="OnlineOrderList" type="PanelContainer" unique_id=121303817]
+offset_right = 32.0
+offset_bottom = 120.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_26j03")
+script = ExtResource("1_shadn")
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=794434597]
 layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1694191650]
 layout_mode = 2
 
-[node name="OrderTitle" type="Label" parent="MarginContainer/VBoxContainer" unique_id=346872754]
+[node name="TitleRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=168182767]
 layout_mode = 2
+
+[node name="OrderTitle" type="Label" parent="MarginContainer/VBoxContainer/TitleRow" unique_id=346872754]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
+
+[node name="TimeRemaining" type="Label" parent="MarginContainer/VBoxContainer/TitleRow" unique_id=756629402]
+layout_mode = 2
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
 
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer" unique_id=2146947741]
 layout_mode = 2
 
 [node name="ItemsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=620333546]
 layout_mode = 2
+theme_override_constants/separation = 6
