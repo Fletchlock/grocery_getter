@@ -22,13 +22,13 @@ signal orders_synced
 @export var minimum_order_gap: float = 30.0
 @export var completion_recovery: float = 90.0
 
-@export_range(0.0, 1.0, 0.05) var quiet_order_chance: float = 1.00
+@export_range(0.0, 1.0, 0.05) var quiet_order_chance: float = 0.45
 @export_range(0.0, 1.0, 0.05) var normal_order_chance: float = 0.30
-@export_range(0.0, 1.0, 0.05) var rush_order_chance: float = 0.60
+@export_range(0.0, 1.0, 0.05) var rush_order_chance: float = 0.25
 
 @export_group("Order Financial Rules")
 @export var acceptance_time_limit: int = 240
-@export var completion_bonus: float = 0.20
+@export var completion_bonus: float = 0.25
 @export var active_closing_penalty: float = 0.25
 @export var unaccepted_closing_penalty: float = 0.50
 

@@ -337,7 +337,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06434679, 1.4540367, 19.198
 script = ExtResource("2_8sngb")
 shopper_scene = ExtResource("3_y7eyy")
 shopper_meshes = Array[Mesh]([ExtResource("4_287kg"), ExtResource("5_a8s8y"), ExtResource("6_riim1")])
-max_shoppers = 0
 spawn_points = [NodePath("../ShopperSpawnPoint"), NodePath("../ShopperSpawnPoint2"), NodePath("../ShopperSpawnPoint3"), NodePath("../ShopperSpawnPoint4"), NodePath("../ShopperSpawnPoint5"), NodePath("../ShopperSpawnPoint6")]
 
 [node name="MultiplayerShopperSpawner" type="MultiplayerSpawner" parent="NavigationRegion3D" unique_id=978657063]
