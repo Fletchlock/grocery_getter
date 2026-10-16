@@ -3,7 +3,7 @@ extends Node
 const MAIN_MENU := "res://scenes/menus/main_menu.tscn"
 const LOBBY := "res://scenes/menus/lobby.tscn"
 const PAUSE_MENU := "res://scenes/menus/pause_menu.tscn"
-const TABLET_MENU := "res://scenes/menus/tablet_menu.tscn"
+
 
 var main_menu: Control
 var lobby: Control
@@ -34,10 +34,7 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 		var pause_menu = get_node_or_null("UI/PauseMenu")
 		if pause_menu:
 			pause_menu.free()
-		
-		var tablet_menu = get_node_or_null("UI/TabletMenu")
-		if tablet_menu:
-			tablet_menu.free()
+			
 		
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		
@@ -64,10 +61,6 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 		var pause_menu = get_node_or_null("UI/PauseMenu")
 		if pause_menu:
 			pause_menu.free()
-
-		var tablet_menu = get_node_or_null("UI/TabletMenu")
-		if tablet_menu:
-			tablet_menu.free()
 		
 		if is_instance_valid(main_menu):
 			print("MAIN: Hiding main menu")
@@ -94,17 +87,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			_open_pause_menu()
 		elif GameManager.current_state == GameManager.GameState.PAUSED:
 			_close_pause_menu()
-	
-	if event.is_action_pressed("toggle_order_hud"):
-		if GameManager.current_state == GameManager.GameState.PLAYING:
-			_toggle_tablet_menu()	
+
 
 func _open_pause_menu() -> void:
-	var tablet_menu = get_node_or_null("UI/TabletMenu")
-
-	if tablet_menu:
-		tablet_menu.queue_free()
-	
 	var pause_scene := load(PAUSE_MENU) as PackedScene
 	
 	if pause_scene == null:
@@ -117,8 +102,7 @@ func _open_pause_menu() -> void:
 	
 	GameManager.set_game_state(GameManager.GameState.PAUSED)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	#get_tree().paused = true
-
+	
 
 func _close_pause_menu() -> void:
 	GameManager.set_game_state(GameManager.GameState.PLAYING)
@@ -164,19 +148,3 @@ func open_lobby_browser() -> void:
 	$UI.add_child(lobby_browser)
 
 	main_menu.hide()
-
-
-func _toggle_tablet_menu() -> void:
-	var tablet_menu = get_node_or_null("UI/TabletMenu")
-
-	if tablet_menu == null:
-		var tablet_menu_scene := load(TABLET_MENU) as PackedScene
-
-		if tablet_menu_scene == null:
-			push_error("Could not load tablet menu")
-			return
-
-		tablet_menu = tablet_menu_scene.instantiate()
-		$UI.add_child(tablet_menu)
-
-	tablet_menu.get_node("CanvasLayer/OrderHUD")._toggle_hud()

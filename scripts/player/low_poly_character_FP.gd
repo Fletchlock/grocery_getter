@@ -117,7 +117,6 @@ var is_crouching: bool = false
 var _gravity := -30.0
 var _was_airborne := false
 var _target_zoom := 2.0
-var order_menu_open: bool = false
 var _first_person: bool = true
 var _smoothed_sprint_blend: float = 0.0
 var _smoothed_crouch_blend: float = 0.0
@@ -799,7 +798,6 @@ func _physics_process(delta: float) -> void:
 
 	velocity.y = 0.0
 
-	#if not order_menu_open:
 	var current_acceleration: float = (
 		acceleration
 		if is_on_floor()
@@ -810,10 +808,6 @@ func _physics_process(delta: float) -> void:
 		move_direction * target_move_speed,
 		current_acceleration * delta
 	)
-
-	#if order_menu_open:
-		#velocity.x = 0.0
-		#velocity.z = 0.0
 
 	velocity.y = y_velocity + _gravity * delta
 
