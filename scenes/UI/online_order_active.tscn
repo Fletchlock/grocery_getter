@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://2wowol47x3tk"]
 
+[ext_resource type="Script" uid="uid://dgd0yhej1o8qr" path="res://scripts/UI/order_notification.gd" id="1_tobjv"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8u6ci"]
 resource_local_to_scene = true
 bg_color = Color(0.8334382, 0.5569933, 0.24654213, 0.7058824)
@@ -25,6 +27,7 @@ grow_horizontal = 0
 offset_transform_enabled = true
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_8u6ci")
+script = ExtResource("1_tobjv")
 
 [node name="Label" type="Label" parent="." unique_id=1164776408]
 layout_mode = 2

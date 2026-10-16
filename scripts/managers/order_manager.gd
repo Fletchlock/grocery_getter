@@ -22,9 +22,9 @@ signal orders_synced
 @export var minimum_order_gap: float = 30.0
 @export var completion_recovery: float = 90.0
 
-@export_range(0.0, 1.0, 0.05) var quiet_order_chance: float = 0.20
+@export_range(0.0, 1.0, 0.05) var quiet_order_chance: float = 1.00
 @export_range(0.0, 1.0, 0.05) var normal_order_chance: float = 0.30
-@export_range(0.0, 1.0, 0.05) var rush_order_chance: float = 0.40
+@export_range(0.0, 1.0, 0.05) var rush_order_chance: float = 0.60
 
 @export_group("Order Financial Rules")
 @export var acceptance_time_limit: int = 240
@@ -572,6 +572,9 @@ func _sync_orders() -> void:
 			"time_limit": order.time_limit,
 			"base_profit": order.base_profit,
 			"current_profit": order.current_profit,
+			"acceptance_deadline": int(
+				waiting_order_deadlines.get(order.order_id, -1)
+			),
 			"items": []
 		}
 
@@ -601,6 +604,10 @@ func sync_orders(
 		var order: OrderData = OrderData.new()
 
 		order.order_id = order_data["order_id"]
+		var deadline: int = int(order_data["acceptance_deadline"])
+
+		if deadline >= 0:
+			waiting_order_deadlines[order.order_id] = deadline
 		order.state = order_data["state"]
 		order.accepted_by_peer_id = (
 			order_data["accepted_by_peer_id"]

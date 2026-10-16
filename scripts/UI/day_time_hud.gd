@@ -4,20 +4,17 @@ extends Control
 @onready var clock_label: Label = $TopCenterContainer/VBoxContainer/PanelContainer/ClockLabel
 @onready var panel_container_2: PanelContainer = $TopCenterContainer/VBoxContainer/PanelContainer2
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
-@onready var online_order_panel: PanelContainer = $OnlineOrderPanel
-@onready var online_order_label: Label = $OnlineOrderPanel/OnlineOrderLabel
+@onready var orders_container: VBoxContainer = $OrderNotifications/VBoxContainer
 
-@export var online_order_slide_duration: float = 0.35
-@export var online_order_right_margin: float = 20.0
+@export var available_order_scene: PackedScene
+@export var active_order_scene: PackedScene
 
 var shopper_stats: Node3D = null
-var online_order_tween: Tween
-var online_order_visible: bool = false
-var waiting_order_count: int = -1
-
-
+var available_notifications: Dictionary = {}
+var active_notifications: Dictionary = {}
 
 func _ready() -> void:
+	LobbyManager.lobby_player_updated.connect(_on_lobby_player_updated)
 	DayManager.clock_updated.connect(_on_clock_updated)
 
 	# Display the current clock immediately, in case the clock
@@ -28,11 +25,8 @@ func _ready() -> void:
 		DayManager.current_minute
 	)
 	
-	OrderManager.orders_synced.connect(_update_online_order_panel)
-
-	# Start offscreen without an animation.
-	online_order_panel.position.x = size.x + online_order_panel.size.x
-	_update_online_order_panel()
+	OrderManager.orders_synced.connect(_update_order_notifications)
+	_update_order_notifications()
 	
 
 func _process(_delta: float) -> void:
@@ -45,8 +39,16 @@ func _process(_delta: float) -> void:
 
 
 func _exit_tree() -> void:
+	if LobbyManager.lobby_player_updated.is_connected(_on_lobby_player_updated):
+		LobbyManager.lobby_player_updated.disconnect(_on_lobby_player_updated)
 	if DayManager.clock_updated.is_connected(_on_clock_updated):
 		DayManager.clock_updated.disconnect(_on_clock_updated)
+	if OrderManager.orders_synced.is_connected(_update_order_notifications):
+		OrderManager.orders_synced.disconnect(_update_order_notifications)
+
+
+func _on_lobby_player_updated(_peer_id: int) -> void:
+	_update_active_notifications()
 
 
 func _on_clock_updated(
@@ -55,7 +57,8 @@ func _on_clock_updated(
 	minute: int
 ) -> void:
 	_update_clock_label()
-
+	_update_available_countdowns()
+		
 	# Turn the clock out panel visible when the day is done.
 	panel_container_2.modulate.a = 1.0 if not DayManager.clock_running else 0.0
 
@@ -96,55 +99,242 @@ func _update_clock_label() -> void:
 
 
 func _on_order_changed(_order: OrderData) -> void:
-	_update_online_order_panel()
+	pass
 
 
-func _update_online_order_panel() -> void:
-	var count: int = 0
+func _update_order_notifications() -> void:
+	_update_available_notifications()
+	_update_active_notifications()
+
+
+func _update_available_notifications() -> void:
+	var waiting_ids: Array[int] = []
 
 	for order: OrderData in OrderManager.get_orders():
-		if order.state == OrderData.OrderState.WAITING:
-			count += 1
+		if order.state != OrderData.OrderState.WAITING:
+			continue
 
-	# No change means no new animation is needed.
-	if count == waiting_order_count:
-		return
+		waiting_ids.append(order.order_id)
 
-	waiting_order_count = count
+		if available_notifications.has(order.order_id):
+			continue
 
-	online_order_label.text = "Online Order Available (%d)" % count
+		_add_available_notification(order)
 
-	if count > 0:
-		_slide_online_order_panel(true)
-	else:
-		_slide_online_order_panel(false)
+	for order_id: int in available_notifications.keys():
+		if waiting_ids.has(order_id):
+			continue
+
+		_remove_available_notification(order_id)
 
 
-func _slide_online_order_panel(show_panel: bool) -> void:
-	if online_order_visible == show_panel:
-		return
+func _update_available_countdowns() -> void:
+	for order_id: int in available_notifications.keys():
+		var slot: Control = available_notifications[order_id]
 
-	online_order_visible = show_panel
+		if not is_instance_valid(slot):
+			continue
 
-	if online_order_tween != null and online_order_tween.is_running():
-		online_order_tween.kill()
-
-	var target_x: float = size.x + online_order_panel.size.x
-
-	if show_panel:
-		target_x = (
-			size.x
-			- online_order_panel.size.x
-			- online_order_right_margin
+		var notification: OrderNotification = (
+			slot.get_child(0) as OrderNotification
 		)
 
-	online_order_tween = create_tween()
-	online_order_tween.set_trans(Tween.TRANS_CUBIC)
-	online_order_tween.set_ease(Tween.EASE_OUT)
+		notification.update_acceptance_countdown()
 
-	online_order_tween.tween_property(
-		online_order_panel,
-		"position:x",
-		target_x,
-		online_order_slide_duration
+
+func _add_available_notification(order: OrderData) -> void:
+	var slot: Control = Control.new()
+	slot.name = "OrderSlot_%d" % order.order_id
+	slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	orders_container.add_child(slot)
+
+	var notification: OrderNotification = available_order_scene.instantiate() as OrderNotification
+	slot.add_child(notification)
+
+	notification.order_id = order.order_id
+	notification.acceptance_deadline = int(
+		OrderManager.waiting_order_deadlines.get(
+			order.order_id,
+			-1
+		)
 	)
+
+	notification.update_acceptance_countdown()
+	notification.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+
+	# Reserve the notification's height in the VBoxContainer.
+	var panel_size: Vector2 = notification.get_combined_minimum_size()
+	slot.custom_minimum_size = panel_size
+
+	available_notifications[order.order_id] = slot
+
+	notification.slide_in()
+
+
+func _remove_available_notification(order_id: int) -> void:
+	if not available_notifications.has(order_id):
+		return
+
+	var slot: Control = available_notifications[order_id]
+	available_notifications.erase(order_id)
+
+	var notification: OrderNotification = slot.get_child(0) as OrderNotification
+
+	notification.slide_out()
+	await notification.removal_finished
+
+	if not is_instance_valid(slot):
+		return
+
+	var tween: Tween = create_tween()
+	tween.set_trans(Tween.TRANS_CUBIC)
+	tween.set_ease(Tween.EASE_IN_OUT)
+
+	tween.tween_property(
+		slot,
+		"custom_minimum_size:y",
+		0.0,
+		notification.collapse_duration
+	)
+
+	await tween.finished
+
+	if is_instance_valid(slot):
+		slot.queue_free()
+
+
+func _update_active_notifications() -> void:
+	var existing_ids: Array[int] = []
+
+	for order: OrderData in OrderManager.get_orders():
+		var order_id: int = order.order_id
+
+		if order.state == OrderData.OrderState.ACTIVE:
+			existing_ids.append(order_id)
+
+			if active_notifications.has(order_id):
+				var slot: Control = active_notifications[order_id]
+				var notification: OrderNotification = (
+					slot.get_child(0) as OrderNotification
+				)
+
+				notification.update_active_order(order)
+			else:
+				_add_active_notification(order)
+
+		elif (
+			order.state == OrderData.OrderState.COMPLETED
+			or order.state == OrderData.OrderState.CANCELLED
+		):
+			if not active_notifications.has(order_id):
+				continue
+
+			existing_ids.append(order_id)
+
+			var slot: Control = active_notifications[order_id]
+			var notification: OrderNotification = (
+				slot.get_child(0) as OrderNotification
+			)
+
+			if not notification.result_displayed:
+				notification.show_order_result(order)
+				_finish_active_notification(order_id)
+
+	# Handle orders that disappear from the synchronized list.
+	for order_id: int in active_notifications.keys():
+		if existing_ids.has(order_id):
+			continue
+
+		var slot: Control = active_notifications[order_id]
+		var notification: OrderNotification = (
+			slot.get_child(0) as OrderNotification
+		)
+
+		if notification.result_displayed:
+			continue
+
+		_remove_active_notification(order_id)
+
+
+func _add_active_notification(order: OrderData) -> void:
+	var slot: Control = Control.new()
+	slot.name = "ActiveOrderSlot_%d" % order.order_id
+	slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	orders_container.add_child(slot)
+
+	var notification: OrderNotification = (
+		active_order_scene.instantiate() as OrderNotification
+	)
+
+	slot.add_child(notification)
+
+	notification.order_id = order.order_id
+	notification.set_anchors_and_offsets_preset(
+		Control.PRESET_TOP_RIGHT
+	)
+
+	var panel_size: Vector2 = notification.get_combined_minimum_size()
+	slot.custom_minimum_size = panel_size
+
+	active_notifications[order.order_id] = slot
+
+	notification.update_active_order(order)
+	notification.slide_in()
+
+
+func _remove_active_notification(order_id: int) -> void:
+	if not active_notifications.has(order_id):
+		return
+
+	var slot: Control = active_notifications[order_id]
+	active_notifications.erase(order_id)
+
+	var notification: OrderNotification = (
+		slot.get_child(0) as OrderNotification
+	)
+
+	notification.slide_out()
+	await notification.removal_finished
+
+	if not is_instance_valid(slot):
+		return
+
+	var tween: Tween = create_tween()
+	tween.set_trans(Tween.TRANS_CUBIC)
+	tween.set_ease(Tween.EASE_IN_OUT)
+
+	tween.tween_property(
+		slot,
+		"custom_minimum_size:y",
+		0.0,
+		notification.collapse_duration
+	)
+
+	await tween.finished
+
+	if is_instance_valid(slot):
+		slot.queue_free()
+
+
+func _finish_active_notification(order_id: int) -> void:
+	if not active_notifications.has(order_id):
+		return
+
+	var slot: Control = active_notifications[order_id]
+	var notification: OrderNotification = (
+		slot.get_child(0) as OrderNotification
+	)
+
+	await get_tree().create_timer(
+		notification.result_display_duration
+	).timeout
+
+	if not is_instance_valid(slot):
+		return
+
+	if not active_notifications.has(order_id):
+		return
+
+	_remove_active_notification(order_id)
