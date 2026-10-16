@@ -43,7 +43,10 @@ var nearby_carts: Array[RigidBody3D] = []
 
 # === Configuration Properties ===
 @export_group("Camera")
-@export_range(0.0, 1.0) var mouse_sensitivity := 0.25 ## Mouse camera sensitivity.
+@export var cart_release_fade_alpha: float = 0.25
+@export_range(0.0, 1.0, 0.0001) var mouse_sensitivity: float = 0.0017 ## Mouse camera sensitivity.
+@export_range(0.0, 100.0, 1.0)
+var mouse_smoothing: float = 25.0
 @export var gamepad_sensitivty := 3.0 ## Gamepad camera sensitivity.
 @export var zoom_speed := 1.0 ## Mouse camera zoom speed.
 @export var gamepad_zoom_speed := 2.0 ## Gamepad camera zoom speed.
@@ -111,6 +114,8 @@ var look_target: Node3D = null
 
 # === Internal State Variables ===
 var _camera_input_direction := Vector2.ZERO
+var _mouse_input_direction: Vector2 = Vector2.ZERO
+var _smoothed_mouse_velocity: Vector2 = Vector2.ZERO
 var _last_movement_direction := Vector3.FORWARD
 var is_sprinting: bool = false
 var is_crouching: bool = false
@@ -120,6 +125,8 @@ var _target_zoom := 2.0
 var _first_person: bool = true
 var _smoothed_sprint_blend: float = 0.0
 var _smoothed_crouch_blend: float = 0.0
+var camera_fade_tween: Tween = null
+
 
 # === Held Item Variables ===
 var held_item: ProductData = null
@@ -176,6 +183,9 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	audio_listener.current = is_multiplayer_authority()
+	
+	if not is_multiplayer_authority():
+		crosshair.hide()
 	
 	print(
 		"PLAYER READY: ",
@@ -240,9 +250,7 @@ func _ready() -> void:
 	# If found safely, initialize visibility states cleanly
 	if sync_node != null and is_multiplayer_authority():
 		sync_node.public_visibility = true
-	
-	# Set crosshair visibility
-	crosshair.visible = true
+
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority():
@@ -255,7 +263,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		is_crouching = !is_crouching
 		update_crouch_collision()
 		
-	if event.is_action_pressed("interact"):
+	if event.is_action_pressed("interact") and Input.is_action_just_pressed("interact"):
 		if attached_cart != null:
 			try_release_cart()
 		elif held_restock_scanner != null:
@@ -267,15 +275,15 @@ func _unhandled_input(event: InputEvent) -> void:
 
 		return
 			
-	var is_camera_motion := (
-		event is InputEventMouseMotion
-		and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
-	)
-
-	if is_camera_motion:
-		_camera_input_direction = (
-			event.screen_relative * mouse_sensitivity
-		)
+	#var is_camera_motion := (
+		#event is InputEventMouseMotion
+		#and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
+	#)
+#
+	#if is_camera_motion:
+		#_camera_input_direction = (
+			#event.screen_relative * mouse_sensitivity
+		#)
 		# Mouse wheel zoom.
 	if event is InputEventMouseButton and event.pressed and not _first_person:
 
@@ -296,41 +304,40 @@ func _unhandled_input(event: InputEvent) -> void:
 		event is InputEventMouseMotion
 		and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
 	):
-		_camera_input_direction = (
+		_mouse_input_direction += (
 			event.screen_relative * mouse_sensitivity
 		)
 
 
-func _toggle_perspective() -> void:
-	var target_first_person: bool = not _first_person
-	
-	#Fade to black and back when switching camera
-	var tween: Tween = create_tween()
+func _transition_to_perspective(first_person: bool) -> void:
+	if camera_fade_tween != null:
+		camera_fade_tween.kill()
 
-	tween.tween_property(
+	camera_fade_tween = create_tween()
+
+	camera_fade_tween.tween_property(
 		TransitionManager.fade_rect,
 		"modulate:a",
 		1.0,
-		0.10 #transition speed
+		0.10
 	)
 
-	tween.tween_callback(
+	camera_fade_tween.tween_callback(
 		func() -> void:
-			_set_perspective(target_first_person)
+			_set_perspective(first_person)
 	)
 
-	tween.tween_property(
+	camera_fade_tween.tween_property(
 		TransitionManager.fade_rect,
 		"modulate:a",
 		0.0,
-		0.10 #transition speed
+		0.10
 	)
 
 
 func _set_perspective(first_person: bool) -> void:
 	_first_person = first_person
-	
-	crosshair.visible = true
+		
 	grocery_red.visible = false
 	grocery_blue.visible = false
 	grocery_green.visible = false
@@ -343,7 +350,6 @@ func _set_perspective(first_person: bool) -> void:
 			interact_raycast_3d.enabled = true
 
 	else:
-		crosshair.visible = false
 		_spring_arm_pivot.global_rotation.y = rotation.y
 		_spring_arm_pivot.rotation.x = _first_person_pivot.rotation.x
 		var camera_yaw: float = _spring_arm_pivot.global_rotation.y
@@ -374,7 +380,9 @@ func _set_perspective(first_person: bool) -> void:
 			interact_raycast_3d.enabled = false
 
 	network_first_person = _first_person
-
+	
+	crosshair.visible = is_multiplayer_authority() and _first_person
+	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
@@ -420,7 +428,7 @@ func try_grab_cart(cart: RigidBody3D) -> void:
 
 	attached_cart.grab_cart(self)
 	
-	_toggle_perspective()
+	_transition_to_perspective(false) # Third person
 	if interact_raycast_3d:
 		interact_raycast_3d.set_interaction_enabled(false)
 
@@ -442,7 +450,7 @@ func try_release_cart() -> void:
 		attached_cart.release_cart()
 		attached_cart = null
 		
-		_toggle_perspective()
+		_transition_to_perspective(true) # First person
 		if interact_raycast_3d:
 			interact_raycast_3d.set_interaction_enabled(true)
 
@@ -508,7 +516,6 @@ func _find_active_push_cart() -> RigidBody3D:
 
 
 func _process(delta: float) -> void:
-
 	#Blink
 	if blink_progress < 0.0:
 		blink_timer -= delta
@@ -682,43 +689,62 @@ func _physics_process(delta: float) -> void:
 				* gamepad_sensitivty
 			)
 
-	if _first_person:
-		rotation.y -= (
-			_camera_input_direction.x
-			* delta
+	# Convert accumulated mouse displacement into a rotation rate.
+	var mouse_velocity: Vector2 = _mouse_input_direction / delta
+
+	if mouse_smoothing <= 0.0:
+		# No smoothing: immediate mouse response.
+		_smoothed_mouse_velocity = mouse_velocity
+	else:
+		# Higher percentage = stronger smoothing.
+		var smoothing_speed: float = lerpf(
+			100.0,
+			5.0,
+			mouse_smoothing / 100.0
 		)
 
-		_first_person_pivot.rotation.x -= (
-			_camera_input_direction.y
-			* delta
+		var smoothing_factor: float = (
+			1.0 - exp(-smoothing_speed * delta)
 		)
-		
-		# First person look up /down limits
+
+		_smoothed_mouse_velocity = _smoothed_mouse_velocity.lerp(
+			mouse_velocity,
+			smoothing_factor
+		)
+
+	# Combine mouse and gamepad rotation.
+	var look_rotation: Vector2 = (
+		_smoothed_mouse_velocity * delta
+		+ _camera_input_direction * delta
+	)
+
+	if _first_person:
+		rotation.y -= look_rotation.x
+
+		_first_person_pivot.rotation.x -= look_rotation.y
+
+		# First person look up/down limits
 		_first_person_pivot.rotation.x = clamp(
 			_first_person_pivot.rotation.x,
-			deg_to_rad(-80.0), #up
-			deg_to_rad(80.0)   #down
+			deg_to_rad(-80.0),
+			deg_to_rad(80.0)
 		)
 
 	else:
-		_spring_arm_pivot.rotation.x -= (
-			_camera_input_direction.y
-			* delta
-		)
-		
-		# 3rd person look up / down limits
+		_spring_arm_pivot.rotation.x -= look_rotation.y
+
+		# Third person look up/down limits
 		_spring_arm_pivot.rotation.x = clamp(
 			_spring_arm_pivot.rotation.x,
-			deg_to_rad(-65.0), #up
-			deg_to_rad(40.0)   #down
+			deg_to_rad(-65.0),
+			deg_to_rad(40.0)
 		)
 
-		_spring_arm_pivot.rotation.y -= (
-			_camera_input_direction.x
-			* delta
-		)
+		_spring_arm_pivot.rotation.y -= look_rotation.x
 
+	# Clear accumulated input after applying camera rotation.
 	_camera_input_direction = Vector2.ZERO
+	_mouse_input_direction = Vector2.ZERO
 
 	# Camera Zoom for TPP
 	
@@ -1250,6 +1276,7 @@ func _update_network_position() -> void:
 		armature_node.global_rotation.y = latest_rotation
 		rotation.y = 0.0
 
+
 func update_idle_look(delta: float) -> void:
 	var grounded: bool = network_is_grounded
 
@@ -1692,30 +1719,34 @@ func handle_restock_scanner_input(event: InputEvent) -> bool:
 		held_restock_scanner.confirm_order_selection()
 		return true
 
+	if event.is_action_pressed("restock_increase"):
+		if event is InputEventMouseButton:
+			var current_time_usec: int = Time.get_ticks_usec()
+
+			if current_time_usec - last_restock_wheel_time_usec < 150000:
+				return true
+
+			last_restock_wheel_time_usec = current_time_usec
+
+		held_restock_scanner.adjust_order_quantity(1)
+		return true
+
+
+	if event.is_action_pressed("restock_decrease"):
+		if event is InputEventMouseButton:
+			var current_time_usec: int = Time.get_ticks_usec()
+
+			if current_time_usec - last_restock_wheel_time_usec < 150000:
+				return true
+
+			last_restock_wheel_time_usec = current_time_usec
+
+		held_restock_scanner.adjust_order_quantity(-1)
+		return true
+
+
 	if event is InputEventMouseButton:
 		var mouse_event: InputEventMouseButton = event
-
-		if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			var current_time_usec: int = Time.get_ticks_usec()
-
-			if current_time_usec - last_restock_wheel_time_usec < 150000:
-				return true
-
-			last_restock_wheel_time_usec = current_time_usec
-
-			held_restock_scanner.adjust_order_quantity(1)
-			return true
-
-		if mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			var current_time_usec: int = Time.get_ticks_usec()
-
-			if current_time_usec - last_restock_wheel_time_usec < 150000:
-				return true
-
-			last_restock_wheel_time_usec = current_time_usec
-
-			held_restock_scanner.adjust_order_quantity(-1)
-			return true
 
 		if (
 			mouse_event.button_index == MOUSE_BUTTON_RIGHT

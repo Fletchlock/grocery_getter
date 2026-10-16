@@ -104,7 +104,7 @@ func _update_remaining_time(order: OrderData) -> void:
 	var minutes: int = int(remaining) / 60
 	var seconds: int = int(remaining) % 60
 
-	time_remaining.text = "%dm%02ds" % [
+	time_remaining.text = "   %dm%02ds" % [
 		minutes,
 		seconds
 	]
