@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://c3gc8ev0p8236"]
+
+[node name="OnlineOrderList" type="PanelContainer" unique_id=121303817]
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=794434597]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1694191650]
+layout_mode = 2
+
+[node name="OrderTitle" type="Label" parent="MarginContainer/VBoxContainer" unique_id=346872754]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer" unique_id=2146947741]
+layout_mode = 2
+
+[node name="ItemsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=620333546]
+layout_mode = 2
