@@ -18,12 +18,15 @@ var last_spawn_point: Marker3D = null
 var shopper_mesh_pool: Array[int] = []
 var spawn_timer: float = 0.0
 var last_open_day: int = 0
+var current_max_shoppers: int = 1
 
 func _ready() -> void:
 	randomize()
 
 	multiplayer_shopper_spawner.spawn_function = _spawn_shopper
-
+	
+	DayManager.day_started.connect(_increase_max_shoppers)
+	
 	refill_mesh_pool()
 	set_next_spawn_timer()
 
@@ -49,7 +52,7 @@ func _process(delta: float) -> void:
 	if last_open_day != DayManager.current_day:
 		last_open_day = DayManager.current_day
 
-		if get_spawned_shopper_count() < max_shoppers:
+		if get_spawned_shopper_count() < current_max_shoppers:
 			spawn_shopper()
 
 		set_next_spawn_timer()
@@ -58,7 +61,7 @@ func _process(delta: float) -> void:
 	spawn_timer -= delta
 
 	if spawn_timer <= 0.0:
-		if get_spawned_shopper_count() < max_shoppers:
+		if get_spawned_shopper_count() < current_max_shoppers:
 			spawn_shopper()
 
 		set_next_spawn_timer()
@@ -181,3 +184,12 @@ func _on_shopper_reached_enter_point() -> void:
 		shopper_stats.current_shoppers += 1
 	else:
 		shopper_stats._current_shoppers += 1
+
+
+func _increase_max_shoppers(day_number: int) -> void:
+	if not multiplayer.is_server():
+		return
+	
+	current_max_shoppers = mini(day_number, max_shoppers)
+
+	
