@@ -11,6 +11,7 @@ func load_level(level_path: String) -> void:
 
 	# Remove the currently loaded level, if there is one.
 	if current_level:
+		current_level.get_parent().remove_child(current_level)
 		current_level.queue_free()
 		current_level = null
 
