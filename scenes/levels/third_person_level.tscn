@@ -315,10 +315,7 @@ transparency = 1
 cull_mode = 2
 shading_mode = 0
 albedo_color = Color(0.4, 0.7411765, 1, 0.54901963)
-billboard_mode = 3
-particles_anim_h_frames = 1
-particles_anim_v_frames = 1
-particles_anim_loop = false
+billboard_mode = 2
 
 [sub_resource type="QuadMesh" id="QuadMesh_1uuvo"]
 material = SubResource("StandardMaterial3D_riim1")
@@ -344,25 +341,25 @@ _spawnable_scenes = PackedStringArray("uid://bf8g2pgb7xltd", "uid://sg31a5his64v
 spawn_path = NodePath("..")
 
 [node name="ShopperSpawnPoint" type="Marker3D" parent="NavigationRegion3D" unique_id=2106619218]
-transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, -0.65928304, 4.4468718, -14.582451)
+transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, -16.555439, 0.06903675, 4.0738554)
 
 [node name="ShopperSpawnPoint2" type="Marker3D" parent="NavigationRegion3D" unique_id=448126358]
-transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, -17.547441, 0.110831976, -9.286432)
+transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, -8.788736, 0.1334781, 12.660579)
 
 [node name="ShopperSpawnPoint3" type="Marker3D" parent="NavigationRegion3D" unique_id=786360204]
-transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, -18.359653, 0.110831976, 9.855291)
+transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, -10.120544, 0.06903672, 10.047103)
 
 [node name="ShopperSpawnPoint4" type="Marker3D" parent="NavigationRegion3D" unique_id=2124951772]
-transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, 24.557163, -0.61411643, 8.29713)
+transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, 14.333507, -0.61411643, 5.1583605)
 
 [node name="ShopperSpawnPoint5" type="Marker3D" parent="NavigationRegion3D" unique_id=1213283716]
-transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, 23.370964, 4.201391, 13.825906)
+transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, 9.804437, 0.050502956, 11.617071)
 
 [node name="ShopperSpawnPoint6" type="Marker3D" parent="NavigationRegion3D" unique_id=1660832603]
-transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, 2.271985, 0.046352386, -18.52489)
+transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, 11.202214, 0.046352386, -13.613678)
 
 [node name="ExitPoint" type="Marker3D" parent="NavigationRegion3D" unique_id=1306597697]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.771952, 0.06903673, 7.1624136)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.8925495, 0.06903673, 5.6861057)
 
 [node name="EnterPoint" type="Marker3D" parent="NavigationRegion3D" unique_id=739019597]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.8085127, 0.13347888, 6.074171)
@@ -1390,7 +1387,7 @@ process_material = SubResource("ParticleProcessMaterial_1uuvo")
 draw_pass_1 = SubResource("QuadMesh_1uuvo")
 
 [node name="RoofCollision" parent="RainEffect" index="1" unique_id=1096769871]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10793644, -10.624877, 1.6633673)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.108, -8, 1.663)
 size = Vector3(14.4, 1, 20.4)
 
 [editable path="NavigationRegion3D/Items/Bread"]

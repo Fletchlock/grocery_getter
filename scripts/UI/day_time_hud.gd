@@ -1,11 +1,12 @@
 extends Control
 
 
-@onready var clock_label: Label = $TopCenterContainer/VBoxContainer/PanelContainer/ClockLabel
+@onready var clock_label: Label = $TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ClockLabel
 @onready var panel_container_2: PanelContainer = $TopCenterContainer/VBoxContainer/PanelContainer2
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var orders_container: VBoxContainer = $OrderNotifications/VBoxContainer
 @onready var order_list_container: VBoxContainer = $OrderList/VBoxContainer
+@onready var shopper_count: Label = $TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ShopperCount
 
 @export var available_order_scene: PackedScene
 @export var active_order_scene: PackedScene
@@ -92,7 +93,12 @@ func _update_clock_label() -> void:
 
 	if shopper_stats != null and is_instance_valid(shopper_stats):
 		store_cash = shopper_stats.total_sales
-
+	
+	if shopper_stats != null and is_instance_valid(shopper_stats):
+		shopper_count.text = str(shopper_stats.current_shoppers)
+	else:
+		shopper_count.text = "0"
+	
 	clock_label.text = "DAY: %02d    TIME: %02d:%02d %s    $%.2f" % [
 		DayManager.current_day,
 		display_hour,

@@ -2,7 +2,7 @@ extends PanelContainer
 class_name OnlineOrderList
 
 @export_group("Appearance")
-@export var completed_color: Color = Color("#6EE7A0")
+@export var completed_color: Color = Color("5af243ff")
 @export var incomplete_color: Color = Color.WHITE
 
 @export_group("Animation")

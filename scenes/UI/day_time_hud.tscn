@@ -81,7 +81,7 @@ _data = {
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_prtv8"]
 resource_local_to_scene = true
-bg_color = Color(0.07762883, 0.07762881, 0.07762881, 0.7058824)
+bg_color = Color(0.078431375, 0.078431375, 0.078431375, 0.78431374)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -90,6 +90,9 @@ expand_margin_left = 10.0
 expand_margin_top = 5.0
 expand_margin_right = 10.0
 expand_margin_bottom = 5.0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_26j03"]
+load_path = "res://godot/imported/ShopperIcon.png-3c245b2ae580c760badfa61d134ab832.ctex"
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8arff"]
 resource_local_to_scene = true
@@ -133,14 +136,36 @@ layout_mode = 2
 size_flags_vertical = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="TopCenterContainer/VBoxContainer" unique_id=1661235052]
-custom_minimum_size = Vector2(420, 0)
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 offset_transform_enabled = true
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_prtv8")
 
-[node name="ClockLabel" type="Label" parent="TopCenterContainer/VBoxContainer/PanelContainer" unique_id=978800866]
+[node name="HBoxContainer" type="HBoxContainer" parent="TopCenterContainer/VBoxContainer/PanelContainer" unique_id=2123907904]
 layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TextureRect" type="TextureRect" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer" unique_id=1162855308]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+texture = SubResource("CompressedTexture2D_26j03")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ShopperCount" type="Label" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer" unique_id=1957791321]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 22
+text = "10"
+horizontal_alignment = 1
+
+[node name="ClockLabel" type="Label" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer" unique_id=978800866]
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 22
 text = "DAY: 01    TIME: 07:00 AM   $100.00"
