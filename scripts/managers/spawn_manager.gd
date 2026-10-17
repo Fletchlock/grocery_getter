@@ -61,7 +61,8 @@ func _spawn_player(data: Variant) -> Node:
 		push_error("SpawnManager: No spawn points available!")
 		return player
 
-	var spawn_point := spawn_points[0]
+	var spawn_index: int = (peer_id - 1) % spawn_points.size()
+	var spawn_point: Marker3D = spawn_points[spawn_index]
 
 	#player.position = players.to_local(spawn_point.global_position)
 	player.transform = spawn_point.global_transform
