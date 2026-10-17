@@ -168,6 +168,7 @@ func get_interaction_prompt_position(
 	)
 
 
+
 func interact(player: CharacterBody3D) -> void:
 	if player.network_holding_item:
 		if player.held_item == null:
@@ -175,7 +176,6 @@ func interact(player: CharacterBody3D) -> void:
 
 		if multiplayer.is_server():
 			_submit_product(player)
-
 		else:
 			request_submit_product.rpc_id(
 				1,
@@ -184,16 +184,16 @@ func interact(player: CharacterBody3D) -> void:
 			)
 
 		return
-	
-	
-	if multiplayer.is_server() and allow_orders:
-		OrderManager.accept_order(player)
 
+	if multiplayer.is_server():
+		if allow_orders:
+			OrderManager.accept_order(player)
 	else:
 		request_accept_order.rpc_id(
 			1,
 			player.get_path()
 		)
+
 
 
 func _submit_product(player: CharacterBody3D) -> void:
@@ -203,11 +203,15 @@ func _submit_product(player: CharacterBody3D) -> void:
 	_submit_product_to_checkout(player, player.held_item)
 
 
+
 @rpc("any_peer", "call_remote", "reliable")
 func request_accept_order(
 	player_path: NodePath
 ) -> void:
 	if not multiplayer.is_server():
+		return
+
+	if not allow_orders:
 		return
 
 	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
@@ -223,6 +227,7 @@ func request_accept_order(
 		return
 
 	OrderManager.accept_order(player)
+
 
 
 @rpc("any_peer", "call_remote", "reliable")

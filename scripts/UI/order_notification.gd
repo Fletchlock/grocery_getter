@@ -145,7 +145,7 @@ func show_order_result(order: OrderData) -> void:
 			var seconds: int = remaining % 60
 
 			result_text = "%dm%02ds" % [minutes, seconds]
-			result_color = Color("2f7d25b4")
+			result_color = Color("25631cc8")
 		else:
 			# Completed late, with reduced profit.
 			var loss: float = maxf(

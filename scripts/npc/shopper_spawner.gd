@@ -1,18 +1,34 @@
-
 extends Node3D
 
 
 @export_group("Shopper Spawning")
 @export var shopper_scene: PackedScene
 @export var shopper_meshes: Array[Mesh]
-@export var max_shoppers: int = 10
-@export var spawn_interval_min: float = 45.0
-@export var spawn_interval_max: float = 60.0
 @export var spawn_points: Array[Marker3D]
+
+@export_group("Base Traffic")
+@export var spawn_interval_min: float = 60.0
+@export var spawn_interval_max: float = 85.0
+@export var minimum_spawn_interval: float = 12.0
+
+@export_group("Day Scaling")
+@export var day_growth_rate: float = 0.05
+@export var max_day_traffic_multiplier: float = 2.0
+
+@export_group("Player Scaling")
+@export var traffic_increase_per_player: float = 0.20
+@export var extra_shoppers_per_player: int = 2
+
+@export_group("Shopper Capacity")
+@export var starting_max_shoppers: int = 3
+@export var extra_shoppers_every_n_days: int = 3
+@export var max_shoppers: int = 20
+
+@export_group("Rush Hour")
+@export var rush_hour_multiplier: float = 1.35
 
 @onready var multiplayer_shopper_spawner: MultiplayerSpawner = $"../MultiplayerShopperSpawner"
 @onready var shopper_stats: Node3D = $"../ShopperStats"
-
 
 var last_spawn_point: Marker3D = null
 var shopper_mesh_pool: Array[int] = []
@@ -20,33 +36,24 @@ var spawn_timer: float = 0.0
 var last_open_day: int = 0
 var current_max_shoppers: int = 1
 
+
 func _ready() -> void:
 	randomize()
 
 	multiplayer_shopper_spawner.spawn_function = _spawn_shopper
 	
-	DayManager.day_started.connect(_increase_max_shoppers)
-	
 	refill_mesh_pool()
 	set_next_spawn_timer()
-
 
 
 func _process(delta: float) -> void:
 	if not multiplayer.is_server():
 		return
 
-	# Check if store open before spawning shoppers.
 	if not DayManager.store_open:
 		return
 
-	# Check if rush hour.
-	if DayManager.rush_hour:
-		spawn_interval_min = 45
-		spawn_interval_max = 60
-	else:
-		spawn_interval_min = 60
-		spawn_interval_max = 85
+	current_max_shoppers = get_current_max_shoppers()
 
 	# Spawn the first shopper immediately each day.
 	if last_open_day != DayManager.current_day:
@@ -67,11 +74,74 @@ func _process(delta: float) -> void:
 		set_next_spawn_timer()
 
 
-
 func set_next_spawn_timer() -> void:
-	spawn_timer = randf_range(
-		spawn_interval_min,
-		spawn_interval_max
+	var traffic_multiplier: float = maxf(
+		1.0,
+		get_traffic_multiplier()
+	)
+
+	var minimum: float = maxf(
+		minimum_spawn_interval,
+		spawn_interval_min / traffic_multiplier
+	)
+
+	var maximum: float = maxf(
+		minimum,
+		spawn_interval_max / traffic_multiplier
+	)
+
+	spawn_timer = randf_range(minimum, maximum)
+
+
+# Traffic functions
+
+func get_player_count() -> int:
+	return clampi(multiplayer.get_peers().size() + 1, 1, 4)
+
+
+func get_day_traffic_multiplier() -> float:
+	var days_elapsed: int = maxi(0, DayManager.current_day - 1)
+
+	return minf(
+		1.0 + day_growth_rate * float(days_elapsed),
+		max_day_traffic_multiplier
+	)
+
+
+func get_player_traffic_multiplier() -> float:
+	var additional_players: int = get_player_count() - 1
+
+	return 1.0 + float(additional_players) * traffic_increase_per_player
+
+
+func get_traffic_multiplier() -> float:
+	var multiplier: float = (
+		get_day_traffic_multiplier()
+		* get_player_traffic_multiplier()
+	)
+
+	if DayManager.rush_hour:
+		multiplier *= rush_hour_multiplier
+
+	return multiplier
+
+
+func get_current_max_shoppers() -> int:
+	var days_elapsed: int = maxi(0, DayManager.current_day - 1)
+
+	var day_bonus: int = 0
+
+	if extra_shoppers_every_n_days > 0:
+		day_bonus = days_elapsed / extra_shoppers_every_n_days
+
+	var player_bonus: int = (
+		(get_player_count() - 1) * extra_shoppers_per_player
+	)
+
+	return clampi(
+		starting_max_shoppers + day_bonus + player_bonus,
+		1,
+		max_shoppers
 	)
 
 
@@ -184,12 +254,3 @@ func _on_shopper_reached_enter_point() -> void:
 		shopper_stats.current_shoppers += 1
 	else:
 		shopper_stats._current_shoppers += 1
-
-
-func _increase_max_shoppers(day_number: int) -> void:
-	if not multiplayer.is_server():
-		return
-	
-	current_max_shoppers = mini(day_number, max_shoppers)
-
-	

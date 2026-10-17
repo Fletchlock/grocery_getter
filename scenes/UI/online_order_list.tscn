@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://crisj2vxhhv1p" path="res://scripts/UI/online_order_list.gd" id="1_shadn"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_26j03"]
-bg_color = Color(0.24688047, 0.3652949, 0.61561805, 1)
+bg_color = Color(0.011257494, 0.28827852, 0.66006905, 0.78431374)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
