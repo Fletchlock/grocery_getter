@@ -1231,7 +1231,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 12, 12)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 12, 20)
 
 [node name="Basket_Round_Small2" parent="." unique_id=170338066 instance=ExtResource("22_omwi6")]
-transform = Transform3D(0.9693528, -0.24567302, 0, 0.24567302, 0.9693528, 0, 0, 0, 1, 30.00454, 2.2390244, -10.00016)
+transform = Transform3D(0.9919671, -0.12649667, 0, 0.12649667, 0.9919671, 0, 0, 0, 1, 30.00454, 1.7916288, -10.00016)
 
 [node name="Basket_Round_Med2" parent="." unique_id=1667726170 instance=ExtResource("23_iinoy")]
 transform = Transform3D(0.9919208, -0.12685832, 0, 0.12685832, 0.9919208, 0, 0, 0, 1, 30.014317, 1.7878847, -11.00016)
