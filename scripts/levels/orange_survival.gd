@@ -9,27 +9,29 @@ extends Node3D
 @export_group("Orange Rotation")
 @export var starting_rotation_speed: float = 0.20
 @export var maximum_rotation_speed: float = 0.80
-@export var speed_increase: float = 0.05
+@export var speed_increase: float = 0.08
 @export var speed_increase_interval: float = 10.0
 
 @export_group("Direction Changes")
-@export var minimum_direction_time: float = 3.0
-@export var maximum_direction_time: float = 6.0
-@export var reverse_chance: float = 0.50
+@export var minimum_direction_time: float = 2.0
+@export var maximum_direction_time: float = 5.0
+@export var reverse_chance: float = 0.40
 
 @export_group("Game Start")
 @export var rotation_start_delay: float = 3.0
 
 @export_group("Elimination")
-@export var elimination_height: float = -25.0
+@export var elimination_height: float = -15.0
 
 @export_group("Survival Timer")
-@export var round_duration: float = 15.0
+@export var round_duration: float = 60.0
 
 @export_group("Spectator Camera")
 @export var spectator_follow_offset: Vector3 = Vector3(0.0, 4.0, 8.0)
 @export var spectator_follow_speed: float = 5.0
 
+@export_group("Results")
+@export var results_duration: float = 10.0
 
 # ============================================================
 # NODE REFERENCES
@@ -39,6 +41,12 @@ extends Node3D
 @onready var players: Node3D = $Players
 @onready var multiplayer_spawner: MultiplayerSpawner = $MultiplayerSpawner
 @onready var spectator_camera: Camera3D = $SpectatorCamera
+
+@onready var survival_hud: Control = $CanvasLayer/SurvivalHUD
+@onready var results_ui: Control = $CanvasLayer/ResultsUI
+@onready var results_title: Label = $CanvasLayer/ResultsUI/PanelContainer/VBoxContainer/TitleLabel
+@onready var results_label: Label = $CanvasLayer/ResultsUI/PanelContainer/VBoxContainer/ResultsLabel
+@onready var continue_label: Label = $CanvasLayer/ResultsUI/PanelContainer/VBoxContainer/ContinueLabel
 
 @onready var timer_label: Label = $CanvasLayer/SurvivalHUD/PanelContainer/VBoxContainer/TimerLabel
 @onready var players_label: Label = $CanvasLayer/SurvivalHUD/PanelContainer/VBoxContainer/PlayersLabel
@@ -86,6 +94,14 @@ var spectating_player_id: int = -1
 var spectator_targets: Array[int] = []
 
 var original_spectator_transform: Transform3D
+
+# ============================================================
+# RESULTS STATE
+# ============================================================
+
+var results_time_remaining: float = 0.0
+var results_countdown_active: bool = false
+var last_results_second: int = -1
 
 
 # ============================================================
@@ -155,7 +171,12 @@ func _process(delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	if not multiplayer.is_server():
 		return
+	
+	_update_results_countdown(delta)
 
+	if not orange_rotating:
+		return
+	
 	if not orange_rotating:
 		return
 
@@ -343,7 +364,12 @@ func _finish_round() -> void:
 				winners.append(peer_id)
 
 	_sync_round_finished.rpc(winners)
+	
+	results_time_remaining = results_duration
+	results_countdown_active = true
+	last_results_second = -1
 
+	_broadcast_results_countdown()
 
 @rpc("authority", "call_local", "reliable")
 func _sync_round_finished(winners: Array[int]) -> void:
@@ -358,6 +384,83 @@ func _sync_round_finished(winners: Array[int]) -> void:
 	else:
 		print("ORANGE SURVIVAL: Round complete!")
 		print("ORANGE SURVIVAL: Winners: ", winners)
+	
+	_show_round_results(winners)
+
+# ============================================================
+# RESULTS HUD
+# ============================================================
+
+func _show_round_results(winners: Array[int]) -> void:
+	survival_hud.hide()
+	results_ui.show()
+
+	var local_peer_id: int = multiplayer.get_unique_id()
+
+	if winners.has(local_peer_id):
+		results_title.text = "YOU SURVIVED!"
+	else:
+		results_title.text = "ELIMINATED!"
+
+	if winners.is_empty():
+		results_label.text = "Nobody survived the orange!"
+	else:
+		var result_text: String = "Survivors:\n"
+
+		for peer_id: int in winners:
+			result_text += str(peer_id) + "\n"
+
+		results_label.text = result_text
+
+	continue_label.text = "Waiting to continue..."
+
+
+
+func _update_results_countdown(delta: float) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if not results_countdown_active:
+		return
+
+	results_time_remaining = maxf(
+		results_time_remaining - delta,
+		0.0
+	)
+
+	var current_second: int = ceili(results_time_remaining)
+
+	if current_second != last_results_second:
+		last_results_second = current_second
+		_broadcast_results_countdown()
+
+	if results_time_remaining <= 0.0:
+		results_countdown_active = false
+		_on_results_countdown_finished()
+
+
+func _broadcast_results_countdown() -> void:
+	if not multiplayer.is_server():
+		return
+
+	_sync_results_countdown.rpc(
+		ceili(results_time_remaining)
+	)
+
+
+@rpc("authority", "call_local", "reliable")
+func _sync_results_countdown(seconds: int) -> void:
+	continue_label.text = "Continuing in %d..." % seconds
+
+
+
+func _on_results_countdown_finished() -> void:
+	if not multiplayer.is_server():
+		return
+
+	print("ORANGE SURVIVAL: Returning to grocery store.")
+
+	TransitionManager.return_to_grocery_store()
 
 
 # ============================================================

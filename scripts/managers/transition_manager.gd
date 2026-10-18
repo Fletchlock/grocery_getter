@@ -2,6 +2,7 @@
 extends Node
 
 const ORANGE_SURVIVAL_SCENE: String = "res://scenes/levels/orange_survival.tscn"
+const GROCERY_STORE_SCENE: String = "res://scenes/levels/third_person_level.tscn"
 
 @onready var fade_rect: ColorRect = $CanvasLayer/ColorRect
 
@@ -39,21 +40,47 @@ func start_orange_survival() -> void:
 		return
 
 	transitioning = true
-	_load_orange_survival.rpc()
+	_load_level_on_all_peers.rpc(ORANGE_SURVIVAL_SCENE)
+
+
+
+func return_to_grocery_store() -> void:
+	if not multiplayer.is_server():
+		return
+
+	if transitioning:
+		return
+
+	transitioning = true
+	_load_level_on_all_peers.rpc(GROCERY_STORE_SCENE)
+
+	_complete_day_after_return()
+
+
+func _complete_day_after_return() -> void:
+	# Give the return transition time to finish locally.
+	await get_tree().process_frame
+	await get_tree().process_frame
+
+	if DayManager._day_transition_started:
+		DayManager.complete_minigame_and_advance_day()
+
 
 
 @rpc("authority", "call_local", "reliable")
-func _load_orange_survival() -> void:
-	_perform_transition()
+func _load_level_on_all_peers(level_path: String) -> void:
+	_perform_transition(level_path)
 
 
-func _perform_transition() -> void:
+func _perform_transition(level_path: String) -> void:
+	transitioning = true
+
 	fade_rect.modulate.a = 1.0
 
-	# Wait for the black overlay to render.
+	# Allow the black overlay to render.
 	await get_tree().process_frame
 
-	LevelManager.load_level(ORANGE_SURVIVAL_SCENE)
+	LevelManager.load_level(level_path)
 
 	await get_tree().process_frame
 

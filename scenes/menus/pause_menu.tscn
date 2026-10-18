@@ -29,18 +29,22 @@ layout_mode = 2
 
 [node name="ResumeButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1340069196]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 text = "Resume"
 
 [node name="OptionsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1271620811]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 text = "Options"
 
 [node name="MainMenuButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1731877095]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 text = "Main Menu"
 
 [node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1865207654]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 text = "Quit"
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]

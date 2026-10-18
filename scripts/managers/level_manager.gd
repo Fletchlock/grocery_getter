@@ -7,42 +7,33 @@ var current_level: Node = null
 
 # LOAD LEVEL
 # Loads a level into the Game node.
+
 func load_level(level_path: String) -> void:
-
-	# Remove the currently loaded level, if there is one.
-	if current_level:
-		current_level.get_parent().remove_child(current_level)
-		current_level.queue_free()
-		current_level = null
-
-
-	# Load the requested level scene.
-	var level_scene := load(level_path) as PackedScene
-
-
-	# Make sure the level actually loaded.
+	var level_scene: PackedScene = load(level_path) as PackedScene
 
 	if level_scene == null:
 		push_error("Could not load level: " + level_path)
 		return
 
+	# Remove the previous level.
+	if current_level != null:
+		current_level.get_parent().remove_child(current_level)
+		current_level.queue_free()
+		current_level = null
 
-	# Create an instance of the level.
-	# At this point the level exists in memory, but isn't yet part of the
-	# running scene tree.
+	# Create and load the new level.
 	current_level = level_scene.instantiate()
 
+	var main: Node = get_tree().current_scene
+	var game: Node = main.get_node("Game")
 
-	# Find our Game node.
-	# Your current project structure has the loaded level placed underneath
-	# the Game node.
-	var main := get_tree().current_scene
-	var game := main.get_node("Game")
-
-
-	# Add the level to the Game node.
 	game.add_child(current_level)
-	
+
+	# Minigames manage their own HUDs.
+	if level_path == TransitionManager.ORANGE_SURVIVAL_SCENE:
+		return
+
+	# Normal grocery store HUD.
 	var hud_scene: PackedScene = load(
 		"res://scenes/UI/day_time_hud.tscn"
 	) as PackedScene
@@ -53,6 +44,7 @@ func load_level(level_path: String) -> void:
 
 	var hud: Control = hud_scene.instantiate() as Control
 	current_level.add_child(hud)
+
 	
 
 func unload_level() -> void:
