@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://d1ph3m61jdqxj" path="res://assets/images/food_0022_color_1k.jpg" id="2_7keis"]
 [ext_resource type="Texture2D" uid="uid://bnp4rri21o1sp" path="res://assets/images/food_0022_height_1k.png" id="3_007gi"]
 [ext_resource type="Texture2D" uid="uid://di6x8ro54d2ac" path="res://assets/images/food_0022_normal_direct_1k.png" id="4_hdt1s"]
+[ext_resource type="FontFile" uid="uid://br8fqpsrsbuld" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-BoldItalic.ttf" id="5_007gi"]
 
 [sub_resource type="ORMMaterial3D" id="ORMMaterial3D_ouxn3"]
 albedo_texture = ExtResource("2_7keis")
@@ -16,25 +17,30 @@ uv1_triplanar = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_6aigx"]
 material = SubResource("ORMMaterial3D_ouxn3")
-radius = 15.0
-height = 30.0
+radius = 10.0
+height = 20.0
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_hd853"]
-radius = 15.0
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fdn7i"]
-sky_top_color = Color(0.42533886, 0.06565253, 0.65918356, 1)
-sky_horizon_color = Color(0.12503535, 0.015153149, 0.24409577, 1)
-ground_bottom_color = Color(0.17758846, 0.0003764306, 0.41139224, 1)
-ground_horizon_color = Color(0.29953098, 0.018304605, 0.29278085, 1)
-
-[sub_resource type="Sky" id="Sky_mbahj"]
-sky_material = SubResource("ProceduralSkyMaterial_fdn7i")
+radius = 10.0
 
 [sub_resource type="Environment" id="Environment_45b30"]
-background_mode = 2
-sky = SubResource("Sky_mbahj")
+background_mode = 1
+background_color = Color(0, 0.106943674, 0.20267391, 1)
+ambient_light_source = 2
+ambient_light_color = Color(1, 0.7993876, 0.625741, 1)
+ambient_light_energy = 1.2
 glow_enabled = true
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_7keis"]
+properties/0/path = NodePath("Orange:rotation")
+properties/0/spawn = false
+properties/0/replication_mode = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hd853"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="FontVariation" id="FontVariation_007gi"]
+base_font = ExtResource("5_007gi")
 
 [node name="OrangeSurvival" type="Node3D" unique_id=411679754]
 script = ExtResource("1_mbahj")
@@ -55,20 +61,78 @@ spawn_path = NodePath("../Players")
 [node name="SpawnPoints" type="Node3D" parent="." unique_id=577713836]
 
 [node name="SpawnPoint1" type="Marker3D" parent="SpawnPoints" unique_id=1039915510]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, -2)
 
 [node name="SpawnPoint2" type="Marker3D" parent="SpawnPoints" unique_id=1308743335]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 21, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 12, 0)
 
 [node name="SpawnPoint3" type="Marker3D" parent="SpawnPoints" unique_id=576566616]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 2)
 
 [node name="SpawnPoint4" type="Marker3D" parent="SpawnPoints" unique_id=207840180]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 21, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 12, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=321550915]
 environment = SubResource("Environment_45b30")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1099457180]
-transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+transform = Transform3D(-0.87001, -0.4930177, -0.0040312377, -0.0098082125, 0.00913227, 0.9999102, -0.49293667, 0.8699715, -0.012780823, 0, 0, 0)
+light_energy = 1.2
 shadow_enabled = true
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1905251731]
+replication_config = SubResource("SceneReplicationConfig_7keis")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=44772536]
+
+[node name="SurvivalHUD" type="Control" parent="CanvasLayer" unique_id=343110333]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/SurvivalHUD" unique_id=2001790633]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 50.0
+grow_horizontal = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, 80)
+theme_override_styles/panel = SubResource("StyleBoxFlat_hd853")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/SurvivalHUD/PanelContainer" unique_id=1822972544]
+layout_mode = 2
+
+[node name="PlayersLabel" type="Label" parent="CanvasLayer/SurvivalHUD/PanelContainer/VBoxContainer" unique_id=1310171718]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.627451)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("5_007gi")
+theme_override_font_sizes/font_size = 26
+text = "Players Remaining: 2/2"
+
+[node name="TimerLabel" type="Label" parent="CanvasLayer/SurvivalHUD/PanelContainer/VBoxContainer" unique_id=1482556738]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.9999998, 0.7515134, 0.2795927, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.2627451)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 6
+theme_override_constants/outline_size = 18
+theme_override_fonts/font = SubResource("FontVariation_007gi")
+theme_override_font_sizes/font_size = 60
+text = "01:00"
+
+[node name="SpectatorCamera" type="Camera3D" parent="." unique_id=164285949]
+transform = Transform3D(1, 0, 0, 0, 0.95105654, 0.309017, 0, -0.309017, 0.95105654, 0, 11, 8.5)
