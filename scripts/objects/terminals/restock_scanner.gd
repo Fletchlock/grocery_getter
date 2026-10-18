@@ -102,7 +102,7 @@ func adjust_order_quantity(direction: int) -> void:
 		else:
 			selected_order_quantity = mini(
 				selected_max_quantity,
-				(int(selected_order_quantity / 10) + 1) * 10
+				(floori(float(selected_order_quantity) / 10.0) + 1) * 10
 			)
 
 

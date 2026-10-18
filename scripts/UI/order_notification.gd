@@ -80,9 +80,10 @@ func update_acceptance_countdown() -> void:
 		acceptance_deadline - current_minute,
 		0
 	)
-
-	var hours: int = remaining / 60
-	var minutes: int = remaining % 60
+	
+	var total_minutes: int = int(remaining)
+	var hours: int = floori(remaining / 60.0)
+	var minutes: int = total_minutes % 60
 
 	notification_label.text = (
 		"New Order - %dh%02dm"
@@ -106,8 +107,11 @@ func update_active_order(order: OrderData) -> void:
 		0
 	)
 
-	var minutes: int = remaining / 60
-	var seconds: int = remaining % 60
+	
+	var total_seconds: int = int(remaining)
+	var minutes: int = floori(remaining / 60.0)
+	var seconds: int = total_seconds % 60
+
 
 	notification_label.text = "Order %02d - %s - %dm%02ds" % [
 		order.order_id,
@@ -141,8 +145,9 @@ func show_order_result(order: OrderData) -> void:
 				0
 			)
 
-			var minutes: int = remaining / 60
-			var seconds: int = remaining % 60
+			var total_seconds: int = int(remaining)
+			var minutes: int = floori(remaining / 60.0)
+			var seconds: int = total_seconds % 60
 
 			result_text = "%dm%02ds" % [minutes, seconds]
 			result_color = Color("25631cc8")

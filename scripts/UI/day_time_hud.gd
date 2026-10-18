@@ -58,7 +58,7 @@ func _on_lobby_player_updated(_peer_id: int) -> void:
 
 
 func _on_clock_updated(
-	day: int,
+	_day: int,
 	hour: int,
 	minute: int
 ) -> void:
@@ -146,11 +146,11 @@ func _update_available_countdowns() -> void:
 		if not is_instance_valid(slot):
 			continue
 
-		var notification: OrderNotification = (
+		var notification_text: OrderNotification = (
 			slot.get_child(0) as OrderNotification
 		)
 
-		notification.update_acceptance_countdown()
+		notification_text.update_acceptance_countdown()
 
 
 func _add_available_notification(order: OrderData) -> void:
@@ -160,27 +160,27 @@ func _add_available_notification(order: OrderData) -> void:
 
 	orders_container.add_child(slot)
 
-	var notification: OrderNotification = available_order_scene.instantiate() as OrderNotification
-	slot.add_child(notification)
+	var notification_text: OrderNotification = available_order_scene.instantiate() as OrderNotification
+	slot.add_child(notification_text)
 
-	notification.order_id = order.order_id
-	notification.acceptance_deadline = int(
+	notification_text.order_id = order.order_id
+	notification_text.acceptance_deadline = int(
 		OrderManager.waiting_order_deadlines.get(
 			order.order_id,
 			-1
 		)
 	)
 
-	notification.update_acceptance_countdown()
-	notification.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	notification_text.update_acceptance_countdown()
+	notification_text.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 
 	# Reserve the notification's height in the VBoxContainer.
-	var panel_size: Vector2 = notification.get_combined_minimum_size()
+	var panel_size: Vector2 = notification_text.get_combined_minimum_size()
 	slot.custom_minimum_size = panel_size
 
 	available_notifications[order.order_id] = slot
 
-	notification.slide_in()
+	notification_text.slide_in()
 
 
 func _remove_available_notification(order_id: int) -> void:
@@ -190,10 +190,10 @@ func _remove_available_notification(order_id: int) -> void:
 	var slot: Control = available_notifications[order_id]
 	available_notifications.erase(order_id)
 
-	var notification: OrderNotification = slot.get_child(0) as OrderNotification
+	var notification_text: OrderNotification = slot.get_child(0) as OrderNotification
 
-	notification.slide_out()
-	await notification.removal_finished
+	notification_text.slide_out()
+	await notification_text.removal_finished
 
 	if not is_instance_valid(slot):
 		return
@@ -206,7 +206,7 @@ func _remove_available_notification(order_id: int) -> void:
 		slot,
 		"custom_minimum_size:y",
 		0.0,
-		notification.collapse_duration
+		notification_text.collapse_duration
 	)
 
 	await tween.finished
@@ -226,11 +226,11 @@ func _update_active_notifications() -> void:
 
 			if active_notifications.has(order_id):
 				var slot: Control = active_notifications[order_id]
-				var notification: OrderNotification = (
+				var notification_text: OrderNotification = (
 					slot.get_child(0) as OrderNotification
 				)
 
-				notification.update_active_order(order)
+				notification_text.update_active_order(order)
 			else:
 				_add_active_notification(order)
 
@@ -244,12 +244,12 @@ func _update_active_notifications() -> void:
 			existing_ids.append(order_id)
 
 			var slot: Control = active_notifications[order_id]
-			var notification: OrderNotification = (
+			var notification_text: OrderNotification = (
 				slot.get_child(0) as OrderNotification
 			)
 
-			if not notification.result_displayed:
-				notification.show_order_result(order)
+			if not notification_text.result_displayed:
+				notification_text.show_order_result(order)
 				_finish_active_notification(order_id)
 
 	# Handle orders that disappear from the synchronized list.
@@ -258,11 +258,11 @@ func _update_active_notifications() -> void:
 			continue
 
 		var slot: Control = active_notifications[order_id]
-		var notification: OrderNotification = (
+		var notification_text: OrderNotification = (
 			slot.get_child(0) as OrderNotification
 		)
 
-		if notification.result_displayed:
+		if notification_text.result_displayed:
 			continue
 
 		_remove_active_notification(order_id)
@@ -275,24 +275,24 @@ func _add_active_notification(order: OrderData) -> void:
 
 	orders_container.add_child(slot)
 
-	var notification: OrderNotification = (
+	var notification_text: OrderNotification = (
 		active_order_scene.instantiate() as OrderNotification
 	)
 
-	slot.add_child(notification)
+	slot.add_child(notification_text)
 
-	notification.order_id = order.order_id
-	notification.set_anchors_and_offsets_preset(
+	notification_text.order_id = order.order_id
+	notification_text.set_anchors_and_offsets_preset(
 		Control.PRESET_TOP_RIGHT
 	)
 
-	var panel_size: Vector2 = notification.get_combined_minimum_size()
+	var panel_size: Vector2 = notification_text.get_combined_minimum_size()
 	slot.custom_minimum_size = panel_size
 
 	active_notifications[order.order_id] = slot
 
-	notification.update_active_order(order)
-	notification.slide_in()
+	notification_text.update_active_order(order)
+	notification_text.slide_in()
 
 
 func _remove_active_notification(order_id: int) -> void:
@@ -302,12 +302,12 @@ func _remove_active_notification(order_id: int) -> void:
 	var slot: Control = active_notifications[order_id]
 	active_notifications.erase(order_id)
 
-	var notification: OrderNotification = (
+	var notification_text: OrderNotification = (
 		slot.get_child(0) as OrderNotification
 	)
 
-	notification.slide_out()
-	await notification.removal_finished
+	notification_text.slide_out()
+	await notification_text.removal_finished
 
 	if not is_instance_valid(slot):
 		return
@@ -320,7 +320,7 @@ func _remove_active_notification(order_id: int) -> void:
 		slot,
 		"custom_minimum_size:y",
 		0.0,
-		notification.collapse_duration
+		notification_text.collapse_duration
 	)
 
 	await tween.finished
@@ -334,12 +334,12 @@ func _finish_active_notification(order_id: int) -> void:
 		return
 
 	var slot: Control = active_notifications[order_id]
-	var notification: OrderNotification = (
+	var notification_text: OrderNotification = (
 		slot.get_child(0) as OrderNotification
 	)
 
 	await get_tree().create_timer(
-		notification.result_display_duration
+		notification_text.result_display_duration
 	).timeout
 
 	if not is_instance_valid(slot):

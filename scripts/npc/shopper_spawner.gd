@@ -126,13 +126,16 @@ func get_traffic_multiplier() -> float:
 	return multiplier
 
 
+
 func get_current_max_shoppers() -> int:
 	var days_elapsed: int = maxi(0, DayManager.current_day - 1)
 
 	var day_bonus: int = 0
 
 	if extra_shoppers_every_n_days > 0:
-		day_bonus = days_elapsed / extra_shoppers_every_n_days
+		day_bonus = floori(
+			float(days_elapsed) / float(extra_shoppers_every_n_days)
+		)
 
 	var player_bonus: int = (
 		(get_player_count() - 1) * extra_shoppers_per_player
@@ -143,6 +146,7 @@ func get_current_max_shoppers() -> int:
 		1,
 		max_shoppers
 	)
+
 
 
 func get_active_shopper_count() -> int:
