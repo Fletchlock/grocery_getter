@@ -31,6 +31,7 @@ TransitionManager="*uid://bnrp3fpda0ylt"
 OrderManager="*uid://dnla4fxwa5v6j"
 DayManager="*uid://dg2kxouarefn2"
 StockOrderManager="*uid://crunbndowdwf6"
+StoreManager="*uid://rm40u211r6ke"
 
 [debug]
 

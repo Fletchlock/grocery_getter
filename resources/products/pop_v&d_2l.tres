@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://cnkcji1siqb0a"]
 
-[ext_resource type="ArrayMesh" uid="uid://dvwju1htmwvtm" path="res://assets/models/items/pop_v&d_2l_Cylinder_023.res" id="1_0nqqq"]
+[ext_resource type="ArrayMesh" uid="uid://c1xue8ai0k167" path="res://assets/models/items/pop_v&d_2l_Cylinder_023.res" id="1_0nqqq"]
 [ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_5xsxs"]
 
 [resource]

@@ -220,6 +220,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06446314, -0.0033230782, -0
 
 [node name="ProductDisplay" parent="NavigationRegion3D/Items" unique_id=1980412161 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 25.714, -5.9, -11.673)
+save_id = "uid://c7x0lmcdxvdbn"
 product_data = ExtResource("21_p5ktf")
 grid_rows = 6
 stack_height = 3
@@ -240,6 +241,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.71
 
 [node name="ProductDisplay4" parent="NavigationRegion3D/Items" unique_id=1658817678 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -21.102318, -6.7404094, -12.660278)
+save_id = "uid://3ic17qwrm808"
 product_data = ExtResource("21_p5ktf")
 grid_rows = 6
 stack_height = 3
@@ -258,6 +260,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.70
 
 [node name="ProductDisplay2" parent="NavigationRegion3D/Items" unique_id=2076845698 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5.769966, -5.7110543, -12.267573)
+save_id = "uid://wytf7b5auq8p"
 product_data = ExtResource("18_55wky")
 grid_rows = 6
 position_variation = 0.01
@@ -275,6 +278,7 @@ transform = Transform3D(-1, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -1, 0.46
 
 [node name="ProductDisplay15" parent="NavigationRegion3D/Items" unique_id=527049981 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-0.999983, 0, 0.005826591, 0, 1, 0, -0.005826591, 0, -0.999983, -12.544712, -5.976219, -21.282892)
+save_id = "uid://b4fsf5062p26u"
 product_data = ExtResource("18_55wky")
 grid_rows = 6
 position_variation = 0.01
@@ -292,6 +296,7 @@ transform = Transform3D(-1, 0, -8.754432e-08, 0, 1, 0, 8.754432e-08, 0, -1, 0.46
 
 [node name="ProductDisplay3" parent="NavigationRegion3D/Items" unique_id=856757790 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15.093744, -5.97622, -20.151316)
+save_id = "uid://cgc2xegkbjlvh"
 product_data = ExtResource("19_nc3ox")
 grid_rows = 7
 position_variation = 0.01
@@ -309,6 +314,7 @@ transform = Transform3D(-1, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -1, 0.30
 
 [node name="ProductDisplay5" parent="NavigationRegion3D/Items" unique_id=1723714253 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(1, 0, -1.1127254e-07, 0, 1, 0, 1.1127254e-07, 0, 1, -6.9704843, -5.976219, 22.187983)
+save_id = "uid://dngxh310h1j44"
 product_data = ExtResource("20_4fofi")
 grid_columns = 8
 grid_rows = 8
@@ -327,6 +333,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.35
 
 [node name="ProductDisplay6" parent="NavigationRegion3D/Items" unique_id=1477452887 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06344414, -6.506551, -2.82998)
+save_id = "uid://c55pal0gbrqmj"
 product_data = ExtResource("21_rcc0p")
 grid_columns = 8
 grid_rows = 8
@@ -345,6 +352,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.35
 
 [node name="ProductDisplay7" parent="NavigationRegion3D/Items" unique_id=1080917374 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.912603, -7.0468817, -2.7929711)
+save_id = "uid://depj6b4mfdko6"
 product_data = ExtResource("22_mo7ao")
 grid_columns = 8
 grid_rows = 8
@@ -363,6 +371,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.35
 
 [node name="ProductDisplay8" parent="NavigationRegion3D/Items" unique_id=1508885752 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.9245605, -5.976219, -30.794003)
+save_id = "uid://b03st23y50t42"
 product_data = ExtResource("20_4fofi")
 grid_columns = 8
 grid_rows = 8
@@ -381,6 +390,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.32
 
 [node name="ProductDisplay9" parent="NavigationRegion3D/Items" unique_id=394930248 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -26.918379, -6.5065494, -2.5739202)
+save_id = "uid://6pd2fadfdebu"
 product_data = ExtResource("21_rcc0p")
 grid_columns = 8
 grid_rows = 8
@@ -399,6 +409,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.34
 
 [node name="ProductDisplay10" parent="NavigationRegion3D/Items" unique_id=875195488 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -26.9226, -6.5065494, 9.188866)
+save_id = "uid://rwh5bohhvndi"
 product_data = ExtResource("22_mo7ao")
 grid_columns = 8
 grid_rows = 8
@@ -417,6 +428,7 @@ transform = Transform3D(-1, 0, -1.5099579e-07, 0, 1, 0, 1.5099579e-07, 0, -1, 0.
 
 [node name="ProductDisplay11" parent="NavigationRegion3D/Items" unique_id=1757411628 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, -13.263313, -5.0481424, -14.146444)
+save_id = "uid://s81dijpoaix1"
 product_data = ExtResource("23_cyw3o")
 grid_columns = 7
 grid_rows = 7
@@ -435,6 +447,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.78
 
 [node name="ProductDisplay12" parent="NavigationRegion3D/Items" unique_id=59880231 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.0909138, -5.269112, 21.393486)
+save_id = "uid://68mdvdonbkcr"
 product_data = ExtResource("23_cyw3o")
 grid_columns = 7
 grid_rows = 7
@@ -453,6 +466,7 @@ transform = Transform3D(-1, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -1, 0.86
 
 [node name="ProductDisplay13" parent="NavigationRegion3D/Items" unique_id=1825012492 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.127551, -5.976219, 22.135834)
+save_id = "uid://0dpua5im81t4"
 product_data = ExtResource("23_cyw3o")
 grid_columns = 7
 grid_rows = 7
@@ -471,6 +485,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.79
 
 [node name="ProductDisplay14" parent="NavigationRegion3D/Items" unique_id=1517558118 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, -6.232497, -6.506551, 13.853556)
+save_id = "uid://ph3yth8nfgd8"
 product_data = ExtResource("23_cyw3o")
 grid_columns = 7
 grid_rows = 7
@@ -489,6 +504,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.82
 
 [node name="ProductDisplay16" parent="NavigationRegion3D/Items" unique_id=1773168469 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.3418705e-08, -0.11552945, -0.9933041, -5.049954e-09, 0.9933041, -0.11552945, 1, 0, -4.371139e-08, 25.519669, -6.1326203, -9.794219)
+save_id = "uid://ch0bolo8nsy87"
 product_data = ExtResource("24_4fofi")
 grid_columns = 8
 grid_rows = 6
@@ -510,6 +526,7 @@ transform = Transform3D(-1, 4.440892e-16, -8.742278e-08, 8.881784e-16, 1, -1.941
 
 [node name="ProductDisplay17" parent="NavigationRegion3D/Items" unique_id=1315146644 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.3418705e-08, -0.11552945, -0.9933041, -5.049954e-09, 0.9933041, -0.11552945, 1, 0, -4.371139e-08, 25.519669, -6.1326203, 8.511003)
+save_id = "uid://dliw2oek7yfy2"
 product_data = ExtResource("10_fiv06")
 grid_columns = 12
 grid_rows = 10
@@ -531,6 +548,7 @@ transform = Transform3D(-1, 8.881784e-16, -8.742278e-08, 1.7763568e-15, 1, -1.94
 
 [node name="ProductDisplay18" parent="NavigationRegion3D/Items" unique_id=92370707 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.3418705e-08, -0.11552945, -0.9933041, -5.049954e-09, 0.9933041, -0.11552945, 1, 0, -4.371139e-08, 25.519669, -6.1326203, 9.856239)
+save_id = "uid://rgn1r557sfkq"
 product_data = ExtResource("11_ibyoi")
 grid_columns = 12
 grid_rows = 10
@@ -552,6 +570,7 @@ transform = Transform3D(-1, 1.3322676e-15, -8.742278e-08, 2.6645353e-15, 1, -1.9
 
 [node name="ProductDisplay19" parent="NavigationRegion3D/Items" unique_id=350754047 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.3418705e-08, -0.11552945, -0.9933041, -5.049954e-09, 0.9933041, -0.11552945, 1, 0, -4.371139e-08, 25.539936, -6.0865045, -8.355698)
+save_id = "uid://d12ym1h07gu7w"
 product_data = ExtResource("12_bpd07")
 grid_columns = 10
 grid_rows = 7
@@ -573,6 +592,7 @@ transform = Transform3D(-1, 1.7763568e-15, -8.742278e-08, 3.5527137e-15, 1, -1.9
 
 [node name="ProductDisplay20" parent="NavigationRegion3D/Items" unique_id=888975952 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.3418705e-08, -0.11552945, -0.9933041, -5.049954e-09, 0.9933041, -0.11552945, 1, 0, -4.371139e-08, 25.480434, -6.096716, -6.519835)
+save_id = "uid://bgb8cxu24vvjy"
 product_data = ExtResource("13_36a7h")
 grid_columns = 10
 grid_rows = 7
@@ -594,6 +614,7 @@ transform = Transform3D(-1, 4.440892e-16, -8.742278e-08, 8.881784e-16, 1, -1.941
 
 [node name="ProductDisplay21" parent="NavigationRegion3D/Items" unique_id=1717386297 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.3418705e-08, -0.11552945, -0.9933041, -5.049954e-09, 0.9933041, -0.11552945, 1, 0, -4.371139e-08, 25.480434, -6.096716, -5.2313023)
+save_id = "uid://cr7m1dylf6kmd"
 product_data = ExtResource("14_041mx")
 grid_columns = 10
 grid_rows = 7
@@ -615,6 +636,7 @@ transform = Transform3D(-1, 4.440892e-16, -8.742278e-08, 8.881784e-16, 1, -1.941
 
 [node name="ProductDisplay22" parent="NavigationRegion3D/Items" unique_id=508452264 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.3418705e-08, -0.11552945, -0.9933041, -5.049954e-09, 0.9933041, -0.11552945, 1, 0, -4.371139e-08, 25.480434, -6.096716, -3.6638546)
+save_id = "uid://bgaes6sh855hn"
 product_data = ExtResource("15_4be4p")
 grid_columns = 10
 grid_rows = 7
@@ -636,6 +658,7 @@ transform = Transform3D(-1, 4.440892e-16, -8.742278e-08, 8.881784e-16, 1, -1.941
 
 [node name="ProductDisplay23" parent="NavigationRegion3D/Items" unique_id=1774662506 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.3418705e-08, -0.11552945, -0.9933041, -5.049954e-09, 0.9933041, -0.11552945, 1, 0, -4.371139e-08, 25.363888, -6.1228538, -2.086804)
+save_id = "uid://8qkx5jg8yeo7"
 product_data = ExtResource("16_l1thq")
 grid_columns = 10
 grid_rows = 7
@@ -657,6 +680,7 @@ transform = Transform3D(-1, 8.881784e-16, -8.742278e-08, 1.7763568e-15, 1, -1.94
 
 [node name="ProductDisplay24" parent="NavigationRegion3D/Items" unique_id=1847036861 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.3418705e-08, -0.11552945, -0.9933041, -5.049954e-09, 0.9933041, -0.11552945, 1, 0, -4.371139e-08, 25.363888, -6.1228538, -0.63001335)
+save_id = "uid://bqnn8pfpp33jx"
 product_data = ExtResource("17_pomua")
 grid_columns = 10
 grid_rows = 7
@@ -678,6 +702,7 @@ transform = Transform3D(-1, 4.440892e-16, -8.742278e-08, 8.881784e-16, 1, -1.941
 
 [node name="ProductDisplay25" parent="NavigationRegion3D/Items" unique_id=530055295 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.3418705e-08, -0.11552945, -0.9933041, -5.049954e-09, 0.9933041, -0.11552945, 1, 0, -4.371139e-08, 25.498358, -6.097567, 0.70076704)
+save_id = "uid://crku7m83d2q1b"
 product_data = ExtResource("18_hqh24")
 grid_columns = 10
 grid_rows = 7
@@ -699,6 +724,7 @@ transform = Transform3D(-1, 4.440892e-16, -8.742278e-08, 8.881784e-16, 1, -1.941
 
 [node name="ProductDisplay26" parent="NavigationRegion3D/Items" unique_id=88807461 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.3418705e-08, -0.11552945, -0.9933041, -5.049954e-09, 0.9933041, -0.11552945, 1, 0, -4.371139e-08, 25.498358, -6.097567, 2.2083745)
+save_id = "uid://dqimav8o2as48"
 product_data = ExtResource("19_bpd07")
 grid_columns = 10
 grid_rows = 7
@@ -720,6 +746,7 @@ transform = Transform3D(-1, 4.440892e-16, -8.742278e-08, 8.881784e-16, 1, -1.941
 
 [node name="ProductDisplay27" parent="NavigationRegion3D/Items" unique_id=749426743 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.3418705e-08, -0.11552945, -0.9933041, -5.049954e-09, 0.9933041, -0.11552945, 1, 0, -4.371139e-08, 25.51804, -6.09182, 3.6752267)
+save_id = "uid://bi21g3g3pcupr"
 product_data = ExtResource("20_36a7h")
 grid_columns = 4
 grid_rows = 3
@@ -741,6 +768,7 @@ transform = Transform3D(-1, 4.440892e-16, -8.742278e-08, 8.881784e-16, 1, -1.941
 
 [node name="ProductDisplay29" parent="NavigationRegion3D/Items" unique_id=792176388 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.3418705e-08, -0.11552945, -0.9933041, -5.049954e-09, 0.9933041, -0.11552945, 1, 0, -4.371139e-08, 25.51804, -6.09182, 5.331063)
+save_id = "uid://c8enxhxqbc1c4"
 product_data = ExtResource("20_36a7h")
 grid_columns = 4
 grid_rows = 3
@@ -762,6 +790,7 @@ transform = Transform3D(-1, 4.440892e-16, -8.742278e-08, 8.881784e-16, 1, -1.941
 
 [node name="ProductDisplay30" parent="NavigationRegion3D/Items" unique_id=1433472635 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.3418705e-08, -0.11552945, -0.9933041, -5.049954e-09, 0.9933041, -0.11552945, 1, 0, -4.371139e-08, 25.51804, -6.09182, 6.760152)
+save_id = "uid://k76rh5umk1gw"
 product_data = ExtResource("20_36a7h")
 grid_columns = 4
 grid_rows = 3
@@ -783,6 +812,7 @@ transform = Transform3D(-1, 4.440892e-16, -8.742278e-08, 8.881784e-16, 1, -1.941
 
 [node name="ProductDisplay28" parent="NavigationRegion3D/Items" unique_id=1640751702 instance=ExtResource("15_8rqbh")]
 transform = Transform3D(-4.3711392e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 8.106024, -5.976221, -12.869843)
+save_id = "uid://c4nq13maoetjv"
 product_data = ExtResource("21_4be4p")
 grid_columns = 10
 grid_rows = 3
@@ -804,9 +834,9 @@ transform = Transform3D(-1, 0, -8.742277e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.99
 [node name="ShopperSpawner" type="Node3D" parent="NavigationRegion3D" unique_id=776720949 node_paths=PackedStringArray("spawn_points")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06434679, 0, -0.0014028549)
 script = ExtResource("15_fg0y7")
+spawn_points = [NodePath("../ShopperSpawnPoint"), NodePath("../ShopperSpawnPoint2")]
 spawn_interval_min = 5.0
 spawn_interval_max = 10.0
-spawn_points = [NodePath("../ShopperSpawnPoint"), NodePath("../ShopperSpawnPoint2")]
 
 [node name="ShopperSpawnPoint" type="Marker3D" parent="NavigationRegion3D" unique_id=1135914735]
 transform = Transform3D(-0.258819, 0, -0.9659258, 0, 1, 0, 0.9659258, 0, -0.258819, 28.13343, -7.224377, 17.708303)

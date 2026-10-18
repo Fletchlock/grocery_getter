@@ -2,6 +2,10 @@
 extends Node3D
 
 
+@export_group("Persistence")
+@export var save_id: String = ""
+
+
 @export_group("Product")
 @export var product_data: ProductData
 @export var outline_material: Material
@@ -46,6 +50,7 @@ var _last_network_quantity: int = -1
 
 
 func _ready() -> void:
+	_ensure_save_id()
 	_find_nodes()
 
 	quantity = clampi(quantity, 0, max_quantity)
@@ -606,3 +611,55 @@ func ai_take_product() -> ProductData:
 
 	quantity -= 1
 	return product_data
+
+
+func _ensure_save_id() -> void:
+	if not Engine.is_editor_hint():
+		return
+
+	if not is_inside_tree():
+		return
+
+	if owner == null:
+		return
+
+	if save_id.is_empty():
+		save_id = ResourceUID.id_to_text(
+			ResourceUID.create_id()
+		)
+
+		print("PRODUCT DISPLAY ID GENERATED: ", name, " -> ", save_id)
+
+		return
+
+	# Check for duplicate IDs in the current scene.
+	var scene_root: Node = owner
+
+	while scene_root.owner != null:
+		scene_root = scene_root.owner
+
+	var displays: Array[Node] = scene_root.find_children(
+		"*",
+		"",
+		true,
+		false
+	)
+
+	for node: Node in displays:
+		if node == self:
+			continue
+
+		if node.get_script() != get_script():
+			continue
+
+		if node.get("save_id") == save_id:
+			push_warning(
+				"Duplicate ProductDisplay save_id detected: "
+				+ save_id
+				+ " on "
+				+ str(get_path())
+				+ " and "
+				+ str(node.get_path())
+			)
+
+			return

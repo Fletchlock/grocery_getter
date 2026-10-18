@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://cbq3alxu4gdqv"]
 
 [ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_bjxib"]
-[ext_resource type="ArrayMesh" uid="uid://chks30mwfmkos" path="res://assets/models/items/pop_mmm_Cylinder_007.res" id="1_fcq5p"]
+[ext_resource type="ArrayMesh" uid="uid://6wml8w70r3iw" path="res://assets/models/items/pop_mmm_Cylinder_007.res" id="1_fcq5p"]
 
 [resource]
 script = ExtResource("1_bjxib")
