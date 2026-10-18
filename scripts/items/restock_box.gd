@@ -19,7 +19,10 @@ class_name RestockBox
 func _ready() -> void:
 	_create_outline()
 	_update_label()
-
+	
+	# Only register actual world boxes.
+	if get_parent() != null and get_parent().name == "Deliveries":
+		add_to_group("restock_boxes")
 
 func _create_outline() -> void:
 	if box_mesh.mesh == null:

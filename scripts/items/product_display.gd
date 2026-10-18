@@ -49,17 +49,26 @@ var _last_quantity: int = -1
 var _last_network_quantity: int = -1
 
 
+
 func _ready() -> void:
 	_ensure_save_id()
 	_find_nodes()
 
 	quantity = clampi(quantity, 0, max_quantity)
 
+	# Restore previously saved stock before initializing visuals.
+	if not Engine.is_editor_hint():
+		_restore_stock_quantity()
+
 	_ensure_unique_collision_shape()
 	_update_product_display()
 	_update_interaction_zone()
 	_last_network_quantity = quantity
 	_cache_preview_state()
+
+	# Record the initial quantity for new displays.
+	if not Engine.is_editor_hint():
+		_save_stock_quantity()
 
 
 func _process(_delta: float) -> void:
@@ -80,6 +89,7 @@ func _process(_delta: float) -> void:
 		_last_network_quantity = quantity
 		_update_product_display()
 		_update_interaction_zone()
+		_save_stock_quantity()
 
 @rpc("any_peer", "call_remote", "reliable")
 func request_restock_from_box(
@@ -663,3 +673,39 @@ func _ensure_save_id() -> void:
 			)
 
 			return
+
+
+func _save_stock_quantity() -> void:
+	if Engine.is_editor_hint():
+		return
+
+	if not multiplayer.is_server():
+		return
+
+	if save_id.is_empty():
+		push_warning(
+			"ProductDisplay missing save_id: " + str(get_path())
+		)
+		return
+
+	StoreManager.product_quantities[save_id] = quantity
+
+
+func _restore_stock_quantity() -> void:
+	if Engine.is_editor_hint():
+		return
+
+	if not multiplayer.is_server():
+		return
+
+	if save_id.is_empty():
+		return
+
+	if not StoreManager.product_quantities.has(save_id):
+		return
+
+	quantity = clampi(
+		int(StoreManager.product_quantities[save_id]),
+		0,
+		max_quantity
+	)
