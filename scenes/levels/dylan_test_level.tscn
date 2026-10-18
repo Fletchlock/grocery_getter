@@ -811,6 +811,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 31, 
 
 [node name="canuck cola" parent="Product Displays" unique_id=1658817678 instance=ExtResource("15_jakac")]
 transform = Transform3D(-4.3711385e-08, 0, -1.0000001, -5.551115e-17, 1.0000001, 0, 1, 0, -4.371139e-08, -13.151746, 1.889961, -20.895515)
+save_id = "uid://bo0iqpqiurl5y"
 product_data = ExtResource("25_m1gst")
 grid_columns = 11
 grid_rows = 10
@@ -823,6 +824,7 @@ shape = SubResource("BoxShape3D_m1gst")
 
 [node name="canuck cola can" parent="Product Displays" unique_id=1575940244 instance=ExtResource("15_jakac")]
 transform = Transform3D(-4.3711385e-08, 0, -1.0000001, -5.551115e-17, 1.0000001, 0, 1, 0, -4.371139e-08, -13.127774, 1.889961, -19.897852)
+save_id = "uid://cd81q26kdv138"
 product_data = ExtResource("26_h0k37")
 grid_columns = 10
 grid_rows = 10
@@ -835,6 +837,7 @@ shape = SubResource("BoxShape3D_h0k37")
 
 [node name="faerie dust can" parent="Product Displays" unique_id=1154294749 instance=ExtResource("15_jakac")]
 transform = Transform3D(-4.3711385e-08, 0, -1.0000001, -5.551115e-17, 1.0000001, 0, 1, 0, -4.371139e-08, -13.127774, 1.6106894, -19.897852)
+save_id = "uid://b1tvgdgymo1tf"
 product_data = ExtResource("27_txj71")
 grid_columns = 10
 grid_rows = 10
@@ -847,6 +850,7 @@ shape = SubResource("BoxShape3D_txj71")
 
 [node name="fantasi can" parent="Product Displays" unique_id=594112015 instance=ExtResource("15_jakac")]
 transform = Transform3D(-4.3711385e-08, 0, -1.0000001, -5.551115e-17, 1.0000001, 0, 1, 0, -4.371139e-08, -13.127774, 1.3322399, -19.897852)
+save_id = "uid://bukv84v1gce5g"
 product_data = ExtResource("28_h52ww")
 grid_columns = 10
 grid_rows = 10
@@ -859,6 +863,7 @@ shape = SubResource("BoxShape3D_h52ww")
 
 [node name="mmm can" parent="Product Displays" unique_id=1589155333 instance=ExtResource("15_jakac")]
 transform = Transform3D(-4.3711385e-08, 0, -1.0000001, -5.551115e-17, 1.0000001, 0, 1, 0, -4.371139e-08, -13.127774, 1.0521401, -19.897852)
+save_id = "uid://kkcrq8j1ykot"
 product_data = ExtResource("29_ewmam")
 grid_columns = 10
 grid_rows = 10
@@ -871,6 +876,7 @@ shape = SubResource("BoxShape3D_ewmam")
 
 [node name="prof paprika can" parent="Product Displays" unique_id=402878087 instance=ExtResource("15_jakac")]
 transform = Transform3D(-4.3711385e-08, 0, -1.0000001, -5.551115e-17, 1.0000001, 0, 1, 0, -4.371139e-08, -13.127774, 0.77198744, -19.897852)
+save_id = "uid://bpjqujw6r6vqa"
 product_data = ExtResource("30_fmyof")
 grid_columns = 10
 grid_rows = 10
@@ -883,6 +889,7 @@ shape = SubResource("BoxShape3D_fmyof")
 
 [node name="v&d can" parent="Product Displays" unique_id=1025343774 instance=ExtResource("15_jakac")]
 transform = Transform3D(-4.3711385e-08, 0, -1.0000001, -5.551115e-17, 1.0000001, 0, 1, 0, -4.371139e-08, -13.127774, 0.482646, -19.897852)
+save_id = "uid://clor01n8ouu71"
 product_data = ExtResource("31_w4qos")
 grid_columns = 10
 grid_rows = 10
@@ -895,6 +902,7 @@ shape = SubResource("BoxShape3D_w4qos")
 
 [node name="faerie dust" parent="Product Displays" unique_id=1198484666 instance=ExtResource("15_jakac")]
 transform = Transform3D(-4.3711385e-08, 0, -1.0000001, -5.551115e-17, 1.0000001, 0, 1, 0, -4.371139e-08, -13.151746, 1.6036423, -20.895515)
+save_id = "uid://b7qs0a6eli8sw"
 product_data = ExtResource("32_yi08s")
 grid_columns = 11
 grid_rows = 10
@@ -907,6 +915,7 @@ shape = SubResource("BoxShape3D_yi08s")
 
 [node name="fantasi" parent="Product Displays" unique_id=457750481 instance=ExtResource("15_jakac")]
 transform = Transform3D(-4.3711385e-08, 0, -1.0000001, -5.551115e-17, 1.0000001, 0, 1, 0, -4.371139e-08, -13.151746, 1.3306104, -20.895515)
+save_id = "uid://c2fowrfss7d6w"
 product_data = ExtResource("33_f11fv")
 grid_columns = 11
 grid_rows = 10
@@ -919,6 +928,7 @@ shape = SubResource("BoxShape3D_f11fv")
 
 [node name="mmm" parent="Product Displays" unique_id=1867996093 instance=ExtResource("15_jakac")]
 transform = Transform3D(-4.3711385e-08, 0, -1.0000001, -5.551115e-17, 1.0000001, 0, 1, 0, -4.371139e-08, -13.151746, 1.0494497, -20.895515)
+save_id = "uid://do3h4mmikcst6"
 product_data = ExtResource("34_rlspq")
 grid_columns = 11
 grid_rows = 10
@@ -931,6 +941,7 @@ shape = SubResource("BoxShape3D_rlspq")
 
 [node name="prof paprika" parent="Product Displays" unique_id=639790336 instance=ExtResource("15_jakac")]
 transform = Transform3D(-4.3711385e-08, 0, -1.0000001, -5.551115e-17, 1.0000001, 0, 1, 0, -4.371139e-08, -13.151746, 0.7685443, -20.895515)
+save_id = "uid://jhcv82euwlh4"
 product_data = ExtResource("35_ay528")
 grid_columns = 11
 grid_rows = 10
@@ -943,6 +954,7 @@ shape = SubResource("BoxShape3D_ay528")
 
 [node name="v&d" parent="Product Displays" unique_id=1409113487 instance=ExtResource("15_jakac")]
 transform = Transform3D(-4.3711385e-08, 0, -1.0000001, -5.551115e-17, 1.0000001, 0, 1, 0, -4.371139e-08, -13.151746, 0.48138988, -20.895515)
+save_id = "uid://bjcjf4lf6ai43"
 product_data = ExtResource("36_y5jks")
 grid_columns = 11
 grid_rows = 10
@@ -955,6 +967,7 @@ shape = SubResource("BoxShape3D_y5jks")
 
 [node name="Apple_Display" parent="Product Displays" unique_id=357758402 instance=ExtResource("15_jakac")]
 transform = Transform3D(1, 0, 0, 0, 0.9864813, -0.16387449, 0, 0.16387449, 0.9864813, 23.507627, 1.1938218, -5.8064027)
+save_id = "uid://dc310127h6sep"
 product_data = ExtResource("37_h6vbw")
 grid_columns = 8
 grid_rows = 17
@@ -969,6 +982,7 @@ shape = SubResource("BoxShape3D_bwmts")
 
 [node name="ProductDisplay2" parent="Product Displays" unique_id=2054152866 instance=ExtResource("15_jakac")]
 transform = Transform3D(0.0004999132, -0.18962891, -0.98185587, -0.0025886304, 0.98185235, -0.18962954, 0.9999965, 0.0026364597, -3.8168853e-08, 30.667828, 1.2993486, -12.828228)
+save_id = "uid://cs46ba43d6na7"
 product_data = ExtResource("39_c0ula")
 grid_columns = 11
 grid_rows = 5
@@ -986,6 +1000,7 @@ shape = SubResource("BoxShape3D_nirjg")
 
 [node name="ProductDisplay" parent="Product Displays" unique_id=1248876291 groups=["interactable_items"] instance=ExtResource("15_jakac")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 15.9, 1.7751652, 3.9)
+save_id = "uid://bahy6mptaet5k"
 grid_rows = 9
 stack_height = 7
 position_variation = 0.01
@@ -1002,6 +1017,7 @@ shape = SubResource("BoxShape3D_bk6h6")
 
 [node name="ProductDisplay3" parent="Product Displays" unique_id=1370885838 instance=ExtResource("15_jakac")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.180155, 1.6937951, -17.8)
+save_id = "uid://bnn6ofuqt7ytc"
 grid_columns = 13
 position_variation = 0.01
 max_quantity = 26
@@ -1015,6 +1031,7 @@ shape = SubResource("BoxShape3D_2sc1a")
 
 [node name="ProductDisplay4" parent="Product Displays" unique_id=2025777821 instance=ExtResource("15_jakac")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.180155, 1.37759, -17.8)
+save_id = "uid://dylyudxdrpvh7"
 grid_columns = 13
 stack_height = 2
 position_variation = 0.01
@@ -1030,6 +1047,7 @@ shape = SubResource("BoxShape3D_1osoy")
 
 [node name="Watermelon" parent="Product Displays" unique_id=1178636710 instance=ExtResource("15_jakac")]
 transform = Transform3D(-0.9999779, 0.0066477503, 8.742277e-08, 0.0066477503, 0.9999779, 0, -8.742085e-08, 5.8116484e-10, -1, 30.869867, 0.50176215, -11.624929)
+save_id = "uid://deexfwf74ihyi"
 product_data = ExtResource("18_l2sts")
 grid_columns = 4
 grid_rows = 6

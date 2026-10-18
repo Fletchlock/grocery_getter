@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://bl8vj8k6v8mnw"]
 
-[ext_resource type="ArrayMesh" uid="uid://da2qbbmqy6wnx" path="res://assets/models/items/pop_prof_paprika_1l_Cylinder_015.res" id="1_c3dsp"]
+[ext_resource type="ArrayMesh" uid="uid://x18re4yq4bmd" path="res://assets/models/items/pop_prof_paprika_1l_Cylinder_015.res" id="1_c3dsp"]
 [ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_o40cj"]
 
 [resource]

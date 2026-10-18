@@ -1,6 +1,8 @@
 
 extends Node
 
+signal finances_updated
+
 # Financial state
 var store_cash: float = 0.0
 var total_sales: float = 0.0
@@ -68,7 +70,7 @@ func record_sale(amount: float) -> void:
 	store_cash += amount
 	total_sales += amount
 	last_purchase = amount
-
+	sync_finances()
 
 func spend_cash(amount: float) -> bool:
 	if not multiplayer.is_server():
@@ -81,4 +83,61 @@ func spend_cash(amount: float) -> bool:
 		return false
 
 	store_cash -= amount
+	sync_finances()
 	return true
+
+##################
+# Signal functions
+##################
+
+
+func sync_finances() -> void:
+	if not multiplayer.is_server():
+		return
+
+	_receive_finances.rpc(
+		store_cash,
+		total_sales,
+		total_shoppers,
+		last_purchase
+	)
+
+	finances_updated.emit()
+
+
+@rpc("authority", "call_remote", "reliable")
+func _receive_finances(
+	cash: float,
+	sales: float,
+	shoppers: int,
+	purchase: float
+) -> void:
+	store_cash = cash
+	total_sales = sales
+	total_shoppers = shoppers
+	last_purchase = purchase
+
+	finances_updated.emit()
+
+
+func request_finances() -> void:
+	if multiplayer.is_server():
+		return
+
+	_request_finances.rpc_id(1)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_finances() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var peer_id: int = multiplayer.get_remote_sender_id()
+
+	_receive_finances.rpc_id(
+		peer_id,
+		store_cash,
+		total_sales,
+		total_shoppers,
+		last_purchase
+	)

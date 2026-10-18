@@ -53,7 +53,9 @@
 [ext_resource type="PackedScene" uid="uid://fya65aoeosuc" path="res://assets/models/shelves/Basket_Square_Small.glb" id="35_dpvep"]
 [ext_resource type="Resource" uid="uid://cu3tkubye16rr" path="res://resources/products/carrot.tres" id="35_tjbrl"]
 [ext_resource type="PackedScene" uid="uid://cmmgsv7wgnpms" path="res://scenes/objects/shelves/freezer_left_5_row.tscn" id="36_32gdb"]
+[ext_resource type="Resource" uid="uid://bf46f4d7euqda" path="res://resources/products/pop_v&d_can.tres" id="37_1uuvo"]
 [ext_resource type="PackedScene" uid="uid://dlukamev28f1f" path="res://scenes/objects/shelves/freezer_right_5_row.tscn" id="37_32gdb"]
+[ext_resource type="Resource" uid="uid://botj1e0segkbb" path="res://resources/products/pop_fantasi_1l.tres" id="38_6evkd"]
 [ext_resource type="PackedScene" uid="uid://c6j4kh3t5ngnw" path="res://scenes/objects/checkouts/checkout.tscn" id="39_gd03f"]
 [ext_resource type="Script" uid="uid://c775jll8k0omd" path="res://scripts/checkouts/checkout_grid.gd" id="39_tq13k"]
 [ext_resource type="Material" uid="uid://d3iscxpv066o5" path="res://assets/materials/outline_standard_material_3d.tres" id="40_62gvq"]
@@ -97,53 +99,49 @@ properties/3/path = NodePath(".:current_shoppers")
 properties/3/spawn = true
 properties/3/replication_mode = 2
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_riim1"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_fnekv"]
 resource_local_to_scene = true
 size = Vector3(1.3763955, 0.2515969, 0.94000006)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_fnekv"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_uvpqv"]
 resource_local_to_scene = true
 size = Vector3(1.36, 0.34, 0.56)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_uvpqv"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_kbegh"]
 resource_local_to_scene = true
 size = Vector3(0.48, 0.22999999, 0.58)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_kbegh"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_k2133"]
 resource_local_to_scene = true
 size = Vector3(0.75370383, 0.0674668, 0.75370383)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_k2133"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_5gipu"]
 resource_local_to_scene = true
 size = Vector3(1.7394036, 0.40417677, 0.5731345)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_5gipu"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_qtxe7"]
 resource_local_to_scene = true
 size = Vector3(0.94000006, 0.21000002, 0.82)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_qtxe7"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_a11xa"]
 resource_local_to_scene = true
 size = Vector3(0.75339556, 0.069360465, 0.75339556)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_a11xa"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_gxp05"]
 resource_local_to_scene = true
 size = Vector3(1.35, 0.3, 0.62)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_gxp05"]
-resource_local_to_scene = true
-size = Vector3(0.52665436, 0.046109058, 0.5805085)
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_pvbuq"]
 resource_local_to_scene = true
-size = Vector3(0.88, 0.19999999, 0.82000005)
+size = Vector3(0.52665436, 0.046109058, 0.5805085)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_bf2sh"]
 resource_local_to_scene = true
-size = Vector3(0.52665436, 0.046109058, 0.5805085)
+size = Vector3(0.88, 0.19999999, 0.82000005)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_keq6l"]
 resource_local_to_scene = true
-size = Vector3(0.63, 0.22999999, 0.52)
+size = Vector3(0.52665436, 0.046109058, 0.5805085)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_a51l3"]
 resource_local_to_scene = true
@@ -151,7 +149,7 @@ size = Vector3(0.63, 0.22999999, 0.52)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hiidl"]
 resource_local_to_scene = true
-size = Vector3(0.49346137, 0.10305756, 0.4861799)
+size = Vector3(0.63, 0.22999999, 0.52)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cbg0i"]
 resource_local_to_scene = true
@@ -159,7 +157,7 @@ size = Vector3(0.49346137, 0.10305756, 0.4861799)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_exc4y"]
 resource_local_to_scene = true
-size = Vector3(0.4997532, 0.094916426, 0.4997532)
+size = Vector3(0.49346137, 0.10305756, 0.4861799)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_f6j47"]
 resource_local_to_scene = true
@@ -171,43 +169,55 @@ size = Vector3(0.4997532, 0.094916426, 0.4997532)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_nrueb"]
 resource_local_to_scene = true
-size = Vector3(0.5306245, 0.08112097, 0.63874936)
+size = Vector3(0.4997532, 0.094916426, 0.4997532)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ow7vr"]
 resource_local_to_scene = true
-size = Vector3(0.64964837, 0.09418695, 0.783578)
+size = Vector3(0.5306245, 0.08112097, 0.63874936)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_agcrd"]
 resource_local_to_scene = true
-size = Vector3(0.60247105, 0.16005664, 0.85145944)
+size = Vector3(0.64964837, 0.09418695, 0.783578)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_8nnhr"]
 resource_local_to_scene = true
-size = Vector3(0.60247105, 0.15892774, 0.85145944)
+size = Vector3(0.60247105, 0.16005664, 0.85145944)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_wq1qu"]
 resource_local_to_scene = true
-size = Vector3(0.60247105, 0.15993766, 0.85145944)
+size = Vector3(0.60247105, 0.15892774, 0.85145944)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_gebd3"]
 resource_local_to_scene = true
-size = Vector3(0.60247105, 0.15987545, 0.85145944)
+size = Vector3(0.60247105, 0.15993766, 0.85145944)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_dnxjb"]
 resource_local_to_scene = true
-size = Vector3(1.7259705, 0.43843687, 0.69765544)
+size = Vector3(0.60247105, 0.15987545, 0.85145944)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7rb0i"]
 resource_local_to_scene = true
-size = Vector3(0.8202428, 0.21095532, 0.90426713)
+size = Vector3(1.7259705, 0.43843687, 0.69765544)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_w5lqj"]
 resource_local_to_scene = true
-size = Vector3(0.6233003, 0.037192717, 0.6209756)
+size = Vector3(0.8202428, 0.21095532, 0.90426713)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_t3vjv"]
 resource_local_to_scene = true
+size = Vector3(0.6233003, 0.037192717, 0.6209756)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ml4vd"]
+resource_local_to_scene = true
 size = Vector3(0.68504757, 0.03036055, 0.55041945)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1heq5"]
+resource_local_to_scene = true
+size = Vector3(0.46349537, 0.11421314, 0.46349537)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cd4y6"]
+resource_local_to_scene = true
+size = Vector3(0.53420514, 0.26714498, 0.53420514)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4av8r"]
 size = Vector3(1.1532593, 2.4024658, 3)
@@ -387,6 +397,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4540367, 18.77881)
 
 [node name="Bread" parent="NavigationRegion3D/Items" unique_id=1658817678 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 5.7922363, -0.8197514, -7.43667)
+save_id = "uid://bablcb177ukdb"
 product_data = ExtResource("16_t00v6")
 grid_columns = 10
 grid_rows = 3
@@ -399,13 +410,14 @@ quantity = 34
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Bread/Area3D" parent_id_path=PackedInt32Array(1658817678, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.628378, 0.12579845, 0.32000002)
-shape = SubResource("BoxShape3D_riim1")
+shape = SubResource("BoxShape3D_fnekv")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Bread" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -1, 0.9734793, 0, 1.0372744)
 
 [node name="Cereal" parent="NavigationRegion3D/Items" unique_id=452188552 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.2568028, 0.3727951, -3.0171385)
+save_id = "uid://d231j8qgic38h"
 product_data = ExtResource("17_om5ry")
 grid_rows = 5
 product_gap = 0.04
@@ -417,13 +429,14 @@ quantity = 25
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Cereal/Area3D" parent_id_path=PackedInt32Array(452188552, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.56, 0.17, 0.24)
-shape = SubResource("BoxShape3D_fnekv")
+shape = SubResource("BoxShape3D_uvpqv")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Cereal" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -1, 0.5545654, 0, 0.599741)
 
 [node name="Corn Can" parent="NavigationRegion3D/Items" unique_id=153784913 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.58520573, -0.25592887, -3.7321124)
+save_id = "uid://cktrdm0jkkg6b"
 product_data = ExtResource("18_fumkw")
 grid_rows = 6
 stack_height = 2
@@ -434,13 +447,14 @@ quantity = 42
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Corn Can/Area3D" parent_id_path=PackedInt32Array(153784913, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.114999995, 0.25)
-shape = SubResource("BoxShape3D_uvpqv")
+shape = SubResource("BoxShape3D_kbegh")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Corn Can" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.1838626, 0, 0.70059395)
 
 [node name="Tomatoes" parent="NavigationRegion3D/Items" unique_id=656946575 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -3.9669728, -0.9210001, 1.1196294)
+save_id = "uid://boar1264a8mp3"
 product_data = ExtResource("16_o6fm4")
 grid_columns = 6
 grid_rows = 6
@@ -453,13 +467,14 @@ quantity = 36
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Tomatoes/Area3D" parent_id_path=PackedInt32Array(656946575, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3348766, 0.0337334, 0.3348766)
-shape = SubResource("BoxShape3D_kbegh")
+shape = SubResource("BoxShape3D_k2133")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Tomatoes" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.33683014, 0.0870316, 1.0028168)
 
 [node name="Bag Mandarin" parent="NavigationRegion3D/Items" unique_id=193303494 instance=ExtResource("16_om5ry")]
 transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, 5.58104, -0.57099986, -4.3061595)
+save_id = "uid://1k5siyvobsew"
 product_data = ExtResource("17_cqqcv")
 grid_columns = 6
 stack_height = 2
@@ -472,13 +487,14 @@ quantity = 24
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Bag Mandarin/Area3D" parent_id_path=PackedInt32Array(193303494, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7289182, 0.20208839, 0.14578362)
-shape = SubResource("BoxShape3D_k2133")
+shape = SubResource("BoxShape3D_5gipu")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Bag Mandarin" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.7403743, 0.3155322, 0.8113041)
 
 [node name="Eggs" parent="NavigationRegion3D/Items" unique_id=718564412 instance=ExtResource("16_om5ry")]
 transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, -7.8457603, 0.009030938, -4.756401)
+save_id = "uid://cfca3gfrsfadm"
 product_data = ExtResource("12_m5ay7")
 grid_columns = 3
 grid_rows = 7
@@ -490,13 +506,14 @@ quantity = 63
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Eggs/Area3D" parent_id_path=PackedInt32Array(718564412, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32000002, 0.10500001, 0.36)
-shape = SubResource("BoxShape3D_5gipu")
+shape = SubResource("BoxShape3D_qtxe7")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Eggs" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.111236095, -0.43800282, 1.3530183)
 
 [node name="Mandarins" parent="NavigationRegion3D/Items" unique_id=2012166865 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -2.4690683, -0.9210001, 1.1196294)
+save_id = "uid://pb3k861u1o2v"
 product_data = ExtResource("17_1pd08")
 grid_columns = 6
 grid_rows = 6
@@ -509,13 +526,14 @@ quantity = 36
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Mandarins/Area3D" parent_id_path=PackedInt32Array(2012166865, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33474815, 0.034680232, 0.33474815)
-shape = SubResource("BoxShape3D_qtxe7")
+shape = SubResource("BoxShape3D_a11xa")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Mandarins" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.33683014, 0.0870316, 1.0028168)
 
 [node name="Flour" parent="NavigationRegion3D/Items" unique_id=885535414 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -2.430832, 0.37648058, -8.6971445)
+save_id = "uid://bl8a1nvjwaovl"
 product_data = ExtResource("13_ghqei")
 grid_columns = 6
 grid_rows = 5
@@ -528,13 +546,14 @@ quantity = 15
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Flour/Area3D" parent_id_path=PackedInt32Array(885535414, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.575, 0.15, 0.26)
-shape = SubResource("BoxShape3D_a11xa")
+shape = SubResource("BoxShape3D_gxp05")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Flour" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.5863397, 0, 0.7524843)
 
 [node name="Limes" parent="NavigationRegion3D/Items" unique_id=1253331758 instance=ExtResource("16_om5ry")]
 transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, 5.5857835, -0.7868691, -10.429966)
+save_id = "uid://btbm7dmkre7at"
 product_data = ExtResource("18_2u3hl")
 grid_columns = 6
 grid_rows = 6
@@ -547,13 +566,14 @@ quantity = 36
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Limes/Area3D" parent_id_path=PackedInt32Array(1253331758, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24027264, 0.023054529, 0.26271185)
-shape = SubResource("BoxShape3D_gxp05")
+shape = SubResource("BoxShape3D_pvbuq")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Limes" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.33683014, 0.0870316, 1.0028168)
 
 [node name="Sugar" parent="NavigationRegion3D/Items" unique_id=267980143 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.828885, 0.09913218, 1.2525101)
+save_id = "uid://b1wohb5ll0fvs"
 product_data = ExtResource("14_ghqei")
 grid_columns = 6
 grid_rows = 7
@@ -565,13 +585,14 @@ quantity = 38
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Sugar/Area3D" parent_id_path=PackedInt32Array(267980143, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.375, 0.099999994, 0.36)
-shape = SubResource("BoxShape3D_pvbuq")
+shape = SubResource("BoxShape3D_bf2sh")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Sugar" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.3824222, 0, 0.9391596)
 
 [node name="Lemons" parent="NavigationRegion3D/Items" unique_id=1919858001 instance=ExtResource("16_om5ry")]
 transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, 5.5857835, -0.8190879, -12.214327)
+save_id = "uid://c1xbikyq1vws5"
 product_data = ExtResource("19_rob7k")
 grid_columns = 6
 grid_rows = 6
@@ -584,13 +605,14 @@ quantity = 36
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Lemons/Area3D" parent_id_path=PackedInt32Array(1919858001, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24027264, 0.023054529, 0.26271185)
-shape = SubResource("BoxShape3D_bf2sh")
+shape = SubResource("BoxShape3D_keq6l")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Lemons" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.33683014, 0.0870316, 1.0028168)
 
 [node name="Peas Can" parent="NavigationRegion3D/Items" unique_id=1581059352 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.5494943, 0.523396, -0.8297045)
+save_id = "uid://tgc52f1rynhc"
 product_data = ExtResource("20_7467c")
 grid_columns = 6
 grid_rows = 5
@@ -603,13 +625,14 @@ quantity = 41
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Peas Can/Area3D" parent_id_path=PackedInt32Array(1581059352, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.275, 0.114999995, 0.22)
-shape = SubResource("BoxShape3D_keq6l")
+shape = SubResource("BoxShape3D_a51l3")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Peas Can" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -1, 0.22363007, -1.774723, 0.977437)
 
 [node name="Beans Can" parent="NavigationRegion3D/Items" unique_id=105025190 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.20084256, -0.572134, -8.779884)
+save_id = "uid://d0ekqfbmaccol"
 product_data = ExtResource("19_7stf3")
 grid_columns = 6
 grid_rows = 5
@@ -622,13 +645,14 @@ quantity = 29
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Beans Can/Area3D" parent_id_path=PackedInt32Array(105025190, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.275, 0.114999995, 0.22)
-shape = SubResource("BoxShape3D_a51l3")
+shape = SubResource("BoxShape3D_hiidl")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Beans Can" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -1, 0.27979374, 0, 0.697917)
 
 [node name="Pear Green" parent="NavigationRegion3D/Items" unique_id=1552644355 instance=ExtResource("16_om5ry")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29876247, 0.060275435, -3.36829)
+save_id = "uid://drlun64tr7b2x"
 product_data = ExtResource("32_rob7k")
 grid_columns = 6
 grid_rows = 6
@@ -640,13 +664,14 @@ quantity = 36
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Pear Green/Area3D" parent_id_path=PackedInt32Array(1552644355, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.21394224, 0.05152878, 0.2109083)
-shape = SubResource("BoxShape3D_hiidl")
+shape = SubResource("BoxShape3D_cbg0i")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Pear Green" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.2094579, 0, 0.6715462)
 
 [node name="Pear Brown" parent="NavigationRegion3D/Items" unique_id=2060857232 instance=ExtResource("16_om5ry")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.7012374, -0.25592887, -3.36829)
+save_id = "uid://csgmc3yencjfv"
 product_data = ExtResource("33_x5hmh")
 grid_columns = 6
 grid_rows = 6
@@ -658,13 +683,14 @@ quantity = 36
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Pear Brown/Area3D" parent_id_path=PackedInt32Array(2060857232, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.21394224, 0.05152878, 0.2109083)
-shape = SubResource("BoxShape3D_cbg0i")
+shape = SubResource("BoxShape3D_exc4y")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Pear Brown" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.20319676, 0, 0.62655187)
 
 [node name="Apple Gala" parent="NavigationRegion3D/Items" unique_id=1367205065 instance=ExtResource("16_om5ry")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7012374, -0.25592887, -8.36829)
+save_id = "uid://c5g3efwhyhv1c"
 product_data = ExtResource("23_6becb")
 grid_rows = 5
 position_variation = 0.05
@@ -675,13 +701,14 @@ quantity = 25
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Apple Gala/Area3D" parent_id_path=PackedInt32Array(1367205065, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.20790128, 0.047458213, 0.20790128)
-shape = SubResource("BoxShape3D_exc4y")
+shape = SubResource("BoxShape3D_f6j47")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Apple Gala" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.20319676, 0, 0.62655187)
 
 [node name="Apple Red Del" parent="NavigationRegion3D/Items" unique_id=233144999 instance=ExtResource("16_om5ry")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.70123744, 0.060275435, -8.36829)
+save_id = "uid://cmbf4c6nxogx8"
 product_data = ExtResource("24_3kqrq")
 grid_rows = 5
 position_variation = 0.05
@@ -692,13 +719,14 @@ quantity = 25
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Apple Red Del/Area3D" parent_id_path=PackedInt32Array(233144999, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.20790128, 0.047458213, 0.20790128)
-shape = SubResource("BoxShape3D_f6j47")
+shape = SubResource("BoxShape3D_2awjq")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Apple Red Del" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.20319676, 0, 0.62655187)
 
 [node name="Apple Granny" parent="NavigationRegion3D/Items" unique_id=461886373 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -3.2897735, 0.060275435, -3.827808)
+save_id = "uid://cg00us25upvvs"
 product_data = ExtResource("25_8jmo3")
 grid_rows = 5
 position_variation = 0.05
@@ -709,13 +737,14 @@ quantity = 25
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Apple Granny/Area3D" parent_id_path=PackedInt32Array(461886373, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.20790128, 0.047458213, 0.20790128)
-shape = SubResource("BoxShape3D_2awjq")
+shape = SubResource("BoxShape3D_nrueb")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Apple Granny" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.20319676, 0, 0.62655187)
 
 [node name="Oranges" parent="NavigationRegion3D/Items" unique_id=640975976 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.31499353, -0.20100045, 1.1148763)
+save_id = "uid://oc326ypnnaju"
 product_data = ExtResource("26_tq13k")
 grid_rows = 6
 product_gap = 0.01
@@ -727,13 +756,14 @@ quantity = 30
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Oranges/Area3D" parent_id_path=PackedInt32Array(640975976, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2162498, 0.040560484, 0.27031222)
-shape = SubResource("BoxShape3D_nrueb")
+shape = SubResource("BoxShape3D_ow7vr")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Oranges" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.22869807, 0, 0.8359835)
 
 [node name="Grapefruit" parent="NavigationRegion3D/Items" unique_id=2002736817 instance=ExtResource("16_om5ry")]
 transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, -7.7907534, 0.01859355, -2.806325)
+save_id = "uid://cygd84begm6re"
 product_data = ExtResource("14_3kqrq")
 grid_rows = 6
 position_variation = 0.01
@@ -744,13 +774,14 @@ quantity = 30
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Grapefruit/Area3D" parent_id_path=PackedInt32Array(2002736817, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.26785934, 0.047093473, 0.33482417)
-shape = SubResource("BoxShape3D_ow7vr")
+shape = SubResource("BoxShape3D_agcrd")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Grapefruit" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.11123538, -0.27695525, 1.24016)
 
 [node name="Pepper Red" parent="NavigationRegion3D/Items" unique_id=549814252 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-4.371139e-08, -0.09410831, -0.99556196, 0, 0.99556196, -0.09410831, 1, -4.113605e-09, -4.3517396e-08, 5.808232, -0.20949233, -2.4252849)
+save_id = "uid://dy5yogaelp1j4"
 product_data = ExtResource("28_dyt62")
 grid_rows = 7
 position_variation = 0.04
@@ -761,13 +792,14 @@ quantity = 22
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Pepper Red/Area3D" parent_id_path=PackedInt32Array(549814252, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24898842, 0.08002832, 0.3734826)
-shape = SubResource("BoxShape3D_agcrd")
+shape = SubResource("BoxShape3D_8nnhr")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Pepper Red" index="4" unique_id=2005891054]
 transform = Transform3D(-1, -4.440892e-16, -8.742278e-08, 8.881784e-16, 1.0000008, 1.8060929e-16, 8.7422876e-08, 1.7901353e-16, -1.0000008, 0.14484859, -0.17924577, 1.2716737)
 
 [node name="Pepper Green" parent="NavigationRegion3D/Items" unique_id=525088530 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-4.371139e-08, -0.09410831, -0.99556196, 0, 0.99556196, -0.09410831, 1, -4.113605e-09, -4.3517396e-08, 5.808232, -0.20949233, -1.7047844)
+save_id = "uid://df0c0u0ud1hdm"
 product_data = ExtResource("29_yufli")
 grid_rows = 7
 position_variation = 0.04
@@ -778,13 +810,14 @@ quantity = 18
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Pepper Green/Area3D" parent_id_path=PackedInt32Array(525088530, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24898842, 0.07946387, 0.3734826)
-shape = SubResource("BoxShape3D_8nnhr")
+shape = SubResource("BoxShape3D_wq1qu")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Pepper Green" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1.0000007, 1.8060931e-16, 8.742286e-08, 1.790135e-16, -1.0000007, 0.28367543, -0.17610708, 1.3048778)
 
 [node name="Pepper Yellow" parent="NavigationRegion3D/Items" unique_id=1498871279 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-4.371139e-08, -0.09410831, -0.99556196, 0, 0.99556196, -0.09410831, 1, -4.113605e-09, -4.3517396e-08, 5.808232, -0.20949233, -0.9519197)
+save_id = "uid://b2ke4meldmiju"
 product_data = ExtResource("30_32gdb")
 grid_rows = 7
 position_variation = 0.04
@@ -795,13 +828,14 @@ quantity = 19
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Pepper Yellow/Area3D" parent_id_path=PackedInt32Array(1498871279, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24898842, 0.07996883, 0.3734826)
-shape = SubResource("BoxShape3D_wq1qu")
+shape = SubResource("BoxShape3D_gebd3")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Pepper Yellow" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 4.440892e-16, 1.0000006, 1.8060933e-16, 8.742285e-08, 1.7901347e-16, -1.0000006, 0.23196423, -0.1735979, 1.3314233)
 
 [node name="Pepper Orange" parent="NavigationRegion3D/Items" unique_id=663179368 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-4.371139e-08, -0.09410831, -0.99556196, 0, 0.99556196, -0.09410831, 1, -4.113605e-09, -4.3517396e-08, 5.808232, -0.20949233, -0.19675708)
+save_id = "uid://ksp3ng733uyf"
 product_data = ExtResource("31_smqka")
 grid_rows = 7
 position_variation = 0.04
@@ -812,13 +846,14 @@ quantity = 23
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Pepper Orange/Area3D" parent_id_path=PackedInt32Array(663179368, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24898842, 0.079937726, 0.3734826)
-shape = SubResource("BoxShape3D_gebd3")
+shape = SubResource("BoxShape3D_dnxjb")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Pepper Orange" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1.0000007, 1.8060931e-16, 8.742286e-08, 1.790135e-16, -1.0000007, 0.41694254, -0.1700888, 1.3685446)
 
 [node name="Watermelon" parent="NavigationRegion3D/Items" unique_id=2023423376 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-4.391955e-08, 1.4901161e-08, -1.0000001, 7.4505815e-09, 1.0000002, 0, 1.0000001, -7.450581e-09, -4.3711385e-08, 5.729748, -0.5710002, -9.308172)
+save_id = "uid://wu3etu627uk6"
 product_data = ExtResource("32_32gdb")
 grid_columns = 6
 grid_rows = 3
@@ -831,10 +866,11 @@ quantity = 22
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Watermelon/Area3D" parent_id_path=PackedInt32Array(2023423376, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7274877, 0.21921843, 0.23921847)
-shape = SubResource("BoxShape3D_dnxjb")
+shape = SubResource("BoxShape3D_7rb0i")
 
 [node name="Canuck Cola" parent="NavigationRegion3D/Items" unique_id=2109163323 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.950366, 0.2830968, -1.6984406)
+save_id = "uid://chsej43k8rvfq"
 product_data = ExtResource("59_smqka")
 grid_columns = 10
 grid_rows = 11
@@ -843,13 +879,14 @@ quantity = 66
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Canuck Cola/Area3D" parent_id_path=PackedInt32Array(2109163323, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37810928, 0.10547766, 0.42012143)
-shape = SubResource("BoxShape3D_7rb0i")
+shape = SubResource("BoxShape3D_w5lqj")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Canuck Cola" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -1, 0.5, -0.54807055, 1.3966641)
 
 [node name="Jalapeno" parent="NavigationRegion3D/Items" unique_id=621968759 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.73535323, -0.9008246, 1.0904896)
+save_id = "uid://b0aif7k0kpoy2"
 product_data = ExtResource("33_smqka")
 grid_columns = 10
 grid_rows = 5
@@ -861,13 +898,14 @@ quantity = 50
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Jalapeno/Area3D" parent_id_path=PackedInt32Array(621968759, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.28948513, 0.018596359, 0.25639024)
-shape = SubResource("BoxShape3D_w5lqj")
+shape = SubResource("BoxShape3D_t3vjv")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Jalapeno" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.24660537, 0, 1.0469974)
 
 [node name="Carrots" parent="NavigationRegion3D/Items" unique_id=456296455 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -1.0887293, -0.8963845, 1.0111307)
+save_id = "uid://doix3y5fo63ee"
 product_data = ExtResource("35_tjbrl")
 grid_columns = 14
 grid_rows = 3
@@ -879,10 +917,42 @@ quantity = 31
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Carrots/Area3D" parent_id_path=PackedInt32Array(456296455, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32734352, 0.015180275, 0.19013982)
-shape = SubResource("BoxShape3D_t3vjv")
+shape = SubResource("BoxShape3D_ml4vd")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Carrots" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.5, 0, 0.891417)
+
+[node name="V&D Can" parent="NavigationRegion3D/Items" unique_id=813833733 instance=ExtResource("16_om5ry")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -5.169991, -0.32513154, 0.97072154)
+save_id = "uid://c8l73wx7x8fo2"
+product_data = ExtResource("37_1uuvo")
+grid_rows = 5
+product_gap = 0.03
+max_quantity = 25
+quantity = 18
+
+[node name="CollisionShape3D" parent="NavigationRegion3D/Items/V&D Can/Area3D" parent_id_path=PackedInt32Array(813833733, 1400837386) index="0" unique_id=211993197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.19739816, 0.05710657, 0.19739816)
+shape = SubResource("BoxShape3D_1heq5")
+
+[node name="AIShopperPoint" parent="NavigationRegion3D/Items/V&D Can" index="4" unique_id=2005891054]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.2404871, 0, 0.83547354)
+
+[node name="Fantasi 1litre" parent="NavigationRegion3D/Items" unique_id=24309262 instance=ExtResource("16_om5ry")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -6.3386555, 0.09913218, 0.97072154)
+save_id = "uid://dwfq8bmh0qp6l"
+product_data = ExtResource("38_6evkd")
+grid_rows = 5
+product_gap = 0.03
+max_quantity = 25
+quantity = 18
+
+[node name="CollisionShape3D" parent="NavigationRegion3D/Items/Fantasi 1litre/Area3D" parent_id_path=PackedInt32Array(24309262, 1400837386) index="0" unique_id=211993197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22568205, 0.13357249, 0.22568205)
+shape = SubResource("BoxShape3D_cd4y6")
+
+[node name="AIShopperPoint" parent="NavigationRegion3D/Items/Fantasi 1litre" index="4" unique_id=2005891054]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.07923031, -0.14336228, 1.0641675)
 
 [node name="Shelves" type="Node3D" parent="NavigationRegion3D" unique_id=489182429]
 
@@ -985,12 +1055,15 @@ metadata/_edit_lock_ = true
 
 [node name="Endcap_5row_col2" parent="NavigationRegion3D/Shelves" unique_id=21100947 groups=["level_geo"] instance=ExtResource("23_rob7k")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 2, 0.13303673, 20.200169)
+metadata/_edit_lock_ = true
 
 [node name="Endcap_5row_col3" parent="NavigationRegion3D/Shelves" unique_id=38298285 groups=["level_geo"] instance=ExtResource("23_rob7k")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -6, 0.13303673, 20.200169)
+metadata/_edit_lock_ = true
 
 [node name="Endcap_5row_col4" parent="NavigationRegion3D/Shelves" unique_id=1467934299 groups=["level_geo"] instance=ExtResource("23_rob7k")]
 transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, -8, 0.13303673, 18.200169)
+metadata/_edit_lock_ = true
 
 [node name="Basket_Square_Large2" parent="NavigationRegion3D/Shelves" unique_id=1024620718 groups=["level_geo"] instance=ExtResource("33_eo4fh")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.8097363, 0.5330366, 20.059917)
@@ -1010,21 +1083,27 @@ metadata/_edit_lock_ = true
 
 [node name="Basket_Square_Small2" parent="NavigationRegion3D/Shelves" unique_id=702720247 groups=["level_geo"] instance=ExtResource("35_dpvep")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0084751, 1.2530363, 20.136436)
+metadata/_edit_lock_ = true
 
 [node name="Basket_Square_Small3" parent="NavigationRegion3D/Shelves" unique_id=799133456 groups=["level_geo"] instance=ExtResource("35_dpvep")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -1.0084751, 1.5143121, 10.128728)
+metadata/_edit_lock_ = true
 
 [node name="Basket_Square_Small7" parent="NavigationRegion3D/Shelves" unique_id=568205460 groups=["level_geo"] instance=ExtResource("35_dpvep")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.0084753, 1.5143121, 14.273918)
+metadata/_edit_lock_ = true
 
 [node name="Basket_Square_Small4" parent="NavigationRegion3D/Shelves" unique_id=1379308814 groups=["level_geo"] instance=ExtResource("35_dpvep")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3.008475, 1.1981078, 10.128728)
+metadata/_edit_lock_ = true
 
 [node name="Basket_Square_Small5" parent="NavigationRegion3D/Shelves" unique_id=586226829 groups=["level_geo"] instance=ExtResource("35_dpvep")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.0084753, 1.1981078, 15.128728)
+metadata/_edit_lock_ = true
 
 [node name="Basket_Square_Small6" parent="NavigationRegion3D/Shelves" unique_id=236466727 groups=["level_geo"] instance=ExtResource("35_dpvep")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -0.008475065, 1.5143121, 15.128728)
+metadata/_edit_lock_ = true
 
 [node name="Stock_Delivery_Shelf" parent="NavigationRegion3D/Shelves" unique_id=858914986 instance=ExtResource("47_0g1cj")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.5607734, 0.13303673, 25.340988)
@@ -1137,13 +1216,13 @@ transform = Transform3D(0.9326745, 0, -0.36071923, 0, 1, 0, 0.36071923, 0, 0.932
 [node name="StoreSmallGreybox" parent="." unique_id=253599967 groups=["level_geo"] instance=ExtResource("15_tcjw2")]
 transform = Transform3D(-1.0000001, 0, -8.7422784e-08, 0, 1, 0, 8.7422784e-08, 0, -1.0000001, -0.53600764, -1.5205572, -3.3310928)
 
-[node name="store_small" parent="StoreSmallGreybox" index="0" unique_id=370227297]
+[node name="store_small" parent="StoreSmallGreybox" index="0" unique_id=1637544330]
 transform = Transform3D(1, 0, 1.0899726e-11, 0, 1, 0, -1.0899726e-11, 0, 1, 0.463, 0, -0.33)
 
-[node name="store_small_windows" parent="StoreSmallGreybox" index="1" unique_id=479942510]
+[node name="store_small_windows" parent="StoreSmallGreybox" index="1" unique_id=580215355]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.463, 0, -0.33)
 
-[node name="CollisionShape3D" parent="StoreSmallGreybox/store_small_windows/StaticBody3D" parent_id_path=PackedInt32Array(253599967, 621884385) index="0" unique_id=65666999]
+[node name="CollisionShape3D" parent="StoreSmallGreybox/store_small_windows/StaticBody3D" parent_id_path=PackedInt32Array(253599967, 1553493368) index="0" unique_id=933534022]
 shape = SubResource("ConcavePolygonShape3D_mcoed")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
@@ -1418,6 +1497,8 @@ size = Vector3(14.4, 1, 20.4)
 [editable path="NavigationRegion3D/Items/Canuck Cola"]
 [editable path="NavigationRegion3D/Items/Jalapeno"]
 [editable path="NavigationRegion3D/Items/Carrots"]
+[editable path="NavigationRegion3D/Items/V&D Can"]
+[editable path="NavigationRegion3D/Items/Fantasi 1litre"]
 [editable path="NavigationRegion3D/Shelves/Produce_2row_col3"]
 [editable path="NavigationRegion3D/Shelves/Freezer_Left_5row3"]
 [editable path="NavigationRegion3D/Shelves/Freezer_Right_5row3"]

@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://dop3quknwhbhb"]
 
-[ext_resource type="ArrayMesh" uid="uid://cxofqp3t8cwhd" path="res://assets/models/items/pop_canuck_cola_can_Cylinder_025.res" id="1_3ygj1"]
+[ext_resource type="ArrayMesh" uid="uid://b732qeu3ldigd" path="res://assets/models/items/pop_canuck_cola_can_Cylinder_025.res" id="1_3ygj1"]
 [ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_tgcvo"]
 
 [resource]

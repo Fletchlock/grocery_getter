@@ -27,7 +27,9 @@ var last_purchase: float:
 
 func _ready() -> void:
 	update_label()
-
+	
+	if not multiplayer.is_server():
+		StoreManager.request_finances()
 
 func adjust_store_cash(amount: float) -> void:
 	if not multiplayer.is_server():
@@ -47,6 +49,7 @@ func record_purchase(purchase_total: float) -> void:
 		return
 
 	StoreManager.total_shoppers += 1
+	StoreManager.sync_finances()
 	adjust_store_cash(purchase_total)
 
 
