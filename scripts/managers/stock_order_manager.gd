@@ -347,3 +347,74 @@ func _on_node_added(node: Node) -> void:
 		return
 
 	spawner.spawn_function = _create_delivery_box
+
+
+func restore_saved_boxes() -> void:
+	if not multiplayer.is_server():
+		return
+
+	if StoreManager.restock_boxes.is_empty():
+		return
+
+	var level: Node = get_tree().root.get_node_or_null(
+		"Main/Game/ThirdPersonLevel"
+	)
+
+	if level == null:
+		push_warning("Cannot restore restock boxes: store level not found.")
+		return
+
+	var deliveries: Node3D = level.get_node_or_null(
+		"Deliveries"
+	) as Node3D
+
+	if deliveries == null:
+		return
+
+	var spawner: MultiplayerSpawner = deliveries.get_node_or_null(
+		"MultiplayerSpawner"
+	) as MultiplayerSpawner
+
+	if spawner == null:
+		return
+
+	var restored_count: int = 0
+
+	for box_data: Dictionary in StoreManager.restock_boxes:
+		var position_data: Array = box_data["position"]
+		var rotation_data: Array = box_data["rotation"]
+
+		var global_position: Vector3 = Vector3(
+			float(position_data[0]),
+			float(position_data[1]),
+			float(position_data[2])
+		)
+
+		var global_rotation: Vector3 = Vector3(
+			float(rotation_data[0]),
+			float(rotation_data[1]),
+			float(rotation_data[2])
+		)
+
+		var global_basis: Basis = Basis.from_euler(global_rotation)
+
+		var global_box_transform: Transform3D = Transform3D(
+			global_basis,
+			global_position
+		)
+
+		var local_box_transform: Transform3D = (
+			deliveries.global_transform.affine_inverse()
+			* global_box_transform
+		)
+
+		spawner.spawn({
+			"product_path": str(box_data["product_path"]),
+			"quantity": int(box_data["quantity"]),
+			"position": local_box_transform.origin,
+			"rotation": local_box_transform.basis.get_euler()
+		})
+
+		restored_count += 1
+
+	print("RESTOCK BOXES RESTORED: ", restored_count)

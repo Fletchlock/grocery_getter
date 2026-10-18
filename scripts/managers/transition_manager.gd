@@ -41,7 +41,6 @@ func start_orange_survival() -> void:
 
 	transitioning = true
 
-	# Save all physical restock boxes before unloading the store.
 	StoreManager.capture_restock_boxes()
 
 	_load_level_on_all_peers.rpc(ORANGE_SURVIVAL_SCENE)
@@ -75,6 +74,7 @@ func _load_level_on_all_peers(level_path: String) -> void:
 	_perform_transition(level_path)
 
 
+
 func _perform_transition(level_path: String) -> void:
 	transitioning = true
 
@@ -85,7 +85,12 @@ func _perform_transition(level_path: String) -> void:
 
 	LevelManager.load_level(level_path)
 
+	# Allow the new level and its MultiplayerSpawner to initialize.
 	await get_tree().process_frame
+
+	# Only the host restores physical inventory.
+	if multiplayer.is_server() and level_path == GROCERY_STORE_SCENE:
+		StockOrderManager.restore_saved_boxes()
 
 	fade_rect.modulate.a = 0.0
 	transitioning = false
