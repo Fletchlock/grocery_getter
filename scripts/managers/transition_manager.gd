@@ -40,8 +40,11 @@ func start_orange_survival() -> void:
 		return
 
 	transitioning = true
-	_load_level_on_all_peers.rpc(ORANGE_SURVIVAL_SCENE)
 
+	# Save all physical restock boxes before unloading the store.
+	StoreManager.capture_restock_boxes()
+
+	_load_level_on_all_peers.rpc(ORANGE_SURVIVAL_SCENE)
 
 
 func return_to_grocery_store() -> void:

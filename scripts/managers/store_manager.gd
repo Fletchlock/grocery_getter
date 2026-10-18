@@ -141,3 +141,45 @@ func _request_finances() -> void:
 		total_shoppers,
 		last_purchase
 	)
+
+
+func capture_restock_boxes() -> void:
+	if not multiplayer.is_server():
+		return
+
+	restock_boxes.clear()
+
+	for node: Node in get_tree().get_nodes_in_group("restock_boxes"):
+		if not node is RestockBox:
+			continue
+
+		var box: RestockBox = node as RestockBox
+
+		if not is_instance_valid(box.product_data):
+			continue
+
+		if box.quantity <= 0:
+			continue
+
+		var product_path: String = box.product_data.resource_path
+
+		if product_path.is_empty():
+			push_warning("Restock box has product without resource path.")
+			continue
+
+		restock_boxes.append({
+			"product_path": product_path,
+			"quantity": box.quantity,
+			"position": [
+				box.global_position.x,
+				box.global_position.y,
+				box.global_position.z
+			],
+			"rotation": [
+				box.global_rotation.x,
+				box.global_rotation.y,
+				box.global_rotation.z
+			]
+		})
+
+	print("RESTOCK BOXES CAPTURED: ", restock_boxes.size())
