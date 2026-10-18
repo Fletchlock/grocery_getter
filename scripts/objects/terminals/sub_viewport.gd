@@ -11,7 +11,7 @@ func _ready() -> void:
 		
 	# 1. Ensure the panel matches the exact pixel resolution of the viewport
 	panel.custom_minimum_size = self.size
-	panel.size = self.size
+	#panel.size = self.size
 	
 	# 2. Add an internal margin so text never hugs the physical screen edge
 	# This adds a 20-pixel safe buffer all around the screen

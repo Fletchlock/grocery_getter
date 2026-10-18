@@ -65,9 +65,10 @@ func _get_order_summary(order: OrderData) -> String:
 				order.time_limit - order.elapsed_time,
 				0.0
 			)
-
-			var minutes: int = int(remaining_time) / 60
-			var seconds: int = int(remaining_time) % 60
+			
+			var total_seconds: int = int(remaining_time)
+			var minutes: int = floori(remaining_time / 60.0)
+			var seconds: int = total_seconds % 60
 
 			return "ORDER %d %s - ACTIVE - %02d:%02d" % [
 				order.order_id,

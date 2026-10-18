@@ -669,47 +669,6 @@ func _find_position_for_new_item(
 	return Vector3.INF
 
 	
-
-	# Vertical stacking only after bottom-level options.
-	for index: int in range(item_positions.size()):
-		var existing_product: ProductData = cart_items[index]
-
-		if existing_product == null:
-			continue
-
-		var existing_size: Vector3 = _get_product_size(
-			existing_product
-		)
-
-		var existing_position: Vector3 = item_positions[index]
-
-		var stack_position: Vector3 = Vector3(
-			existing_position.x,
-			existing_position.y
-			+ existing_size.y * 0.5
-			+ vertical_spacing
-			+ product_size.y * 0.5,
-			existing_position.z
-		)
-
-		if not _position_fits_bounds(
-			stack_position,
-			product_size,
-			bounds
-		):
-			continue
-
-		if _position_overlaps_items(
-			stack_position,
-			product_size
-		):
-			continue
-
-		return stack_position
-
-	return Vector3.INF
-	
-	
 func _score_candidate_position(
 	candidate: Vector3,
 	_product_size: Vector3,

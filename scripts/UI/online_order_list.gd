@@ -100,9 +100,10 @@ func _update_remaining_time(order: OrderData) -> void:
 		order.time_limit - order.elapsed_time,
 		0.0
 	)
-
-	var minutes: int = int(remaining) / 60
-	var seconds: int = int(remaining) % 60
+	
+	var total_seconds: int = int(remaining)
+	var minutes: int = floori(remaining / 60.0)
+	var seconds: int = total_seconds % 60
 
 	time_remaining.text = "   %dm%02ds" % [
 		minutes,

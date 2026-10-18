@@ -126,7 +126,7 @@ func _process_pending_orders(day: int) -> void:
 	
 	print("PROCESSING STOCK ORDERS: day=", day, " pending=", pending_orders)
 	
-	var stats: Node = get_tree().get_first_node_in_group("shopper_stats")
+	var _stats: Node = get_tree().get_first_node_in_group("shopper_stats")
 		
 	last_processed_day = day
 
@@ -277,7 +277,7 @@ func _spawn_delivery(day: int) -> void:
 			var box_width: float = 0.5
 			var box_height: float = 0.5
 
-			var stack_column: int = box_index / delivery_stack_height
+			var stack_column: int = floori(float(box_index) / float(delivery_stack_height))
 			var stack_row: int = box_index % delivery_stack_height
 
 			var local_offset: Vector3 = Vector3(
