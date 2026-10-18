@@ -55,3 +55,30 @@ func load_save_data(data: Dictionary) -> void:
 
 	for box_data: Dictionary in data.get("restock_boxes", []):
 		restock_boxes.append(box_data.duplicate(true))
+
+
+
+func record_sale(amount: float) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if amount <= 0.0:
+		return
+
+	store_cash += amount
+	total_sales += amount
+	last_purchase = amount
+
+
+func spend_cash(amount: float) -> bool:
+	if not multiplayer.is_server():
+		return false
+
+	if amount <= 0.0:
+		return false
+
+	if amount > store_cash:
+		return false
+
+	store_cash -= amount
+	return true
