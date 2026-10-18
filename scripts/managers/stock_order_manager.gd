@@ -127,20 +127,13 @@ func _process_pending_orders(day: int) -> void:
 	print("PROCESSING STOCK ORDERS: day=", day, " pending=", pending_orders)
 	
 	var stats: Node = get_tree().get_first_node_in_group("shopper_stats")
-	
-	print("SHOPPER STATS NODE: ", stats)
-	if stats != null:
-		print("TOTAL SALES BEFORE ORDER: ", stats.get("total_sales"))
-	
-	if stats == null:
-		return
-
-	if not stats.get("total_sales") is float and not stats.get("total_sales") is int:
-		return
-
+		
 	last_processed_day = day
 
-	var budget: float = maxf(0.0, float(stats.get("total_sales")))
+	var budget: float = maxf(0.0, StoreManager.store_cash)
+
+	print("STORE CASH BEFORE RESTOCK: $", budget)
+
 
 	# Process products in the order they were added.
 	print("STOCK DEBUG: pending_order_paths=", pending_order_paths)
@@ -198,11 +191,21 @@ func _process_pending_orders(day: int) -> void:
 			int(confirmed_orders.get(product_path, 0))
 			+ purchased_quantity
 		)
-
-	# Deduct spending from the current store funds.
-	stats.set("total_sales", budget)
-	print("STOCK ORDERS PROCESSED: remaining budget=$", budget, " confirmed orders=", confirmed_orders)
 	
+	# Deduct the total cost of purchased stock.
+	var amount_spent: float = maxf(
+		0.0,
+		StoreManager.store_cash - budget
+	)
+
+	if amount_spent > 0.0:
+		StoreManager.spend_cash(amount_spent)
+
+	print(
+		"RESTOCK SPENDING: $", amount_spent,
+		" | Remaining cash: $", StoreManager.store_cash
+	)
+
 	# All unpurchased quantities are discarded.
 	pending_orders.clear()
 	pending_order_paths.clear()

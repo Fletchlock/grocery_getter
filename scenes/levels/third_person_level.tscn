@@ -365,15 +365,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.8925495, 0.06903673, 5.686
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.8085127, 0.13347888, 6.074171)
 
 [node name="ShopperStats" type="Node3D" parent="NavigationRegion3D" unique_id=899307097 node_paths=PackedStringArray("stats_label") groups=["shopper_stats"]]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.9227845, 4.2848105, 6.215252)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 5.996476, 3.9222722, 10.201011)
 script = ExtResource("6_ho602")
 stats_label = NodePath("Label3D")
 
 [node name="Label3D" type="Label3D" parent="NavigationRegion3D/ShopperStats" unique_id=550816679]
-transform = Transform3D(0.0069812723, 0, 0.9999756, 0, 1, 0, -0.9999756, 0, 0.0069812723, -6.9008346, 0, -3.999999)
 texture_filter = 2
 text = "Shoppers in store: 0 / 0
 Total shopped: 0
+Total cash: $0.00
 Total sales: $0.00
 Last purchase: $0.00"
 font_size = 60
