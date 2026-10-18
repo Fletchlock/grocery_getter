@@ -7,6 +7,8 @@
 script = ExtResource("1_tv6sb")
 item_id = "apple_red"
 display_name = "Gala Apple"
+product_category = "produce"
+product_code = "LLUR"
 product_mesh = ExtResource("1_x4bc5")
 product_price = 0.5
 reorder_cost = 0.4

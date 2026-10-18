@@ -7,6 +7,7 @@ extends Control
 @onready var orders_container: VBoxContainer = $OrderNotifications/VBoxContainer
 @onready var order_list_container: VBoxContainer = $OrderList/VBoxContainer
 @onready var shopper_count: Label = $TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ShopperCount
+@onready var barcode_hud = $BardcodeHud
 
 @export var available_order_scene: PackedScene
 @export var active_order_scene: PackedScene
@@ -418,3 +419,7 @@ func _on_order_cart_contents_changed(cart_grid: CartGrid) -> void:
 
 	if order != null:
 		current_order_list.update_order(order)
+
+
+func _update_barcode(product_code: String) -> void:
+	barcode_hud.update_display(product_code)

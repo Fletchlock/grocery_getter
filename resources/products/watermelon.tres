@@ -7,6 +7,8 @@
 script = ExtResource("1_ljogh")
 item_id = "watermelon"
 display_name = "Watermelon"
+product_category = "produce"
+product_code = "imtoolazytocomeupwith30codes"
 product_mesh = ExtResource("1_jhwc5")
 product_price = 5.99
 reorder_cost = 4.79

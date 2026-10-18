@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://c8nis4qdppl3y"]
+
+[ext_resource type="Script" uid="uid://bslm3xvaa1epx" path="res://scripts/UI/barcode_hud.gd" id="1_gxxt4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8u6ci"]
+resource_local_to_scene = true
+bg_color = Color(0.14509805, 0.3882353, 0.10980392, 0.78431374)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+expand_margin_left = 10.0
+expand_margin_top = 5.0
+expand_margin_right = 10.0
+expand_margin_bottom = 5.0
+
+[node name="BardcodeHud" type="PanelContainer" unique_id=1388157964]
+custom_minimum_size = Vector2(220, 0)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -141.0
+offset_top = -16.5
+offset_right = 141.0
+offset_bottom = 16.5
+grow_horizontal = 2
+grow_vertical = 2
+offset_transform_enabled = true
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8u6ci")
+script = ExtResource("1_gxxt4")
+
+[node name="Label" type="Label" parent="." unique_id=1164776408]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 22
+text = "Enter product code: "
+horizontal_alignment = 1
+vertical_alignment = 1
