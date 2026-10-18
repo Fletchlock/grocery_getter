@@ -112,6 +112,7 @@ func _get_order_summary(order: OrderData) -> String:
 
 
 func get_interaction_prompt(player: CharacterBody3D) -> String:
+	_update_barcode_hud(null)
 	if player.network_holding_item:
 		if player.held_item == null:
 			return ""
@@ -133,6 +134,7 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 				return "[E] Scan " + player.held_item.display_name
 
 			if checkout.can_scan_ai_product(player.held_item):
+				_update_barcode_hud(player.held_item)
 				return "[E] Scan " + player.held_item.display_name
 
 		return ""
@@ -298,6 +300,10 @@ func _submit_product_to_checkout(
 	if not submitted:
 		return false
 
+	var day_time_hud = get_tree().get_first_node_in_group("day_time_hud")
+	if day_time_hud != null:
+		day_time_hud._update_barcode(product.product_code)
+
 	if player_peer_id == multiplayer.get_unique_id():
 		player._clear_held_item()
 	else:
@@ -306,6 +312,17 @@ func _submit_product_to_checkout(
 	_play_order_scanner_beep.rpc()
 	
 	return true
+
+
+func _update_barcode_hud(product: ProductData) -> void:
+	var day_time_hud = get_tree().get_first_node_in_group("day_time_hud")
+	if day_time_hud == null:
+		return
+
+	if product != null:
+		day_time_hud._update_barcode(product.product_code)
+	else:
+		day_time_hud._update_barcode("")
 
 
 @rpc("authority", "call_local", "reliable")

@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://myobwr6wegii" path="res://scenes/UI/online_order_available.tscn" id="2_8u6ci"]
 [ext_resource type="PackedScene" uid="uid://2wowol47x3tk" path="res://scenes/UI/online_order_active.tscn" id="3_glyqf"]
 [ext_resource type="PackedScene" uid="uid://c3gc8ev0p8236" path="res://scenes/UI/online_order_list.tscn" id="4_26j03"]
+[ext_resource type="PackedScene" uid="uid://c8nis4qdppl3y" path="res://scenes/UI/barcode_hud.tscn" id="5_8arff"]
 
 [sub_resource type="Animation" id="Animation_prtv8"]
 length = 0.001
@@ -106,7 +107,19 @@ expand_margin_top = 5.0
 expand_margin_right = 10.0
 expand_margin_bottom = 5.0
 
-[node name="DayTimeHud" type="Control" unique_id=1121544524]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_52nrg"]
+resource_local_to_scene = true
+bg_color = Color(0.14509805, 0.3882353, 0.10980392, 0.78431374)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+expand_margin_left = 10.0
+expand_margin_top = 5.0
+expand_margin_right = 10.0
+expand_margin_bottom = 5.0
+
+[node name="DayTimeHud" type="Control" unique_id=1121544524 groups=["day_time_hud"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -246,3 +259,9 @@ offset_transform_position = Vector2(-20, 120)
 layout_mode = 1
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="BardcodeHud" parent="." unique_id=1388157964 instance=ExtResource("5_8arff")]
+layout_mode = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_52nrg")
+
+[editable path="BardcodeHud"]

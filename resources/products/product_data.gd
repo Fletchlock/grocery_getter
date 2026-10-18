@@ -6,6 +6,7 @@ class_name ProductData
 @export var item_id: String = ""
 @export var display_name: String = ""
 @export var product_category: String = ""
+@export var product_code: String = ""
 @export var product_mesh: Mesh
 @export var product_price: float = 0.00
 @export var reorder_cost: float = 0.00
