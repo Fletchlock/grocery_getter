@@ -17,9 +17,9 @@ func load_level(level_path: String) -> void:
 
 	# Remove the previous level.
 	if current_level != null:
-		current_level.get_parent().remove_child(current_level)
 		current_level.queue_free()
 		current_level = null
+
 
 	# Create and load the new level.
 	current_level = level_scene.instantiate()
