@@ -11,11 +11,6 @@ const SAVE_PATH: String = LEGACY_SAVE_PATH
 var selected_slot: int = 1
 
 
-func _ready() -> void:
-	migrate_legacy_save()
-
-	print("SLOT 1 INFO: ", get_slot_info(1))
-
 
 func get_slot_path(slot: int) -> String:
 	if slot < 1 or slot > MAX_SAVE_SLOTS:
@@ -79,16 +74,40 @@ func get_slot_info(slot: int) -> Dictionary:
 func save_game() -> bool:
 	if not multiplayer.is_server():
 		return false
+	
+	var save_path: String = get_slot_path(selected_slot)
+
+	if save_path.is_empty():
+		return false
+
+	var error: Error = DirAccess.make_dir_recursive_absolute(
+		ProjectSettings.globalize_path(SAVE_DIRECTORY)
+	)
+
+	if error != OK:
+		push_error("Failed to create save directory.")
+		return false
+
+	var existing_info: Dictionary = get_slot_info(selected_slot)
+
+	var created_at: String = str(
+		existing_info.get(
+			"created_at",
+			Time.get_datetime_string_from_system()
+		)
+	)
 
 	var save_data: Dictionary = {
 		"save_version": SAVE_VERSION,
+		"created_at": created_at,
+		"updated_at": Time.get_datetime_string_from_system(),
 		"store": StoreManager.get_save_data(),
 		"stock_orders": StockOrderManager.get_save_data(),
 		"day": DayManager.get_save_data()
 	}
 
 	var file: FileAccess = FileAccess.open(
-		SAVE_PATH,
+		save_path,
 		FileAccess.WRITE
 	)
 
@@ -105,19 +124,24 @@ func save_game() -> bool:
 
 	file.close()
 
-	print("GAME SAVED: ", SAVE_PATH)
+	print("GAME SAVED: ", save_path)
 	return true
 
 
 func load_game() -> bool:
 	if not multiplayer.is_server():
 		return false
+	
+	var save_path: String = get_slot_path(selected_slot)
 
-	if not FileAccess.file_exists(SAVE_PATH):
+	if save_path.is_empty():
+		return false
+
+	if not FileAccess.file_exists(save_path):
 		return false
 
 	var file: FileAccess = FileAccess.open(
-		SAVE_PATH,
+		save_path,
 		FileAccess.READ
 	)
 
@@ -175,7 +199,7 @@ func load_game() -> bool:
 
 
 func has_save() -> bool:
-	return FileAccess.file_exists(SAVE_PATH)
+	return slot_has_save(selected_slot)
 
 
 func migrate_legacy_save() -> bool:
