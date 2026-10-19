@@ -16,6 +16,12 @@ extends Control
 
 @onready var overwrite_confirmation: ConfirmationDialog = $OverwriteConfirmation
 
+@onready var host_privacy_panel: PanelContainer = $HostPrivacyPanel
+
+@onready var friends_button: Button = $HostPrivacyPanel/MarginContainer/VBoxContainer/FriendsButton
+@onready var invite_button: Button = $HostPrivacyPanel/MarginContainer/VBoxContainer/InviteButton
+@onready var privacy_back_button: Button = $HostPrivacyPanel/MarginContainer/VBoxContainer/BackButton
+
 var pending_overwrite_slot: int = -1
 
 
@@ -24,7 +30,11 @@ var pending_overwrite_slot: int = -1
 func _ready() -> void:
 	continue_game_button.disabled = not _any_save_exists()
 	save_slot_panel.hide()
-	
+	host_privacy_panel.hide()
+
+	friends_button.pressed.connect(_on_friends_button_pressed)
+	invite_button.pressed.connect(_on_invite_button_pressed)
+	privacy_back_button.pressed.connect(_on_privacy_back_button_pressed)
 	overwrite_confirmation.add_theme_font_size_override("title_font_size", 26)
 	overwrite_confirmation.get_label().add_theme_font_size_override("font_size", 24)
 	overwrite_confirmation.get_ok_button().add_theme_font_size_override("font_size", 24)
@@ -202,7 +212,7 @@ func _select_save_slot(slot: int) -> void:
 		return
 
 	print("SELECTED SAVE SLOT: ", slot)
-	_host_game()
+	_show_host_privacy()
 
 
 
@@ -221,4 +231,24 @@ func _on_overwrite_confirmation_confirmed() -> void:
 
 	print("NEW GAME: Overwrite approved for Slot ", slot)
 
+	_show_host_privacy()
+
+
+func _show_host_privacy() -> void:
+	save_slot_panel.hide()
+	host_privacy_panel.show()
+
+
+func _on_friends_button_pressed() -> void:
+	print("HOST PRIVACY: Friends Can Join")
 	_host_game()
+
+
+func _on_invite_button_pressed() -> void:
+	print("HOST PRIVACY: Invite Only")
+	_host_game()
+
+
+func _on_privacy_back_button_pressed() -> void:
+	host_privacy_panel.hide()
+	save_slot_panel.show()
