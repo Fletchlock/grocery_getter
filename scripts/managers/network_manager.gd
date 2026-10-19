@@ -3,7 +3,7 @@ extends Node
 signal host_created
 signal lobby_joined(lobby_id: int)
 signal host_disconnected
-signal lobby_search_finished
+signal lobby_search_finished(lobbies: Array[Dictionary])
 
 const LOBBY_TYPE := Steam.LobbyType.LOBBY_TYPE_PUBLIC
 const MAX_MEMBERS := 4
@@ -56,6 +56,9 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 	current_lobby_id = lobby_id
 	Steam.setLobbyData(current_lobby_id, "game", "grocery_getter")
 	Steam.setLobbyData(current_lobby_id, "session_state", "lobby")
+	
+	var host_name: String = Steam.getFriendPersonaName(Steam.getSteamID())
+	Steam.setLobbyData(current_lobby_id, "host_name", host_name)
 	
 	if peer != null:
 		print("NetworkManager: Existing peer found. Closing it.")
@@ -151,10 +154,13 @@ func _on_lobby_joined(
 	lobby_joined.emit(lobby_id)
 
 
-func find_and_join_lobby() -> void:
+func search_lobbies() -> void:
 	print("NetworkManager: Searching for Grocery Getter lobbies.")
 
-	Steam.lobby_match_list.connect(_on_lobby_match_list, CONNECT_ONE_SHOT)
+	Steam.lobby_match_list.connect(
+		_on_lobby_match_list,
+		CONNECT_ONE_SHOT
+	)
 
 	Steam.addRequestLobbyListStringFilter(
 		"game",
@@ -166,34 +172,51 @@ func find_and_join_lobby() -> void:
 
 
 func _on_lobby_match_list(lobbies: Array) -> void:
-	print("NetworkManager: Found ", lobbies.size(), " Steam lobbies.")
+	var results: Array[Dictionary] = []
 
-	if lobbies.is_empty():
-		print("NetworkManager: No available lobbies found.")
-		lobby_search_finished.emit()
-		return
-
-	for lobby_id in lobbies:
-		var member_count := Steam.getNumLobbyMembers(lobby_id)
-
-		print(
-			"NetworkManager: Lobby ",
+	for lobby_id_variant: Variant in lobbies:
+		var lobby_id: int = int(lobby_id_variant)
+		var member_count: int = Steam.getNumLobbyMembers(lobby_id)
+		var owner_name: String = Steam.getLobbyData(
 			lobby_id,
-			" has ",
-			member_count,
-			"/",
-			MAX_MEMBERS,
-			" members."
+			"host_name"
 		)
 
-		# Don't join a full lobby.
-		if member_count < MAX_MEMBERS:
-			print("NetworkManager: Joining lobby ", lobby_id)
-			Steam.joinLobby(lobby_id)
-			return
+		if owner_name.is_empty():
+			owner_name = "Unknown Host"
 
-	print("NetworkManager: All found lobbies are full.")
-	lobby_search_finished.emit()
+		var session_state: String = Steam.getLobbyData(
+			lobby_id,
+			"session_state"
+		)
+
+		if session_state.is_empty():
+			session_state = "lobby"
+
+		results.append({
+			"lobby_id": lobby_id,
+			"host_name": owner_name,
+			"players": member_count,
+			"max_players": MAX_MEMBERS,
+			"status": session_state
+		})
+
+	print("NetworkManager: Found ", results.size(), " sessions.")
+
+	lobby_search_finished.emit(results)
+
+
+func join_lobby(lobby_id: int) -> void:
+	if current_lobby_id != 0:
+		print("NetworkManager: Already in a Steam lobby.")
+		return
+
+	if Steam.getNumLobbyMembers(lobby_id) >= MAX_MEMBERS:
+		print("NetworkManager: Selected lobby is full.")
+		return
+
+	print("NetworkManager: Joining selected lobby ", lobby_id)
+	Steam.joinLobby(lobby_id)
 
 
 func _on_join_requested(lobby_id: int, _steam_id: int) -> void:
