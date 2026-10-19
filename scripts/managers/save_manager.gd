@@ -7,7 +7,7 @@ const LEGACY_SAVE_PATH: String = "user://grocery_getter_save.json"
 const SAVE_VERSION: int = 1
 const MAX_SAVE_SLOTS: int = 5
 const SAVE_PATH: String = LEGACY_SAVE_PATH
-const SAVE_ENCRYPTION_KEY: String = "GroceryGetterSaveEncryption2026"
+const SAVE_ENCRYPTION_KEY_HEX: String = "27248985251193d115ad1c8dc8ca62ee65c83baba2429b2805a7838b372c7df0"
 
 var selected_slot: int = 1
 var reset_creation_date_on_save: bool = false
@@ -43,10 +43,10 @@ func get_slot_info(slot: int) -> Dictionary:
 	if path.is_empty() or not FileAccess.file_exists(path):
 		return {}
 
-	var file: FileAccess = FileAccess.open_encrypted_with_pass(
+	var file: FileAccess = FileAccess.open_encrypted(
 		path,
 		FileAccess.READ,
-		SAVE_ENCRYPTION_KEY
+		_get_encryption_key()
 	)
 
 	if file == null:
@@ -108,10 +108,10 @@ func save_game() -> bool:
 		"day": DayManager.get_save_data()
 	}
 
-	var file: FileAccess = FileAccess.open_encrypted_with_pass(
+	var file: FileAccess = FileAccess.open_encrypted(
 		save_path,
 		FileAccess.WRITE,
-		SAVE_ENCRYPTION_KEY
+		_get_encryption_key()
 	)
 
 	if file == null:
@@ -145,10 +145,10 @@ func load_game() -> bool:
 	if not FileAccess.file_exists(save_path):
 		return false
 
-	var file: FileAccess = FileAccess.open_encrypted_with_pass(
+	var file: FileAccess = FileAccess.open_encrypted(
 		save_path,
 		FileAccess.READ,
-		SAVE_ENCRYPTION_KEY
+		_get_encryption_key()
 	)
 
 	if file == null:
@@ -266,3 +266,6 @@ func migrate_legacy_save() -> bool:
 
 	print("SAVE MIGRATION: Legacy save copied to Slot 1.")
 	return true
+
+func _get_encryption_key() -> PackedByteArray:
+	return SAVE_ENCRYPTION_KEY_HEX.hex_decode()

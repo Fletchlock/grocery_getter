@@ -55,7 +55,8 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 	
 	current_lobby_id = lobby_id
 	Steam.setLobbyData(current_lobby_id, "game", "grocery_getter")
-
+	Steam.setLobbyData(current_lobby_id, "session_state", "lobby")
+	
 	if peer != null:
 		print("NetworkManager: Existing peer found. Closing it.")
 		peer.close()
@@ -99,7 +100,7 @@ func _on_lobby_joined(
 	_permission: int,
 	_locked: bool,
 	response: int
-) -> void:
+	) -> void:
 
 	if response != Steam.CHAT_ROOM_ENTER_RESPONSE_SUCCESS:
 		print("Failed to join Steam lobby. Response: ", response)
@@ -113,7 +114,21 @@ func _on_lobby_joined(
 		return
 
 	var host_steam_id := Steam.getLobbyOwner(lobby_id)
+	
+	var session_state: String = Steam.getLobbyData(
+		lobby_id,
+		"session_state"
+	)
 
+	print("NetworkManager: Host session state: ", session_state)
+
+	if session_state == "playing":
+		print("NetworkManager: Preparing store for late join.")
+
+	GameManager.set_game_state(GameManager.GameState.PLAYING)
+
+	LevelManager.load_level(GameManager.STORE_LEVEL_PATH)
+	
 	print("NetworkManager: Lobby owner Steam ID: ", host_steam_id)
 	print("NetworkManager: My Steam ID: ", Steam.getSteamID())
 

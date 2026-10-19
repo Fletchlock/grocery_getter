@@ -5,7 +5,7 @@ extends Node3D
 @onready var player_grid: GridContainer = $MeshInstance3D/SubViewport/PanelContainer/MarginContainer/VBoxContainer/PlayerGrid
 
 func _ready() -> void:
-	print_tree_pretty()
+	
 	if not DayManager.clock_updated.is_connected(_on_clock_updated):
 		DayManager.clock_updated.connect(_on_clock_updated)
 
