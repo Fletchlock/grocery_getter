@@ -19,6 +19,14 @@ enum GameState {
 	GAME_OVER
 }
 
+enum GameStartMode {
+	NEW_GAME,
+	CONTINUE_GAME
+}
+
+var game_start_mode: GameStartMode = GameStartMode.NEW_GAME
+
+
 signal game_state_changed(new_state: GameState)
 
 # CURRENT GAME STATE
@@ -87,10 +95,48 @@ func start_multiplayer_game() -> void:
 	# Tell all clients to start the game.
 	start_multiplayer_game_rpc.rpc()
 
+	
 	# Start the game locally for the host.
 	set_game_state(GameState.PLAYING)
-	LevelManager.load_level("res://scenes/levels/third_person_level.tscn")
+
+	
+	# Prepare the selected game before loading the store scene.
+	match game_start_mode:
+		GameStartMode.NEW_GAME:
+			print("GameManager: Starting NEW GAME.")
+
+			StoreManager.reset_store()
+			StockOrderManager.reset_stock_orders()
+			DayManager.load_save_data({
+				"current_day": 1
+			})
+			StoreManager.sync_finances()
+
+		GameStartMode.CONTINUE_GAME:
+			print("GameManager: Continuing saved game.")
+
+			if not SaveManager.load_game():
+				push_error("GameManager: Failed to load saved game.")
+				return
+
+	# Tell all clients to start the game.
+	start_multiplayer_game_rpc.rpc()
+
+	# Start the game locally for the host.
+	set_game_state(GameState.PLAYING)
+
+	LevelManager.load_level(
+		"res://scenes/levels/third_person_level.tscn"
+	)
+
+	await get_tree().process_frame
+
+	# Only restore saved boxes when continuing.
+	if game_start_mode == GameStartMode.CONTINUE_GAME:
+		StockOrderManager.restore_saved_boxes()
+
 	DayManager.start_day()
+
 
 @rpc("authority", "reliable")
 func start_multiplayer_game_rpc() -> void:
