@@ -590,7 +590,8 @@ func _physics_process(delta: float) -> void:
 		
 		# Detect a new received network state...
 		if (
-			network_position != _network_position_last_received
+			not _network_position_initialized
+			or network_position != _network_position_last_received
 			or network_velocity != _network_velocity_last_received
 			or network_rotation_y != _network_rotation_y_last_received
 			or network_first_person != _network_first_person_last_received

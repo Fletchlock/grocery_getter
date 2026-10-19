@@ -234,3 +234,6 @@ func receive_host_game_state(host_state: int) -> void:
 
 		if LevelManager.current_level == null:
 			LevelManager.load_level(STORE_LEVEL_PATH)
+		
+		DayManager.request_clock_state()
+		StoreManager.request_finances()
