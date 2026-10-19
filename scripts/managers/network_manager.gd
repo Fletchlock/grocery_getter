@@ -1,3 +1,4 @@
+
 extends Node
 
 signal host_created
@@ -5,22 +6,21 @@ signal lobby_joined(lobby_id: int)
 signal host_disconnected
 signal lobby_search_finished(lobbies: Array[Dictionary])
 
-var selected_lobby_type: Steam.LobbyType = Steam.LobbyType.LOBBY_TYPE_FRIENDS_ONLY
-const MAX_MEMBERS := 4
+const LOBBY_TYPE: Steam.LobbyType = Steam.LobbyType.LOBBY_TYPE_PUBLIC
+const MAX_MEMBERS: int = 4
 
 var peer: SteamMultiplayerPeer
 var current_lobby_id: int = 0
 
 
 func _ready() -> void:
-	
 	Steam.initRelayNetworkAccess()
 
 	Steam.lobby_created.connect(_on_lobby_created)
 	Steam.lobby_joined.connect(_on_lobby_joined)
 	Steam.join_requested.connect(_on_join_requested)
 	Steam.lobby_chat_update.connect(_on_lobby_chat_update)
-	
+
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
@@ -28,49 +28,35 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	
 	Steam.run_callbacks()
 
 
-func host_lobby(lobby_type: Steam.LobbyType = Steam.LobbyType.LOBBY_TYPE_FRIENDS_ONLY) -> void:
-	selected_lobby_type = lobby_type
-
+func host_lobby(_lobby_type: Steam.LobbyType = LOBBY_TYPE) -> void:
 	print("NetworkManager: Starting host process.")
 
 	if current_lobby_id != 0 or multiplayer.multiplayer_peer != null:
 		print("NetworkManager: Cleaning up previous lobby before hosting.")
 		await disconnect_from_lobby()
 
-	print("NetworkManager: Creating new Steam lobby.")
-	Steam.createLobby(selected_lobby_type, MAX_MEMBERS)
+	print("NetworkManager: Creating PUBLIC Steam lobby.")
+	Steam.createLobby(LOBBY_TYPE, MAX_MEMBERS)
 
 
 func _on_lobby_created(connected: int, lobby_id: int) -> void:
-
 	if connected != Steam.RESULT_OK:
 		print("Failed to create Steam lobby. Result: ", connected)
 		return
 
 	print("Steam lobby created: ", lobby_id)
-	
+
 	current_lobby_id = lobby_id
-	Steam.setRichPresence("connect", "+connect_lobby %d" % lobby_id)
-	Steam.setRichPresence("steam_player_group", str(lobby_id))
-	Steam.setRichPresence("steam_player_group_size", "1")
-	print(
-		"HOST LOBBY: ",
-		current_lobby_id,
-		" | TYPE: ",
-		selected_lobby_type,
-		" | RICH PRESENCE: ",
-		Steam.getFriendRichPresence(Steam.getSteamID(), "connect")
-	)
+
 	Steam.setLobbyData(current_lobby_id, "game", "grocery_getter")
 	Steam.setLobbyData(current_lobby_id, "session_state", "lobby")
-	
+
 	var host_name: String = Steam.getFriendPersonaName(Steam.getSteamID())
 	Steam.setLobbyData(current_lobby_id, "host_name", host_name)
-	
+
 	if peer != null:
 		print("NetworkManager: Existing peer found. Closing it.")
 		peer.close()
@@ -79,7 +65,7 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 	peer = SteamMultiplayerPeer.new()
 	peer.server_relay = true
 
-	var error := peer.create_host()
+	var error: Error = peer.create_host()
 
 	if error != OK:
 		print("Failed to create Steam host. Error: ", error)
@@ -88,7 +74,6 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 
 	multiplayer.multiplayer_peer = peer
 
-	# Host registers with the lobby
 	var my_peer_id: int = multiplayer.get_unique_id()
 	var my_steam_id: int = Steam.getSteamID()
 	var my_name: String = Steam.getFriendPersonaName(my_steam_id)
@@ -99,14 +84,13 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 		my_name,
 		my_steam_id
 	)
-	
+
 	debug_lobby_members()
-	
+
 	print("NetworkManager: Host peer status: ", peer.get_connection_status())
 	print("NetworkManager: Host Steam ID: ", Steam.getSteamID())
-	
+
 	host_created.emit()
-	
 
 
 func _on_lobby_joined(
@@ -114,21 +98,20 @@ func _on_lobby_joined(
 	_permission: int,
 	_locked: bool,
 	response: int
-	) -> void:
-
+) -> void:
 	if response != Steam.CHAT_ROOM_ENTER_RESPONSE_SUCCESS:
 		print("Failed to join Steam lobby. Response: ", response)
 		return
 
 	print("Joined Steam lobby: ", lobby_id)
-	
+
 	current_lobby_id = lobby_id
 
 	if Steam.getLobbyOwner(lobby_id) == Steam.getSteamID():
 		return
 
-	var host_steam_id := Steam.getLobbyOwner(lobby_id)
-	
+	var host_steam_id: int = Steam.getLobbyOwner(lobby_id)
+
 	var session_state: String = Steam.getLobbyData(
 		lobby_id,
 		"session_state"
@@ -140,16 +123,15 @@ func _on_lobby_joined(
 		print("NetworkManager: Preparing store for late join.")
 
 		GameManager.begin_late_join()
-
 		LevelManager.load_level(GameManager.STORE_LEVEL_PATH)
-	
+
 	print("NetworkManager: Lobby owner Steam ID: ", host_steam_id)
 	print("NetworkManager: My Steam ID: ", Steam.getSteamID())
 
 	peer = SteamMultiplayerPeer.new()
 	peer.server_relay = true
 
-	var client_result := peer.create_client(host_steam_id)
+	var client_result: Error = peer.create_client(host_steam_id)
 
 	print("NetworkManager: create_client result: ", client_result)
 	print("NetworkManager: Peer status after create_client: ", peer.get_connection_status())
@@ -166,7 +148,7 @@ func _on_lobby_joined(
 
 
 func search_lobbies() -> void:
-	print("NetworkManager: Searching for Grocery Getter lobbies.")
+	print("NetworkManager: Searching for Grocery Getter PUBLIC lobbies.")
 
 	Steam.lobby_match_list.connect(
 		_on_lobby_match_list,
@@ -184,88 +166,38 @@ func search_lobbies() -> void:
 
 func _on_lobby_match_list(lobbies: Array) -> void:
 	var results: Array[Dictionary] = []
-	var seen_lobbies: Dictionary = {}
 
-	# Add lobbies returned by Steam's regular search.
 	for lobby_id_variant: Variant in lobbies:
 		var lobby_id: int = int(lobby_id_variant)
 
-		if seen_lobbies.has(lobby_id):
-			continue
-
-		seen_lobbies[lobby_id] = true
-		_add_lobby_result(lobby_id, results)
-
-	# Find lobbies belonging to Steam friends.
-	var friend_count: int = Steam.getFriendCount(
-		Steam.FriendFlags.FRIEND_FLAG_IMMEDIATE
-	)
-
-	for i: int in range(friend_count):
-		var friend_id: int = Steam.getFriendByIndex(
-			i,
-			Steam.FriendFlags.FRIEND_FLAG_IMMEDIATE
+		var member_count: int = Steam.getNumLobbyMembers(lobby_id)
+		var owner_name: String = Steam.getLobbyData(
+			lobby_id,
+			"host_name"
 		)
 
-		var game_info: Dictionary = Steam.getFriendGamePlayed(friend_id)
-		
-		print(
-			"FRIEND: ",
-			Steam.getFriendPersonaName(friend_id),
-			" | GAME INFO: ",
-			game_info
+		if owner_name.is_empty():
+			owner_name = "Unknown Host"
+
+		var session_state: String = Steam.getLobbyData(
+			lobby_id,
+			"session_state"
 		)
-		
-		if game_info.is_empty():
-			continue
 
-		var lobby_id: int = int(game_info.get("lobby", 0))
-		
-		print("FRIEND LOBBY ID: ", lobby_id)
-		
-		if lobby_id == 0 or seen_lobbies.has(lobby_id):
-			continue
+		if session_state.is_empty():
+			session_state = "lobby"
 
-		seen_lobbies[lobby_id] = true
-		_add_lobby_result(lobby_id, results)
+		results.append({
+			"lobby_id": lobby_id,
+			"host_name": owner_name,
+			"players": member_count,
+			"max_players": MAX_MEMBERS,
+			"status": session_state
+		})
 
 	print("NetworkManager: Found ", results.size(), " sessions.")
+
 	lobby_search_finished.emit(results)
-
-
-func _add_lobby_result(
-	lobby_id: int,
-	results: Array[Dictionary]
-) -> void:
-	print(
-		"CHECKING LOBBY: ",
-		lobby_id,
-		" | GAME: ",
-		Steam.getLobbyData(lobby_id, "game")
-	)
-	
-	var game_name: String = Steam.getLobbyData(lobby_id, "game")
-
-	if game_name != "grocery_getter":
-		return
-
-	var member_count: int = Steam.getNumLobbyMembers(lobby_id)
-	var owner_name: String = Steam.getLobbyData(lobby_id, "host_name")
-	var session_state: String = Steam.getLobbyData(lobby_id, "session_state")
-
-	if owner_name.is_empty():
-		owner_name = "Unknown Host"
-
-	if session_state.is_empty():
-		session_state = "lobby"
-
-	results.append({
-		"lobby_id": lobby_id,
-		"host_name": owner_name,
-		"players": member_count,
-		"max_players": MAX_MEMBERS,
-		"status": session_state
-	})
 
 
 func join_lobby(lobby_id: int) -> void:
@@ -296,10 +228,9 @@ func _on_peer_disconnected(peer_id: int) -> void:
 
 	LobbyManager.remove_player(peer_id)
 	SpawnManager.remove_player(peer_id)
-	
-	#Peer 1 is always the host.
+
 	if peer_id == 1 and not multiplayer.is_server():
-		print("NewtorkManager: Host Disconnected!")
+		print("NetworkManager: Host Disconnected!")
 		host_disconnected.emit()
 
 
@@ -341,37 +272,36 @@ func disconnect_from_lobby() -> void:
 			multiplayer.multiplayer_peer.get_connection_status()
 		)
 
-		var old_peer = multiplayer.multiplayer_peer
+		var old_peer: MultiplayerPeer = multiplayer.multiplayer_peer
 
 		old_peer.close()
-		
+
 		print(
 			"NetworkManager: Peer status after close: ",
 			old_peer.get_connection_status()
-			)
+		)
 
 		multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 		print("NetworkManager: Multiplayer peer replaced with OfflineMultiplayerPeer")
+
 		peer = null
-		old_peer = null
 
 	if current_lobby_id != 0:
 		Steam.leaveLobby(current_lobby_id)
 		print("Steam lobby removed: ", current_lobby_id)
 		current_lobby_id = 0
 
-	# Give Steam a frame to finish releasing the networking socket.
 	await get_tree().process_frame
 
 
 func debug_lobby_members() -> void:
 	print("=== STEAM LOBBY MEMBERS ===")
 
-	var member_count := Steam.getNumLobbyMembers(current_lobby_id)
+	var member_count: int = Steam.getNumLobbyMembers(current_lobby_id)
 
 	for i in range(member_count):
-		var steam_id := Steam.getLobbyMemberByIndex(current_lobby_id, i)
-		var player_name := Steam.getFriendPersonaName(steam_id)
+		var steam_id: int = Steam.getLobbyMemberByIndex(current_lobby_id, i)
+		var player_name: String = Steam.getFriendPersonaName(steam_id)
 
 		print(
 			"Member ",

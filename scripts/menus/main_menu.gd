@@ -1,5 +1,5 @@
-extends Control
 
+extends Control
 
 @onready var continue_game_button: Button = $CenterContainer/VBoxContainer/ContinueGameButton
 
@@ -17,7 +17,6 @@ extends Control
 @onready var overwrite_confirmation: ConfirmationDialog = $OverwriteConfirmation
 
 @onready var host_privacy_panel: PanelContainer = $HostPrivacyPanel
-
 @onready var friends_button: Button = $HostPrivacyPanel/MarginContainer/VBoxContainer/FriendsButton
 @onready var invite_button: Button = $HostPrivacyPanel/MarginContainer/VBoxContainer/InviteButton
 @onready var privacy_back_button: Button = $HostPrivacyPanel/MarginContainer/VBoxContainer/BackButton
@@ -25,16 +24,16 @@ extends Control
 var pending_overwrite_slot: int = -1
 
 
-
-
 func _ready() -> void:
 	continue_game_button.disabled = not _any_save_exists()
+
 	save_slot_panel.hide()
 	host_privacy_panel.hide()
 
 	friends_button.pressed.connect(_on_friends_button_pressed)
 	invite_button.pressed.connect(_on_invite_button_pressed)
 	privacy_back_button.pressed.connect(_on_privacy_back_button_pressed)
+
 	overwrite_confirmation.add_theme_font_size_override("title_font_size", 26)
 	overwrite_confirmation.get_label().add_theme_font_size_override("font_size", 24)
 	overwrite_confirmation.get_ok_button().add_theme_font_size_override("font_size", 24)
@@ -53,7 +52,7 @@ func _on_play_button_pressed() -> void:
 	GameManager.set_game_state(GameManager.GameState.PLAYING)
 	queue_free()
 	LevelManager.load_level("res://scenes/levels/third_person_level.tscn")
-	
+
 
 func _on_host_button_pressed() -> void:
 	GameManager.game_start_mode = GameManager.GameStartMode.NEW_GAME
@@ -71,10 +70,12 @@ func _on_continue_game_button_pressed() -> void:
 	_refresh_save_slots()
 
 
-func _host_game(lobby_type: Steam.LobbyType) -> void:
+func _host_game() -> void:
 	get_parent().get_parent().open_lobby()
 	GameManager.set_game_state(GameManager.GameState.LOBBY)
-	NetworkManager.host_lobby(lobby_type)
+
+	# Public lobbies only during development.
+	NetworkManager.host_lobby()
 
 
 func _on_join_button_pressed() -> void:
@@ -85,8 +86,8 @@ func _on_join_button_pressed() -> void:
 
 func _on_options_button_pressed() -> void:
 	print("Options Pressed")
-	
-	
+
+
 func _on_quit_button_pressed() -> void:
 	get_tree().quit()
 
@@ -96,7 +97,7 @@ func _refresh_save_slots() -> void:
 		var slot: int = i + 1
 		var button: Button = slot_buttons[i]
 		var info: Dictionary = SaveManager.get_slot_info(slot)
-		
+
 		if info.is_empty():
 			button.text = "SLOT %d\nEmpty Slot" % slot
 			button.disabled = (
@@ -106,7 +107,6 @@ func _refresh_save_slots() -> void:
 			continue
 
 		button.disabled = false
-
 
 		var created_at: String = _format_save_date(str(info.get("created_at", "")))
 		var day: int = int(info.get("day", 1))
@@ -184,7 +184,6 @@ func _on_slot_5_pressed() -> void:
 	_select_save_slot(5)
 
 
-
 func _select_save_slot(slot: int) -> void:
 	var has_save: bool = SaveManager.slot_has_save(slot)
 
@@ -214,8 +213,6 @@ func _select_save_slot(slot: int) -> void:
 	_show_host_privacy()
 
 
-
-
 func _on_overwrite_confirmation_confirmed() -> void:
 	if pending_overwrite_slot < 1:
 		return
@@ -239,13 +236,13 @@ func _show_host_privacy() -> void:
 
 
 func _on_friends_button_pressed() -> void:
-	print("HOST PRIVACY: Friends Can Join")
-	_host_game(Steam.LobbyType.LOBBY_TYPE_FRIENDS_ONLY)
+	print("HOST: Creating PUBLIC lobby (development mode).")
+	_host_game()
 
 
 func _on_invite_button_pressed() -> void:
-	print("HOST PRIVACY: Invite Only")
-	_host_game(Steam.LobbyType.LOBBY_TYPE_PRIVATE)
+	print("HOST: Creating PUBLIC lobby (development mode).")
+	_host_game()
 
 
 func _on_privacy_back_button_pressed() -> void:
