@@ -39,11 +39,13 @@ func _ready() -> void:
 		_refresh_player_list()
 	
 	_update_character_displays()
+	_update_ready_button()
 	
+
 func _on_player_changed(_peer_id: int) -> void:
 	_refresh_player_list()
 	_update_character_displays()
-	
+	_update_ready_button()
 	
 func _update_play_button() -> void:
 	if multiplayer.multiplayer_peer == null:
@@ -99,11 +101,10 @@ func _on_play_button_pressed() -> void:
 	GameManager.start_multiplayer_game()
 
 func _on_ready_button_pressed() -> void:
-	var my_peer_id := multiplayer.get_unique_id()
-	var new_ready_state := not LobbyManager.is_ready(my_peer_id)
+	var my_peer_id: int = multiplayer.get_unique_id()
+	var new_ready_state: bool = not LobbyManager.is_ready(my_peer_id)
 
 	LobbyManager.request_set_ready(new_ready_state)
-	ready_button.text = "Unready" if new_ready_state else "Ready"
 
 
 func _on_main_menu_button_pressed() -> void:
@@ -171,3 +172,15 @@ func _on_player_avatar_loaded(
 
 	avatar.texture = avatar_texture
 	avatar.show()
+
+
+func _is_late_join_waiting() -> bool:
+	return GameManager.current_state == GameManager.GameState.LATE_JOIN_WAITING
+
+
+func _update_ready_button() -> void:
+	var peer_id: int = multiplayer.get_unique_id()
+	var is_ready: bool = LobbyManager.is_ready(peer_id)
+
+	ready_button.text = "Unready" if is_ready else "Ready"
+	ready_button.disabled = is_ready and _is_late_join_waiting()
