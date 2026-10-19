@@ -43,7 +43,11 @@ func get_slot_info(slot: int) -> Dictionary:
 	if path.is_empty() or not FileAccess.file_exists(path):
 		return {}
 
-	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
+	var file: FileAccess = FileAccess.open_encrypted_with_pass(
+		path,
+		FileAccess.READ,
+		SAVE_ENCRYPTION_KEY
+	)
 
 	if file == null:
 		return {}
@@ -104,9 +108,10 @@ func save_game() -> bool:
 		"day": DayManager.get_save_data()
 	}
 
-	var file: FileAccess = FileAccess.open(
+	var file: FileAccess = FileAccess.open_encrypted_with_pass(
 		save_path,
-		FileAccess.WRITE
+		FileAccess.WRITE,
+		SAVE_ENCRYPTION_KEY
 	)
 
 	if file == null:
@@ -140,9 +145,10 @@ func load_game() -> bool:
 	if not FileAccess.file_exists(save_path):
 		return false
 
-	var file: FileAccess = FileAccess.open(
+	var file: FileAccess = FileAccess.open_encrypted_with_pass(
 		save_path,
-		FileAccess.READ
+		FileAccess.READ,
+		SAVE_ENCRYPTION_KEY
 	)
 
 	if file == null:
