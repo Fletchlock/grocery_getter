@@ -14,12 +14,21 @@ extends Control
 	$SaveSlotPanel/MarginContainer/VBoxContainer/Slot5
 ]
 
+@onready var overwrite_confirmation: ConfirmationDialog = $OverwriteConfirmation
+
+var pending_overwrite_slot: int = -1
+
 
 
 
 func _ready() -> void:
 	continue_game_button.disabled = not _any_save_exists()
 	save_slot_panel.hide()
+	
+	overwrite_confirmation.add_theme_font_size_override("title_font_size", 26)
+	overwrite_confirmation.get_label().add_theme_font_size_override("font_size", 24)
+	overwrite_confirmation.get_ok_button().add_theme_font_size_override("font_size", 24)
+	overwrite_confirmation.get_cancel_button().add_theme_font_size_override("font_size", 24)
 
 
 func _any_save_exists() -> bool:
@@ -168,23 +177,50 @@ func _on_slot_5_pressed() -> void:
 	_select_save_slot(5)
 
 
+
 func _select_save_slot(slot: int) -> void:
 	var has_save: bool = SaveManager.slot_has_save(slot)
 
 	match GameManager.game_start_mode:
 		GameManager.GameStartMode.CONTINUE_GAME:
 			if not has_save:
-				print("Cannot continue: Slot %d is empty." % slot)
 				return
 
 		GameManager.GameStartMode.NEW_GAME:
 			if has_save:
-				print("Slot %d contains a save. Confirmation required." % slot)
+				pending_overwrite_slot = slot
+
+				overwrite_confirmation.dialog_text = (
+					"Slot %d already contains a saved game.\n\n"
+					+ "Starting a new game in this slot will overwrite "
+					+ "its existing progress when the new game is saved.\n\n"
+					+ "Do you want to continue?"
+				) % slot
+
+				overwrite_confirmation.popup_centered()
 				return
 
 	if not SaveManager.select_slot(slot):
 		return
 
 	print("SELECTED SAVE SLOT: ", slot)
+	_host_game()
+
+
+
+
+func _on_overwrite_confirmation_confirmed() -> void:
+	if pending_overwrite_slot < 1:
+		return
+
+	var slot: int = pending_overwrite_slot
+	pending_overwrite_slot = -1
+
+	if not SaveManager.select_slot(slot):
+		return
+
+	GameManager.game_start_mode = GameManager.GameStartMode.NEW_GAME
+
+	print("NEW GAME: Overwrite approved for Slot ", slot)
 
 	_host_game()
