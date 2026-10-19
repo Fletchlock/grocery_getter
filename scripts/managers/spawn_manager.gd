@@ -17,7 +17,10 @@ func setup_level(
 	spawn_points = points
 
 	multiplayer_spawner.spawn_function = _spawn_player
-	#multiplayer.peer_connected.connect(_on_peer_connected)
+
+	if multiplayer.is_server() and NetworkManager.peer != null:
+		if not multiplayer.peer_connected.is_connected(_on_peer_connected):
+			multiplayer.peer_connected.connect(_on_peer_connected)
 
 	print("SpawnManager: Level setup complete.")
 
@@ -26,7 +29,11 @@ func _on_peer_connected(peer_id: int) -> void:
 	if not multiplayer.is_server():
 		return
 
-	print("SpawnManager: Peer connected: ", peer_id)
+	if GameManager.current_state != GameManager.GameState.PLAYING:
+		return
+
+	print("SpawnManager: Late joining peer connected: ", peer_id)
+
 	spawn_player(peer_id)
 
 

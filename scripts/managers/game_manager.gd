@@ -1,16 +1,7 @@
 extends Node
 
 
-# GAME STATES
-# These represent the major states our game can be in.
-# MAIN_MENU
-#     The player is at the main menu.
-# PLAYING
-#     The actual game is running.
-# PAUSED
-#     The game is currently paused.
-# GAME_OVER
-#     The game has ended.
+
 enum GameState {
 	MAIN_MENU,
 	LOBBY,
@@ -23,6 +14,8 @@ enum GameStartMode {
 	NEW_GAME,
 	CONTINUE_GAME
 }
+
+const STORE_LEVEL_PATH: String = "res://scenes/levels/third_person_level.tscn"
 
 var game_start_mode: GameStartMode = GameStartMode.NEW_GAME
 
@@ -42,12 +35,13 @@ var current_state: GameState = GameState.MAIN_MENU
 # NetworkManager doesn't need to know what GameManager will do with that
 # information. It simply emits the signal.
 func _ready() -> void:
-
+	
 	# Connect NetworkManager's host_created signal to our local function.
 	# The syntax:
 	#     NetworkManager.host_created.connect(_on_host_created)
 	# means:
 	#     "When NetworkManager says host_created, call _on_host_created."
+	multiplayer.connected_to_server.connect(_on_connected_to_server)
 	NetworkManager.host_created.connect(_on_host_created)
 	NetworkManager.lobby_joined.connect(_on_lobby_joined)
 	NetworkManager.host_disconnected.connect(_on_host_disconnected)
@@ -77,6 +71,10 @@ func _on_host_disconnected() -> void:
 
 
 func _on_lobby_joined(_lobby_id: int) -> void:
+	if current_state == GameState.PLAYING:
+		print("GameManager: Joining active store.")
+		return
+
 	print("GameManager: Client joined lobby.")
 	set_game_state(GameState.LOBBY)
 
@@ -150,6 +148,19 @@ func start_multiplayer_game_rpc() -> void:
 
 func set_game_state(new_state: GameState) -> void:
 	current_state = new_state
+
+	if multiplayer.is_server() and NetworkManager.current_lobby_id != 0:
+		var session_state: String = "lobby"
+
+		if new_state == GameState.PLAYING:
+			session_state = "playing"
+
+		Steam.setLobbyData(
+			NetworkManager.current_lobby_id,
+			"session_state",
+			session_state
+		)
+
 	game_state_changed.emit(new_state)
 
 
@@ -182,3 +193,44 @@ func leave_lobby() -> void:
 	await NetworkManager.disconnect_from_lobby()
 
 	set_game_state(GameState.MAIN_MENU)
+
+func _on_connected_to_server() -> void:
+	if multiplayer.is_server():
+		return
+
+	print("GameManager: Requesting host game state.")
+	request_host_game_state.rpc_id(1)
+
+
+@rpc("any_peer", "reliable")
+func request_host_game_state() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var peer_id: int = multiplayer.get_remote_sender_id()
+
+	if peer_id <= 0:
+		return
+
+	print("GameManager: Sending game state to peer ", peer_id)
+
+	receive_host_game_state.rpc_id(
+		peer_id,
+		current_state
+	)
+
+
+@rpc("authority", "reliable")
+func receive_host_game_state(host_state: int) -> void:
+	if multiplayer.is_server():
+		return
+
+	print("GameManager: Received host state: ", host_state)
+
+	if host_state == GameState.PLAYING:
+		print("GameManager: Host is already playing.")
+
+		set_game_state(GameState.PLAYING)
+
+		if LevelManager.current_level == null:
+			LevelManager.load_level(STORE_LEVEL_PATH)

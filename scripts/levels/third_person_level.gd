@@ -11,7 +11,7 @@ func _ready() -> void:
 		[player_spawn_point]
 	)
 
-	if multiplayer.is_server():
+	if multiplayer.is_server() and NetworkManager.peer != null:
 		# Spawn the host.
 		SpawnManager.spawn_player(multiplayer.get_unique_id())
 
