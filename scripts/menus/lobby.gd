@@ -5,6 +5,9 @@ extends Control
 @onready var ready_button: Button = $CanvasLayer/ReadyButton
 @onready var main_menu_button: Button = $CanvasLayer/MainMenuButton
 
+@onready var lobby_viewport: SubViewport = $SubViewportContainer/SubViewport
+@onready var lobby_camera: Camera3D = $SubViewportContainer/SubViewport/Camera3D
+
 @onready var player_displays = [
 	$SubViewportContainer/SubViewport/Player1,
 	$SubViewportContainer/SubViewport/Player2,
@@ -40,7 +43,8 @@ func _ready() -> void:
 	
 	_update_character_displays()
 	_update_ready_button()
-	
+	lobby_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	lobby_camera.make_current()
 
 func _on_player_changed(_peer_id: int) -> void:
 	_refresh_player_list()
