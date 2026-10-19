@@ -164,7 +164,6 @@ text = "Empty Slot"
 
 [node name="OverwriteConfirmation" type="ConfirmationDialog" parent="." unique_id=1564607822]
 title = "Overwrite Save Game?"
-position = Vector2i(350, 0)
 size = Vector2i(450, 100)
 max_size = Vector2i(1000, 800)
 ok_button_text = "Overwrite"

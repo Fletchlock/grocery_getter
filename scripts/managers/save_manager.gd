@@ -9,7 +9,7 @@ const MAX_SAVE_SLOTS: int = 5
 const SAVE_PATH: String = LEGACY_SAVE_PATH
 
 var selected_slot: int = 1
-
+var reset_creation_date_on_save: bool = false
 
 
 func get_slot_path(slot: int) -> String:
@@ -89,13 +89,10 @@ func save_game() -> bool:
 		return false
 
 	var existing_info: Dictionary = get_slot_info(selected_slot)
+	var created_at: String = Time.get_datetime_string_from_system()
 
-	var created_at: String = str(
-		existing_info.get(
-			"created_at",
-			Time.get_datetime_string_from_system()
-		)
-	)
+	if not reset_creation_date_on_save and not existing_info.is_empty():
+		created_at = str(existing_info.get("created_at", created_at))
 
 	var save_data: Dictionary = {
 		"save_version": SAVE_VERSION,
@@ -123,6 +120,8 @@ func save_game() -> bool:
 	)
 
 	file.close()
+
+	reset_creation_date_on_save = false
 
 	print("GAME SAVED: ", save_path)
 	return true
