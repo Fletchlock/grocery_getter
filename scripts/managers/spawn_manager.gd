@@ -8,16 +8,17 @@ var spawn_points: Array[Marker3D] = []
 
 
 func setup_level(
-	players_node: Node3D,
-	spawner: MultiplayerSpawner,
-	points: Array[Marker3D]
-) -> void:
+		players_node: Node3D,
+		spawner: MultiplayerSpawner,
+		points: Array[Marker3D]
+	) -> void:
 	players = players_node
 	multiplayer_spawner = spawner
 	spawn_points = points
 
 	multiplayer_spawner.spawn_function = _spawn_player
-
+	if not multiplayer_spawner.spawned.is_connected(_on_player_spawned):
+		multiplayer_spawner.spawned.connect(_on_player_spawned)
 	if multiplayer.is_server() and NetworkManager.peer != null:
 		if not multiplayer.peer_connected.is_connected(_on_peer_connected):
 			multiplayer.peer_connected.connect(_on_peer_connected)
@@ -108,6 +109,21 @@ func _spawn_player(data: Variant) -> Node:
 	)
 
 	return player 
+
+
+func _on_player_spawned(node: Node) -> void:
+	if multiplayer.is_server():
+		return
+
+	if not GameManager.is_late_joining:
+		return
+
+	if node.name != str(multiplayer.get_unique_id()):
+		return
+
+	print("SpawnManager: Late-joining player spawned: ", node.name)
+
+	GameManager.complete_late_join()
 
 
 func remove_player(peer_id: int) -> void:
