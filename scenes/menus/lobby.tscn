@@ -365,9 +365,9 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -135.0
-offset_top = -73.0
-offset_right = -30.0
+offset_left = -420.0
+offset_top = -80.0
+offset_right = -315.0
 offset_bottom = -30.0
 grow_horizontal = 0
 grow_vertical = 0
@@ -398,9 +398,9 @@ text = "Ready
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 30.0
-offset_top = -73.0
-offset_right = 174.0
+offset_left = 380.0
+offset_top = -80.0
+offset_right = 551.0
 offset_bottom = -30.0
 grow_vertical = 0
 size_flags_horizontal = 4
@@ -408,6 +408,23 @@ size_flags_vertical = 4
 theme_override_font_sizes/font_size = 30
 text = "Main Menu
 "
+
+[node name="InviteFriendsButton" type="Button" parent="CanvasLayer" unique_id=1424807495]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -94.5
+offset_top = -180.0
+offset_right = 110.5
+offset_bottom = -130.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 30
+text = "Invite Friends"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=576286034]
 layout_mode = 1

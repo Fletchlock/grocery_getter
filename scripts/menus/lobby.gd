@@ -7,6 +7,7 @@ extends Control
 @onready var red_button: Button = $VBoxContainer/CharacterSelection/RedButton
 @onready var green_button: Button = $VBoxContainer/CharacterSelection/GreenButton
 @onready var blue_button: Button = $VBoxContainer/CharacterSelection/BlueButton
+@onready var invite_friends_button: Button = $CanvasLayer/InviteFriendsButton
 
 @onready var lobby_viewport: SubViewport = $SubViewportContainer/SubViewport
 @onready var lobby_camera: Camera3D = $SubViewportContainer/SubViewport/Camera3D
@@ -32,7 +33,11 @@ func _ready() -> void:
 	LobbyManager.lobby_player_updated.connect(_on_player_changed)
 	LobbyManager.lobby_state_changed.connect(_update_play_button)
 	LobbyManager.player_avatar_loaded.connect(_on_player_avatar_loaded)
-
+	NetworkManager.host_created.connect(_update_invite_button)
+	NetworkManager.lobby_joined.connect(_on_network_lobby_joined)
+		
+	invite_friends_button.pressed.connect(_on_invite_friends_button_pressed)
+	
 	if multiplayer.multiplayer_peer == null:
 		play_button.hide()
 	else:
@@ -196,3 +201,27 @@ func _update_ready_button() -> void:
 	red_button.disabled = selection_locked
 	green_button.disabled = selection_locked
 	blue_button.disabled = selection_locked
+
+
+func _update_invite_button() -> void:
+	invite_friends_button.visible = (
+		multiplayer.is_server()
+		and NetworkManager.peer != null
+		and NetworkManager.current_lobby_id != 0
+	)
+
+
+func _on_network_lobby_joined(_lobby_id: int) -> void:
+	_update_invite_button()
+
+
+func _on_invite_friends_button_pressed() -> void:
+	var lobby_id: int = NetworkManager.current_lobby_id
+
+	if lobby_id == 0:
+		print("Lobby: No Steam lobby available for invitations.")
+		return
+
+	print("Lobby: Opening Steam invitation overlay.")
+
+	Steam.activateGameOverlayInviteDialog(lobby_id)
