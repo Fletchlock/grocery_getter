@@ -104,7 +104,12 @@ func start_multiplayer_game() -> void:
 				"current_day": 1
 			})
 			StoreManager.sync_finances()
+			if not SaveManager.save_game():
+				push_error("GameManager: Failed to create initial game save.")
+				return
 
+			print("GameManager: Initial Day 1 save created.")
+			
 		GameStartMode.CONTINUE_GAME:
 			print("GameManager: Continuing saved game.")
 			

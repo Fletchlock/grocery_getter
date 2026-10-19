@@ -93,7 +93,7 @@ func _update_clock_label() -> void:
 	var store_cash: float = 0.0
 
 	if shopper_stats != null and is_instance_valid(shopper_stats):
-		store_cash = shopper_stats.total_sales
+		store_cash = shopper_stats.store_cash
 	
 	if shopper_stats != null and is_instance_valid(shopper_stats):
 		shopper_count.text = str(shopper_stats.current_shoppers)
