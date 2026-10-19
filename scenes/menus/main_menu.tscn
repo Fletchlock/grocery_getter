@@ -98,6 +98,70 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "Quit"
 
+[node name="SaveSlotPanel" type="PanelContainer" parent="." unique_id=302008865]
+visible = false
+custom_minimum_size = Vector2(400, 400)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 290.0
+offset_top = -190.0
+offset_right = 690.0
+offset_bottom = 266.0
+grow_horizontal = 2
+grow_vertical = 2
+offset_transform_position = Vector2(400, 0)
+
+[node name="MarginContainer" type="MarginContainer" parent="SaveSlotPanel" unique_id=2094303952]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SaveSlotPanel/MarginContainer" unique_id=1491095201]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TitleLabel" type="Label" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=403438168]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "SELECT SAVE SLOT"
+horizontal_alignment = 1
+
+[node name="Slot1" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1119223391]
+custom_minimum_size = Vector2(300, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Empty Slot"
+
+[node name="Slot2" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1384660263]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Empty Slot"
+
+[node name="Slot3" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1545810333]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Empty Slot"
+
+[node name="Slot4" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=785639116]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Empty Slot"
+
+[node name="Slot5" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1221099945]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Empty Slot"
+
 [connection signal="pressed" from="CenterContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/NewGameButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/ContinueGameButton" to="." method="_on_continue_game_button_pressed"]
