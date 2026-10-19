@@ -155,15 +155,22 @@ func clear_players() -> void:
 	
 
 func set_ready(peer_id: int, player_is_ready: bool) -> void:
+	if not multiplayer.is_server():
+		return
+
 	if not players.has(peer_id):
 		return
 
 	players[peer_id]["ready"] = player_is_ready
+
 	lobby_player_updated.emit(peer_id)
 	lobby_state_changed.emit()
-	
-	if multiplayer.is_server():
-		sync_player_state.rpc(peer_id, players[peer_id]["character"], player_is_ready)
+
+	sync_player_state.rpc(
+		peer_id,
+		players[peer_id]["character"],
+		player_is_ready
+	)
 
 	print(
 		"LobbyManager: Player ",
@@ -171,6 +178,16 @@ func set_ready(peer_id: int, player_is_ready: bool) -> void:
 		" ready: ",
 		player_is_ready
 	)
+
+	# Normal pregame lobby behavior remains unchanged.
+	if GameManager.current_state != GameManager.GameState.PLAYING:
+		return
+
+	# Late joiners enter the active store only after clicking Ready.
+	if not player_is_ready:
+		return
+
+	SpawnManager.spawn_ready_player(peer_id)
 
 
 func get_character(peer_id: int) -> String:
