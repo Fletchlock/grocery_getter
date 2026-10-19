@@ -207,21 +207,11 @@ func _ready() -> void:
 	anim_tree.advance_expression_base_node = get_path()
 	anim_tree.active = true
 		
-	# Set the player's selected character.
-	var character := LobbyManager.get_character(get_multiplayer_authority())
+	# Apply the current selection and listen for late lobby updates.
+	LobbyManager.lobby_player_updated.connect(_on_lobby_player_updated)
+	LobbyManager.lobby_state_changed.connect(_refresh_character_selection)
 
-	match character:
-		"red":
-			set_character(0)
-			body_mesh = grocery_red
-
-		"blue":
-			set_character(1)
-			body_mesh = grocery_blue
-
-		"green":
-			set_character(2)
-			body_mesh = grocery_green
+	_refresh_character_selection()
 
 	if is_multiplayer_authority():
 		_set_perspective(true
@@ -250,6 +240,38 @@ func _ready() -> void:
 	# If found safely, initialize visibility states cleanly
 	if sync_node != null and is_multiplayer_authority():
 		sync_node.public_visibility = true
+
+
+func _on_lobby_player_updated(peer_id: int) -> void:
+	if peer_id != get_multiplayer_authority():
+		return
+
+	_refresh_character_selection()
+
+
+func _refresh_character_selection() -> void:
+	var character: String = LobbyManager.get_character(
+		get_multiplayer_authority()
+	)
+
+	match character:
+		"red":
+			set_character(0)
+			body_mesh = grocery_red
+
+		"blue":
+			set_character(1)
+			body_mesh = grocery_blue
+
+		"green":
+			set_character(2)
+			body_mesh = grocery_green
+			
+	# Keep the local player's body hidden in first-person.
+	if is_multiplayer_authority() and _first_person:
+		grocery_red.visible = false
+		grocery_blue.visible = false
+		grocery_green.visible = false
 
 
 func _unhandled_input(event: InputEvent) -> void:

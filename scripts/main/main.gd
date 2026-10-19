@@ -54,7 +54,10 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 
 		main_menu.show()
 
-	if new_state == GameManager.GameState.LOBBY:
+	if (
+		new_state == GameManager.GameState.LOBBY
+		or new_state == GameManager.GameState.LATE_JOIN_WAITING
+	):
 		print("MAIN: Opening lobby")
 		
 		# Close pause and or tablet menu when GameState changes to LOBBY
@@ -79,6 +82,8 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 			print("MAIN: Removing lobby")
 			lobby.queue_free()
 			lobby = null
+
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
 func _unhandled_input(event: InputEvent) -> void:
