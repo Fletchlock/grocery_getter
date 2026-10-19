@@ -162,6 +162,14 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Empty Slot"
 
+[node name="OverwriteConfirmation" type="ConfirmationDialog" parent="." unique_id=1564607822]
+title = "Overwrite Save Game?"
+position = Vector2i(350, 0)
+size = Vector2i(450, 100)
+max_size = Vector2i(1000, 800)
+ok_button_text = "Overwrite"
+dialog_autowrap = true
+
 [connection signal="pressed" from="CenterContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/NewGameButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/ContinueGameButton" to="." method="_on_continue_game_button_pressed"]
@@ -173,3 +181,4 @@ text = "Empty Slot"
 [connection signal="pressed" from="SaveSlotPanel/MarginContainer/VBoxContainer/Slot3" to="." method="_on_slot_3_pressed"]
 [connection signal="pressed" from="SaveSlotPanel/MarginContainer/VBoxContainer/Slot4" to="." method="_on_slot_4_pressed"]
 [connection signal="pressed" from="SaveSlotPanel/MarginContainer/VBoxContainer/Slot5" to="." method="_on_slot_5_pressed"]
+[connection signal="confirmed" from="OverwriteConfirmation" to="." method="_on_overwrite_confirmation_confirmed"]
