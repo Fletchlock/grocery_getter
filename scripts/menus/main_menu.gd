@@ -80,10 +80,17 @@ func _refresh_save_slots() -> void:
 		var slot: int = i + 1
 		var button: Button = slot_buttons[i]
 		var info: Dictionary = SaveManager.get_slot_info(slot)
-
+		
 		if info.is_empty():
 			button.text = "SLOT %d\nEmpty Slot" % slot
+			button.disabled = (
+				GameManager.game_start_mode
+				== GameManager.GameStartMode.CONTINUE_GAME
+			)
 			continue
+
+		button.disabled = false
+
 
 		var created_at: String = _format_save_date(str(info.get("created_at", "")))
 		var day: int = int(info.get("day", 1))
@@ -139,3 +146,45 @@ func _format_save_date(date_string: String) -> String:
 		minute,
 		period
 	]
+
+
+func _on_slot_1_pressed() -> void:
+	_select_save_slot(1)
+
+
+func _on_slot_2_pressed() -> void:
+	_select_save_slot(2)
+
+
+func _on_slot_3_pressed() -> void:
+	_select_save_slot(3)
+
+
+func _on_slot_4_pressed() -> void:
+	_select_save_slot(4)
+
+
+func _on_slot_5_pressed() -> void:
+	_select_save_slot(5)
+
+
+func _select_save_slot(slot: int) -> void:
+	var has_save: bool = SaveManager.slot_has_save(slot)
+
+	match GameManager.game_start_mode:
+		GameManager.GameStartMode.CONTINUE_GAME:
+			if not has_save:
+				print("Cannot continue: Slot %d is empty." % slot)
+				return
+
+		GameManager.GameStartMode.NEW_GAME:
+			if has_save:
+				print("Slot %d contains a save. Confirmation required." % slot)
+				return
+
+	if not SaveManager.select_slot(slot):
+		return
+
+	print("SELECTED SAVE SLOT: ", slot)
+
+	_host_game()
