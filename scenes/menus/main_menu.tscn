@@ -162,6 +162,53 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Empty Slot"
 
+[node name="HostPrivacyPanel" type="PanelContainer" parent="." unique_id=1690010175]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 290.0
+offset_top = -96.0
+offset_right = 690.0
+offset_bottom = 96.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="HostPrivacyPanel" unique_id=1193332645]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HostPrivacyPanel/MarginContainer" unique_id=1578980748]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="HostPrivacyPanel/MarginContainer/VBoxContainer" unique_id=422371782]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "HOST GAME - PRIVACY"
+horizontal_alignment = 1
+
+[node name="FriendsButton" type="Button" parent="HostPrivacyPanel/MarginContainer/VBoxContainer" unique_id=1123925986]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Friends Can Join."
+
+[node name="InviteButton" type="Button" parent="HostPrivacyPanel/MarginContainer/VBoxContainer" unique_id=697846792]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Invite Only."
+
+[node name="BackButton" type="Button" parent="HostPrivacyPanel/MarginContainer/VBoxContainer" unique_id=1312620948]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Back"
+
 [node name="OverwriteConfirmation" type="ConfirmationDialog" parent="." unique_id=1564607822]
 title = "Overwrite Save Game?"
 size = Vector2i(450, 100)
