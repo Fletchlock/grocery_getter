@@ -11,6 +11,12 @@ const SAVE_PATH: String = LEGACY_SAVE_PATH
 var selected_slot: int = 1
 
 
+func _ready() -> void:
+	migrate_legacy_save()
+
+	print("SLOT 1 INFO: ", get_slot_info(1))
+
+
 func get_slot_path(slot: int) -> String:
 	if slot < 1 or slot > MAX_SAVE_SLOTS:
 		return ""
@@ -170,3 +176,63 @@ func load_game() -> bool:
 
 func has_save() -> bool:
 	return FileAccess.file_exists(SAVE_PATH)
+
+
+func migrate_legacy_save() -> bool:
+	if slot_has_save(1):
+		print("SAVE MIGRATION: Slot 1 already exists.")
+		return true
+
+	if not FileAccess.file_exists(LEGACY_SAVE_PATH):
+		print("SAVE MIGRATION: No legacy save found.")
+		return false
+
+	var source: FileAccess = FileAccess.open(
+		LEGACY_SAVE_PATH,
+		FileAccess.READ
+	)
+
+	if source == null:
+		push_error("SAVE MIGRATION: Cannot read legacy save.")
+		return false
+
+	var json: JSON = JSON.new()
+	var error: Error = json.parse(source.get_as_text())
+	source.close()
+
+	if error != OK or not json.data is Dictionary:
+		push_error("SAVE MIGRATION: Invalid legacy save.")
+		return false
+
+	var data: Dictionary = json.data
+
+	if int(data.get("save_version", 0)) != SAVE_VERSION:
+		push_error("SAVE MIGRATION: Unsupported save version.")
+		return false
+
+	# The old save has no original creation timestamp.
+	# Record the migration date instead.
+	data["created_at"] = Time.get_datetime_string_from_system()
+
+	error = DirAccess.make_dir_recursive_absolute(
+		ProjectSettings.globalize_path(SAVE_DIRECTORY)
+	)
+
+	if error != OK:
+		push_error("SAVE MIGRATION: Cannot create save directory.")
+		return false
+
+	var destination: FileAccess = FileAccess.open(
+		get_slot_path(1),
+		FileAccess.WRITE
+	)
+
+	if destination == null:
+		push_error("SAVE MIGRATION: Cannot create Slot 1.")
+		return false
+
+	destination.store_string(JSON.stringify(data, "\t"))
+	destination.close()
+
+	print("SAVE MIGRATION: Legacy save copied to Slot 1.")
+	return true
