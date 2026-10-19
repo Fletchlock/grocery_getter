@@ -104,7 +104,8 @@ func start_multiplayer_game() -> void:
 	match game_start_mode:
 		GameStartMode.NEW_GAME:
 			print("GameManager: Starting NEW GAME.")
-
+			
+			SaveManager.reset_creation_date_on_save = true
 			StoreManager.reset_store()
 			StockOrderManager.reset_stock_orders()
 			DayManager.load_save_data({
@@ -114,7 +115,8 @@ func start_multiplayer_game() -> void:
 
 		GameStartMode.CONTINUE_GAME:
 			print("GameManager: Continuing saved game.")
-
+			
+			SaveManager.reset_creation_date_on_save = false
 			if not SaveManager.load_game():
 				push_error("GameManager: Failed to load saved game.")
 				return
