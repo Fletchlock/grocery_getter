@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ga0gq26e65dd"]
 
 [ext_resource type="Script" uid="uid://drv7wprqfvxnv" path="res://scripts/menus/main_menu.gd" id="1_xqga4"]
+[ext_resource type="Texture2D" uid="uid://dijd7y50urwue" path="res://assets/images/StoreScreenshot.png" id="2_ovrgc"]
 
 [node name="MainMenu" type="Control" unique_id=2052771825]
 layout_mode = 3
@@ -10,6 +11,30 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_xqga4")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=901120977]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.24703652, 0.34010118, 0.4676472, 1)
+
+[node name="ImageContainer" type="CenterContainer" parent="." unique_id=428769415]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="ImageContainer" unique_id=150316271]
+custom_minimum_size = Vector2(900, 800)
+layout_mode = 2
+texture = ExtResource("2_ovrgc")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Title" type="Label" parent="." unique_id=1082852383]
 layout_mode = 1
@@ -32,17 +57,18 @@ text = "Grocery Getter"
 
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=838868233]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.47578126
-anchor_top = 0.45324075
-anchor_right = 0.52421874
-anchor_bottom = 0.54675925
-grow_horizontal = 2
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 20.0
+offset_top = -329.0
+offset_right = 334.0
+offset_bottom = 329.0
 grow_vertical = 2
-metadata/_edit_use_anchors_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=20587566]
 layout_mode = 2
+theme_override_constants/separation = 20
 
 [node name="Single Player" type="Label" parent="CenterContainer/VBoxContainer" unique_id=307960645]
 layout_mode = 2
@@ -102,16 +128,13 @@ text = "Quit"
 visible = false
 custom_minimum_size = Vector2(400, 400)
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
+anchors_preset = 4
 anchor_top = 0.5
-anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 290.0
-offset_top = -190.0
-offset_right = 690.0
-offset_bottom = 266.0
-grow_horizontal = 2
+offset_left = 500.0
+offset_top = -229.0
+offset_right = 900.0
+offset_bottom = 229.0
 grow_vertical = 2
 offset_transform_position = Vector2(400, 0)
 
@@ -163,18 +186,16 @@ theme_override_font_sizes/font_size = 20
 text = "Empty Slot"
 
 [node name="HostPrivacyPanel" type="PanelContainer" parent="." unique_id=1690010175]
+visible = false
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
+anchors_preset = 4
 anchor_top = 0.5
-anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 290.0
-offset_top = -96.0
-offset_right = 690.0
-offset_bottom = 96.0
-grow_horizontal = 2
+offset_left = 500.0
+offset_top = -110.0
+offset_right = 900.0
+offset_bottom = 110.0
 grow_vertical = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="HostPrivacyPanel" unique_id=1193332645]

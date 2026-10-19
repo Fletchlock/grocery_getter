@@ -71,11 +71,10 @@ func _on_continue_game_button_pressed() -> void:
 	_refresh_save_slots()
 
 
-func _host_game() -> void:
+func _host_game(lobby_type: Steam.LobbyType) -> void:
 	get_parent().get_parent().open_lobby()
 	GameManager.set_game_state(GameManager.GameState.LOBBY)
-	NetworkManager.host_lobby()
-
+	NetworkManager.host_lobby(lobby_type)
 
 
 func _on_join_button_pressed() -> void:
@@ -241,12 +240,12 @@ func _show_host_privacy() -> void:
 
 func _on_friends_button_pressed() -> void:
 	print("HOST PRIVACY: Friends Can Join")
-	_host_game()
+	_host_game(Steam.LobbyType.LOBBY_TYPE_FRIENDS_ONLY)
 
 
 func _on_invite_button_pressed() -> void:
 	print("HOST PRIVACY: Invite Only")
-	_host_game()
+	_host_game(Steam.LobbyType.LOBBY_TYPE_PRIVATE)
 
 
 func _on_privacy_back_button_pressed() -> void:

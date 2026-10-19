@@ -5,7 +5,7 @@ signal lobby_joined(lobby_id: int)
 signal host_disconnected
 signal lobby_search_finished(lobbies: Array[Dictionary])
 
-const LOBBY_TYPE := Steam.LobbyType.LOBBY_TYPE_PUBLIC
+var selected_lobby_type: Steam.LobbyType = Steam.LobbyType.LOBBY_TYPE_FRIENDS_ONLY
 const MAX_MEMBERS := 4
 
 var peer: SteamMultiplayerPeer
@@ -32,17 +32,17 @@ func _process(_delta: float) -> void:
 	Steam.run_callbacks()
 
 
-func host_lobby() -> void:
+func host_lobby(lobby_type: Steam.LobbyType = Steam.LobbyType.LOBBY_TYPE_FRIENDS_ONLY) -> void:
+	selected_lobby_type = lobby_type
+
 	print("NetworkManager: Starting host process.")
 
-	# Make sure any previous lobby/network connection is completely closed.
 	if current_lobby_id != 0 or multiplayer.multiplayer_peer != null:
 		print("NetworkManager: Cleaning up previous lobby before hosting.")
 		await disconnect_from_lobby()
 
-	# Create the new Steam lobby.
 	print("NetworkManager: Creating new Steam lobby.")
-	Steam.createLobby(LOBBY_TYPE, MAX_MEMBERS)
+	Steam.createLobby(selected_lobby_type, MAX_MEMBERS)
 
 
 func _on_lobby_created(connected: int, lobby_id: int) -> void:
@@ -54,6 +54,17 @@ func _on_lobby_created(connected: int, lobby_id: int) -> void:
 	print("Steam lobby created: ", lobby_id)
 	
 	current_lobby_id = lobby_id
+	Steam.setRichPresence("connect", "+connect_lobby %d" % lobby_id)
+	Steam.setRichPresence("steam_player_group", str(lobby_id))
+	Steam.setRichPresence("steam_player_group_size", "1")
+	print(
+		"HOST LOBBY: ",
+		current_lobby_id,
+		" | TYPE: ",
+		selected_lobby_type,
+		" | RICH PRESENCE: ",
+		Steam.getFriendRichPresence(Steam.getSteamID(), "connect")
+	)
 	Steam.setLobbyData(current_lobby_id, "game", "grocery_getter")
 	Steam.setLobbyData(current_lobby_id, "session_state", "lobby")
 	
@@ -173,37 +184,88 @@ func search_lobbies() -> void:
 
 func _on_lobby_match_list(lobbies: Array) -> void:
 	var results: Array[Dictionary] = []
+	var seen_lobbies: Dictionary = {}
 
+	# Add lobbies returned by Steam's regular search.
 	for lobby_id_variant: Variant in lobbies:
 		var lobby_id: int = int(lobby_id_variant)
-		var member_count: int = Steam.getNumLobbyMembers(lobby_id)
-		var owner_name: String = Steam.getLobbyData(
-			lobby_id,
-			"host_name"
+
+		if seen_lobbies.has(lobby_id):
+			continue
+
+		seen_lobbies[lobby_id] = true
+		_add_lobby_result(lobby_id, results)
+
+	# Find lobbies belonging to Steam friends.
+	var friend_count: int = Steam.getFriendCount(
+		Steam.FriendFlags.FRIEND_FLAG_IMMEDIATE
+	)
+
+	for i: int in range(friend_count):
+		var friend_id: int = Steam.getFriendByIndex(
+			i,
+			Steam.FriendFlags.FRIEND_FLAG_IMMEDIATE
 		)
 
-		if owner_name.is_empty():
-			owner_name = "Unknown Host"
-
-		var session_state: String = Steam.getLobbyData(
-			lobby_id,
-			"session_state"
+		var game_info: Dictionary = Steam.getFriendGamePlayed(friend_id)
+		
+		print(
+			"FRIEND: ",
+			Steam.getFriendPersonaName(friend_id),
+			" | GAME INFO: ",
+			game_info
 		)
+		
+		if game_info.is_empty():
+			continue
 
-		if session_state.is_empty():
-			session_state = "lobby"
+		var lobby_id: int = int(game_info.get("lobby", 0))
+		
+		print("FRIEND LOBBY ID: ", lobby_id)
+		
+		if lobby_id == 0 or seen_lobbies.has(lobby_id):
+			continue
 
-		results.append({
-			"lobby_id": lobby_id,
-			"host_name": owner_name,
-			"players": member_count,
-			"max_players": MAX_MEMBERS,
-			"status": session_state
-		})
+		seen_lobbies[lobby_id] = true
+		_add_lobby_result(lobby_id, results)
 
 	print("NetworkManager: Found ", results.size(), " sessions.")
-
 	lobby_search_finished.emit(results)
+
+
+func _add_lobby_result(
+	lobby_id: int,
+	results: Array[Dictionary]
+) -> void:
+	print(
+		"CHECKING LOBBY: ",
+		lobby_id,
+		" | GAME: ",
+		Steam.getLobbyData(lobby_id, "game")
+	)
+	
+	var game_name: String = Steam.getLobbyData(lobby_id, "game")
+
+	if game_name != "grocery_getter":
+		return
+
+	var member_count: int = Steam.getNumLobbyMembers(lobby_id)
+	var owner_name: String = Steam.getLobbyData(lobby_id, "host_name")
+	var session_state: String = Steam.getLobbyData(lobby_id, "session_state")
+
+	if owner_name.is_empty():
+		owner_name = "Unknown Host"
+
+	if session_state.is_empty():
+		session_state = "lobby"
+
+	results.append({
+		"lobby_id": lobby_id,
+		"host_name": owner_name,
+		"players": member_count,
+		"max_players": MAX_MEMBERS,
+		"status": session_state
+	})
 
 
 func join_lobby(lobby_id: int) -> void:
