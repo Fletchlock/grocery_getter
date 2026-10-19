@@ -9,7 +9,7 @@ const START_HOUR: int = 7
 const STORE_CLOSE_HOUR: int = 22
 const END_OF_DAY_HOUR: int = 23
 const END_OF_DAY_MINUTE: int = 59
-const REAL_SECONDS_PER_GAME_MINUTE: float = .2
+const REAL_SECONDS_PER_GAME_MINUTE: float = .6
 
 var current_day: int = 1
 var current_hour: int = START_HOUR
@@ -218,7 +218,27 @@ func _sync_clock(
 	
 	clock_updated.emit(current_day, current_hour, current_minute)
 	
+func request_clock_state() -> void:
+	if multiplayer.is_server():
+		return
 
+	_request_clock_state.rpc_id(1)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_clock_state() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var peer_id: int = multiplayer.get_remote_sender_id()
+
+	_sync_clock.rpc_id(
+		peer_id,
+		current_day,
+		current_hour,
+		current_minute,
+		clock_running
+	)
 # SAVE STATES
 
 func get_save_data() -> Dictionary:
