@@ -39,7 +39,7 @@ func _on_play_button_pressed() -> void:
 func _on_host_button_pressed() -> void:
 	GameManager.game_start_mode = GameManager.GameStartMode.NEW_GAME
 
-	slot_title.text = "SELECT SLOT TO SAVE"
+	slot_title.text = "SELECT SLOT FOR NEW GAME"
 	save_slot_panel.show()
 	_refresh_save_slots()
 

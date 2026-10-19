@@ -128,38 +128,38 @@ theme_override_constants/separation = 8
 
 [node name="TitleLabel" type="Label" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=403438168]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 26
 text = "SELECT SAVE SLOT"
 horizontal_alignment = 1
 
 [node name="Slot1" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1119223391]
 custom_minimum_size = Vector2(300, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "Empty Slot"
 
 [node name="Slot2" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1384660263]
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "Empty Slot"
 
 [node name="Slot3" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1545810333]
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "Empty Slot"
 
 [node name="Slot4" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=785639116]
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "Empty Slot"
 
 [node name="Slot5" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1221099945]
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 text = "Empty Slot"
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
