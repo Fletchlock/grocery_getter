@@ -92,14 +92,6 @@ func start_multiplayer_game() -> void:
 	
 	print("GameManager: Starting multiplayer game.")
 
-	# Tell all clients to start the game.
-	start_multiplayer_game_rpc.rpc()
-
-	
-	# Start the game locally for the host.
-	set_game_state(GameState.PLAYING)
-
-	
 	# Prepare the selected game before loading the store scene.
 	match game_start_mode:
 		GameStartMode.NEW_GAME:
