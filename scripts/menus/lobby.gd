@@ -4,6 +4,9 @@ extends Control
 @onready var play_button: Button = $CanvasLayer/PlayButton
 @onready var ready_button: Button = $CanvasLayer/ReadyButton
 @onready var main_menu_button: Button = $CanvasLayer/MainMenuButton
+@onready var red_button: Button = $VBoxContainer/CharacterSelection/RedButton
+@onready var green_button: Button = $VBoxContainer/CharacterSelection/GreenButton
+@onready var blue_button: Button = $VBoxContainer/CharacterSelection/BlueButton
 
 @onready var lobby_viewport: SubViewport = $SubViewportContainer/SubViewport
 @onready var lobby_camera: Camera3D = $SubViewportContainer/SubViewport/Camera3D
@@ -185,6 +188,11 @@ func _is_late_join_waiting() -> bool:
 func _update_ready_button() -> void:
 	var peer_id: int = multiplayer.get_unique_id()
 	var is_ready: bool = LobbyManager.is_ready(peer_id)
+	var selection_locked: bool = is_ready and _is_late_join_waiting()
 
 	ready_button.text = "Unready" if is_ready else "Ready"
-	ready_button.disabled = is_ready and _is_late_join_waiting()
+	ready_button.disabled = selection_locked
+
+	red_button.disabled = selection_locked
+	green_button.disabled = selection_locked
+	blue_button.disabled = selection_locked

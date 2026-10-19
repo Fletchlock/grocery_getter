@@ -60,6 +60,10 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 	):
 		print("MAIN: Opening lobby")
 		
+		if is_instance_valid(lobby_browser):
+			lobby_browser.queue_free()
+			lobby_browser = null
+			
 		# Close pause and or tablet menu when GameState changes to LOBBY
 		var pause_menu = get_node_or_null("UI/PauseMenu")
 		if pause_menu:
@@ -143,7 +147,12 @@ func close_lobby() -> void:
 
 
 func open_lobby_browser() -> void:
-	var browser_scene := load("res://scenes/menus/lobby_browser.tscn") as PackedScene
+	if is_instance_valid(lobby_browser):
+		return
+
+	var browser_scene: PackedScene = load(
+		"res://scenes/menus/lobby_browser.tscn"
+	) as PackedScene
 
 	if browser_scene == null:
 		push_error("Could not load lobby browser")
@@ -152,4 +161,14 @@ func open_lobby_browser() -> void:
 	lobby_browser = browser_scene.instantiate() as Control
 	$UI.add_child(lobby_browser)
 
-	main_menu.hide()
+	if is_instance_valid(main_menu):
+		main_menu.hide()
+
+
+func close_lobby_browser() -> void:
+	if is_instance_valid(lobby_browser):
+		lobby_browser.queue_free()
+		lobby_browser = null
+
+	if is_instance_valid(main_menu):
+		main_menu.show()

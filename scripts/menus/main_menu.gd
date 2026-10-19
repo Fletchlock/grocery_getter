@@ -69,11 +69,9 @@ func _host_game() -> void:
 
 
 func _on_join_button_pressed() -> void:
-	print("MAIN: Searching for a game.")
-	get_parent().get_parent().open_lobby()
-	GameManager.set_game_state(GameManager.GameState.LOBBY)
-	NetworkManager.find_and_join_lobby()
-	#get_parent().get_parent().open_lobby_browser()
+	print("MAIN: Opening lobby browser.")
+
+	get_parent().get_parent().open_lobby_browser()
 
 
 func _on_options_button_pressed() -> void:

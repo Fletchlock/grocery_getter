@@ -1,16 +1,18 @@
 [gd_scene format=3 uid="uid://c1l8faixcpdt5"]
 
+[ext_resource type="Script" uid="uid://dgxc7x4cogp7n" path="res://scripts/menus/lobby_browser.gd" id="1_3w3ne"]
+
 [node name="LobbyBrowser" type="Control" unique_id=1243747293]
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_3w3ne")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1982712171]
+custom_minimum_size = Vector2(900, 0)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -29,10 +31,26 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Available Games"
 
-[node name="LobbyList" type="VBoxContainer" parent="VBoxContainer" unique_id=982380989]
+[node name="StatusLabel" type="Label" parent="VBoxContainer" unique_id=2114575507]
+layout_mode = 2
+text = "Searching for games..."
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=58139041]
+custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
 
-[node name="BackButton" type="Button" parent="VBoxContainer" unique_id=127770484]
+[node name="LobbyList" type="VBoxContainer" parent="VBoxContainer/ScrollContainer" unique_id=1138032912]
+layout_mode = 2
+
+[node name="ButtonRow" type="HBoxContainer" parent="VBoxContainer" unique_id=830080866]
+layout_mode = 2
+
+[node name="RefreshButton" type="Button" parent="VBoxContainer/ButtonRow" unique_id=437392330]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Refresh"
+
+[node name="BackButton" type="Button" parent="VBoxContainer/ButtonRow" unique_id=127770484]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Back"
