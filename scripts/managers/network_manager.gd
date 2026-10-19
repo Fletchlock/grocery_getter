@@ -125,9 +125,9 @@ func _on_lobby_joined(
 	if session_state == "playing":
 		print("NetworkManager: Preparing store for late join.")
 
-	GameManager.set_game_state(GameManager.GameState.PLAYING)
+		GameManager.begin_late_join()
 
-	LevelManager.load_level(GameManager.STORE_LEVEL_PATH)
+		LevelManager.load_level(GameManager.STORE_LEVEL_PATH)
 	
 	print("NetworkManager: Lobby owner Steam ID: ", host_steam_id)
 	print("NetworkManager: My Steam ID: ", Steam.getSteamID())
