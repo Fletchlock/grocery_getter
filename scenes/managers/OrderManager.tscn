@@ -22,7 +22,17 @@
 [ext_resource type="Resource" uid="uid://blnjtjx78axnh" path="res://resources/products/pear_green.tres" id="20_phvt6"]
 [ext_resource type="Resource" uid="uid://cusqf2gc2jl7h" path="res://resources/products/sugar.tres" id="21_p3w5a"]
 [ext_resource type="Resource" uid="uid://c6wdbigdc2g1p" path="res://resources/products/tomato.tres" id="22_otiyo"]
+[ext_resource type="Resource" uid="uid://d3jqvdkoelkwc" path="res://resources/products/pop_canuck_cola.tres" id="23_fg06t"]
+[ext_resource type="Resource" uid="uid://bphx17dtfnaj1" path="res://resources/products/jalapeno.tres" id="24_qt6gk"]
+[ext_resource type="Resource" uid="uid://bf46f4d7euqda" path="res://resources/products/pop_v&d_can.tres" id="25_hmk0s"]
+[ext_resource type="Resource" uid="uid://d03fjhs33m8gp" path="res://resources/products/pepper_orange.tres" id="26_0288q"]
+[ext_resource type="Resource" uid="uid://bhc6d3aw4m6hq" path="res://resources/products/pepper_yellow.tres" id="27_pt8w2"]
+[ext_resource type="Resource" uid="uid://cbyww3278lwgu" path="res://resources/products/pepper_green.tres" id="28_g4m3m"]
+[ext_resource type="Resource" uid="uid://d4dymab1d80dx" path="res://resources/products/pepper_red.tres" id="29_ujuvh"]
+[ext_resource type="Resource" uid="uid://bhmjxb87ib43y" path="res://resources/products/watermelon.tres" id="30_01e7g"]
+[ext_resource type="Resource" uid="uid://botj1e0segkbb" path="res://resources/products/pop_fantasi_1l.tres" id="31_clkrp"]
 
 [node name="OrderManager" type="Node" unique_id=756232929]
 script = ExtResource("1_8dnq8")
-available_products = Array[ExtResource("2_frqi1")]([ExtResource("3_eb7sa"), ExtResource("4_l24qr"), ExtResource("5_o262s"), ExtResource("6_a1c4v"), ExtResource("7_q8ipl"), ExtResource("8_g8wsy"), ExtResource("9_irppk"), ExtResource("10_fg06t"), ExtResource("11_qt6gk"), ExtResource("12_hmk0s"), ExtResource("13_0288q"), ExtResource("14_pt8w2"), ExtResource("15_g4m3m"), ExtResource("16_ujuvh"), ExtResource("17_01e7g"), ExtResource("18_clkrp"), ExtResource("19_h2nih"), ExtResource("20_phvt6"), ExtResource("21_p3w5a"), ExtResource("22_otiyo")])
+available_products = Array[ExtResource("2_frqi1")]([ExtResource("3_eb7sa"), ExtResource("4_l24qr"), ExtResource("5_o262s"), ExtResource("6_a1c4v"), ExtResource("7_q8ipl"), ExtResource("8_g8wsy"), ExtResource("9_irppk"), ExtResource("10_fg06t"), ExtResource("11_qt6gk"), ExtResource("12_hmk0s"), ExtResource("13_0288q"), ExtResource("14_pt8w2"), ExtResource("15_g4m3m"), ExtResource("16_ujuvh"), ExtResource("17_01e7g"), ExtResource("18_clkrp"), ExtResource("19_h2nih"), ExtResource("20_phvt6"), ExtResource("21_p3w5a"), ExtResource("22_otiyo"), ExtResource("23_fg06t"), ExtResource("24_qt6gk"), ExtResource("25_hmk0s"), ExtResource("26_0288q"), ExtResource("27_pt8w2"), ExtResource("28_g4m3m"), ExtResource("29_ujuvh"), ExtResource("30_01e7g"), ExtResource("31_clkrp")])
+order_end_hour = 20

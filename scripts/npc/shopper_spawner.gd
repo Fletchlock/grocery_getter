@@ -8,11 +8,11 @@ extends Node3D
 
 @export_group("Base Traffic")
 @export var spawn_interval_min: float = 60.0
-@export var spawn_interval_max: float = 85.0
+@export var spawn_interval_max: float = 80.0
 @export var minimum_spawn_interval: float = 12.0
 
 @export_group("Day Scaling")
-@export var day_growth_rate: float = 0.05
+@export var day_growth_rate: float = 0.12
 @export var max_day_traffic_multiplier: float = 2.0
 
 @export_group("Player Scaling")
@@ -21,11 +21,11 @@ extends Node3D
 
 @export_group("Shopper Capacity")
 @export var starting_max_shoppers: int = 3
-@export var extra_shoppers_every_n_days: int = 3
+@export var extra_shoppers_every_n_days: int = 2
 @export var max_shoppers: int = 20
 
 @export_group("Rush Hour")
-@export var rush_hour_multiplier: float = 1.35
+@export var rush_hour_multiplier: float = 1.50
 
 @onready var multiplayer_shopper_spawner: MultiplayerSpawner = $"../MultiplayerShopperSpawner"
 @onready var shopper_stats: Node3D = $"../ShopperStats"

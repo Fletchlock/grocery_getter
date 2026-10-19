@@ -7,7 +7,7 @@ signal orders_synced
 
 @export_group("Order Generation")
 @export var available_products: Array[ProductData] = []
-@export var min_products: int = 4
+@export var min_products: int = 3
 @export var max_products: int = 6
 @export var min_items: int = 1
 @export var max_items: int = 2
@@ -22,8 +22,8 @@ signal orders_synced
 @export var minimum_order_gap: float = 30.0
 @export var completion_recovery: float = 90.0
 
-@export_range(0.0, 1.0, 0.05) var quiet_order_chance: float = 0.45
-@export_range(0.0, 1.0, 0.05) var normal_order_chance: float = 0.30
+@export_range(0.0, 1.0, 0.05) var quiet_order_chance: float = 0.40
+@export_range(0.0, 1.0, 0.05) var normal_order_chance: float = 0.60
 @export_range(0.0, 1.0, 0.05) var rush_order_chance: float = 0.25
 
 @export_group("Order Financial Rules")
