@@ -139,7 +139,12 @@ func _begin_next_day() -> void:
 	_day_transition_started = false
 	day_started.emit(current_day)
 	clock_updated.emit(current_day, current_hour, current_minute)
-
+	
+	if SaveManager.save_game():
+		print("DAY MANAGER: Day ", current_day, " saved successfully.")
+	else:
+		push_warning("DAY MANAGER: Failed to save game.")
+		
 
 @rpc("authority", "call_local", "reliable")
 func _sync_punch_out_state(state: Dictionary) -> void:
@@ -213,3 +218,39 @@ func _sync_clock(
 	
 	clock_updated.emit(current_day, current_hour, current_minute)
 	
+
+# SAVE STATES
+
+func get_save_data() -> Dictionary:
+	return {
+		"current_day": current_day
+	}
+
+
+func load_save_data(data: Dictionary) -> void:
+	if not multiplayer.is_server():
+		return
+
+	current_day = maxi(
+		1,
+		int(data.get("current_day", 1))
+	)
+
+	current_hour = START_HOUR
+	current_minute = 30
+	_minute_timer = 0.0
+	clock_running = false
+	_day_transition_started = false
+
+	punched_out_players.clear()
+
+	for peer_id: int in LobbyManager.get_players():
+		punched_out_players[peer_id] = false
+
+	_sync_punch_out_state.rpc(punched_out_players)
+	_sync_clock.rpc(
+		current_day,
+		current_hour,
+		current_minute,
+		clock_running
+	)

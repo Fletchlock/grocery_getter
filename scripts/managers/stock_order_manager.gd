@@ -418,3 +418,43 @@ func restore_saved_boxes() -> void:
 		restored_count += 1
 
 	print("RESTOCK BOXES RESTORED: ", restored_count)
+
+# SAVE STATES
+
+func get_save_data() -> Dictionary:
+	return {
+		"confirmed_orders": confirmed_orders.duplicate(true),
+		"last_processed_day": last_processed_day,
+		"last_delivery_day": last_delivery_day
+	}
+
+
+func load_save_data(data: Dictionary) -> void:
+	if not multiplayer.is_server():
+		return
+
+	confirmed_orders = (
+		data.get("confirmed_orders", {}) as Dictionary
+	).duplicate(true)
+
+	last_processed_day = int(
+		data.get("last_processed_day", -1)
+	)
+
+	last_delivery_day = int(
+		data.get("last_delivery_day", -1)
+	)
+
+
+func reset_stock_orders() -> void:
+	if not multiplayer.is_server():
+		return
+
+	pending_orders.clear()
+	pending_order_paths.clear()
+	confirmed_orders.clear()
+
+	last_processed_day = -1
+	last_delivery_day = -1
+
+	_sync_pending_orders.rpc(pending_orders, pending_order_paths)

@@ -10,10 +10,10 @@
 albedo_texture = ExtResource("2_7keis")
 normal_enabled = true
 normal_texture = ExtResource("4_hdt1s")
-heightmap_enabled = true
 heightmap_texture = ExtResource("3_007gi")
-uv1_scale = Vector3(0.2, 0.2, 0.2)
+uv1_scale = Vector3(0.1, 0.1, 0.1)
 uv1_triplanar = true
+uv1_triplanar_sharpness = 1.9708505
 
 [sub_resource type="SphereMesh" id="SphereMesh_6aigx"]
 material = SubResource("ORMMaterial3D_ouxn3")
@@ -76,7 +76,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 12, 0)
 environment = SubResource("Environment_45b30")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1099457180]
-transform = Transform3D(-0.87001, -0.4930177, -0.0040312377, -0.0098082125, 0.00913227, 0.9999102, -0.49293667, 0.8699715, -0.012780823, 0, 0, 0)
+transform = Transform3D(0.56118006, -0.71877277, -0.41041768, 0.1662412, -0.38787246, 0.9065974, -0.8108272, -0.5769927, -0.098176755, 0, 0, 0)
 light_energy = 1.2
 shadow_enabled = true
 

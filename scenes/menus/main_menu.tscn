@@ -73,10 +73,15 @@ theme_override_font_sizes/font_size = 51
 text = "Multiplayer"
 horizontal_alignment = 1
 
-[node name="HostButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1826968477]
+[node name="NewGameButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1826968477]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
-text = "Host"
+text = "New Game"
+
+[node name="ContinueGameButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=2032042663]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Continue Game"
 
 [node name="JoinButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1494536901]
 layout_mode = 2
@@ -94,7 +99,8 @@ theme_override_font_sizes/font_size = 40
 text = "Quit"
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/NewGameButton" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/ContinueGameButton" to="." method="_on_continue_game_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
