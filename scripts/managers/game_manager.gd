@@ -7,7 +7,8 @@ enum GameState {
 	LOBBY,
 	PLAYING,
 	PAUSED,
-	GAME_OVER
+	GAME_OVER,
+	LATE_JOIN_WAITING
 }
 
 enum GameStartMode {
@@ -26,7 +27,7 @@ signal game_state_changed(new_state: GameState)
 # This keeps track of the current state of the game.
 # We start in MAIN_MENU because that's where the game begins.
 var current_state: GameState = GameState.MAIN_MENU
-
+var is_late_joining: bool = false
 
 # Our GameManager now listens for an important event from NetworkManager:
 #
@@ -71,8 +72,8 @@ func _on_host_disconnected() -> void:
 
 
 func _on_lobby_joined(_lobby_id: int) -> void:
-	if current_state == GameState.PLAYING:
-		print("GameManager: Joining active store.")
+	if is_late_joining:
+		print("GameManager: Waiting for late-join character selection.")
 		return
 
 	print("GameManager: Client joined lobby.")
@@ -230,10 +231,34 @@ func receive_host_game_state(host_state: int) -> void:
 	if host_state == GameState.PLAYING:
 		print("GameManager: Host is already playing.")
 
-		set_game_state(GameState.PLAYING)
+		if is_late_joining:
+			print("GameManager: Remaining in late-join waiting state.")
+		else:
+			set_game_state(GameState.PLAYING)
 
-		if LevelManager.current_level == null:
-			LevelManager.load_level(STORE_LEVEL_PATH)
-		
+			if LevelManager.current_level == null:
+				LevelManager.load_level(STORE_LEVEL_PATH)
+
 		DayManager.request_clock_state()
 		StoreManager.request_finances()
+
+func begin_late_join() -> void:
+	if multiplayer.is_server() and NetworkManager.peer != null:
+		return
+
+	is_late_joining = true
+
+	print("GameManager: Preparing late join.")
+
+	set_game_state(GameState.LATE_JOIN_WAITING)
+
+
+func complete_late_join() -> void:
+	if not is_late_joining:
+		return
+
+	is_late_joining = false
+
+	print("GameManager: Late join complete.")
+
+	set_game_state(GameState.PLAYING)
