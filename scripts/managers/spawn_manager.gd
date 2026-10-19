@@ -34,6 +34,32 @@ func _on_peer_connected(peer_id: int) -> void:
 
 	print("SpawnManager: Late joining peer connected: ", peer_id)
 
+
+func spawn_ready_player(peer_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if GameManager.current_state != GameManager.GameState.PLAYING:
+		return
+
+	if not LobbyManager.get_players().has(peer_id):
+		return
+
+	if not LobbyManager.is_ready(peer_id):
+		return
+
+	var character: String = LobbyManager.get_character(peer_id)
+
+	if character not in ["red", "blue", "green"]:
+		return
+
+	print(
+		"SpawnManager: Spawning ready player ",
+		peer_id,
+		" with character ",
+		character
+	)
+
 	spawn_player(peer_id)
 
 
