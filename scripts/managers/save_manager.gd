@@ -7,6 +7,7 @@ const LEGACY_SAVE_PATH: String = "user://grocery_getter_save.json"
 const SAVE_VERSION: int = 1
 const MAX_SAVE_SLOTS: int = 5
 const SAVE_PATH: String = LEGACY_SAVE_PATH
+const SAVE_ENCRYPTION_KEY: String = "GroceryGetterSaveEncryption2026"
 
 var selected_slot: int = 1
 var reset_creation_date_on_save: bool = false
@@ -16,7 +17,7 @@ func get_slot_path(slot: int) -> String:
 	if slot < 1 or slot > MAX_SAVE_SLOTS:
 		return ""
 
-	return "%s/slot_%d.json" % [SAVE_DIRECTORY, slot]
+	return "%s/slot_%d.sav" % [SAVE_DIRECTORY, slot]
 
 
 func select_slot(slot: int) -> bool:
@@ -64,7 +65,7 @@ func get_slot_info(slot: int) -> Dictionary:
 
 	return {
 		"slot": slot,
-		"created_at": str(data.get("created_at", "")),
+		"created_at": str(data.get("updated_at", data.get("created_at", ""))),
 		"day": int(day_data.get("current_day", 1)),
 		"cash": float(store_data.get("store_cash", 0.0))
 	}
