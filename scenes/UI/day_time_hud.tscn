@@ -131,6 +131,7 @@ script = ExtResource("1_prtv8")
 available_order_scene = ExtResource("2_8u6ci")
 active_order_scene = ExtResource("3_glyqf")
 online_order_list_scene = ExtResource("4_26j03")
+barcode_hud_scene = ExtResource("5_8arff")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1127994647]
 libraries/ = SubResource("AnimationLibrary_26j03")

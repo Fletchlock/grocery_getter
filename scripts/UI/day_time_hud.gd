@@ -7,17 +7,19 @@ extends Control
 @onready var orders_container: VBoxContainer = $OrderNotifications/VBoxContainer
 @onready var order_list_container: VBoxContainer = $OrderList/VBoxContainer
 @onready var shopper_count: Label = $TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ShopperCount
-@onready var barcode_hud = $BardcodeHud
 
 @export var available_order_scene: PackedScene
 @export var active_order_scene: PackedScene
 @export var online_order_list_scene: PackedScene
+@export var barcode_hud_scene: PackedScene
 
 var shopper_stats: Node3D = null
 var available_notifications: Dictionary = {}
 var active_notifications: Dictionary = {}
 var current_order_list: OnlineOrderList = null
 var active_order_cart: CartGrid = null
+var barcode_hud: Control = null
+var barcode_player: Node = null
 
 func _ready() -> void:
 	LobbyManager.lobby_player_updated.connect(_on_lobby_player_updated)
@@ -421,5 +423,48 @@ func _on_order_cart_contents_changed(cart_grid: CartGrid) -> void:
 		current_order_list.update_order(order)
 
 
+func show_barcode_hud(product_code: String) -> void:
+	if not is_instance_valid(barcode_hud):
+		if barcode_hud_scene == null:
+			push_warning("Barcode HUD scene has not been assigned.")
+			return
+
+		barcode_hud = barcode_hud_scene.instantiate() as Control
+		if barcode_hud == null:
+			push_warning("Barcode HUD scene root must be a Control node.")
+			return
+
+		barcode_player = get_tree().get_first_node_in_group("local_player")
+		if is_instance_valid(barcode_player):
+			barcode_player.set_movement_locked(true)
+		else:
+			push_warning("No local_player found; movement was not locked.")
+
+		add_child(barcode_hud)
+		barcode_hud.tree_exited.connect(_on_barcode_hud_exited)
+
+	barcode_hud.show()
+	_update_barcode(product_code)
+
+
 func _update_barcode(product_code: String) -> void:
-	barcode_hud.update_display(product_code)
+	if not is_instance_valid(barcode_hud):
+		return
+
+	if barcode_hud.has_method("update_display"):
+		barcode_hud.update_display(product_code)
+	else:
+		push_warning("Barcode HUD has no update_display() method.")
+
+
+func _on_barcode_hud_exited() -> void:
+	if is_instance_valid(barcode_player):
+		if barcode_player.has_method("set_movement_locked"):
+			barcode_player.set_movement_locked(false)
+
+	barcode_hud = null
+	barcode_player = null
+
+func close_barcode_hud() -> void:
+	if is_instance_valid(barcode_hud):
+		barcode_hud.queue_free()
