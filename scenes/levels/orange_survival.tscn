@@ -203,3 +203,49 @@ text = "Waiting for next round..."
 
 [node name="SpectatorCamera" type="Camera3D" parent="." unique_id=164285949]
 transform = Transform3D(1, 0, 0, 0, 0.95105654, 0.309017, 0, -0.309017, 0.95105654, 0, 13.561, 7.674)
+
+[node name="IntroLayer" type="CanvasLayer" parent="." unique_id=1136399271]
+layer = 10
+
+[node name="BlackScreen" type="ColorRect" parent="IntroLayer" unique_id=1072964976]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="IntroLabel" type="Label" parent="IntroLayer" unique_id=1926410923]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(500, 200)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 42
+text = "After a long shift at the store,
+     you have nightmares..."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="CountdownLabel" type="Label" parent="IntroLayer" unique_id=2060375188]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.9999998, 0.7515134, 0.2795927, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.2627451)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 6
+theme_override_constants/outline_size = 18
+theme_override_fonts/font = SubResource("FontVariation_007gi")
+theme_override_font_sizes/font_size = 110
+horizontal_alignment = 1
+vertical_alignment = 1

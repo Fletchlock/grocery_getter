@@ -126,7 +126,7 @@ var _first_person: bool = true
 var _smoothed_sprint_blend: float = 0.0
 var _smoothed_crouch_blend: float = 0.0
 var camera_fade_tween: Tween = null
-
+var movement_locked: bool = false
 
 # === Held Item Variables ===
 var held_item: ProductData = null
@@ -302,7 +302,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if handle_restock_scanner_input(event):
 		return
 	
-	if event.is_action_pressed("crouch") and attached_cart == null:
+	if (
+		event.is_action_pressed("crouch")
+		and attached_cart == null
+		and not movement_locked
+	):
 		is_crouching = !is_crouching
 		update_crouch_collision()
 		
@@ -809,13 +813,16 @@ func _physics_process(delta: float) -> void:
 
 
 	# === 2. Directional Movement ===
+		
+	var raw_input: Vector2 = Vector2.ZERO
 
-	var raw_input: Vector2 = Input.get_vector(
-		"left",
-		"right",
-		"up",
-		"down"
-	)
+	if not movement_locked:
+		raw_input = Input.get_vector(
+			"left",
+			"right",
+			"up",
+			"down"
+		)
 
 	# Movement is relative to the player's horizontal facing.
 	var camera_yaw: float
@@ -866,10 +873,14 @@ func _physics_process(delta: float) -> void:
 		else air_acceleration
 	)
 
-	velocity = velocity.move_toward(
-		move_direction * target_move_speed,
-		current_acceleration * delta
-	)
+	if movement_locked:
+		velocity.x = 0.0
+		velocity.z = 0.0
+	else:
+		velocity = velocity.move_toward(
+			move_direction * target_move_speed,
+			current_acceleration * delta
+		)
 
 	velocity.y = y_velocity + _gravity * delta
 
@@ -924,6 +935,7 @@ func _physics_process(delta: float) -> void:
 	var is_starting_jump: bool = (
 		Input.is_action_just_pressed("jump")
 		and not is_crouching
+		and not movement_locked
 		and is_on_floor()
 	)
 
