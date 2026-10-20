@@ -175,8 +175,6 @@ var _network_holding_restock_box_last_received: bool = false
 var _network_restock_box_product_path_last_received: String = ""
 var _network_restock_box_quantity_last_received: int = 0
 
-#for freeing up WASD for entering product codes at checkout
-var movement_locked: bool = false
 
 # === Player Scene Reference ===
 const PLAYER_SCENE = preload(

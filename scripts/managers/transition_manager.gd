@@ -1,14 +1,16 @@
 
 extends Node
 
+signal all_peers_loaded(level_path: String)
+
 const ORANGE_SURVIVAL_SCENE: String = "res://scenes/levels/orange_survival.tscn"
 const GROCERY_STORE_SCENE: String = "res://scenes/levels/third_person_level.tscn"
 
 @onready var fade_rect: ColorRect = $CanvasLayer/ColorRect
 
 var transitioning: bool = false
-var transition_ready_peers: Dictionary = {}
-var pending_transition_scene: String = ""
+var transition_id: int = 0
+var ready_peers: Dictionary = {}
 
 
 func _ready() -> void:
@@ -18,147 +20,159 @@ func _ready() -> void:
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey:
 		return
-
 	if not event.pressed or event.echo:
 		return
-
 	if event.keycode != KEY_F6:
 		return
-
-	if not multiplayer.is_server():
-		return
-
-	if transitioning:
+	if not multiplayer.is_server() or transitioning:
 		return
 
 	start_orange_survival()
 
 
-
 func start_orange_survival() -> void:
-	if not multiplayer.is_server():
+	if not multiplayer.is_server() or transitioning:
 		return
 
-	if transitioning:
-		return
-
-	transitioning = true
-
-	# Capture inventory before the store unloads.
 	StoreManager.capture_restock_boxes()
-
-	# Prepare all peers before changing levels.
 	_begin_coordinated_transition(ORANGE_SURVIVAL_SCENE)
 
 
 func return_to_grocery_store() -> void:
-	if not multiplayer.is_server():
+	if not multiplayer.is_server() or transitioning:
 		return
 
-	if transitioning:
-		return
-
-	transitioning = true
-
-	# Prepare all peers before changing levels.
 	await _begin_coordinated_transition(GROCERY_STORE_SCENE)
-	_complete_day_after_return()
-
-
-func _complete_day_after_return() -> void:
-	# Give the return transition time to finish locally.
-	await get_tree().process_frame
-	await get_tree().process_frame
 
 	if DayManager._day_transition_started:
 		DayManager.complete_minigame_and_advance_day()
 
 
-
-@rpc("authority", "call_local", "reliable")
-func _load_level_on_all_peers(level_path: String) -> void:
-	_perform_transition(level_path)
-
-
-
-func _perform_transition(level_path: String) -> void:
-	transitioning = true
-
-	fade_rect.modulate.a = 1.0
-
-	# Allow the black overlay to render.
-	await get_tree().process_frame
-
-	LevelManager.load_level(level_path)
-
-	# Allow the new level and its MultiplayerSpawner to initialize.
-	await get_tree().process_frame
-
-	# Only the host restores physical inventory.
-	if multiplayer.is_server() and level_path == GROCERY_STORE_SCENE:
-		StockOrderManager.restore_saved_boxes()
-
-	fade_rect.modulate.a = 0.0
-	transitioning = false
-
-
-@rpc("any_peer", "call_remote", "reliable")
-func _acknowledge_transition_ready() -> void:
-	if not multiplayer.is_server():
-		return
-
-	if not transitioning:
-		return
-
-	var peer_id: int = multiplayer.get_remote_sender_id()
-
-	transition_ready_peers[peer_id] = true
-
-	print("TRANSITION READY: peer ", peer_id)
-
-
-
-
-@rpc("authority", "call_local", "reliable")
-func _prepare_level_transition() -> void:
-	# Show the transition overlay.
-	fade_rect.modulate.a = 1.0
-
-	# Allow the overlay to render.
-	await get_tree().process_frame
-
-	# Clients acknowledge preparation.
-	if not multiplayer.is_server():
-		_acknowledge_transition_ready.rpc_id(1)
-
-
-
-
 func _begin_coordinated_transition(level_path: String) -> void:
-	if not multiplayer.is_server():
-		return
+	transitioning = true
+	transition_id += 1
 
-	pending_transition_scene = level_path
-	transition_ready_peers.clear()
+	var id: int = transition_id
 
-	# Ask every peer to prepare for the transition.
-	_prepare_level_transition.rpc()
+	# Stage 1: Prepare
+	ready_peers.clear()
+	_prepare_transition.rpc(id)
+	await _wait_for_peers(id)
 
-	# Wait for every connected client to acknowledge.
-	while true:
+	# Stage 2: Unload old level
+	ready_peers.clear()
+	_unload_transition_level.rpc(id)
+	await _wait_for_peers(id)
+
+	# Stage 3: Load new level
+	ready_peers.clear()
+	_load_transition_level.rpc(id, level_path)
+	await _wait_for_peers(id)
+
+	print("TRANSITION: All peers loaded ", level_path)
+
+	# The new level is now ready for gameplay.
+	all_peers_loaded.emit(level_path)
+
+	_finish_transition.rpc(id)
+
+
+func _wait_for_peers(id: int) -> void:
+	while id == transition_id:
 		var all_ready: bool = true
 
 		for peer_id: int in multiplayer.get_peers():
-			if not transition_ready_peers.has(peer_id):
+			if not ready_peers.has(peer_id):
 				all_ready = false
 				break
 
 		if all_ready:
-			break
+			return
 
 		await get_tree().process_frame
 
-	print("TRANSITION: All clients ready.")
 
-	# We'll replace this with the coordinated loading step later.
-	_load_level_on_all_peers.rpc(pending_transition_scene)
+@rpc("authority", "call_local", "reliable")
+func _prepare_transition(id: int) -> void:
+	transition_id = id
+	transitioning = true
+	fade_rect.modulate.a = 1.0
+
+	await get_tree().process_frame
+
+	_acknowledge_stage(id)
+
+
+@rpc("authority", "call_local", "reliable")
+func _unload_transition_level(id: int) -> void:
+	LevelManager.unload_level()
+
+	# Allow queued deletions to complete.
+	await get_tree().process_frame
+	await get_tree().process_frame
+
+	_acknowledge_stage(id)
+
+
+@rpc("authority", "call_local", "reliable")
+func _load_transition_level(id: int, level_path: String) -> void:
+	var success: bool = LevelManager.load_level(level_path)
+
+	if not success:
+		push_error("TRANSITION: Level failed to load.")
+		return
+
+	# Allow the new scene to initialize.
+	await get_tree().process_frame
+
+	# Wait for this peer's own character in Orange Survival.
+	if level_path == ORANGE_SURVIVAL_SCENE:
+		var level: Node = LevelManager.current_level
+		var player_container: Node = level.get_node("Players")
+		var local_id: String = str(multiplayer.get_unique_id())
+
+		while (
+			is_instance_valid(level)
+			and not player_container.has_node(local_id)
+		):
+			await get_tree().process_frame
+
+		if not is_instance_valid(level):
+			return
+
+	_acknowledge_stage(id)
+
+
+func _acknowledge_stage(id: int) -> void:
+	if multiplayer.is_server():
+		return
+
+	_receive_stage_ack.rpc_id(1, id)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _receive_stage_ack(id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	if id != transition_id:
+		return
+
+	var peer_id: int = multiplayer.get_remote_sender_id()
+	ready_peers[peer_id] = true
+
+	print("TRANSITION ACK: ", peer_id, " stage ", id)
+
+
+@rpc("authority", "call_local", "reliable")
+func _finish_transition(id: int) -> void:
+	if id != transition_id:
+		return
+
+	fade_rect.modulate.a = 0.0
+	transitioning = false
+
+	if multiplayer.is_server():
+		# Restore inventory after returning to the store.
+		if LevelManager.current_level != null:
+			if LevelManager.current_level.name == "ThirdPersonLevel":
+				StockOrderManager.restore_saved_boxes()

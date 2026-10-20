@@ -146,7 +146,14 @@ func _ready() -> void:
 		multiplayer_spawner,
 		spawn_points
 	)
-
+	# Both host and clients connect.
+	if not TransitionManager.all_peers_loaded.is_connected(
+		_on_all_peers_loaded
+	):
+		TransitionManager.all_peers_loaded.connect(
+			_on_all_peers_loaded
+		)
+	
 	if not multiplayer.is_server():
 		return
 
@@ -162,8 +169,6 @@ func _ready() -> void:
 		minimum_direction_time,
 		maximum_direction_time
 	)
-
-	_start_intro_sequence()
 
 
 # ============================================================
@@ -801,3 +806,12 @@ func _set_local_player_movement_locked(locked: bool) -> void:
 		return
 
 	player.movement_locked = locked
+
+func _on_all_peers_loaded(level_path: String) -> void:
+	if level_path != TransitionManager.ORANGE_SURVIVAL_SCENE:
+		return
+
+	if not multiplayer.is_server():
+		return
+
+	_start_intro_sequence()
