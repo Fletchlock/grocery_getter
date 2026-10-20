@@ -10,6 +10,7 @@
 [ext_resource type="ArrayMesh" uid="uid://dku6qq8nqkh42" path="res://assets/models/npc/npc_shopper_04_npc_mesh_02_002.res" id="7_mxygy"]
 [ext_resource type="ArrayMesh" uid="uid://cgkh6e6r2nudi" path="res://assets/models/npc/npc_shopper_05_npc_mesh_02_003.res" id="8_fnekv"]
 [ext_resource type="PackedScene" uid="uid://bd0ayyp7ow3n2" path="res://assets/models/npc/raykin.glb" id="8_ijfqo"]
+[ext_resource type="ArrayMesh" uid="uid://lny8ps68kk0m" path="res://assets/models/npc/npc_shopper_06_npc_mesh_02_004.res" id="9_uvpqv"]
 [ext_resource type="PackedScene" uid="uid://c4g1plfy54h5y" path="res://scenes/objects/buildings/shack_tall_wide_right.tscn" id="9_vhux3"]
 [ext_resource type="PackedScene" uid="uid://c5rv2si7ox4uw" path="res://scenes/objects/buildings/shack_tall_stairs_l.tscn" id="10_vhux3"]
 [ext_resource type="Resource" uid="uid://drhqmd8mbofk" path="res://resources/products/eggs.tres" id="12_m5ay7"]
@@ -345,7 +346,7 @@ navigation_mesh = SubResource("NavigationMesh_6aigx")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06434679, 1.4540367, 19.198765)
 script = ExtResource("2_8sngb")
 shopper_scene = ExtResource("3_y7eyy")
-shopper_meshes = Array[Mesh]([ExtResource("4_287kg"), ExtResource("5_a8s8y"), ExtResource("6_riim1"), ExtResource("7_mxygy"), ExtResource("8_fnekv")])
+shopper_meshes = Array[Mesh]([ExtResource("4_287kg"), ExtResource("5_a8s8y"), ExtResource("6_riim1"), ExtResource("7_mxygy"), ExtResource("8_fnekv"), ExtResource("9_uvpqv")])
 spawn_points = [NodePath("../ShopperSpawnPoint"), NodePath("../ShopperSpawnPoint2"), NodePath("../ShopperSpawnPoint3"), NodePath("../ShopperSpawnPoint4"), NodePath("../ShopperSpawnPoint5"), NodePath("../ShopperSpawnPoint6")]
 
 [node name="MultiplayerShopperSpawner" type="MultiplayerSpawner" parent="NavigationRegion3D" unique_id=978657063]
