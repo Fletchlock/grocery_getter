@@ -20,6 +20,7 @@ var current_order_list: OnlineOrderList = null
 var active_order_cart: CartGrid = null
 var barcode_hud: Control = null
 var barcode_player: Node = null
+var completed_barcode_code: String = ""
 
 func _ready() -> void:
 	LobbyManager.lobby_player_updated.connect(_on_lobby_player_updated)
@@ -442,6 +443,7 @@ func show_barcode_hud(product_code: String) -> void:
 
 		add_child(barcode_hud)
 		barcode_hud.tree_exited.connect(_on_barcode_hud_exited)
+		barcode_hud.code_completed.connect(_on_barcode_code_completed)
 
 	barcode_hud.show()
 	_update_barcode(product_code)
@@ -468,3 +470,13 @@ func _on_barcode_hud_exited() -> void:
 func close_barcode_hud() -> void:
 	if is_instance_valid(barcode_hud):
 		barcode_hud.queue_free()
+
+
+func _on_barcode_code_completed(product_code: String) -> void:
+	var order_board := get_tree().get_first_node_in_group("order_board")
+
+	if order_board == null:
+		push_warning("No order_board found.")
+		return
+
+	order_board.complete_produce_code(product_code)
