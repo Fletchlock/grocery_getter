@@ -1306,16 +1306,16 @@ spawn_path = NodePath("../Players")
 [node name="PlayerSpawnPoints" type="Node3D" parent="." unique_id=1594898549]
 
 [node name="PlayerSpawnPoint1" type="Marker3D" parent="PlayerSpawnPoints" unique_id=2017813913]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.7869139, -1.3205578, 3.3488941)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.718584, -1.3205578, 3.8485303)
 
 [node name="PlayerSpawnPoint2" type="Marker3D" parent="PlayerSpawnPoints" unique_id=2041080626]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.7869139, -1.3205578, 3.3488941)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.9793538, -1.3205578, 1.9932604)
 
 [node name="PlayerSpawnPoint3" type="Marker3D" parent="PlayerSpawnPoints" unique_id=1391135361]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.7869139, -1.3205578, 3.3488941)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -2.9449487, -1.3205578, 2.2272813)
 
 [node name="PlayerSpawnPoint4" type="Marker3D" parent="PlayerSpawnPoints" unique_id=1216383705]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.7869139, -1.3205578, 3.3488941)
+transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, -6.0473523, -1.3205578, 3.9111252)
 
 [node name="raykin2" parent="." unique_id=1413140257 instance=ExtResource("8_ijfqo")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -4.5812306, 3.879442, -12.014489)
