@@ -113,7 +113,6 @@ func _get_order_summary(order: OrderData) -> String:
 
 
 func get_interaction_prompt(player: CharacterBody3D) -> String:
-	_update_barcode_hud(null)
 	if player.network_holding_item:
 		if player.held_item == null:
 			return ""
@@ -122,7 +121,6 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 
 		# Preserve online-order checkout when the player owns an order.
 		if OrderManager.get_player_order(player_peer_id) != null:
-			_show_produce_preview(player)
 			return "[E] Checkout " + player.held_item.display_name
 
 		# Otherwise, allow scanning for the active AI shopper.
@@ -136,7 +134,6 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 				return "[E] Scan " + player.held_item.display_name
 
 			if checkout.can_scan_ai_product(player.held_item):
-				_show_produce_preview(player)
 				return "[E] Scan " + player.held_item.display_name
 
 		return ""
@@ -178,6 +175,14 @@ func interact(player: CharacterBody3D) -> void:
 		if player.held_item == null:
 			return
 
+		var product := player.held_item as ProductData
+		if product == null:
+			return
+
+		if product.product_category == "produce":
+			_open_produce_code_hud(player, product)
+			return
+
 		if multiplayer.is_server():
 			_submit_product(player)
 		else:
@@ -186,18 +191,19 @@ func interact(player: CharacterBody3D) -> void:
 				player.get_path(),
 				player.held_item.resource_path
 			)
+		return
 
+	# No item is being held, so E can accept an available order.
+	if not allow_orders:
 		return
 
 	if multiplayer.is_server():
-		if allow_orders:
-			OrderManager.accept_order(player)
+		OrderManager.accept_order(player)
 	else:
 		request_accept_order.rpc_id(
 			1,
 			player.get_path()
 		)
-
 
 
 func _submit_product(player: CharacterBody3D) -> void:
@@ -298,14 +304,19 @@ func _submit_product_to_checkout(
 		# AI shopper checkout flow.
 		submitted = checkout.scan_ai_product(product)
 
+	print("Product submitted: ", submitted)
 	if not submitted:
 		return false
 
 	if product.product_category == "produce":
-		if player_peer_id == multiplayer.get_unique_id():
-			_close_barcode_hud()
-		else:
-			_close_barcode_hud.rpc_id(player_peer_id)
+		_set_barcode_hud_for_player(player_peer_id, false)
+
+	if player_peer_id == multiplayer.get_unique_id():
+		var hud := get_tree().get_first_node_in_group("day_time_hud")
+		if hud != null:
+			hud.completed_barcode_code = ""
+	else:
+		_reset_completed_barcode_code.rpc_id(player_peer_id)
 
 	if player_peer_id == multiplayer.get_unique_id():
 		player._clear_held_item()
@@ -334,6 +345,13 @@ func _close_barcode_hud() -> void:
 		hud.close_barcode_hud()
 
 
+@rpc("authority", "call_remote", "reliable")
+func _reset_completed_barcode_code() -> void:
+	var hud := get_tree().get_first_node_in_group("day_time_hud")
+	if hud != null:
+		hud.completed_barcode_code = ""
+
+
 func _update_barcode_hud(product: ProductData) -> void:
 	var day_time_hud = get_tree().get_first_node_in_group("day_time_hud")
 	if day_time_hud == null:
@@ -343,6 +361,37 @@ func _update_barcode_hud(product: ProductData) -> void:
 		day_time_hud._update_barcode(product.product_code)
 	else:
 		day_time_hud._update_barcode("")
+
+
+func _set_barcode_hud_for_player(
+	player_peer_id: int,
+	should_show: bool,
+	product_code: String = ""
+) -> void:
+	if player_peer_id == multiplayer.get_unique_id():
+		_apply_barcode_hud_state(should_show, product_code)
+	else:
+		_apply_barcode_hud_state.rpc_id(
+			player_peer_id,
+			should_show,
+			product_code
+		)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _apply_barcode_hud_state(
+	should_show: bool,
+	product_code: String = ""
+) -> void:
+	var hud := get_tree().get_first_node_in_group("day_time_hud")
+	if hud == null:
+		push_warning("No DayTimeHud found in the day_time_hud group.")
+		return
+
+	if should_show:
+		hud.show_barcode_hud(product_code)
+	else:
+		hud.close_barcode_hud()
 
 
 func _show_produce_preview(player: CharacterBody3D) -> void:
@@ -374,6 +423,49 @@ func _close_barcode_hud_for_player(player_peer_id: int) -> void:
 		_close_barcode_hud()
 	else:
 		_close_barcode_hud.rpc_id(player_peer_id)
+
+
+func _open_produce_code_hud(
+	player: CharacterBody3D,
+	product: ProductData
+) -> void:
+	var player_peer_id := player.get_multiplayer_authority()
+
+	if player_peer_id == multiplayer.get_unique_id():
+		var hud := get_tree().get_first_node_in_group("day_time_hud")
+		if hud != null:
+			hud.show_barcode_hud(product.product_code)
+	else:
+		_apply_barcode_hud_state.rpc_id(
+			player_peer_id,
+			true,
+			product.product_code
+		)
+
+
+func complete_produce_code(product_code: String) -> void:
+	print("Barcode completed: ", product_code)
+	var player := get_tree().get_first_node_in_group("local_player") \
+		as CharacterBody3D
+
+	if player == null or player.held_item == null:
+		return
+
+	var product := player.held_item as ProductData
+	if product == null or product.product_category != "produce":
+		return
+
+	if product.product_code != product_code:
+		return
+
+	if multiplayer.is_server():
+		_submit_product(player)
+	else:
+		request_submit_product.rpc_id(
+			1,
+			player.get_path(),
+			player.held_item.resource_path
+		)
 
 
 @rpc("authority", "call_local", "reliable")
