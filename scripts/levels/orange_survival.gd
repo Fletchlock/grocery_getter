@@ -18,7 +18,13 @@ extends Node3D
 @export var reverse_chance: float = 0.50
 
 @export_group("Game Start")
-@export var rotation_start_delay: float = 3.0
+@export var intro_delay: float = 1.0
+@export var intro_fade_in: float = 1.0
+@export var intro_hold: float = 2.0
+@export var intro_fade_out: float = 1.0
+@export var screen_fade_out: float = 0.2
+@export var countdown_interval: float = 1.0
+@export var go_display_duration: float = 0.6
 
 @export_group("Elimination")
 @export var elimination_height: float = -15.0
@@ -47,6 +53,9 @@ extends Node3D
 @onready var results_title: Label = $CanvasLayer/ResultsUI/PanelContainer/VBoxContainer/TitleLabel
 @onready var results_label: Label = $CanvasLayer/ResultsUI/PanelContainer/VBoxContainer/ResultsLabel
 @onready var continue_label: Label = $CanvasLayer/ResultsUI/PanelContainer/VBoxContainer/ContinueLabel
+@onready var black_screen: ColorRect = $IntroLayer/BlackScreen
+@onready var intro_label: Label = $IntroLayer/IntroLabel
+@onready var countdown_label: Label = $IntroLayer/CountdownLabel
 
 @onready var timer_label: Label = $CanvasLayer/SurvivalHUD/PanelContainer/VBoxContainer/TimerLabel
 @onready var players_label: Label = $CanvasLayer/SurvivalHUD/PanelContainer/VBoxContainer/PlayersLabel
@@ -109,6 +118,19 @@ var last_results_second: int = -1
 # ============================================================
 
 func _ready() -> void:
+	black_screen.color = Color.BLACK
+	black_screen.modulate.a = 1.0
+	black_screen.show()
+
+	intro_label.modulate.a = 0.0
+	intro_label.show()
+
+	countdown_label.text = ""
+	countdown_label.modulate.a = 0.0
+	countdown_label.show()
+
+	survival_hud.hide()
+	
 	original_spectator_transform = spectator_camera.global_transform
 
 	round_time_remaining = round_duration
@@ -131,7 +153,7 @@ func _ready() -> void:
 	for peer_id: int in LobbyManager.get_players():
 		round_players.append(peer_id)
 		SpawnManager.spawn_player(peer_id)
-
+	
 	_broadcast_survival_hud()
 
 	current_rotation_speed = starting_rotation_speed
@@ -141,7 +163,7 @@ func _ready() -> void:
 		maximum_direction_time
 	)
 
-	_start_orange_rotation()
+	_start_intro_sequence()
 
 
 # ============================================================
@@ -150,22 +172,16 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	var local_peer_id: int = multiplayer.get_unique_id()
-
+	
+	if not round_active:
+		_set_local_player_movement_locked(true)
+	else:
+		_set_local_player_movement_locked(false)
+	
 	# Spectator mode takes priority over normal camera handling.
 	if eliminated_players.has(local_peer_id):
 		_update_spectator_camera(delta)
 		return
-
-	#var local_player: CharacterBody3D = players.get_node_or_null(
-		#str(local_peer_id)
-	#) as CharacterBody3D
-#
-	#if local_player == null:
-		#return
-#
-	## Force third person during Orange Survival.
-	#if local_player._first_person:
-		#local_player._set_perspective(false)
 
 
 func _physics_process(delta: float) -> void:
@@ -225,24 +241,6 @@ func _change_rotation_direction() -> void:
 			0.0,
 			sin(angle)
 		).normalized()
-
-
-func _start_orange_rotation() -> void:
-	if not multiplayer.is_server():
-		return
-
-	await get_tree().create_timer(rotation_start_delay).timeout
-
-	if not is_inside_tree():
-		return
-
-	if round_finished:
-		return
-
-	orange_rotating = true
-	round_active = true
-
-	print("ORANGE SURVIVAL: Round started!")
 
 
 # ============================================================
@@ -634,3 +632,172 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("previous_spectator_camera"):
 		_cycle_spectator_target(-1)
 		get_viewport().set_input_as_handled()
+
+
+# ============================================================
+# INTRODUCTION / COUNTDOWN
+# ============================================================
+
+func _start_intro_sequence() -> void:
+	if not multiplayer.is_server():
+		return
+
+	# Start the introduction on every peer.
+	_play_intro.rpc()
+
+	# Wait for the complete introduction.
+	var intro_duration: float = (
+		intro_delay
+		+ intro_fade_in
+		+ intro_hold
+		+ intro_fade_out
+		+ screen_fade_out
+	)
+
+	await get_tree().create_timer(intro_duration).timeout
+
+	if not is_inside_tree() or round_finished:
+		return
+
+	# Server controls the countdown.
+	for number: int in [3, 2, 1]:
+		_show_countdown.rpc(str(number))
+
+		await get_tree().create_timer(countdown_interval).timeout
+
+		if not is_inside_tree() or round_finished:
+			return
+
+	# GO! and rotation start together.
+	_start_round.rpc()
+
+	_broadcast_survival_hud()
+
+	print("ORANGE SURVIVAL: Round started!")
+
+	await get_tree().create_timer(go_display_duration).timeout
+
+	if not is_inside_tree():
+		return
+
+	_hide_countdown.rpc()
+
+
+@rpc("authority", "call_local", "reliable")
+func _play_intro() -> void:
+	_play_intro_animation()
+
+
+func _play_intro_animation() -> void:
+	black_screen.modulate.a = 1.0
+	black_screen.show()
+
+	intro_label.modulate.a = 0.0
+	intro_label.show()
+
+	countdown_label.text = ""
+	countdown_label.modulate.a = 0.0
+
+	# Wait before displaying the message.
+	await get_tree().create_timer(intro_delay).timeout
+
+	if not is_inside_tree():
+		return
+
+	# Fade the text in.
+	var tween_in: Tween = create_tween()
+	tween_in.tween_property(
+		intro_label,
+		"modulate:a",
+		1.0,
+		intro_fade_in
+	)
+
+	await tween_in.finished
+
+	if not is_inside_tree():
+		return
+
+	# Hold the text on screen.
+	await get_tree().create_timer(intro_hold).timeout
+
+	if not is_inside_tree():
+		return
+
+	# Fade the text out.
+	var tween_out: Tween = create_tween()
+	tween_out.tween_property(
+		intro_label,
+		"modulate:a",
+		0.0,
+		intro_fade_out
+	)
+
+	await tween_out.finished
+
+	if not is_inside_tree():
+		return
+
+	# Reveal the level.
+	var screen_tween: Tween = create_tween()
+	screen_tween.tween_property(
+		black_screen,
+		"modulate:a",
+		0.0,
+		screen_fade_out
+	)
+
+	await screen_tween.finished
+
+	if not is_inside_tree():
+		return
+
+	black_screen.hide()
+	intro_label.hide()
+	survival_hud.show()
+
+
+@rpc("authority", "call_local", "reliable")
+func _show_countdown(value: String) -> void:
+	countdown_label.text = value
+	countdown_label.modulate.a = 1.0
+
+
+@rpc("authority", "call_local", "reliable")
+func _hide_countdown() -> void:
+	countdown_label.modulate.a = 0.0
+	countdown_label.text = ""
+
+
+@rpc("authority", "call_local", "reliable")
+func _set_players_movement_locked(locked: bool) -> void:
+	var local_peer_id: int = multiplayer.get_unique_id()
+
+	var player: CharacterBody3D = players.get_node_or_null(
+		str(local_peer_id)
+	) as CharacterBody3D
+
+	if player == null:
+		return
+
+	player.movement_locked = locked
+
+
+@rpc("authority", "call_local", "reliable")
+func _start_round() -> void:
+	round_active = true
+	_show_countdown("GO!")
+
+	if multiplayer.is_server():
+		orange_rotating = true
+
+
+func _set_local_player_movement_locked(locked: bool) -> void:
+	var local_peer_id: int = multiplayer.get_unique_id()
+
+	var player: Node = players.get_node_or_null(str(local_peer_id))
+
+	if player == null:
+		return
+
+	player.movement_locked = locked

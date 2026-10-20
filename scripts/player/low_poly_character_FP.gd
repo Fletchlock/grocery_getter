@@ -126,7 +126,7 @@ var _first_person: bool = true
 var _smoothed_sprint_blend: float = 0.0
 var _smoothed_crouch_blend: float = 0.0
 var camera_fade_tween: Tween = null
-
+var movement_locked: bool = false
 
 # === Held Item Variables ===
 var held_item: ProductData = null
@@ -305,7 +305,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if handle_restock_scanner_input(event):
 		return
 	
-	if event.is_action_pressed("crouch") and attached_cart == null:
+	if (
+		event.is_action_pressed("crouch")
+		and attached_cart == null
+		and not movement_locked
+	):
 		is_crouching = !is_crouching
 		update_crouch_collision()
 		
