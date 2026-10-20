@@ -175,6 +175,9 @@ var _network_holding_restock_box_last_received: bool = false
 var _network_restock_box_product_path_last_received: String = ""
 var _network_restock_box_quantity_last_received: int = 0
 
+#for freeing up WASD for entering product codes at checkout
+var movement_locked: bool = false
+
 # === Player Scene Reference ===
 const PLAYER_SCENE = preload(
 	"res://scenes/player/low_poly_character_FP.tscn"
@@ -205,7 +208,7 @@ func _ready() -> void:
 	)
 	
 	if is_multiplayer_authority():
-		
+		add_to_group("local_player")
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		
 	
@@ -810,12 +813,15 @@ func _physics_process(delta: float) -> void:
 
 	# === 2. Directional Movement ===
 
-	var raw_input: Vector2 = Input.get_vector(
-		"left",
-		"right",
-		"up",
-		"down"
-	)
+	var raw_input: Vector2 = Vector2.ZERO
+
+	if not movement_locked:
+		raw_input = Input.get_vector(
+			"left",
+			"right",
+			"up",
+			"down"
+		)
 
 	# Movement is relative to the player's horizontal facing.
 	var camera_yaw: float
@@ -866,10 +872,14 @@ func _physics_process(delta: float) -> void:
 		else air_acceleration
 	)
 
-	velocity = velocity.move_toward(
-		move_direction * target_move_speed,
-		current_acceleration * delta
-	)
+	if movement_locked:
+		velocity.x = 0.0
+		velocity.z = 0.0
+	else:
+		velocity = velocity.move_toward(
+			move_direction * target_move_speed,
+			current_acceleration * delta
+		)
 
 	velocity.y = y_velocity + _gravity * delta
 
@@ -924,6 +934,7 @@ func _physics_process(delta: float) -> void:
 	var is_starting_jump: bool = (
 		Input.is_action_just_pressed("jump")
 		and not is_crouching
+		and not movement_locked
 		and is_on_floor()
 	)
 
@@ -2121,3 +2132,7 @@ func network_play_footstep(volume: float, pitch: float) -> void:
 		footstep_player.volume_db = volume
 		footstep_player.pitch_scale = pitch
 		footstep_player.play()
+
+
+func set_movement_locked(locked: bool) -> void:
+	movement_locked = locked
