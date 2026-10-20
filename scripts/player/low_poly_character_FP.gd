@@ -144,6 +144,14 @@ var held_restock_scanner_holder: Node3D = null
 var last_restock_wheel_time_usec: int = 0
 var _network_holding_restock_scanner_last_received: bool = false
 
+@export_group("Crouch Held Item")
+@export var crouch_hand_offset: float = -0.35
+@export var crouch_hand_lerp_speed: float = 10.0
+
+var standing_item_target_position: Vector3
+var standing_hand_target_position: Vector3
+var standing_box_hand_target_left_position: Vector3
+var standing_box_hand_target_right_position: Vector3
 
 @onready var held_item_hand_target: Node3D = $Armature/HeldItemHandTarget
 @onready var held_item_target: Node3D = $Armature/HeldItemTarget
@@ -222,7 +230,13 @@ func _ready() -> void:
 	_network_rotation_y_last_received = network_rotation_y
 	_network_velocity_received_time = (Time.get_ticks_usec() / 1000000.0)
 	_network_position_initialized = false
-
+	
+	# Held item and target positions
+	standing_item_target_position = held_item_target.position
+	standing_hand_target_position = held_item_hand_target.position
+	standing_box_hand_target_left_position = held_box_hand_target_left.position
+	standing_box_hand_target_right_position = held_box_hand_target_right.position
+	
 	# --- FIXED MULTIPLAYER SYNCHRONIZER TIMING BUFFER ---
 	# We search through the entire character folder hierarchy dynamically, 
 	# completely preventing "null instance" layout crashes if paths change!
@@ -568,7 +582,8 @@ func _process(delta: float) -> void:
 				blink_timer = randf_range(blink_min_time, blink_max_time)
 	
 	update_idle_look(delta)
-
+	_update_crouch_hand_targets(delta)
+	
 func _physics_process(delta: float) -> void:
 
 	# ============================================================
@@ -1349,6 +1364,52 @@ func update_crouch_collision() -> void:
 		collision_shape.position.y = 1.0
 
 
+func _update_crouch_hand_targets(delta: float) -> void:
+	var offset: Vector3 = Vector3.ZERO
+
+	if network_is_crouching:
+		offset.y = crouch_hand_offset
+
+	var item_target_position: Vector3 = (
+		standing_item_target_position + offset
+	)
+
+	var hand_target_position: Vector3 = (
+		standing_hand_target_position + offset
+	)
+	
+	var left_hand_target_position: Vector3 = (
+		standing_box_hand_target_left_position + offset
+	)
+	
+	var right_hand_target_position: Vector3 = (
+		standing_box_hand_target_right_position + offset
+	)	
+	
+	var weight: float = 1.0 - exp(
+		-crouch_hand_lerp_speed * delta
+	)
+
+	held_item_target.position = held_item_target.position.lerp(
+		item_target_position,
+		weight
+	)
+
+	held_item_hand_target.position = held_item_hand_target.position.lerp(
+		hand_target_position,
+		weight
+	)
+	
+	held_box_hand_target_left.position = held_box_hand_target_left.position.lerp(
+		left_hand_target_position,
+		weight
+	)
+	
+	held_box_hand_target_right.position = held_box_hand_target_right.position.lerp(
+		right_hand_target_position,
+		weight
+	)
+
 func find_nearest_player() -> Node3D:
 	var nearest_player: Node3D = null
 	var nearest_distance: float = look_distance
@@ -1965,6 +2026,9 @@ func _update_network_restock_scanner_visual() -> void:
 		held_restock_scanner_visual = null
 
 	if not network_holding_restock_scanner:
+		if right_hand_ik:
+			right_hand_ik.influence = 0.0
+			right_hand_ik.set_target_node(0, NodePath(""))
 		return
 
 	# Create a visual copy of the scanner.
@@ -1996,9 +2060,16 @@ func _update_network_restock_scanner_visual() -> void:
 
 	# Attach the scanner to the remote player's hand visual.
 	held_item_target.add_child(scanner_visual)
-	scanner_visual.transform = Transform3D.IDENTITY
+
+	# Scanner-specific visual offset.
+	scanner_visual.position = Vector3(0.0, -0.12, -0.02)
+	scanner_visual.rotation = Vector3(deg_to_rad(-12.0), 0.0, deg_to_rad(15.0))
 
 	held_restock_scanner_visual = scanner_visual
+	
+	if right_hand_ik and held_item_target:
+		right_hand_ik.set_target_node(0, held_item_hand_target.get_path())
+		right_hand_ik.influence = 1.0
 
 
 @rpc("any_peer", "call_remote", "reliable")
