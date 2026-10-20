@@ -175,6 +175,9 @@ var _network_holding_restock_box_last_received: bool = false
 var _network_restock_box_product_path_last_received: String = ""
 var _network_restock_box_quantity_last_received: int = 0
 
+#for freeing up WASD for entering product codes at checkout
+var movement_locked: bool = false
+
 # === Player Scene Reference ===
 const PLAYER_SCENE = preload(
 	"res://scenes/player/low_poly_character_FP.tscn"
@@ -205,7 +208,7 @@ func _ready() -> void:
 	)
 	
 	if is_multiplayer_authority():
-		
+		add_to_group("local_player")
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		
 	
@@ -813,7 +816,7 @@ func _physics_process(delta: float) -> void:
 
 
 	# === 2. Directional Movement ===
-		
+
 	var raw_input: Vector2 = Vector2.ZERO
 
 	if not movement_locked:
@@ -2133,3 +2136,7 @@ func network_play_footstep(volume: float, pitch: float) -> void:
 		footstep_player.volume_db = volume
 		footstep_player.pitch_scale = pitch
 		footstep_player.play()
+
+
+func set_movement_locked(locked: bool) -> void:
+	movement_locked = locked

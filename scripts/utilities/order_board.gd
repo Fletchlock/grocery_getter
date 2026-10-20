@@ -122,6 +122,7 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 
 		# Preserve online-order checkout when the player owns an order.
 		if OrderManager.get_player_order(player_peer_id) != null:
+			_show_produce_preview(player)
 			return "[E] Checkout " + player.held_item.display_name
 
 		# Otherwise, allow scanning for the active AI shopper.
@@ -135,7 +136,7 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 				return "[E] Scan " + player.held_item.display_name
 
 			if checkout.can_scan_ai_product(player.held_item):
-				_update_barcode_hud(player.held_item)
+				_show_produce_preview(player)
 				return "[E] Scan " + player.held_item.display_name
 
 		return ""
@@ -204,7 +205,6 @@ func _submit_product(player: CharacterBody3D) -> void:
 		return
 
 	_submit_product_to_checkout(player, player.held_item)
-
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -301,9 +301,11 @@ func _submit_product_to_checkout(
 	if not submitted:
 		return false
 
-	var day_time_hud = get_tree().get_first_node_in_group("day_time_hud")
-	if day_time_hud != null:
-		day_time_hud._update_barcode(product.product_code)
+	if product.product_category == "produce":
+		if player_peer_id == multiplayer.get_unique_id():
+			_close_barcode_hud()
+		else:
+			_close_barcode_hud.rpc_id(player_peer_id)
 
 	if player_peer_id == multiplayer.get_unique_id():
 		player._clear_held_item()
@@ -315,6 +317,23 @@ func _submit_product_to_checkout(
 	return true
 
 
+@rpc("authority", "call_remote", "reliable")
+func _show_barcode_hud(product_code: String) -> void:
+	var hud := get_tree().get_first_node_in_group("day_time_hud")
+	if hud == null:
+		push_warning("No DayTimeHud found in the day_time_hud group.")
+		return
+
+	hud.show_barcode_hud(product_code)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _close_barcode_hud() -> void:
+	var hud := get_tree().get_first_node_in_group("day_time_hud")
+	if hud != null:
+		hud.close_barcode_hud()
+
+
 func _update_barcode_hud(product: ProductData) -> void:
 	var day_time_hud = get_tree().get_first_node_in_group("day_time_hud")
 	if day_time_hud == null:
@@ -324,6 +343,37 @@ func _update_barcode_hud(product: ProductData) -> void:
 		day_time_hud._update_barcode(product.product_code)
 	else:
 		day_time_hud._update_barcode("")
+
+
+func _show_produce_preview(player: CharacterBody3D) -> void:
+	if player.held_item == null:
+		return
+
+	if player.held_item.product_category != "produce":
+		return
+
+	var player_peer_id := player.get_multiplayer_authority()
+	_show_barcode_hud_for_player(
+		player_peer_id,
+		player.held_item.product_code
+	)
+
+
+func _show_barcode_hud_for_player(
+	player_peer_id: int,
+	product_code: String
+) -> void:
+	if player_peer_id == multiplayer.get_unique_id():
+		_show_barcode_hud(product_code)
+	else:
+		_show_barcode_hud.rpc_id(player_peer_id, product_code)
+
+
+func _close_barcode_hud_for_player(player_peer_id: int) -> void:
+	if player_peer_id == multiplayer.get_unique_id():
+		_close_barcode_hud()
+	else:
+		_close_barcode_hud.rpc_id(player_peer_id)
 
 
 @rpc("authority", "call_local", "reliable")
