@@ -7,15 +7,15 @@ extends Node3D
 # ============================================================
 
 @export_group("Orange Rotation")
-@export var starting_rotation_speed: float = 0.20
-@export var maximum_rotation_speed: float = 0.80
-@export var speed_increase: float = 0.08
+@export var starting_rotation_speed: float = 0.30
+@export var maximum_rotation_speed: float = 0.90
+@export var speed_increase: float = 0.10
 @export var speed_increase_interval: float = 10.0
 
 @export_group("Direction Changes")
-@export var minimum_direction_time: float = 2.0
-@export var maximum_direction_time: float = 5.0
-@export var reverse_chance: float = 0.40
+@export var minimum_direction_time: float = 2.5
+@export var maximum_direction_time: float = 4.0
+@export var reverse_chance: float = 0.50
 
 @export_group("Game Start")
 @export var rotation_start_delay: float = 3.0
@@ -156,16 +156,16 @@ func _process(delta: float) -> void:
 		_update_spectator_camera(delta)
 		return
 
-	var local_player: CharacterBody3D = players.get_node_or_null(
-		str(local_peer_id)
-	) as CharacterBody3D
-
-	if local_player == null:
-		return
-
-	# Force third person during Orange Survival.
-	if local_player._first_person:
-		local_player._set_perspective(false)
+	#var local_player: CharacterBody3D = players.get_node_or_null(
+		#str(local_peer_id)
+	#) as CharacterBody3D
+#
+	#if local_player == null:
+		#return
+#
+	## Force third person during Orange Survival.
+	#if local_player._first_person:
+		#local_player._set_perspective(false)
 
 
 func _physics_process(delta: float) -> void:

@@ -222,8 +222,15 @@ func _ready() -> void:
 	_refresh_character_selection()
 
 	if is_multiplayer_authority():
-		_set_perspective(true
-	)
+		var orange_survival: bool = (
+			get_parent().get_parent().name == "OrangeSurvival"
+		)
+				
+		_set_perspective(not orange_survival)
+		
+		if orange_survival:
+			_target_zoom = max_zoom
+			_spring_arm.spring_length = max_zoom
 
 	_network_position_last_received = network_position
 	_network_velocity_last_received = network_velocity
@@ -310,16 +317,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				interact_raycast_3d.interact()
 
 		return
-			
-	#var is_camera_motion := (
-		#event is InputEventMouseMotion
-		#and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
-	#)
-#
-	#if is_camera_motion:
-		#_camera_input_direction = (
-			#event.screen_relative * mouse_sensitivity
-		#)
+
 		# Mouse wheel zoom.
 	if event is InputEventMouseButton and event.pressed and not _first_person:
 
