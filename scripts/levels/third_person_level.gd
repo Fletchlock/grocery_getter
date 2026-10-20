@@ -1,14 +1,20 @@
 extends Node3D
 
-@onready var player_spawn_point: Marker3D = $PlayerSpawnPoint
 
 
 func _ready() -> void:
+	# Collect spawn points in level
+	var spawn_points: Array[Marker3D] = []
+	
+	for child: Node in $PlayerSpawnPoints.get_children():
+		if child is Marker3D:
+			spawn_points.append(child)
+	
 	# Pass spawn information to the SpawnManager
 	SpawnManager.setup_level(
 		$Players,
 		$MultiplayerSpawner,
-		[player_spawn_point]
+		spawn_points
 	)
 
 	if multiplayer.is_server() and NetworkManager.peer != null:
