@@ -323,7 +323,7 @@ func _spawn_random_obstacle() -> void:
 	product_spawner.spawn({
 		"position": spawn_position,
 		"product_path": selected_product.resource_path,
-		"height": obstacle_scale,
+		"scale": obstacle_scale,
 		"rotation_y": randf_range(0.0, TAU)
 	})
 
