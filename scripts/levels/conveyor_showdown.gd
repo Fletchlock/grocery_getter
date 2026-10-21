@@ -461,8 +461,42 @@ func _finish_player(peer_id: int) -> void:
 		"%.2f" % finish_time,
 		" seconds"
 	)
+	if finish_order.size() >= race_players.size():
+		_finish_race()
 
 
+func _finish_race() -> void:
+	if not multiplayer.is_server():
+		return
+
+	if race_finished:
+		return
+
+	race_finished = true
+	race_active = false
+
+	_sync_race_finished.rpc(
+		finish_order,
+		finished_players
+	)
+
+
+@rpc("authority", "call_local", "reliable")
+func _sync_race_finished(
+	positions: Array[int],
+	times: Dictionary
+) -> void:
+	race_finished = true
+	race_active = false
+
+	finish_order = positions.duplicate()
+	finished_players = times.duplicate(true)
+
+	print("CONVEYOR SHOWDOWN: Race complete!")
+	print("Finishing order: ", finish_order)
+	print("Finish times: ", finished_players)
+	
+	
 # ============================================================
 # MULTIPLAYER TRANSITION
 # ============================================================
