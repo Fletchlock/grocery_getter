@@ -29,6 +29,7 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 @export var obstacle_products: Array[ProductData] = []
 @export var obstacle_scale: float = 12.0
 @export var obstacle_spawn_half_width: float = 8.0
+@export var rolling_obstacle_products: Array[ProductData] = []
 
 # ============================================================
 # NODE REFERENCES
@@ -315,7 +316,7 @@ func _spawn_random_obstacle() -> void:
 
 	# The server chooses which product everyone will see.
 	var selected_product: ProductData = valid_products.pick_random()
-
+	var should_roll: bool = rolling_obstacle_products.has(selected_product)
 	var spawn_position: Vector3 = product_spawn_point.global_position
 	var rotation_y: float = randf_range(0.0, TAU)
 
@@ -343,7 +344,8 @@ func _spawn_random_obstacle() -> void:
 		"position": spawn_position,
 		"product_path": selected_product.resource_path,
 		"scale": obstacle_scale,
-		"rotation_y": rotation_y
+		"rotation_y": rotation_y,
+		"rolling": should_roll
 	})
 
 
@@ -355,7 +357,8 @@ func _spawn_conveyor_obstacle(data: Variant) -> Node:
 	var product_path: String = spawn_data["product_path"]
 	var scale_multiplier: float = spawn_data["scale"]
 	var rotation_y: float = spawn_data["rotation_y"]
-
+	var should_roll: bool = spawn_data["rolling"]
+	
 	var obstacle: ConveyorObstacle = (
 		CONVEYOR_OBSTACLE_SCENE.instantiate() as ConveyorObstacle
 	)
@@ -375,6 +378,7 @@ func _spawn_conveyor_obstacle(data: Variant) -> Node:
 	obstacle.rotation.y = rotation_y
 	obstacle.conveyor_belt = conveyor_belt
 	obstacle.configure_product(product, scale_multiplier)
+	obstacle.is_rolling = should_roll
 
 	return obstacle
 
