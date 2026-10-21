@@ -10,6 +10,11 @@
 [ext_resource type="Resource" uid="uid://cusqf2gc2jl7h" path="res://resources/products/sugar.tres" id="5_1vc2f"]
 [ext_resource type="Resource" uid="uid://cg1ckgnjrikqh" path="res://resources/products/bread.tres" id="6_hrf0q"]
 [ext_resource type="Resource" uid="uid://bcyf3t765kni8" path="res://resources/products/pop_prof_paprika_2l.tres" id="7_tkfah"]
+[ext_resource type="Resource" uid="uid://bxag1kfs6pnwd" path="res://resources/products/grapefruit.tres" id="8_xsx0w"]
+[ext_resource type="Resource" uid="uid://qj7cygpjgf6g" path="res://resources/products/orange.tres" id="9_4327s"]
+[ext_resource type="Resource" uid="uid://c6wdbigdc2g1p" path="res://resources/products/tomato.tres" id="10_xgchh"]
+[ext_resource type="Resource" uid="uid://c117r4ojbg6ym" path="res://resources/products/lemon.tres" id="11_e6ilc"]
+[ext_resource type="Resource" uid="uid://d0ysrbe7f2rwf" path="res://resources/products/mandarin.tres" id="12_v85xt"]
 
 [sub_resource type="Environment" id="Environment_45b30"]
 background_mode = 1
@@ -37,6 +42,7 @@ base_font = ExtResource("5_1shib")
 [node name="ConveyorShowdown" type="Node3D" unique_id=411679754]
 script = ExtResource("1_iiidm")
 obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("2_6vj14"), ExtResource("4_tkfah"), ExtResource("5_1vc2f"), ExtResource("6_hrf0q"), ExtResource("7_tkfah")])
+rolling_obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("8_xsx0w"), ExtResource("9_4327s"), ExtResource("10_xgchh"), ExtResource("11_e6ilc"), ExtResource("12_v85xt")])
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=321550915]
 environment = SubResource("Environment_45b30")

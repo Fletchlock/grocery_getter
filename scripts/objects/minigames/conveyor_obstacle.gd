@@ -6,6 +6,9 @@ class_name ConveyorObstacle
 @export var movement_enabled: bool = true
 
 var conveyor_belt: ConveyorBelt = null
+var is_rolling: bool = false
+
+@export var rolling_speed: float = 3.0
 
 
 func configure_product(product: ProductData, scale_multiplier: float = 10.0) -> void:
@@ -40,6 +43,16 @@ func configure_product(product: ProductData, scale_multiplier: float = 10.0) -> 
 
 	collision.shape = box_shape
 	collision.position = Vector3(0.0, scaled_size.y * 0.5, 0.0)
+
+
+func _process(delta: float) -> void:
+	if not is_rolling:
+		return
+
+	if not movement_enabled:
+		return
+
+	$MeshInstance3D.rotate_x(rolling_speed * delta)
 
 
 func _physics_process(delta: float) -> void:
