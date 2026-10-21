@@ -129,6 +129,9 @@ var camera_fade_tween: Tween = null
 var movement_locked: bool = false
 var block_movement_until_keys_released := false
 
+# Conveyor Belt Testing
+var conveyor_velocity: Vector3 = Vector3.ZERO
+
 # === Held Item Variables ===
 var held_item: ProductData = null
 var held_item_visual: MeshInstance3D = null
@@ -994,9 +997,27 @@ func _physics_process(delta: float) -> void:
 
 
 	# === 8. Movement ===
+	
+	# Conveyor Belt Stuff - Just move_and_slide() is original until end
+	var belt: ConveyorBelt = get_meta(
+		"conveyor_belt", null
+	) as ConveyorBelt
+
+	conveyor_velocity = Vector3.ZERO
+
+	if belt != null and is_on_floor() and not is_starting_jump:
+		conveyor_velocity = belt.get_belt_velocity()
+
+	velocity.x += conveyor_velocity.x
+	velocity.z += conveyor_velocity.z
 
 	move_and_slide()
 
+	velocity.x -= conveyor_velocity.x
+	velocity.z -= conveyor_velocity.z
+	# End of conveyor belt stuff
+	
+	
 	network_position = global_position
 	network_velocity = velocity
 
