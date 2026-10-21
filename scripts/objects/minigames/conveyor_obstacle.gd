@@ -16,7 +16,7 @@ func configure_product(product: ProductData, scale_multiplier: float = 10.0) -> 
 		push_warning("CONVEYOR: Product has no mesh.")
 		return
 
-	var mesh_instance: MeshInstance3D = $MeshInstance3D
+	var mesh_instance: MeshInstance3D = $RollingPivot/MeshInstance3D
 	var collision: CollisionShape3D = $CollisionShape3D
 
 	var mesh: Mesh = product.product_mesh
@@ -36,7 +36,11 @@ func configure_product(product: ProductData, scale_multiplier: float = 10.0) -> 
 		-bounds.position.y * scale_factor,
 		-bounds.get_center().z * scale_factor
 	)
-
+	
+	if is_rolling:
+		$RollingPivot.position.y = scaled_size.y * 0.5
+		mesh_instance.position.y -= scaled_size.y * 0.5
+		
 	# Each obstacle needs its own collision shape.
 	var box_shape: BoxShape3D = BoxShape3D.new()
 	box_shape.size = scaled_size
@@ -52,7 +56,21 @@ func _process(delta: float) -> void:
 	if not movement_enabled:
 		return
 
-	$MeshInstance3D.rotate_x(rolling_speed * delta)
+	if not is_instance_valid(conveyor_belt):
+		return
+
+	var belt_direction: Vector3 = conveyor_belt.get_belt_velocity().normalized()
+
+	if belt_direction.length_squared() < 0.001:
+		return
+
+	var world_roll_axis: Vector3 = Vector3.UP.cross(belt_direction).normalized()
+	var local_roll_axis: Vector3 = global_basis.inverse() * world_roll_axis
+
+	$RollingPivot.rotate_object_local(
+		local_roll_axis.normalized(),
+		rolling_speed * delta
+	)
 
 
 func _physics_process(delta: float) -> void:
