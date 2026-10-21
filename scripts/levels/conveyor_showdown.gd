@@ -31,6 +31,11 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 @export var obstacle_spawn_half_width: float = 8.0
 @export var rolling_obstacle_products: Array[ProductData] = []
 
+
+@export_group("Results")
+@export var results_duration: float = 10.0
+
+
 # ============================================================
 # NODE REFERENCES
 # ============================================================
@@ -39,6 +44,10 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 @onready var multiplayer_spawner: MultiplayerSpawner = $MultiplayerSpawner
 
 @onready var survival_hud: Control = $CanvasLayer/SurvivalHUD
+@onready var results_ui: Control = $CanvasLayer/ResultsUI
+@onready var results_title: Label = $CanvasLayer/ResultsUI/PanelContainer/VBoxContainer/TitleLabel
+@onready var results_label: Label = $CanvasLayer/ResultsUI/PanelContainer/VBoxContainer/ResultsLabel
+@onready var continue_label: Label = $CanvasLayer/ResultsUI/PanelContainer/VBoxContainer/ContinueLabel
 @onready var black_screen: ColorRect = $IntroLayer/BlackScreen
 @onready var intro_label: Label = $IntroLayer/IntroLabel
 @onready var countdown_label: Label = $IntroLayer/CountdownLabel
@@ -64,12 +73,15 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 
 var race_active: bool = false
 var race_finished: bool = false
-
+var results_time_remaining: float = 0.0
+var results_countdown_active: bool = false
+var last_results_second: int = -1
 var race_players: Array[int] = []
-
 var race_elapsed_time: float = 0.0
 var finished_players: Dictionary = {}
 var finish_order: Array[int] = []
+
+
 
 var obstacle_spawn_timer: float = 0.0
 
@@ -91,7 +103,8 @@ func _ready() -> void:
 	countdown_label.show()
 
 	survival_hud.hide()
-
+	results_ui.hide()
+	
 	SpawnManager.setup_level(
 		players,
 		multiplayer_spawner,
@@ -130,10 +143,12 @@ func _process(_delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	if not multiplayer.is_server():
 		return
+	
+	_update_results_countdown(delta)
 
 	if not race_active or race_finished:
 		return
-
+		
 	race_elapsed_time += delta
 
 	# Spawn obstacles at randomized intervals.
@@ -479,6 +494,12 @@ func _finish_race() -> void:
 		finish_order,
 		finished_players
 	)
+	
+	results_time_remaining = results_duration
+	results_countdown_active = true
+	last_results_second = -1
+
+	_broadcast_results_countdown()
 
 
 @rpc("authority", "call_local", "reliable")
@@ -492,10 +513,85 @@ func _sync_race_finished(
 	finish_order = positions.duplicate()
 	finished_players = times.duplicate(true)
 
-	print("CONVEYOR SHOWDOWN: Race complete!")
-	print("Finishing order: ", finish_order)
-	print("Finish times: ", finished_players)
-	
+	_show_race_results()
+
+
+func _show_race_results() -> void:
+	survival_hud.hide()
+	results_ui.show()
+
+	var local_peer_id: int = multiplayer.get_unique_id()
+
+	if not finish_order.is_empty() and finish_order[0] == local_peer_id:
+		results_title.text = "YOU WIN!"
+	else:
+		results_title.text = "RACE COMPLETE!"
+
+	var result_text: String = "FINAL RESULTS\n\n"
+
+	for i: int in finish_order.size():
+		var peer_id: int = finish_order[i]
+		var finish_time: float = float(finished_players[peer_id])
+
+		var minutes: int = floori(finish_time / 60.0)
+		var seconds: float = fposmod(finish_time, 60.0)
+
+		result_text += "%d. Player %s - %02d:%05.2f\n" % [
+			i + 1,
+			str(peer_id),
+			minutes,
+			seconds
+		]
+
+	results_label.text = result_text
+	continue_label.text = "Waiting to continue..."
+
+
+func _update_results_countdown(delta: float) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if not results_countdown_active:
+		return
+
+	results_time_remaining = maxf(
+		results_time_remaining - delta,
+		0.0
+	)
+
+	var current_second: int = ceili(results_time_remaining)
+
+	if current_second != last_results_second:
+		last_results_second = current_second
+		_broadcast_results_countdown()
+
+	if results_time_remaining <= 0.0:
+		results_countdown_active = false
+		_on_results_countdown_finished()
+
+
+func _broadcast_results_countdown() -> void:
+	if not multiplayer.is_server():
+		return
+
+	_sync_results_countdown.rpc(
+		ceili(results_time_remaining)
+	)
+
+
+@rpc("authority", "call_local", "reliable")
+func _sync_results_countdown(seconds: int) -> void:
+	continue_label.text = "Continuing in %d..." % seconds
+
+
+func _on_results_countdown_finished() -> void:
+	if not multiplayer.is_server():
+		return
+
+	print("CONVEYOR SHOWDOWN: Returning to grocery store.")
+
+	TransitionManager.return_to_grocery_store()
+
 	
 # ============================================================
 # MULTIPLAYER TRANSITION
