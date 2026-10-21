@@ -35,6 +35,10 @@ extends Node3D
 	$Environment/StartingArea/PlayerSpawnPoints/SpawnPoint4
 ]
 
+@onready var finish_line: Area3D = $Environment/FinishArea/FinishLine
+
+@onready var conveyor_belt: ConveyorBelt = $Environment/ConveyorBelt
+@onready var test_obstacle: ConveyorObstacle = $Products/ConveyorObstacle
 
 # ============================================================
 # RACE STATE
@@ -45,6 +49,9 @@ var race_finished: bool = false
 
 var race_players: Array[int] = []
 
+var race_elapsed_time: float = 0.0
+var finished_players: Dictionary = {}
+var finish_order: Array[int] = []
 
 # ============================================================
 # READY
@@ -76,10 +83,28 @@ func _ready() -> void:
 		TransitionManager.all_peers_loaded.connect(
 			_on_all_peers_loaded
 		)
+	
+	test_obstacle.conveyor_belt = conveyor_belt
+	
+	var obstacle: Node3D = get_node_or_null(
+	"Products/ConveyorObstacle"
+	) as Node3D
 
+	print(
+		"CONVEYOR OBSTACLE CHECK | Peer: ",
+		multiplayer.get_unique_id(),
+		" | Exists: ",
+		obstacle != null,
+		" | Position: ",
+		obstacle.global_position if obstacle != null else Vector3.ZERO
+	)
+	
 	if not multiplayer.is_server():
 		return
-
+	
+	if multiplayer.is_server():
+		finish_line.body_entered.connect(_on_finish_line_body_entered)
+	
 	for peer_id: int in LobbyManager.get_players():
 		race_players.append(peer_id)
 		SpawnManager.spawn_player(peer_id)
@@ -91,6 +116,16 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	_set_local_player_movement_locked(not race_active)
+
+
+func _physics_process(delta: float) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if not race_active or race_finished:
+		return
+
+	race_elapsed_time += delta
 
 
 # ============================================================
@@ -238,6 +273,53 @@ func _set_local_player_movement_locked(locked: bool) -> void:
 		return
 
 	player.movement_locked = locked
+
+
+# ============================================================
+# FINISH LINE
+# ============================================================
+
+func _on_finish_line_body_entered(body: Node3D) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if not race_active or race_finished:
+		return
+
+	if not body is CharacterBody3D:
+		return
+
+	if body.get_parent() != players:
+		return
+
+	var peer_id: int = body.get_multiplayer_authority()
+
+	if not race_players.has(peer_id):
+		return
+
+	if finished_players.has(peer_id):
+		return
+
+	_finish_player(peer_id)
+
+
+func _finish_player(peer_id: int) -> void:
+	var finish_time: float = race_elapsed_time
+
+	finished_players[peer_id] = finish_time
+	finish_order.append(peer_id)
+
+	var position: int = finish_order.size()
+
+	print(
+		"CONVEYOR SHOWDOWN: Player ",
+		peer_id,
+		" finished in position ",
+		position,
+		" with time ",
+		"%.2f" % finish_time,
+		" seconds"
+	)
 
 
 # ============================================================

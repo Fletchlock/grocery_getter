@@ -998,14 +998,19 @@ func _physics_process(delta: float) -> void:
 
 	# === 8. Movement ===
 	
-	# Conveyor Belt Stuff - Just move_and_slide() is original until end
-	var belt: ConveyorBelt = get_meta(
-		"conveyor_belt", null
-	) as ConveyorBelt
+	
+# ============================================================
+# CONVEYOR BELT MOVEMENT
+# ============================================================
+
+	var belt: ConveyorBelt = null
+
+	if has_meta("conveyor_belt"):
+		belt = get_meta("conveyor_belt") as ConveyorBelt
 
 	conveyor_velocity = Vector3.ZERO
 
-	if belt != null and is_on_floor() and not is_starting_jump:
+	if is_instance_valid(belt) and is_on_floor() and not is_starting_jump:
 		conveyor_velocity = belt.get_belt_velocity()
 
 	velocity.x += conveyor_velocity.x
@@ -1015,7 +1020,7 @@ func _physics_process(delta: float) -> void:
 
 	velocity.x -= conveyor_velocity.x
 	velocity.z -= conveyor_velocity.z
-	# End of conveyor belt stuff
+
 	
 	
 	network_position = global_position
