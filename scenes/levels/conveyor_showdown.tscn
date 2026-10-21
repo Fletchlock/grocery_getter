@@ -5,7 +5,6 @@
 [ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="2_1shib"]
 [ext_resource type="Resource" uid="uid://dpcxghxgl7ms" path="res://resources/products/flour.tres" id="2_6vj14"]
 [ext_resource type="ArrayMesh" uid="uid://bmk1qdu856hbr" path="res://assets/models/minigames/conveyor_start_finish_area_Cube_024.res" id="2_xr4oa"]
-[ext_resource type="Resource" uid="uid://dklerfmqk4jk0" path="res://resources/products/cereal.tres" id="4_tkfah"]
 [ext_resource type="FontFile" uid="uid://br8fqpsrsbuld" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-BoldItalic.ttf" id="5_1shib"]
 [ext_resource type="Resource" uid="uid://cusqf2gc2jl7h" path="res://resources/products/sugar.tres" id="5_1vc2f"]
 [ext_resource type="Resource" uid="uid://cg1ckgnjrikqh" path="res://resources/products/bread.tres" id="6_hrf0q"]
@@ -13,6 +12,7 @@
 [ext_resource type="Resource" uid="uid://bxag1kfs6pnwd" path="res://resources/products/grapefruit.tres" id="8_xsx0w"]
 [ext_resource type="Resource" uid="uid://qj7cygpjgf6g" path="res://resources/products/orange.tres" id="9_4327s"]
 [ext_resource type="Resource" uid="uid://c6wdbigdc2g1p" path="res://resources/products/tomato.tres" id="10_xgchh"]
+[ext_resource type="Resource" uid="uid://bhmjxb87ib43y" path="res://resources/products/watermelon.tres" id="10_xsx0w"]
 [ext_resource type="Resource" uid="uid://c117r4ojbg6ym" path="res://resources/products/lemon.tres" id="11_e6ilc"]
 [ext_resource type="Resource" uid="uid://d0ysrbe7f2rwf" path="res://resources/products/mandarin.tres" id="12_v85xt"]
 
@@ -42,9 +42,9 @@ base_font = ExtResource("5_1shib")
 [node name="ConveyorShowdown" type="Node3D" unique_id=411679754]
 script = ExtResource("1_iiidm")
 maximum_active_obstacles = 15
-obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("2_6vj14"), ExtResource("4_tkfah"), ExtResource("5_1vc2f"), ExtResource("6_hrf0q"), ExtResource("7_tkfah"), ExtResource("8_xsx0w"), ExtResource("9_4327s"), ExtResource("10_xgchh")])
+obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("2_6vj14"), ExtResource("5_1vc2f"), ExtResource("6_hrf0q"), ExtResource("7_tkfah"), ExtResource("8_xsx0w"), ExtResource("9_4327s"), ExtResource("10_xgchh"), ExtResource("10_xsx0w")])
 obstacle_scale = 15.0
-rolling_obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("8_xsx0w"), ExtResource("9_4327s"), ExtResource("10_xgchh"), ExtResource("11_e6ilc"), ExtResource("12_v85xt")])
+rolling_obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("8_xsx0w"), ExtResource("9_4327s"), ExtResource("10_xgchh"), ExtResource("11_e6ilc"), ExtResource("12_v85xt"), ExtResource("10_xsx0w")])
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=321550915]
 environment = SubResource("Environment_45b30")

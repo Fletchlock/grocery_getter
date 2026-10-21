@@ -63,6 +63,10 @@ var mouse_smoothing: float = 25.0
 @export var jump_strength : float= 12.0 ## Initial upward force when jumping.
 @export var air_acceleration : float= 12.0 ## Movement acceleration while airborne.
 
+var knockback_velocity: Vector3 = Vector3.ZERO
+
+@export_group("Knockback")
+@export var knockback_decay: float = 8.0
 
 @export_group("Network Replication")
 @export var network_position := Vector3.ZERO
@@ -1013,13 +1017,18 @@ func _physics_process(delta: float) -> void:
 	if is_instance_valid(belt) and is_on_floor() and not is_starting_jump:
 		conveyor_velocity = belt.get_belt_velocity()
 
-	velocity.x += conveyor_velocity.x
-	velocity.z += conveyor_velocity.z
+	knockback_velocity = knockback_velocity.move_toward(
+		Vector3.ZERO,
+		knockback_decay * delta
+	)
+
+	velocity += conveyor_velocity
+	velocity += knockback_velocity
 
 	move_and_slide()
 
-	velocity.x -= conveyor_velocity.x
-	velocity.z -= conveyor_velocity.z
+	velocity -= conveyor_velocity
+	velocity -= knockback_velocity
 
 	
 	
@@ -2183,3 +2192,21 @@ func set_movement_locked(locked: bool) -> void:
 		velocity.x = 0.0
 		velocity.z = 0.0
 		block_movement_until_keys_released = true
+
+# Knockback during minigames
+func receive_conveyor_knockback(impulse: Vector3) -> void:
+	if not is_multiplayer_authority():
+		return
+
+	knockback_velocity += impulse
+
+
+@rpc("any_peer", "call_local", "reliable")
+func apply_conveyor_knockback(impulse: Vector3) -> void:
+	if not is_multiplayer_authority():
+		return
+
+	if multiplayer.get_remote_sender_id() != 1:
+		return
+
+	knockback_velocity += impulse

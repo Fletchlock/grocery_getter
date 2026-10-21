@@ -20,6 +20,15 @@ var is_rolling: bool = false
 var bounce_timer: float = 0.0
 var bounce_offset: float = 0.0
 
+@export_group("Player Knockback")
+@export var knockback_strength: float = 12.0
+@export var knockback_upward: float = 5.0
+@export var knockback_cooldown: float = 0.8
+
+var _last_hit_times: Dictionary = {}
+
+
+
 func configure_product(product: ProductData, scale_multiplier: float = 10.0) -> void:
 	if product == null or product.product_mesh == null:
 		push_warning("CONVEYOR: Product has no mesh.")
@@ -120,3 +129,57 @@ func _physics_process(delta: float) -> void:
 		bounce_offset = new_offset
 
 	global_position = next_position
+	_check_player_collisions()
+
+func _check_player_collisions() -> void:
+	if not multiplayer.is_server():
+		return
+
+	if not is_rolling:
+		return
+
+	var space_state: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
+
+	var query: PhysicsShapeQueryParameters3D = PhysicsShapeQueryParameters3D.new()
+	query.shape = $CollisionShape3D.shape
+	query.transform = $CollisionShape3D.global_transform
+	query.collision_mask = collision_mask
+	query.exclude = [get_rid()]
+
+	var results: Array[Dictionary] = space_state.intersect_shape(query, 16)
+	var now: float = Time.get_ticks_msec() / 1000.0
+
+	for result: Dictionary in results:
+		var player: CharacterBody3D = result["collider"] as CharacterBody3D
+
+		if player == null:
+			continue
+
+		if not player.has_method("receive_conveyor_knockback"):
+			continue
+
+		var peer_id: int = player.get_multiplayer_authority()
+		var last_hit: float = _last_hit_times.get(peer_id, -100.0)
+
+		if now - last_hit < knockback_cooldown:
+			continue
+
+		_last_hit_times[peer_id] = now
+
+		var direction: Vector3 = player.global_position - global_position
+		direction.y = 0.0
+
+		if direction.length_squared() < 0.001:
+			direction = conveyor_belt.get_belt_velocity()
+
+		direction = direction.normalized()
+
+		var impulse: Vector3 = (
+			direction * knockback_strength
+			+ Vector3.UP * knockback_upward
+		)
+
+		if peer_id == 1:
+			player.receive_conveyor_knockback(impulse)
+		else:
+			player.apply_conveyor_knockback.rpc_id(peer_id, impulse)
