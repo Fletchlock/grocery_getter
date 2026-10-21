@@ -8,7 +8,7 @@ class_name ConveyorObstacle
 var conveyor_belt: ConveyorBelt = null
 
 
-func configure_product(product: ProductData, target_height: float = 2.5) -> void:
+func configure_product(product: ProductData, scale_multiplier: float = 10.0) -> void:
 	if product == null or product.product_mesh == null:
 		push_warning("CONVEYOR: Product has no mesh.")
 		return
@@ -22,7 +22,7 @@ func configure_product(product: ProductData, target_height: float = 2.5) -> void
 	if bounds.size.y <= 0.0:
 		return
 
-	var scale_factor: float = target_height / bounds.size.y
+	var scale_factor: float = scale_multiplier
 	var scaled_size: Vector3 = bounds.size * scale_factor
 
 	# Use the existing mesh, but scale and center it.

@@ -27,7 +27,7 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 @export var maximum_active_obstacles: int = 12
 @export var obstacle_cleanup_z: float = 65.0
 @export var obstacle_products: Array[ProductData] = []
-@export var obstacle_height: float = 4.0
+@export var obstacle_scale: float = 10.0
 
 # ============================================================
 # NODE REFERENCES
@@ -323,7 +323,7 @@ func _spawn_random_obstacle() -> void:
 	product_spawner.spawn({
 		"position": spawn_position,
 		"product_path": selected_product.resource_path,
-		"height": obstacle_height,
+		"height": obstacle_scale,
 		"rotation_y": randf_range(0.0, TAU)
 	})
 
@@ -334,7 +334,7 @@ func _spawn_conveyor_obstacle(data: Variant) -> Node:
 	var spawn_data: Dictionary = data
 	var spawn_position: Vector3 = spawn_data["position"]
 	var product_path: String = spawn_data["product_path"]
-	var target_height: float = spawn_data["height"]
+	var scale_multiplier: float = spawn_data["scale"]
 	var rotation_y: float = spawn_data["rotation_y"]
 
 	var obstacle: ConveyorObstacle = (
@@ -355,7 +355,7 @@ func _spawn_conveyor_obstacle(data: Variant) -> Node:
 	obstacle.position = products.to_local(spawn_position)
 	obstacle.rotation.y = rotation_y
 	obstacle.conveyor_belt = conveyor_belt
-	obstacle.configure_product(product, target_height)
+	obstacle.configure_product(product, scale_multiplier)
 
 	return obstacle
 
