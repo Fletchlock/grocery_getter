@@ -18,4 +18,4 @@ func _physics_process(delta: float) -> void:
 	if not is_instance_valid(conveyor_belt):
 		return
 
-	global_position += conveyor_belt.get_belt_velocity() * delta * 2
+	global_position += conveyor_belt.get_belt_velocity() * delta
