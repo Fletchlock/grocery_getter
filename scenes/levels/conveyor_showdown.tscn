@@ -1,0 +1,265 @@
+[gd_scene format=3 uid="uid://dku3h30o3uhn4"]
+
+[ext_resource type="PackedScene" uid="uid://b1x1g7c20n23o" path="res://scenes/objects/misc/ConveyorBelt.tscn" id="1_yknvy"]
+[ext_resource type="ArrayMesh" uid="uid://fl80tktd2ove" path="res://assets/models/minigames/conveyor_start_finish_area_Cube_024.res" id="2_xr4oa"]
+[ext_resource type="FontFile" uid="uid://br8fqpsrsbuld" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-BoldItalic.ttf" id="5_1shib"]
+
+[sub_resource type="Environment" id="Environment_45b30"]
+background_mode = 1
+background_color = Color(0, 0.106943674, 0.20267391, 1)
+ambient_light_source = 2
+ambient_light_color = Color(1, 0.7993876, 0.625741, 1)
+ambient_light_energy = 1.2
+glow_enabled = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
+size = Vector3(8.26, 0.5, 8.26)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hd853"]
+size = Vector3(8.26, 0.5, 8.26)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7ajv0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hd853"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="FontVariation" id="FontVariation_007gi"]
+base_font = ExtResource("5_1shib")
+
+[node name="ConveyorShowdown" type="Node3D" unique_id=411679754]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=321550915]
+environment = SubResource("Environment_45b30")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1099457180]
+transform = Transform3D(0.56118006, -0.71877277, -0.41041768, 0.1662412, -0.38787246, 0.9065974, -0.8108272, -0.5769927, -0.098176755, 0, 0, 0)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="Players" type="Node3D" parent="." unique_id=950978207]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=741600111]
+spawn_path = NodePath("../Players")
+
+[node name="Environment" type="Node3D" parent="." unique_id=466205159]
+
+[node name="ConveyorBelt" parent="Environment" unique_id=264023670 instance=ExtResource("1_yknvy")]
+
+[node name="StartingArea" type="Node3D" parent="Environment" unique_id=1882132066]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 24.13)
+
+[node name="StartMesh" type="MeshInstance3D" parent="Environment/StartingArea" unique_id=1649139214]
+mesh = ExtResource("2_xr4oa")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Environment/StartingArea" unique_id=347389705]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/StartingArea/StaticBody3D" unique_id=1436565007]
+shape = SubResource("BoxShape3D_6aigx")
+
+[node name="PlayerSpawnPoints" type="Node3D" parent="Environment/StartingArea" unique_id=577713836]
+
+[node name="SpawnPoint1" type="Marker3D" parent="Environment/StartingArea/PlayerSpawnPoints" unique_id=1039915510]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 5, 0)
+
+[node name="SpawnPoint2" type="Marker3D" parent="Environment/StartingArea/PlayerSpawnPoints" unique_id=1308743335]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 5, 0)
+
+[node name="SpawnPoint3" type="Marker3D" parent="Environment/StartingArea/PlayerSpawnPoints" unique_id=576566616]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 5, 0)
+
+[node name="SpawnPoint4" type="Marker3D" parent="Environment/StartingArea/PlayerSpawnPoints" unique_id=207840180]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 5, 0)
+
+[node name="FinishArea" type="Node3D" parent="Environment" unique_id=1959348031]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -24.13)
+
+[node name="FinishMesh" type="MeshInstance3D" parent="Environment/FinishArea" unique_id=822749353]
+mesh = ExtResource("2_xr4oa")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Environment/FinishArea" unique_id=975591901]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/FinishArea/StaticBody3D" unique_id=1210480254]
+shape = SubResource("BoxShape3D_hd853")
+
+[node name="FinishLine" type="Area3D" parent="Environment/FinishArea" unique_id=719926581]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/FinishArea/FinishLine" unique_id=975494234]
+shape = SubResource("BoxShape3D_7ajv0")
+debug_color = Color(0.7647059, 0.105882354, 0.28235295, 0.84705883)
+
+[node name="ProductSpawnPoint" type="Marker3D" parent="Environment" unique_id=1119747582]
+
+[node name="Products" type="Node3D" parent="." unique_id=1647661018]
+
+[node name="MultiplayerProductSpawner" type="MultiplayerSpawner" parent="." unique_id=622419833]
+
+[node name="RaceManager" type="Node3D" parent="." unique_id=1481717900]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=44772536]
+visible = false
+
+[node name="SurvivalHUD" type="Control" parent="CanvasLayer" unique_id=343110333]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/SurvivalHUD" unique_id=2001790633]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 50.0
+grow_horizontal = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, 80)
+theme_override_styles/panel = SubResource("StyleBoxFlat_hd853")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/SurvivalHUD/PanelContainer" unique_id=1822972544]
+layout_mode = 2
+
+[node name="TimerLabel" type="Label" parent="CanvasLayer/SurvivalHUD/PanelContainer/VBoxContainer" unique_id=1482556738]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.9999998, 0.7515134, 0.2795927, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.2627451)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 6
+theme_override_constants/outline_size = 18
+theme_override_fonts/font = SubResource("FontVariation_007gi")
+theme_override_font_sizes/font_size = 75
+text = "01:00"
+
+[node name="PlayersLabel" type="Label" parent="CanvasLayer/SurvivalHUD/PanelContainer/VBoxContainer" unique_id=1310171718]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.627451)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("5_1shib")
+theme_override_font_sizes/font_size = 40
+text = "Players Remaining: 2/2"
+
+[node name="ResultsUI" type="Control" parent="CanvasLayer" unique_id=184331532]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, -450)
+mouse_filter = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/ResultsUI" unique_id=1643934788]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -143.0
+offset_top = -61.5
+offset_right = 143.0
+offset_bottom = 61.5
+grow_horizontal = 2
+grow_vertical = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, 80)
+theme_override_styles/panel = SubResource("StyleBoxFlat_hd853")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/ResultsUI/PanelContainer" unique_id=1603106461]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="CanvasLayer/ResultsUI/PanelContainer/VBoxContainer" unique_id=1705886871]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.9999998, 0.7515134, 0.2795927, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.2627451)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 6
+theme_override_constants/outline_size = 18
+theme_override_fonts/font = SubResource("FontVariation_007gi")
+theme_override_font_sizes/font_size = 100
+text = "ORANGE SURVIVAL"
+
+[node name="ResultsLabel" type="Label" parent="CanvasLayer/ResultsUI/PanelContainer/VBoxContainer" unique_id=523565193]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.627451)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("5_1shib")
+theme_override_font_sizes/font_size = 40
+text = "Results"
+
+[node name="ContinueLabel" type="Label" parent="CanvasLayer/ResultsUI/PanelContainer/VBoxContainer" unique_id=1935104988]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.627451)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("5_1shib")
+theme_override_font_sizes/font_size = 40
+text = "Waiting for next round..."
+
+[node name="SpectatorCamera" type="Camera3D" parent="." unique_id=164285949]
+transform = Transform3D(1, 0, 0, 0, 0.66913056, 0.74314487, 0, -0.74314487, 0.66913056, 0, 14.991054, 21.798069)
+
+[node name="IntroLayer" type="CanvasLayer" parent="." unique_id=1136399271]
+layer = 10
+visible = false
+
+[node name="BlackScreen" type="ColorRect" parent="IntroLayer" unique_id=1072964976]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="IntroLabel" type="Label" parent="IntroLayer" unique_id=1926410923]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(500, 200)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 42
+text = "After a long shift at the store,
+     you have nightmares..."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="CountdownLabel" type="Label" parent="IntroLayer" unique_id=2060375188]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.9999998, 0.7515134, 0.2795927, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.2627451)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 6
+theme_override_constants/outline_size = 18
+theme_override_fonts/font = SubResource("FontVariation_007gi")
+theme_override_font_sizes/font_size = 110
+horizontal_alignment = 1
+vertical_alignment = 1

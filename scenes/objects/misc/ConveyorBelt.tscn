@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://b1x1g7c20n23o"]
+
+[ext_resource type="Script" uid="uid://o8tn6a2m6noj" path="res://scripts/objects/misc/conveyor_belt.gd" id="1_45ubg"]
+[ext_resource type="ArrayMesh" uid="uid://byo7t6wrxosia" path="res://assets/models/minigames/conveyor40m_Cube_023.res" id="1_sqh2u"]
+[ext_resource type="Shader" uid="uid://dvlwyaeytcgxe" path="res://assets/shaders/conveyor_belt.gdshader" id="3_xnpjg"]
+[ext_resource type="Texture2D" uid="uid://c525b4bku0tqg" path="res://assets/images/patterned_rubber_seamless_texture.png" id="4_nu3wr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s3xd1"]
+render_priority = 0
+shader = ExtResource("3_xnpjg")
+shader_parameter/belt_texture = ExtResource("4_nu3wr")
+shader_parameter/scroll_speed = 2.5
+shader_parameter/scroll_direction = Vector2(0, -1)
+shader_parameter/uv_scale = Vector2(100, 100)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
+size = Vector3(8.26, 0.5, 40)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_45ubg"]
+size = Vector3(8, 0.5, 40)
+
+[node name="ConveyorBelt" type="Node3D" unique_id=264023670]
+script = ExtResource("1_45ubg")
+
+[node name="BeltMesh" type="MeshInstance3D" parent="." unique_id=694909746]
+mesh = ExtResource("1_sqh2u")
+surface_material_override/0 = SubResource("ShaderMaterial_s3xd1")
+
+[node name="BeltBody" type="StaticBody3D" parent="." unique_id=1558145415]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BeltBody" unique_id=1019231570]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_6aigx")
+debug_color = Color(6.3532593e-06, 0.5689598, 0.8119641, 0.84705883)
+
+[node name="ConveyorArea" type="Area3D" parent="." unique_id=490534107]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ConveyorArea" unique_id=1368608242]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("BoxShape3D_45ubg")
+debug_color = Color(0.8511757, 0.36916065, 0.09820985, 0.84705883)
