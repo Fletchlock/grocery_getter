@@ -26,8 +26,8 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 @export var maximum_spawn_interval: float = 4.0
 @export var maximum_active_obstacles: int = 12
 @export var obstacle_cleanup_z: float = 65.0
-@export var test_obstacle_product: ProductData
-@export var test_obstacle_height: float = 2.5
+@export var obstacle_products: Array[ProductData] = []
+@export var obstacle_height: float = 4.0
 
 # ============================================================
 # NODE REFERENCES
@@ -139,7 +139,7 @@ func _physics_process(delta: float) -> void:
 
 	if obstacle_spawn_timer <= 0.0:
 		if products.get_child_count() < maximum_active_obstacles:
-			_spawn_test_obstacle()
+			_spawn_random_obstacle()
 
 		obstacle_spawn_timer = randf_range(
 			minimum_spawn_interval,
@@ -285,13 +285,35 @@ func _hide_countdown() -> void:
 # ============================================================
 
 
-func _spawn_test_obstacle() -> void:
+
+func _spawn_random_obstacle() -> void:
 	if not multiplayer.is_server():
 		return
 
-	if test_obstacle_product == null:
-		push_warning("CONVEYOR: No test obstacle product assigned.")
+	if obstacle_products.is_empty():
+		push_warning("CONVEYOR: No obstacle products assigned.")
 		return
+
+	var valid_products: Array[ProductData] = []
+
+	for product: ProductData in obstacle_products:
+		if product == null:
+			continue
+
+		if product.product_mesh == null:
+			continue
+
+		if product.resource_path.is_empty():
+			continue
+
+		valid_products.append(product)
+
+	if valid_products.is_empty():
+		push_warning("CONVEYOR: No valid obstacle products found.")
+		return
+
+	# The server chooses which product everyone will see.
+	var selected_product: ProductData = valid_products.pick_random()
 
 	var spawn_position: Vector3 = product_spawn_point.global_position
 
@@ -300,10 +322,11 @@ func _spawn_test_obstacle() -> void:
 
 	product_spawner.spawn({
 		"position": spawn_position,
-		"product_path": test_obstacle_product.resource_path,
-		"height": test_obstacle_height,
+		"product_path": selected_product.resource_path,
+		"height": obstacle_height,
 		"rotation_y": randf_range(0.0, TAU)
 	})
+
 
 
 
@@ -347,7 +370,7 @@ func _start_race() -> void:
 	_show_countdown("GO!")
 
 	if multiplayer.is_server():
-		_spawn_test_obstacle()
+		_spawn_random_obstacle()
 
 		obstacle_spawn_timer = randf_range(
 			minimum_spawn_interval,
