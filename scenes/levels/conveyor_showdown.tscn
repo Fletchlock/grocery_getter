@@ -106,7 +106,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 shape = SubResource("BoxShape3D_hd853")
 
 [node name="FinishLine" type="Area3D" parent="Environment/FinishArea" unique_id=719926581]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5360348, 7.748108)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5360348, 6.748108)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/FinishArea/FinishLine" unique_id=975494234]
 shape = SubResource("BoxShape3D_7ajv0")
