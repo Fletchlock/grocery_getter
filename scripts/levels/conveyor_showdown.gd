@@ -2,6 +2,11 @@
 extends Node3D
 
 
+const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
+	"res://scenes/objects/minigames/ConveyorObstacle.tscn"
+)
+
+
 # ============================================================
 # EXPORTS
 # ============================================================
@@ -38,6 +43,10 @@ extends Node3D
 @onready var finish_line: Area3D = $Environment/FinishArea/FinishLine
 
 @onready var conveyor_belt: ConveyorBelt = $Environment/ConveyorBelt
+@onready var products: Node3D = $Products
+@onready var product_spawner: MultiplayerSpawner = $MultiplayerProductSpawner
+@onready var product_spawn_point: Marker3D = $Environment/ProductSpawnPoint
+
 
 # ============================================================
 # RACE STATE
@@ -75,7 +84,9 @@ func _ready() -> void:
 		multiplayer_spawner,
 		spawn_points
 	)
-
+	
+	product_spawner.spawn_function = _spawn_conveyor_obstacle
+	
 	if not TransitionManager.all_peers_loaded.is_connected(
 		_on_all_peers_loaded
 	):
@@ -235,6 +246,46 @@ func _hide_countdown() -> void:
 
 
 # ============================================================
+# CONVEYOR OBSTACLE SPAWNING
+# ============================================================
+
+func _spawn_test_obstacle() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var spawn_position: Vector3 = product_spawn_point.global_position
+
+	# Randomize the horizontal position across the belt.
+	spawn_position.x = randf_range(-6.0, 6.0)
+	spawn_position.y = 0.5
+
+	product_spawner.spawn({
+		"position": spawn_position
+	})
+
+
+func _spawn_conveyor_obstacle(data: Variant) -> Node:
+	var spawn_data: Dictionary = data
+	var spawn_position: Vector3 = spawn_data["position"]
+
+	var obstacle: ConveyorObstacle = (
+		CONVEYOR_OBSTACLE_SCENE.instantiate() as ConveyorObstacle
+	)
+
+	if obstacle == null:
+		push_error("CONVEYOR: Failed to instantiate obstacle.")
+		return null
+
+	# Products is currently at the level origin.
+	obstacle.position = products.to_local(spawn_position)
+
+	# Both host and client assign their local conveyor reference.
+	obstacle.conveyor_belt = conveyor_belt
+
+	return obstacle
+
+
+# ============================================================
 # RACE START
 # ============================================================
 
@@ -242,6 +293,9 @@ func _hide_countdown() -> void:
 func _start_race() -> void:
 	race_active = true
 	_show_countdown("GO!")
+
+	if multiplayer.is_server():
+		_spawn_test_obstacle()
 
 	print("CONVEYOR SHOWDOWN: Race started!")
 
