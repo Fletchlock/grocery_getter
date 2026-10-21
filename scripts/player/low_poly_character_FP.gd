@@ -871,12 +871,18 @@ func _physics_process(delta: float) -> void:
 
 
 	# === 3. Velocity and Kinematics ===
+	
+	# This checks whether a scene/node is in the group disable_player_sprint.
+	# If so, it disables sprint. This is currently used in mini games.
+	var sprint_allowed: bool = not get_tree().has_group("disable_player_sprint")
+
 	is_sprinting = (
 		Input.is_action_pressed("sprint")
 		and not is_crouching
+		and sprint_allowed
 		and raw_input.length_squared() > 0.0
 	)
-	
+		
 	var target_move_speed: float = (
 		crouch_speed
 		if is_crouching

@@ -39,7 +39,7 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 [sub_resource type="FontVariation" id="FontVariation_007gi"]
 base_font = ExtResource("5_1shib")
 
-[node name="ConveyorShowdown" type="Node3D" unique_id=411679754]
+[node name="ConveyorShowdown" type="Node3D" unique_id=411679754 groups=["disable_player_sprint"]]
 script = ExtResource("1_iiidm")
 maximum_active_obstacles = 15
 obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("2_6vj14"), ExtResource("5_1vc2f"), ExtResource("6_hrf0q"), ExtResource("7_tkfah"), ExtResource("8_xsx0w"), ExtResource("9_4327s"), ExtResource("10_xgchh"), ExtResource("10_xsx0w")])
