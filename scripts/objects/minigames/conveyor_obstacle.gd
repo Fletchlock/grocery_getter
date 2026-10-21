@@ -8,8 +8,17 @@ class_name ConveyorObstacle
 var conveyor_belt: ConveyorBelt = null
 var is_rolling: bool = false
 
+@export_group("Rolling Speed")
 @export var rolling_speed: float = 6.0
 @export var rolling_movement_multiplier: float = 3.0
+
+@export_group("Rolling Bounce")
+@export var bounce_enabled: bool = true
+@export var bounce_height: float = 1.5
+@export var bounce_interval: float = 1.2
+
+var bounce_timer: float = 0.0
+var bounce_offset: float = 0.0
 
 func configure_product(product: ProductData, scale_multiplier: float = 10.0) -> void:
 	if product == null or product.product_mesh == null:
@@ -98,4 +107,34 @@ func _physics_process(delta: float) -> void:
 	if is_rolling:
 		movement_multiplier = rolling_movement_multiplier
 
-	global_position += conveyor_belt.get_belt_velocity() * movement_multiplier * delta
+	# Move along the conveyor.
+	var movement: Vector3 = conveyor_belt.get_belt_velocity() * movement_multiplier * delta
+
+	var next_position: Vector3 = global_position + movement
+	global_position = next_position
+		
+	if is_rolling and Engine.get_physics_frames() % 60 == 0:
+		print(
+			"ROLLING: position=", global_position,
+			" velocity=", conveyor_belt.get_belt_velocity(),
+			" bounce=", bounce_offset
+		)
+	
+	# Only rolling products bounce.
+	if not is_rolling or not bounce_enabled:
+		return
+
+	if bounce_interval <= 0.0:
+		return
+
+	# Advance through the current bounce.
+	bounce_timer = fposmod(bounce_timer + delta, bounce_interval)
+
+	var progress: float = bounce_timer / bounce_interval
+
+	# Parabolic arc: starts at zero, peaks halfway, lands at zero.
+	var new_offset: float = 4.0 * bounce_height * progress * (1.0 - progress)
+
+	# Apply only the difference to avoid accumulating height.
+	global_position.y += new_offset - bounce_offset
+	bounce_offset = new_offset
