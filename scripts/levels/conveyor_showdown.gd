@@ -377,8 +377,8 @@ func _spawn_conveyor_obstacle(data: Variant) -> Node:
 	obstacle.position = products.to_local(spawn_position)
 	obstacle.rotation.y = rotation_y
 	obstacle.conveyor_belt = conveyor_belt
-	obstacle.configure_product(product, scale_multiplier)
 	obstacle.is_rolling = should_roll
+	obstacle.configure_product(product, scale_multiplier)
 
 	return obstacle
 
