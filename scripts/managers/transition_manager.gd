@@ -104,15 +104,34 @@ func _wait_for_peers(id: int) -> void:
 		await get_tree().process_frame
 
 
+
 @rpc("authority", "call_local", "reliable")
 func _prepare_transition(id: int) -> void:
 	transition_id = id
 	transitioning = true
 	fade_rect.modulate.a = 1.0
 
+	# Stop player replication before unloading the level.
+	var level: Node = LevelManager.current_level
+
+	if is_instance_valid(level):
+		var player_container: Node = level.get_node_or_null("Players")
+
+		if player_container != null:
+			for player: Node in player_container.get_children():
+				var synchronizer: MultiplayerSynchronizer = player.get_node_or_null(
+					"MultiplayerSyncronizer"
+				) as MultiplayerSynchronizer
+
+				if synchronizer != null:
+					synchronizer.public_visibility = false
+
+	# Allow multiplayer to process the visibility changes.
+	await get_tree().process_frame
 	await get_tree().process_frame
 
 	_acknowledge_stage(id)
+
 
 
 @rpc("authority", "call_local", "reliable")

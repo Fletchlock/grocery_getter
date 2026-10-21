@@ -1002,7 +1002,7 @@ func _physics_process(delta: float) -> void:
 # ============================================================
 # CONVEYOR BELT MOVEMENT
 # ============================================================
-
+	
 	var belt: ConveyorBelt = null
 
 	if has_meta("conveyor_belt"):
