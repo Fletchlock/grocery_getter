@@ -4,6 +4,7 @@ extends Node
 signal all_peers_loaded(level_path: String)
 
 const ORANGE_SURVIVAL_SCENE: String = "res://scenes/levels/orange_survival.tscn"
+const CONVEYOR_SHOWDOWN_SCENE: String = "res://scenes/levels/conveyor_showdown.tscn"
 const GROCERY_STORE_SCENE: String = "res://scenes/levels/third_person_level.tscn"
 
 @onready var fade_rect: ColorRect = $CanvasLayer/ColorRect
@@ -22,12 +23,15 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		return
 	if not event.pressed or event.echo:
 		return
-	if event.keycode != KEY_F6:
-		return
 	if not multiplayer.is_server() or transitioning:
 		return
 
-	start_orange_survival()
+	match event.keycode:
+		KEY_F6:
+			start_orange_survival()
+
+		KEY_F7:
+			start_conveyor_showdown()
 
 
 func start_orange_survival() -> void:
@@ -36,6 +40,14 @@ func start_orange_survival() -> void:
 
 	StoreManager.capture_restock_boxes()
 	_begin_coordinated_transition(ORANGE_SURVIVAL_SCENE)
+
+
+func start_conveyor_showdown() -> void:
+	if not multiplayer.is_server() or transitioning:
+		return
+
+	StoreManager.capture_restock_boxes()
+	_begin_coordinated_transition(CONVEYOR_SHOWDOWN_SCENE)
 
 
 func return_to_grocery_store() -> void:
@@ -126,7 +138,10 @@ func _load_transition_level(id: int, level_path: String) -> void:
 	await get_tree().process_frame
 
 	# Wait for this peer's own character in Orange Survival.
-	if level_path == ORANGE_SURVIVAL_SCENE:
+	if level_path in [
+		ORANGE_SURVIVAL_SCENE,
+		CONVEYOR_SHOWDOWN_SCENE
+	]:
 		var level: Node = LevelManager.current_level
 		var player_container: Node = level.get_node("Players")
 		var local_id: String = str(multiplayer.get_unique_id())
