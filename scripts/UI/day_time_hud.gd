@@ -21,6 +21,7 @@ var active_order_cart: CartGrid = null
 var barcode_hud: Control = null
 var barcode_player: Node = null
 var completed_barcode_code: String = ""
+var barcode_checkout: Node = null
 
 func _ready() -> void:
 	LobbyManager.lobby_player_updated.connect(_on_lobby_player_updated)
@@ -445,7 +446,6 @@ func show_barcode_hud(product_code: String) -> void:
 		barcode_hud.tree_exited.connect(_on_barcode_hud_exited)
 		barcode_hud.code_completed.connect(_on_barcode_code_completed)
 
-	barcode_hud.show()
 	_update_barcode(product_code)
 
 
@@ -461,8 +461,9 @@ func _update_barcode(product_code: String) -> void:
 
 func _on_barcode_hud_exited() -> void:
 	if is_instance_valid(barcode_player):
-		if barcode_player.has_method("set_movement_locked"):
-			barcode_player.set_movement_locked(false)
+		barcode_player.velocity.x = 0.0
+		barcode_player.velocity.z = 0.0
+		barcode_player.set_movement_locked(false)
 
 	barcode_hud = null
 	barcode_player = null
@@ -473,10 +474,12 @@ func close_barcode_hud() -> void:
 
 
 func _on_barcode_code_completed(product_code: String) -> void:
-	var order_board := get_tree().get_first_node_in_group("order_board")
-
-	if order_board == null:
-		push_warning("No order_board found.")
+	if not is_instance_valid(barcode_checkout):
+		push_warning("No valid checkout is associated with the barcode HUD.")
 		return
 
-	order_board.complete_produce_code(product_code)
+	barcode_checkout.complete_produce_code(product_code)
+
+
+func set_barcode_checkout(checkout: Node) -> void:
+	barcode_checkout = checkout
