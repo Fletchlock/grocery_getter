@@ -41,11 +41,21 @@ func configure_product(product: ProductData, scale_multiplier: float = 10.0) -> 
 		$RollingPivot.position.y = scaled_size.y * 0.5
 		mesh_instance.position.y -= scaled_size.y * 0.5
 		
-	# Each obstacle needs its own collision shape.
-	var box_shape: BoxShape3D = BoxShape3D.new()
-	box_shape.size = scaled_size
+	# Each obstacle gets its own collision shape.
+	if is_rolling:
+		var sphere_shape: SphereShape3D = SphereShape3D.new()
+		sphere_shape.radius = maxf(
+			scaled_size.x,
+			maxf(scaled_size.y, scaled_size.z)
+		) * 0.5
 
-	collision.shape = box_shape
+		collision.shape = sphere_shape
+	else:
+		var box_shape: BoxShape3D = BoxShape3D.new()
+		box_shape.size = scaled_size
+
+		collision.shape = box_shape
+
 	collision.position = Vector3(0.0, scaled_size.y * 0.5, 0.0)
 
 
