@@ -1,4 +1,4 @@
-# Test
+
 extends Node3D
 
 
@@ -20,7 +20,6 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 @export var countdown_interval: float = 1.0
 @export var go_display_duration: float = 0.6
 
-
 @export_group("Obstacle Spawning")
 @export var minimum_spawn_interval: float = 2.0
 @export var maximum_spawn_interval: float = 4.0
@@ -31,10 +30,8 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 @export var obstacle_spawn_half_width: float = 8.0
 @export var rolling_obstacle_products: Array[ProductData] = []
 
-
 @export_group("Results")
 @export var results_duration: float = 10.0
-
 
 @export_group("Spectator Camera")
 @export var spectator_follow_offset: Vector3 = Vector3(0.0, 4.0, 8.0)
@@ -54,6 +51,7 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 @onready var results_title: Label = $CanvasLayer/ResultsUI/PanelContainer/VBoxContainer/TitleLabel
 @onready var results_label: Label = $CanvasLayer/ResultsUI/PanelContainer/VBoxContainer/ResultsLabel
 @onready var continue_label: Label = $CanvasLayer/ResultsUI/PanelContainer/VBoxContainer/ContinueLabel
+
 @onready var black_screen: ColorRect = $IntroLayer/BlackScreen
 @onready var intro_label: Label = $IntroLayer/IntroLabel
 @onready var countdown_label: Label = $IntroLayer/CountdownLabel
@@ -79,17 +77,37 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 
 var race_active: bool = false
 var race_finished: bool = false
-var results_time_remaining: float = 0.0
-var results_countdown_active: bool = false
-var last_results_second: int = -1
+
 var race_players: Array[int] = []
 var race_elapsed_time: float = 0.0
+
 var finished_players: Dictionary = {}
 var finish_order: Array[int] = []
 
+
+# ============================================================
+# SPECTATOR STATE
+# ============================================================
+
+var spectator_active: bool = false
 var spectating_player_id: int = -1
 var spectator_targets: Array[int] = []
+
 var original_spectator_transform: Transform3D
+
+
+# ============================================================
+# RESULTS STATE
+# ============================================================
+
+var results_time_remaining: float = 0.0
+var results_countdown_active: bool = false
+var last_results_second: int = -1
+
+
+# ============================================================
+# OBSTACLE STATE
+# ============================================================
 
 var obstacle_spawn_timer: float = 0.0
 
@@ -112,29 +130,31 @@ func _ready() -> void:
 
 	survival_hud.hide()
 	results_ui.hide()
+
 	original_spectator_transform = spectator_camera.global_transform
-	
+
 	SpawnManager.setup_level(
 		players,
 		multiplayer_spawner,
 		spawn_points
 	)
-	
+
 	product_spawner.spawn_function = _spawn_conveyor_obstacle
-	
+
 	if not TransitionManager.all_peers_loaded.is_connected(
 		_on_all_peers_loaded
 	):
 		TransitionManager.all_peers_loaded.connect(
 			_on_all_peers_loaded
 		)
-	
+
 	if not multiplayer.is_server():
 		return
-	
-	if multiplayer.is_server():
-		finish_line.body_entered.connect(_on_finish_line_body_entered)
-	
+
+	finish_line.body_entered.connect(
+		_on_finish_line_body_entered
+	)
+
 	for peer_id: int in LobbyManager.get_players():
 		race_players.append(peer_id)
 		SpawnManager.spawn_player(peer_id)
@@ -156,16 +176,15 @@ func _process(delta: float) -> void:
 		_update_spectator_camera(delta)
 
 
-
 func _physics_process(delta: float) -> void:
 	if not multiplayer.is_server():
 		return
-	
+
 	_update_results_countdown(delta)
 
 	if not race_active or race_finished:
 		return
-		
+
 	race_elapsed_time += delta
 
 	# Spawn obstacles at randomized intervals.
@@ -189,7 +208,6 @@ func _physics_process(delta: float) -> void:
 
 		if obstacle.global_position.z > obstacle_cleanup_z:
 			obstacle.queue_free()
-
 
 
 # ============================================================
@@ -318,8 +336,6 @@ func _hide_countdown() -> void:
 # CONVEYOR OBSTACLE SPAWNING
 # ============================================================
 
-
-
 func _spawn_random_obstacle() -> void:
 	if not multiplayer.is_server():
 		return
@@ -348,7 +364,10 @@ func _spawn_random_obstacle() -> void:
 
 	# The server chooses which product everyone will see.
 	var selected_product: ProductData = valid_products.pick_random()
-	var should_roll: bool = rolling_obstacle_products.has(selected_product)
+	var should_roll: bool = rolling_obstacle_products.has(
+		selected_product
+	)
+
 	var spawn_position: Vector3 = product_spawn_point.global_position
 	var rotation_y: float = randf_range(0.0, TAU)
 
@@ -370,6 +389,7 @@ func _spawn_random_obstacle() -> void:
 		-available_half_width,
 		available_half_width
 	)
+
 	spawn_position.y = 0.5
 
 	product_spawner.spawn({
@@ -381,16 +401,15 @@ func _spawn_random_obstacle() -> void:
 	})
 
 
-
-
 func _spawn_conveyor_obstacle(data: Variant) -> Node:
 	var spawn_data: Dictionary = data
+
 	var spawn_position: Vector3 = spawn_data["position"]
 	var product_path: String = spawn_data["product_path"]
 	var scale_multiplier: float = spawn_data["scale"]
 	var rotation_y: float = spawn_data["rotation_y"]
 	var should_roll: bool = spawn_data["rolling"]
-	
+
 	var obstacle: ConveyorObstacle = (
 		CONVEYOR_OBSTACLE_SCENE.instantiate() as ConveyorObstacle
 	)
@@ -410,6 +429,7 @@ func _spawn_conveyor_obstacle(data: Variant) -> Node:
 	obstacle.rotation.y = rotation_y
 	obstacle.conveyor_belt = conveyor_belt
 	obstacle.is_rolling = should_roll
+
 	obstacle.configure_product(product, scale_multiplier)
 
 	return obstacle
@@ -493,9 +513,32 @@ func _finish_player(peer_id: int) -> void:
 		"%.2f" % finish_time,
 		" seconds"
 	)
+
+	# Tell all peers that this player has finished.
+	_sync_finished_players.rpc(finished_players)
+
 	if finish_order.size() >= race_players.size():
 		_finish_race()
 
+
+@rpc("authority", "call_local", "reliable")
+func _sync_finished_players(state: Dictionary) -> void:
+	finished_players = state.duplicate(true)
+
+	var local_peer_id: int = multiplayer.get_unique_id()
+
+	if (
+		finished_players.has(local_peer_id)
+		and not spectator_active
+		and not race_finished
+	):
+		_set_local_player_movement_locked(true)
+		_activate_spectator_camera()
+
+
+# ============================================================
+# RACE COMPLETION
+# ============================================================
 
 func _finish_race() -> void:
 	if not multiplayer.is_server():
@@ -511,7 +554,7 @@ func _finish_race() -> void:
 		finish_order,
 		finished_players
 	)
-	
+
 	results_time_remaining = results_duration
 	results_countdown_active = true
 	last_results_second = -1
@@ -532,6 +575,10 @@ func _sync_race_finished(
 
 	_show_race_results()
 
+
+# ============================================================
+# RESULTS UI
+# ============================================================
 
 func _show_race_results() -> void:
 	survival_hud.hide()
@@ -563,6 +610,10 @@ func _show_race_results() -> void:
 	results_label.text = result_text
 	continue_label.text = "Waiting to continue..."
 
+
+# ============================================================
+# RESULTS COUNTDOWN
+# ============================================================
 
 func _update_results_countdown(delta: float) -> void:
 	if not multiplayer.is_server():
@@ -609,7 +660,122 @@ func _on_results_countdown_finished() -> void:
 
 	TransitionManager.return_to_grocery_store()
 
-	
+
+# ============================================================
+# SPECTATOR CAMERA
+# ============================================================
+
+func _activate_spectator_camera() -> void:
+	spectator_active = true
+	spectating_player_id = -1
+
+	# Restore the camera's original overview position.
+	spectator_camera.global_transform = original_spectator_transform
+
+	spectator_camera.make_current()
+
+	print("CONVEYOR SHOWDOWN: Spectator camera activated.")
+
+
+func _refresh_spectator_targets() -> void:
+	spectator_targets.clear()
+
+	for player: Node in players.get_children():
+		if not player is CharacterBody3D:
+			continue
+
+		var peer_id: int = player.name.to_int()
+
+		# Only spectate players who are still racing.
+		if finished_players.has(peer_id):
+			continue
+
+		spectator_targets.append(peer_id)
+
+	spectator_targets.sort()
+
+
+func _cycle_spectator_target(direction: int) -> void:
+	_refresh_spectator_targets()
+
+	# -1 represents the fixed overview camera.
+	var targets: Array[int] = [-1]
+	targets.append_array(spectator_targets)
+
+	var index: int = targets.find(spectating_player_id)
+
+	if index == -1:
+		index = 0
+
+	index = posmod(
+		index + direction,
+		targets.size()
+	)
+
+	spectating_player_id = targets[index]
+
+	if spectating_player_id == -1:
+		spectator_camera.global_transform = original_spectator_transform
+
+		print("CONVEYOR SHOWDOWN: Spectating overview.")
+	else:
+		print(
+			"CONVEYOR SHOWDOWN: Spectating player ",
+			spectating_player_id
+		)
+
+
+func _update_spectator_camera(delta: float) -> void:
+	if spectating_player_id == -1:
+		return
+
+	var target: CharacterBody3D = players.get_node_or_null(
+		str(spectating_player_id)
+	) as CharacterBody3D
+
+	# Return to overview if the target is gone or has finished.
+	if target == null or finished_players.has(spectating_player_id):
+		spectating_player_id = -1
+		spectator_camera.global_transform = original_spectator_transform
+		return
+
+	var target_position: Vector3 = (
+		target.global_position + spectator_follow_offset
+	)
+
+	spectator_camera.global_position = spectator_camera.global_position.lerp(
+		target_position,
+		clampf(spectator_follow_speed * delta, 0.0, 1.0)
+	)
+
+	var look_target: Vector3 = (
+		target.global_position + Vector3.UP * 1.5
+	)
+
+	if spectator_camera.global_position.distance_squared_to(look_target) > 0.0001:
+		spectator_camera.look_at(
+			look_target,
+			Vector3.UP
+		)
+
+
+# ============================================================
+# SPECTATOR INPUT
+# ============================================================
+
+func _unhandled_input(event: InputEvent) -> void:
+	if race_finished or not spectator_active:
+		return
+
+	if event.is_action_pressed("next_spectator_camera"):
+		_cycle_spectator_target(1)
+		get_viewport().set_input_as_handled()
+
+	elif event.is_action_pressed("previous_spectator_camera"):
+		_cycle_spectator_target(-1)
+		get_viewport().set_input_as_handled()
+
+
 # ============================================================
 # MULTIPLAYER TRANSITION
 # ============================================================
