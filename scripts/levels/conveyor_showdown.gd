@@ -309,13 +309,13 @@ func _finish_player(peer_id: int) -> void:
 	finished_players[peer_id] = finish_time
 	finish_order.append(peer_id)
 
-	var position: int = finish_order.size()
+	var finish_position: int = finish_order.size()
 
 	print(
 		"CONVEYOR SHOWDOWN: Player ",
 		peer_id,
 		" finished in position ",
-		position,
+		finish_position,
 		" with time ",
 		"%.2f" % finish_time,
 		" seconds"

@@ -15,7 +15,7 @@ func unload_level() -> void:
 
 	# Remove it from the scene tree immediately.
 	# Actual deletion remains deferred.
-	old_level.get_parent().remove_child(old_level)
+	#old_level.get_parent().remove_child(old_level)
 	old_level.queue_free()
 
 
