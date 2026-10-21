@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://ces8dad8mqol0" path="res://scripts/levels/conveyor_showdown.gd" id="1_iiidm"]
 [ext_resource type="PackedScene" uid="uid://b1x1g7c20n23o" path="res://scenes/objects/minigames/ConveyorBelt.tscn" id="1_yknvy"]
 [ext_resource type="ArrayMesh" uid="uid://bmk1qdu856hbr" path="res://assets/models/minigames/conveyor_start_finish_area_Cube_024.res" id="2_xr4oa"]
-[ext_resource type="PackedScene" uid="uid://cobchm6u0ly2k" path="res://scenes/objects/minigames/ConveyorObstacle.tscn" id="4_6vj14"]
 [ext_resource type="FontFile" uid="uid://br8fqpsrsbuld" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-BoldItalic.ttf" id="5_1shib"]
 
 [sub_resource type="Environment" id="Environment_45b30"]
@@ -22,13 +21,6 @@ size = Vector3(16.52, 0.5, 16.52)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7ajv0"]
 size = Vector3(16, 3, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_6vj14"]
-radius = 2.0
-height = 4.0
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_tvp3a"]
-radius = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hd853"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -109,18 +101,9 @@ debug_color = Color(0.7647059, 0.105882354, 0.28235295, 0.84705883)
 
 [node name="Products" type="Node3D" parent="." unique_id=1647661018]
 
-[node name="ConveyorObstacle" parent="Products" unique_id=1864131488 instance=ExtResource("4_6vj14")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6397829, 0.5, -50.741943)
-
-[node name="MeshInstance3D" parent="Products/ConveyorObstacle" index="0" unique_id=266701865]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-mesh = SubResource("SphereMesh_6vj14")
-
-[node name="CollisionShape3D" parent="Products/ConveyorObstacle" index="1" unique_id=1785834134]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-shape = SubResource("SphereShape3D_tvp3a")
-
 [node name="MultiplayerProductSpawner" type="MultiplayerSpawner" parent="." unique_id=622419833]
+_spawnable_scenes = PackedStringArray("uid://cobchm6u0ly2k")
+spawn_path = NodePath("../Products")
 
 [node name="RaceManager" type="Node3D" parent="." unique_id=1481717900]
 
@@ -290,5 +273,3 @@ theme_override_fonts/font = SubResource("FontVariation_007gi")
 theme_override_font_sizes/font_size = 110
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[editable path="Products/ConveyorObstacle"]
