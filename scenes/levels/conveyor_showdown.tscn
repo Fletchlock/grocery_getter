@@ -36,7 +36,6 @@ base_font = ExtResource("5_1shib")
 
 [node name="ConveyorShowdown" type="Node3D" unique_id=411679754]
 script = ExtResource("1_iiidm")
-obstacle_cleanup_z = 50.0
 obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("2_6vj14"), ExtResource("4_tkfah"), ExtResource("5_1vc2f"), ExtResource("6_hrf0q"), ExtResource("7_tkfah")])
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=321550915]
