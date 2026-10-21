@@ -25,9 +25,10 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 @export var minimum_spawn_interval: float = 2.0
 @export var maximum_spawn_interval: float = 4.0
 @export var maximum_active_obstacles: int = 12
-@export var obstacle_cleanup_z: float = 65.0
+@export var obstacle_cleanup_z: float = 50.0
 @export var obstacle_products: Array[ProductData] = []
-@export var obstacle_scale: float = 10.0
+@export var obstacle_scale: float = 12.0
+@export var obstacle_spawn_half_width: float = 8.0
 
 # ============================================================
 # NODE REFERENCES
@@ -316,15 +317,33 @@ func _spawn_random_obstacle() -> void:
 	var selected_product: ProductData = valid_products.pick_random()
 
 	var spawn_position: Vector3 = product_spawn_point.global_position
+	var rotation_y: float = randf_range(0.0, TAU)
 
-	spawn_position.x = randf_range(-6.0, 6.0)
+	var bounds: AABB = selected_product.product_mesh.get_aabb()
+	var scaled_size: Vector3 = bounds.size * obstacle_scale
+
+	# Account for the width occupied after Y rotation.
+	var rotated_half_width: float = (
+		absf(cos(rotation_y)) * scaled_size.x
+		+ absf(sin(rotation_y)) * scaled_size.z
+	) * 0.5
+
+	var available_half_width: float = maxf(
+		0.0,
+		obstacle_spawn_half_width - rotated_half_width
+	)
+
+	spawn_position.x = product_spawn_point.global_position.x + randf_range(
+		-available_half_width,
+		available_half_width
+	)
 	spawn_position.y = 0.5
 
 	product_spawner.spawn({
 		"position": spawn_position,
 		"product_path": selected_product.resource_path,
 		"scale": obstacle_scale,
-		"rotation_y": randf_range(0.0, TAU)
+		"rotation_y": rotation_y
 	})
 
 
