@@ -22,5 +22,8 @@ func _on_body_entered(body: Node3D) -> void:
 
 
 func _on_body_exited(body: Node3D) -> void:
-	if body.get_meta("conveyor_belt", null) == self:
+	if not body.has_meta("conveyor_belt"):
+		return
+
+	if body.get_meta("conveyor_belt") == self:
 		body.remove_meta("conveyor_belt")

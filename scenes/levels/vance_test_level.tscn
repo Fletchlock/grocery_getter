@@ -37,7 +37,7 @@
 [ext_resource type="Resource" uid="uid://dklerfmqk4jk0" path="res://resources/products/cereal.tres" id="23_cyw3o"]
 [ext_resource type="Resource" uid="uid://bxag1kfs6pnwd" path="res://resources/products/grapefruit.tres" id="24_4fofi"]
 [ext_resource type="Script" uid="uid://t53tjvb5lc1f" path="res://scripts/utilities/order_board.gd" id="38_041mx"]
-[ext_resource type="PackedScene" uid="uid://b1x1g7c20n23o" path="res://scenes/objects/misc/ConveyorBelt.tscn" id="39_041mx"]
+[ext_resource type="PackedScene" uid="uid://b1x1g7c20n23o" path="res://scenes/objects/minigames/ConveyorBelt.tscn" id="39_041mx"]
 [ext_resource type="AudioStream" uid="uid://v8oalnmtq657" path="res://assets/sounds/scanner_beep.wav" id="41_l1thq"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_c4on7"]
