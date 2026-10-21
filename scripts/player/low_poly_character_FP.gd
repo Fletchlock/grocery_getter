@@ -60,8 +60,10 @@ var mouse_smoothing: float = 25.0
 @export var crouch_speed: float = 2.0 ## Speed while crouching
 @export var acceleration : float= 36.0 ## Ground movement acceleration.
 @export var rotation_speed : float= 12.0 ## Character rotation speed.
-@export var jump_strength : float= 12.0 ## Initial upward force when jumping.
-@export var air_acceleration : float= 12.0 ## Movement acceleration while airborne.
+@export var jump_strength : float= 10.0 ## Initial upward force when jumping.
+@export_range(0.1, 1.0, 0.05)
+var jump_release_multiplier: float = 0.40
+@export var air_acceleration : float= 3.0 ## Movement acceleration while airborne.
 
 var knockback_velocity: Vector3 = Vector3.ZERO
 
@@ -958,7 +960,7 @@ func _physics_process(delta: float) -> void:
 	set_anim_tree()
 
 
-	# === 5. Jump ===
+	# === 5. Variable Height Jump ===
 
 	var is_starting_jump: bool = (
 		Input.is_action_just_pressed("jump")
@@ -968,7 +970,14 @@ func _physics_process(delta: float) -> void:
 	)
 
 	if is_starting_jump:
-		velocity.y += jump_strength
+		velocity.y = jump_strength
+
+	# Releasing Jump early cuts the upward velocity.
+	if (
+		Input.is_action_just_released("jump")
+		and velocity.y > 0.0
+	):
+		velocity.y *= jump_release_multiplier
 
 
 	# === 6. Landing / Visual Effects ===
