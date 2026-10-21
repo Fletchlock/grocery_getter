@@ -43,6 +43,7 @@ base_font = ExtResource("5_1shib")
 script = ExtResource("1_iiidm")
 maximum_active_obstacles = 15
 obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("2_6vj14"), ExtResource("4_tkfah"), ExtResource("5_1vc2f"), ExtResource("6_hrf0q"), ExtResource("7_tkfah"), ExtResource("8_xsx0w"), ExtResource("9_4327s"), ExtResource("10_xgchh")])
+obstacle_scale = 15.0
 rolling_obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("8_xsx0w"), ExtResource("9_4327s"), ExtResource("10_xgchh"), ExtResource("11_e6ilc"), ExtResource("12_v85xt")])
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=321550915]
