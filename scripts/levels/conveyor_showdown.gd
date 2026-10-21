@@ -36,12 +36,18 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 @export var results_duration: float = 10.0
 
 
+@export_group("Spectator Camera")
+@export var spectator_follow_offset: Vector3 = Vector3(0.0, 4.0, 8.0)
+@export var spectator_follow_speed: float = 5.0
+
+
 # ============================================================
 # NODE REFERENCES
 # ============================================================
 
 @onready var players: Node3D = $Players
 @onready var multiplayer_spawner: MultiplayerSpawner = $MultiplayerSpawner
+@onready var spectator_camera: Camera3D = $SpectatorCamera
 
 @onready var survival_hud: Control = $CanvasLayer/SurvivalHUD
 @onready var results_ui: Control = $CanvasLayer/ResultsUI
@@ -81,7 +87,9 @@ var race_elapsed_time: float = 0.0
 var finished_players: Dictionary = {}
 var finish_order: Array[int] = []
 
-
+var spectating_player_id: int = -1
+var spectator_targets: Array[int] = []
+var original_spectator_transform: Transform3D
 
 var obstacle_spawn_timer: float = 0.0
 
@@ -104,6 +112,7 @@ func _ready() -> void:
 
 	survival_hud.hide()
 	results_ui.hide()
+	original_spectator_transform = spectator_camera.global_transform
 	
 	SpawnManager.setup_level(
 		players,
@@ -135,8 +144,16 @@ func _ready() -> void:
 # PROCESS
 # ============================================================
 
-func _process(_delta: float) -> void:
-	_set_local_player_movement_locked(not race_active)
+func _process(delta: float) -> void:
+	var local_peer_id: int = multiplayer.get_unique_id()
+	var has_finished: bool = finished_players.has(local_peer_id)
+
+	_set_local_player_movement_locked(
+		not race_active or has_finished
+	)
+
+	if has_finished and not race_finished:
+		_update_spectator_camera(delta)
 
 
 
