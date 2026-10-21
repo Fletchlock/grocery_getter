@@ -38,7 +38,6 @@ extends Node3D
 @onready var finish_line: Area3D = $Environment/FinishArea/FinishLine
 
 @onready var conveyor_belt: ConveyorBelt = $Environment/ConveyorBelt
-@onready var test_obstacle: ConveyorObstacle = $Products/ConveyorObstacle
 
 # ============================================================
 # RACE STATE
@@ -83,21 +82,6 @@ func _ready() -> void:
 		TransitionManager.all_peers_loaded.connect(
 			_on_all_peers_loaded
 		)
-	
-	test_obstacle.conveyor_belt = conveyor_belt
-	
-	var obstacle: Node3D = get_node_or_null(
-	"Products/ConveyorObstacle"
-	) as Node3D
-
-	print(
-		"CONVEYOR OBSTACLE CHECK | Peer: ",
-		multiplayer.get_unique_id(),
-		" | Exists: ",
-		obstacle != null,
-		" | Position: ",
-		obstacle.global_position if obstacle != null else Vector3.ZERO
-	)
 	
 	if not multiplayer.is_server():
 		return
