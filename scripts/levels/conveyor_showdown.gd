@@ -1,4 +1,4 @@
-
+# Test
 extends Node3D
 
 
@@ -20,6 +20,12 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 @export var countdown_interval: float = 1.0
 @export var go_display_duration: float = 0.6
 
+
+@export_group("Obstacle Spawning")
+@export var minimum_spawn_interval: float = 2.0
+@export var maximum_spawn_interval: float = 4.0
+@export var maximum_active_obstacles: int = 12
+@export var obstacle_cleanup_z: float = 65.0
 
 # ============================================================
 # NODE REFERENCES
@@ -60,6 +66,9 @@ var race_players: Array[int] = []
 var race_elapsed_time: float = 0.0
 var finished_players: Dictionary = {}
 var finish_order: Array[int] = []
+
+var obstacle_spawn_timer: float = 0.0
+
 
 # ============================================================
 # READY
@@ -113,6 +122,7 @@ func _process(_delta: float) -> void:
 	_set_local_player_movement_locked(not race_active)
 
 
+
 func _physics_process(delta: float) -> void:
 	if not multiplayer.is_server():
 		return
@@ -121,6 +131,29 @@ func _physics_process(delta: float) -> void:
 		return
 
 	race_elapsed_time += delta
+
+	# Spawn obstacles at randomized intervals.
+	obstacle_spawn_timer -= delta
+
+	if obstacle_spawn_timer <= 0.0:
+		if products.get_child_count() < maximum_active_obstacles:
+			_spawn_test_obstacle()
+
+		obstacle_spawn_timer = randf_range(
+			minimum_spawn_interval,
+			maximum_spawn_interval
+		)
+
+	# Remove obstacles that have passed the starting area.
+	for child: Node in products.get_children():
+		if not child is ConveyorObstacle:
+			continue
+
+		var obstacle: ConveyorObstacle = child as ConveyorObstacle
+
+		if obstacle.global_position.z > obstacle_cleanup_z:
+			obstacle.queue_free()
+
 
 
 # ============================================================
@@ -296,6 +329,11 @@ func _start_race() -> void:
 
 	if multiplayer.is_server():
 		_spawn_test_obstacle()
+
+		obstacle_spawn_timer = randf_range(
+			minimum_spawn_interval,
+			maximum_spawn_interval
+		)
 
 	print("CONVEYOR SHOWDOWN: Race started!")
 
