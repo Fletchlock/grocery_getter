@@ -26,6 +26,8 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 @export var maximum_spawn_interval: float = 4.0
 @export var maximum_active_obstacles: int = 12
 @export var obstacle_cleanup_z: float = 65.0
+@export var test_obstacle_product: ProductData
+@export var test_obstacle_height: float = 2.5
 
 # ============================================================
 # NODE REFERENCES
@@ -282,24 +284,35 @@ func _hide_countdown() -> void:
 # CONVEYOR OBSTACLE SPAWNING
 # ============================================================
 
+
 func _spawn_test_obstacle() -> void:
 	if not multiplayer.is_server():
 		return
 
+	if test_obstacle_product == null:
+		push_warning("CONVEYOR: No test obstacle product assigned.")
+		return
+
 	var spawn_position: Vector3 = product_spawn_point.global_position
 
-	# Randomize the horizontal position across the belt.
 	spawn_position.x = randf_range(-6.0, 6.0)
 	spawn_position.y = 0.5
 
 	product_spawner.spawn({
-		"position": spawn_position
+		"position": spawn_position,
+		"product_path": test_obstacle_product.resource_path,
+		"height": test_obstacle_height,
+		"rotation_y": randf_range(0.0, TAU)
 	})
+
 
 
 func _spawn_conveyor_obstacle(data: Variant) -> Node:
 	var spawn_data: Dictionary = data
 	var spawn_position: Vector3 = spawn_data["position"]
+	var product_path: String = spawn_data["product_path"]
+	var target_height: float = spawn_data["height"]
+	var rotation_y: float = spawn_data["rotation_y"]
 
 	var obstacle: ConveyorObstacle = (
 		CONVEYOR_OBSTACLE_SCENE.instantiate() as ConveyorObstacle
@@ -309,11 +322,17 @@ func _spawn_conveyor_obstacle(data: Variant) -> Node:
 		push_error("CONVEYOR: Failed to instantiate obstacle.")
 		return null
 
-	# Products is currently at the level origin.
-	obstacle.position = products.to_local(spawn_position)
+	var product: ProductData = load(product_path) as ProductData
 
-	# Both host and client assign their local conveyor reference.
+	if product == null or product.product_mesh == null:
+		push_error("CONVEYOR: Invalid product: " + product_path)
+		obstacle.free()
+		return null
+
+	obstacle.position = products.to_local(spawn_position)
+	obstacle.rotation.y = rotation_y
 	obstacle.conveyor_belt = conveyor_belt
+	obstacle.configure_product(product, target_height)
 
 	return obstacle
 
