@@ -8,8 +8,8 @@ class_name ConveyorObstacle
 var conveyor_belt: ConveyorBelt = null
 var is_rolling: bool = false
 
-@export var rolling_speed: float = 3.0
-
+@export var rolling_speed: float = 6.0
+@export var rolling_movement_multiplier: float = 3.0
 
 func configure_product(product: ProductData, scale_multiplier: float = 10.0) -> void:
 	if product == null or product.product_mesh == null:
@@ -83,4 +83,9 @@ func _physics_process(delta: float) -> void:
 	if not is_instance_valid(conveyor_belt):
 		return
 
-	global_position += conveyor_belt.get_belt_velocity() * delta
+	var movement_multiplier: float = 1.0
+
+	if is_rolling:
+		movement_multiplier = rolling_movement_multiplier
+
+	global_position += conveyor_belt.get_belt_velocity() * movement_multiplier * delta
