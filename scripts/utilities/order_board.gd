@@ -5,6 +5,9 @@ extends Node3D
 @export var interaction_top_padding: float = 0.0
 @export var allow_orders: bool = true
 
+@export_group("Checkout") #for differentiating the checkout and online order tills
+@export var online_order_checkout: bool = false 
+
 @onready var order_label: Label3D = $Label3D
 @onready var order_scanner_beep_player: AudioStreamPlayer3D = $AcceptOrderArea/OrderScannerBeepPlayer
 
@@ -120,8 +123,9 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 		var player_peer_id: int = player.get_multiplayer_authority()
 
 		# Preserve online-order checkout when the player owns an order.
-		if OrderManager.get_player_order(player_peer_id) != null:
-			return "[E] Checkout " + player.held_item.display_name
+		if online_order_checkout:
+			if OrderManager.get_player_order(player_peer_id) != null:
+				return "[E] Checkout " + player.held_item.display_name
 
 		# Otherwise, allow scanning for the active AI shopper.
 		var checkout: Checkout = (
@@ -178,6 +182,12 @@ func interact(player: CharacterBody3D) -> void:
 		var product := player.held_item as ProductData
 		if product == null:
 			return
+
+		var player_peer_id := player.get_multiplayer_authority()
+
+		if online_order_checkout:
+			if OrderManager.get_player_order(player_peer_id) == null:
+				return
 
 		if product.product_category == "produce":
 			_open_produce_code_hud(player, product)
@@ -259,6 +269,10 @@ func request_submit_product(
 	if player.get_multiplayer_authority() != requesting_peer_id:
 		return
 
+	if online_order_checkout:
+		if OrderManager.get_player_order(requesting_peer_id) == null:
+			return
+
 	# Validate the replicated held-item state.
 	if not player.network_holding_item:
 		return
@@ -329,16 +343,6 @@ func _submit_product_to_checkout(
 
 
 @rpc("authority", "call_remote", "reliable")
-func _show_barcode_hud(product_code: String) -> void:
-	var hud := get_tree().get_first_node_in_group("day_time_hud")
-	if hud == null:
-		push_warning("No DayTimeHud found in the day_time_hud group.")
-		return
-
-	hud.show_barcode_hud(product_code)
-
-
-@rpc("authority", "call_remote", "reliable")
 func _close_barcode_hud() -> void:
 	var hud := get_tree().get_first_node_in_group("day_time_hud")
 	if hud != null:
@@ -389,33 +393,10 @@ func _apply_barcode_hud_state(
 		return
 
 	if should_show:
+		hud.set_barcode_checkout(self)
 		hud.show_barcode_hud(product_code)
 	else:
 		hud.close_barcode_hud()
-
-
-func _show_produce_preview(player: CharacterBody3D) -> void:
-	if player.held_item == null:
-		return
-
-	if player.held_item.product_category != "produce":
-		return
-
-	var player_peer_id := player.get_multiplayer_authority()
-	_show_barcode_hud_for_player(
-		player_peer_id,
-		player.held_item.product_code
-	)
-
-
-func _show_barcode_hud_for_player(
-	player_peer_id: int,
-	product_code: String
-) -> void:
-	if player_peer_id == multiplayer.get_unique_id():
-		_show_barcode_hud(product_code)
-	else:
-		_show_barcode_hud.rpc_id(player_peer_id, product_code)
 
 
 func _close_barcode_hud_for_player(player_peer_id: int) -> void:
@@ -434,6 +415,7 @@ func _open_produce_code_hud(
 	if player_peer_id == multiplayer.get_unique_id():
 		var hud := get_tree().get_first_node_in_group("day_time_hud")
 		if hud != null:
+			hud.set_barcode_checkout(self)
 			hud.show_barcode_hud(product.product_code)
 	else:
 		_apply_barcode_hud_state.rpc_id(
@@ -470,8 +452,8 @@ func complete_produce_code(product_code: String) -> void:
 
 @rpc("authority", "call_local", "reliable")
 func _play_order_scanner_beep() -> void:
-	order_scanner_beep_player.pitch_scale = randf_range(
-		1.0,
-		1.05
-	)
+	if not is_instance_valid(order_scanner_beep_player):
+		return
+
+	order_scanner_beep_player.pitch_scale = randf_range(1.0, 1.05)
 	order_scanner_beep_player.play()

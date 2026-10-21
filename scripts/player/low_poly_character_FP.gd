@@ -127,6 +127,7 @@ var _smoothed_sprint_blend: float = 0.0
 var _smoothed_crouch_blend: float = 0.0
 var camera_fade_tween: Tween = null
 var movement_locked: bool = false
+var block_movement_until_keys_released := false
 
 # === Held Item Variables ===
 var held_item: ProductData = null
@@ -824,6 +825,19 @@ func _physics_process(delta: float) -> void:
 			"up",
 			"down"
 		)
+
+	if block_movement_until_keys_released:
+		raw_input = Vector2.ZERO
+		velocity.x = 0.0
+		velocity.z = 0.0
+
+	if not (
+		Input.is_action_pressed("left")
+		or Input.is_action_pressed("right")
+		or Input.is_action_pressed("up")
+		or Input.is_action_pressed("down")
+	):
+		block_movement_until_keys_released = false
 
 	# Movement is relative to the player's horizontal facing.
 	var camera_yaw: float
@@ -2138,3 +2152,8 @@ func network_play_footstep(volume: float, pitch: float) -> void:
 
 func set_movement_locked(locked: bool) -> void:
 	movement_locked = locked
+	
+	if not locked:
+		velocity.x = 0.0
+		velocity.z = 0.0
+		block_movement_until_keys_released = true
