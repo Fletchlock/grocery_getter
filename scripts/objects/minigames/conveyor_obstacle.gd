@@ -107,34 +107,16 @@ func _physics_process(delta: float) -> void:
 	if is_rolling:
 		movement_multiplier = rolling_movement_multiplier
 
-	# Move along the conveyor.
-	var movement: Vector3 = conveyor_belt.get_belt_velocity() * movement_multiplier * delta
+	var next_position: Vector3 = global_position
+	next_position += conveyor_belt.get_belt_velocity() * movement_multiplier * delta
 
-	var next_position: Vector3 = global_position + movement
+	if is_rolling and bounce_enabled and bounce_interval > 0.0:
+		bounce_timer = fposmod(bounce_timer + delta, bounce_interval)
+
+		var progress: float = bounce_timer / bounce_interval
+		var new_offset: float = 4.0 * bounce_height * progress * (1.0 - progress)
+
+		next_position.y += new_offset - bounce_offset
+		bounce_offset = new_offset
+
 	global_position = next_position
-		
-	if is_rolling and Engine.get_physics_frames() % 60 == 0:
-		print(
-			"ROLLING: position=", global_position,
-			" velocity=", conveyor_belt.get_belt_velocity(),
-			" bounce=", bounce_offset
-		)
-	
-	# Only rolling products bounce.
-	if not is_rolling or not bounce_enabled:
-		return
-
-	if bounce_interval <= 0.0:
-		return
-
-	# Advance through the current bounce.
-	bounce_timer = fposmod(bounce_timer + delta, bounce_interval)
-
-	var progress: float = bounce_timer / bounce_interval
-
-	# Parabolic arc: starts at zero, peaks halfway, lands at zero.
-	var new_offset: float = 4.0 * bounce_height * progress * (1.0 - progress)
-
-	# Apply only the difference to avoid accumulating height.
-	global_position.y += new_offset - bounce_offset
-	bounce_offset = new_offset
