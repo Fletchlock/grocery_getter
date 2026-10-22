@@ -83,3 +83,36 @@ collision_layer = 256
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ScanArea" unique_id=1790967742]
 shape = SubResource("BoxShape3D_hd853")
 debug_color = Color(0.9131919, 0.0074887597, 0.9999998, 1)
+
+[node name="CheckoutViewport" type="SubViewport" parent="." unique_id=847904745]
+disable_3d = true
+render_target_update_mode = 4
+
+[node name="CheckoutUI" type="Control" parent="CheckoutViewport" unique_id=1717233167]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PanelContainer" type="PanelContainer" parent="CheckoutViewport/CheckoutUI" unique_id=962532110]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CheckoutViewport/CheckoutUI/PanelContainer" unique_id=838587184]
+layout_mode = 2
+
+[node name="HeaderLabel" type="Label" parent="CheckoutViewport/CheckoutUI/PanelContainer/VBoxContainer" unique_id=1335493768]
+layout_mode = 2
+
+[node name="ItemList" type="VBoxContainer" parent="CheckoutViewport/CheckoutUI/PanelContainer/VBoxContainer" unique_id=1675914593]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="CheckoutViewport/CheckoutUI/PanelContainer/VBoxContainer" unique_id=498395288]
+layout_mode = 2
+
+[node name="SubtotalLabel" type="Label" parent="CheckoutViewport/CheckoutUI/PanelContainer/VBoxContainer" unique_id=652007227]
+layout_mode = 2
+
+[node name="TotalLabel" type="Label" parent="CheckoutViewport/CheckoutUI/PanelContainer/VBoxContainer" unique_id=1861127133]
+layout_mode = 2
