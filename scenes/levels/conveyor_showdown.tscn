@@ -307,6 +307,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_hd853")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/ResultsUI/PanelContainer" unique_id=1603106461]
 layout_mode = 2
+theme_override_constants/separation = 20
 
 [node name="TitleLabel" type="Label" parent="CanvasLayer/ResultsUI/PanelContainer/VBoxContainer" unique_id=1705886871]
 layout_mode = 2
@@ -319,7 +320,9 @@ theme_override_constants/shadow_offset_y = 6
 theme_override_constants/outline_size = 18
 theme_override_fonts/font = SubResource("FontVariation_007gi")
 theme_override_font_sizes/font_size = 100
-text = "ORANGE SURVIVAL"
+text = "CONVEYOR SHOWDOWN"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ResultsLabel" type="Label" parent="CanvasLayer/ResultsUI/PanelContainer/VBoxContainer" unique_id=523565193]
 layout_mode = 2

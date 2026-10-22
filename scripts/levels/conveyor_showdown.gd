@@ -729,9 +729,13 @@ func _show_race_results() -> void:
 	if finish_order.is_empty():
 		results_title.text = "NO WINNERS!"
 	elif finish_order[0] == local_peer_id:
-		results_title.text = "YOU WIN!"
-	elif finished_players.has(local_peer_id):
-		results_title.text = "RACE COMPLETE!"
+		results_title.text = "1st PLACE!"
+	elif finish_order[1] == local_peer_id:
+		results_title.text = "2nd PLACE!"
+	elif finish_order[2] == local_peer_id:
+		results_title.text = "3rd PLACE!"
+	elif finish_order[3] == local_peer_id:
+		results_title.text = "4th PLACE!"
 	else:
 		results_title.text = "ELIMINATED!"
 
@@ -741,13 +745,14 @@ func _show_race_results() -> void:
 	for i: int in finish_order.size():
 		var peer_id: int = finish_order[i]
 		var finish_time: float = float(finished_players[peer_id])
-
+		var player_name: String = _get_player_display_name(peer_id)
+		
 		var minutes: int = floori(finish_time / 60.0)
 		var seconds: float = fposmod(finish_time, 60.0)
 
-		result_text += "%d. Player %s - %02d:%05.2f\n" % [
+		result_text += "%d. %s - %02d:%05.2f\n" % [
 			i + 1,
-			str(peer_id),
+			player_name,
 			minutes,
 			seconds
 		]
@@ -757,11 +762,20 @@ func _show_race_results() -> void:
 		if finished_players.has(peer_id):
 			continue
 
-		result_text += "Player %s - ELIMINATED\n" % str(peer_id)
+		result_text += "%s - ELIMINATED\n" % _get_player_display_name(peer_id)
 
 	results_label.text = result_text
 	continue_label.text = "Waiting to continue..."
 
+
+func _get_player_display_name(peer_id: int) -> String:
+	var player_name: String = LobbyManager.get_player_name(peer_id)
+
+	if player_name.is_empty():
+		return "Player %d" % peer_id
+
+	return player_name
+	
 
 # ============================================================
 # RESULTS COUNTDOWN
