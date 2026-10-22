@@ -15,6 +15,7 @@
 [ext_resource type="Resource" uid="uid://bhmjxb87ib43y" path="res://resources/products/watermelon.tres" id="10_xsx0w"]
 [ext_resource type="Resource" uid="uid://c117r4ojbg6ym" path="res://resources/products/lemon.tres" id="11_e6ilc"]
 [ext_resource type="Resource" uid="uid://d0ysrbe7f2rwf" path="res://resources/products/mandarin.tres" id="12_v85xt"]
+[ext_resource type="PackedScene" uid="uid://d4dkkmjdpe8lc" path="res://scenes/objects/minigames/barrier_pillars.tscn" id="15_4327s"]
 
 [sub_resource type="Environment" id="Environment_45b30"]
 background_mode = 1
@@ -114,6 +115,18 @@ debug_color = Color(0.7647059, 0.105882354, 0.28235295, 0.84705883)
 
 [node name="ProductSpawnPoint" type="Marker3D" parent="Environment" unique_id=1119747582]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -40)
+
+[node name="Pillars" type="Node3D" parent="Environment" unique_id=796078651]
+
+[node name="BarrierPillars1" parent="Environment/Pillars" unique_id=685020314 instance=ExtResource("15_4327s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 20)
+barrier_type = 1
+
+[node name="BarrierPillars2" parent="Environment/Pillars" unique_id=377388383 instance=ExtResource("15_4327s")]
+barrier_type = 0
+
+[node name="BarrierPillars3" parent="Environment/Pillars" unique_id=574727170 instance=ExtResource("15_4327s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -20)
 
 [node name="Products" type="Node3D" parent="." unique_id=1647661018]
 
