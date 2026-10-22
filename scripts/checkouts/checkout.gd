@@ -19,6 +19,10 @@ class_name Checkout
 @onready var scan_area: Area3D = $ScanArea
 @onready var scanner_beep_player: AudioStreamPlayer3D = $ScannerBeepPlayer
 
+# Checkout Display
+@onready var checkout_display: CheckoutDisplay = $CheckoutViewport/CheckoutUI
+@onready var checkout_screen: MeshInstance3D = $CheckoutScreen
+@onready var checkout_viewport: SubViewport = $CheckoutViewport
 
 # Customers
 var checkout_customer: ShopperAI = null
@@ -35,6 +39,13 @@ var checkout_active: bool = false
 func _ready() -> void:
 	add_to_group("checkout")
 	bag_mesh.hide()
+
+	var material: StandardMaterial3D = StandardMaterial3D.new()
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.albedo_texture = checkout_viewport.get_texture()
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+
+	checkout_screen.material_override = material
 
 
 func _process(_delta: float) -> void:
@@ -270,7 +281,7 @@ func customer_arrived_at_checkout(customer: ShopperAI) -> void:
 		return
 	
 	unscanned_items = customer.purchased_items.duplicate()
-
+	_reset_checkout_display.rpc()
 	_clear_grid(checkout_grid)
 
 	for product: ProductData in customer.purchased_items:
@@ -358,6 +369,12 @@ func scan_ai_product(product: ProductData) -> bool:
 	_sync_grid_to_clients(bag_grid)
 	_play_scanner_beep.rpc()
 	_reset_checkout_wait()
+
+	_update_checkout_display.rpc(
+		product.display_name,
+		product.product_price,
+		unscanned_items.is_empty()
+	)
 
 	if unscanned_items.is_empty() and checkout_customer != null:
 		_stop_checkout_wait()
@@ -492,3 +509,21 @@ func _play_scanner_beep() -> void:
 
 	scanner_beep_player.pitch_scale = randf_range(1.0, 1.05)
 	scanner_beep_player.play()
+
+# Checkout Display RPC's
+
+@rpc("authority", "call_local", "reliable")
+func _reset_checkout_display() -> void:
+	checkout_display.start_checkout()
+
+
+@rpc("authority", "call_local", "reliable")
+func _update_checkout_display(
+	product_name: String,
+	price: float,
+	sale_complete: bool
+) -> void:
+	checkout_display.add_scanned_item(product_name, price)
+
+	if sale_complete:
+		checkout_display.complete_sale()
