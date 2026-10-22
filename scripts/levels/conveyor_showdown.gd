@@ -20,6 +20,9 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 @export var countdown_interval: float = 1.0
 @export var go_display_duration: float = 0.6
 
+@export_group("Race Timer")
+@export var race_duration: float = 90.0
+
 @export_group("Obstacle Spawning")
 @export var minimum_spawn_interval: float = 2.0
 @export var maximum_spawn_interval: float = 4.0
@@ -49,6 +52,7 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 @onready var multiplayer_spawner: MultiplayerSpawner = $MultiplayerSpawner
 @onready var spectator_camera: Camera3D = $SpectatorCamera
 
+@onready var timer_label: Label = $CanvasLayer/SurvivalHUD/PanelContainer/VBoxContainer/TimerLabel
 @onready var survival_hud: Control = $CanvasLayer/SurvivalHUD
 @onready var results_ui: Control = $CanvasLayer/ResultsUI
 @onready var results_title: Label = $CanvasLayer/ResultsUI/PanelContainer/VBoxContainer/TitleLabel
@@ -79,6 +83,9 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 # ============================================================
 # RACE STATE
 # ============================================================
+
+var race_time_remaining: float = 0.0
+var last_synced_second: int = -1
 
 var race_active: bool = false
 var race_finished: bool = false
@@ -135,7 +142,10 @@ func _ready() -> void:
 
 	survival_hud.hide()
 	results_ui.hide()
-
+	
+	race_time_remaining = race_duration
+	_update_race_hud(race_time_remaining)
+	
 	original_spectator_transform = spectator_camera.global_transform
 
 	SpawnManager.setup_level(
@@ -193,6 +203,10 @@ func _physics_process(delta: float) -> void:
 	_check_fallen_players()
 	
 	race_elapsed_time += delta
+	_update_race_timer(delta)
+
+	if race_finished:
+		return
 
 	# Spawn obstacles at randomized intervals.
 	obstacle_spawn_timer -= delta
@@ -454,6 +468,10 @@ func _spawn_conveyor_obstacle(data: Variant) -> Node:
 @rpc("authority", "call_local", "reliable")
 func _start_race() -> void:
 	race_active = true
+	race_time_remaining = race_duration
+	race_elapsed_time = 0.0
+	last_synced_second = -1
+	_update_race_hud(race_time_remaining)
 	_show_countdown("GO!")
 
 	if multiplayer.is_server():
@@ -533,6 +551,50 @@ func _respawn_player(peer_id: int) -> void:
 	player.set("conveyor_velocity", Vector3.ZERO)
 
 	print("CONVEYOR SHOWDOWN: Player ", peer_id, " respawned.")
+
+
+
+# ============================================================
+# RACE TIMER
+# ============================================================
+
+func _update_race_timer(delta: float) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if not race_active or race_finished:
+		return
+
+	race_time_remaining = maxf(
+		race_time_remaining - delta,
+		0.0
+	)
+
+	var current_second: int = ceili(race_time_remaining)
+
+	if current_second != last_synced_second:
+		last_synced_second = current_second
+		_sync_race_timer.rpc(race_time_remaining)
+
+	if race_time_remaining <= 0.0:
+		_finish_race()
+
+
+@rpc("authority", "call_local", "reliable")
+func _sync_race_timer(time_remaining: float) -> void:
+	race_time_remaining = time_remaining
+	_update_race_hud(time_remaining)
+
+
+func _update_race_hud(time_remaining: float) -> void:
+	var seconds: int = ceili(time_remaining)
+	var minutes: int = seconds / 60
+	var leftover_seconds: int = seconds % 60
+
+	timer_label.text = "%02d:%02d" % [
+		minutes,
+		leftover_seconds
+	]
 
 
 
@@ -620,7 +682,8 @@ func _finish_race() -> void:
 
 	_sync_race_finished.rpc(
 		finish_order,
-		finished_players
+		finished_players,
+		race_players
 	)
 
 	results_time_remaining = results_duration
@@ -630,10 +693,12 @@ func _finish_race() -> void:
 	_broadcast_results_countdown()
 
 
+
 @rpc("authority", "call_local", "reliable")
 func _sync_race_finished(
 	positions: Array[int],
-	times: Dictionary
+	times: Dictionary,
+	participants: Array[int]
 ) -> void:
 	race_finished = true
 	race_active = false
@@ -644,6 +709,7 @@ func _sync_race_finished(
 
 	finish_order = positions.duplicate()
 	finished_players = times.duplicate(true)
+	race_players = participants.duplicate()
 
 	_show_race_results()
 
@@ -652,19 +718,25 @@ func _sync_race_finished(
 # RESULTS UI
 # ============================================================
 
+
 func _show_race_results() -> void:
 	survival_hud.hide()
 	results_ui.show()
 
 	var local_peer_id: int = multiplayer.get_unique_id()
 
-	if not finish_order.is_empty() and finish_order[0] == local_peer_id:
+	if finish_order.is_empty():
+		results_title.text = "NO WINNERS!"
+	elif finish_order[0] == local_peer_id:
 		results_title.text = "YOU WIN!"
-	else:
+	elif finished_players.has(local_peer_id):
 		results_title.text = "RACE COMPLETE!"
+	else:
+		results_title.text = "ELIMINATED!"
 
 	var result_text: String = "FINAL RESULTS\n\n"
 
+	# Players who crossed the finish line.
 	for i: int in finish_order.size():
 		var peer_id: int = finish_order[i]
 		var finish_time: float = float(finished_players[peer_id])
@@ -678,6 +750,13 @@ func _show_race_results() -> void:
 			minutes,
 			seconds
 		]
+
+	# Players who failed to finish before the time limit.
+	for peer_id: int in race_players:
+		if finished_players.has(peer_id):
+			continue
+
+		result_text += "Player %s - ELIMINATED\n" % str(peer_id)
 
 	results_label.text = result_text
 	continue_label.text = "Waiting to continue..."

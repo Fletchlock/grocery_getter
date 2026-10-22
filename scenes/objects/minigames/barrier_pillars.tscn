@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://d4dkkmjdpe8lc"]
 
 [ext_resource type="Script" uid="uid://co6j0yvd07mjq" path="res://scripts/objects/minigames/barrier_pillars.gd" id="1_ds0l5"]
-[ext_resource type="ArrayMesh" uid="uid://siq7mu1c3kq" path="res://assets/models/minigames/barrier_pillar_Cube_028.res" id="2_1qwmu"]
+[ext_resource type="ArrayMesh" uid="uid://dxjrx45pfftg1" path="res://assets/models/minigames/barrier_pillar_Cube_028.res" id="2_1qwmu"]
 [ext_resource type="Shader" uid="uid://m6vsp87d1j3x" path="res://assets/shaders/barrier_beam.gdshader" id="2_oyneu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ds0l5"]

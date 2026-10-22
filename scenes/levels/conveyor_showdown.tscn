@@ -1,10 +1,9 @@
-[gd_scene format=3 uid="uid://dku3h30o3uhn4"]
+[gd_scene format=4 uid="uid://dku3h30o3uhn4"]
 
 [ext_resource type="Script" uid="uid://ces8dad8mqol0" path="res://scripts/levels/conveyor_showdown.gd" id="1_iiidm"]
 [ext_resource type="PackedScene" uid="uid://b1x1g7c20n23o" path="res://scenes/objects/minigames/ConveyorBelt.tscn" id="1_yknvy"]
 [ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="2_1shib"]
 [ext_resource type="Resource" uid="uid://dpcxghxgl7ms" path="res://resources/products/flour.tres" id="2_6vj14"]
-[ext_resource type="ArrayMesh" uid="uid://bmk1qdu856hbr" path="res://assets/models/minigames/conveyor_start_finish_area_Cube_024.res" id="2_xr4oa"]
 [ext_resource type="FontFile" uid="uid://br8fqpsrsbuld" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-BoldItalic.ttf" id="5_1shib"]
 [ext_resource type="Resource" uid="uid://cusqf2gc2jl7h" path="res://resources/products/sugar.tres" id="5_1vc2f"]
 [ext_resource type="Resource" uid="uid://cg1ckgnjrikqh" path="res://resources/products/bread.tres" id="6_hrf0q"]
@@ -22,6 +21,7 @@
 [ext_resource type="Resource" uid="uid://bhc6d3aw4m6hq" path="res://resources/products/pepper_yellow.tres" id="16_nmlk0"]
 [ext_resource type="Resource" uid="uid://cbyww3278lwgu" path="res://resources/products/pepper_green.tres" id="17_ocwwq"]
 [ext_resource type="Resource" uid="uid://d4dymab1d80dx" path="res://resources/products/pepper_red.tres" id="18_brsvn"]
+[ext_resource type="Texture2D" uid="uid://b8rrkq14tug20" path="res://assets/images/finish_line.png" id="20_ltl6m"]
 
 [sub_resource type="Environment" id="Environment_45b30"]
 background_mode = 1
@@ -40,8 +40,74 @@ fog_height = -88.28
 fog_height_density = -0.5518
 fog_depth_curve = 5.0982404
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1hqpl"]
+resource_name = "Material.028"
+cull_mode = 2
+albedo_color = Color(0.54517, 0.5501928, 0.57552344, 1)
+albedo_texture = ExtResource("20_ltl6m")
+uv1_scale = Vector3(2.25, 3, 1)
+uv1_offset = Vector3(-0.035, 0.25, 0)
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_nmlk0"]
+_surfaces = [{
+"aabb": AABB(-4.13, 0, -4.13, 8.26, 0.5, 8.26),
+"format": 34896613377,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAACAAEAAwAEAAEABQAAAAIAAwAAAAUABAAGAAIABQACAAYAAwAHAAQAAwAFAAcABwAGAAQABwAFAAYA"),
+"name": "Material.028",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AAAAAP//AAAAAP//AAAAAAAA/////wAAAAAAAAAAAAD/////AAAAAP//AAD//wAA////////AAD//wAAAAAAAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_ocwwq"]
+resource_name = "conveyor_start_finish_area_Cube_024"
+_surfaces = [{
+"aabb": AABB(-4.13, 0, -4.13, 8.26, 0.5, 8.26),
+"attribute_data": PackedByteArray("/1////+f/7//n////1//v/9f/7//n/9//5//v/9f/3//X/9//5//P/+f/3//X/8//1//P/+fAAD/n/8//18AAP8f/3//X/8//1//f/8f/z//n/9//9//P//f/3//n/8/"),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": SubResource("StandardMaterial3D_1hqpl"),
+"name": "Material.028",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("AAAAAP//VNUAAP//AABU1QAA/////1TVAAAAAAAAVNUAAAAAAAD///////8AAP//AAD//wAA/////wAAAAD/////AAAAAFTV////////VNX/////AABU1f//AAD//1TV//8AAP///78AAP//////v/////////+/AAAAAP///78AAAAAAAD/v///AAD///+///8AAAAA/78AAAAA////v/////8AAP//AAD///////8AAP//AAD/////////////VNVU1VTVVNVU1VTVVNVU1f+//7//v/+//7//v/+//7+qKqoqqiqqKqoqqiqqKqoq/////////////////////wAA/38AAP9/AAD/fwAA/3//f/+//3//v/9//7//f/+/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_nmlk0")
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
 size = Vector3(16.52, 0.5, 16.52)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ltl6m"]
+resource_name = "Material.028"
+cull_mode = 2
+albedo_color = Color(0.54517, 0.5501928, 0.57552344, 1)
+albedo_texture = ExtResource("20_ltl6m")
+uv1_scale = Vector3(2.25, 3, 1)
+uv1_offset = Vector3(-0.035, 0.25, 0)
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_brsvn"]
+resource_name = "conveyor_start_finish_area_Cube_024"
+_surfaces = [{
+"aabb": AABB(-4.13, 0, -4.13, 8.26, 0.5, 8.26),
+"attribute_data": PackedByteArray("/1////+f/7//n////1//v/9f/7//n/9//5//v/9f/3//X/9//5//P/+f/3//X/8//1//P/+fAAD/n/8//18AAP8f/3//X/8//1//f/8f/z//n/9//9//P//f/3//n/8/"),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": SubResource("StandardMaterial3D_ltl6m"),
+"name": "Material.028",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("AAAAAP//VNUAAP//AABU1QAA/////1TVAAAAAAAAVNUAAAAAAAD///////8AAP//AAD//wAA/////wAAAAD/////AAAAAFTV////////VNX/////AABU1f//AAD//1TV//8AAP///78AAP//////v/////////+/AAAAAP///78AAAAAAAD/v///AAD///+///8AAAAA/78AAAAA////v/////8AAP//AAD///////8AAP//AAD/////////////VNVU1VTVVNVU1VTVVNVU1f+//7//v/+//7//v/+//7+qKqoqqiqqKqoqqiqqKqoq/////////////////////wAA/38AAP9/AAD/fwAA/3//f/+//3//v/9//7//f/+/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_nmlk0")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hd853"]
 size = Vector3(16.52, 0.5, 16.52)
@@ -90,7 +156,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 48.26)
 
 [node name="StartMesh" type="MeshInstance3D" parent="Environment/StartingArea" unique_id=1649139214]
 transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
-mesh = ExtResource("2_xr4oa")
+mesh = SubResource("ArrayMesh_ocwwq")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Environment/StartingArea" unique_id=347389705]
 
@@ -118,7 +184,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -48.26)
 
 [node name="FinishMesh" type="MeshInstance3D" parent="Environment/FinishArea" unique_id=822749353]
 transform = Transform3D(-2, 0, 1.7484555e-07, 0, 1, 0, -1.7484555e-07, 0, -2, 0, 0, 0)
-mesh = ExtResource("2_xr4oa")
+mesh = SubResource("ArrayMesh_brsvn")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Environment/FinishArea" unique_id=975591901]
 
