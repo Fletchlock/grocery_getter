@@ -285,22 +285,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 offset_transform_enabled = true
-offset_transform_position = Vector2(0, -450)
 mouse_filter = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/ResultsUI" unique_id=1643934788]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -143.0
-offset_top = -61.5
-offset_right = 143.0
-offset_bottom = 61.5
+offset_left = -425.0
+offset_right = 425.0
+offset_bottom = 222.0
 grow_horizontal = 2
-grow_vertical = 2
 offset_transform_enabled = true
 offset_transform_position = Vector2(0, 80)
 theme_override_styles/panel = SubResource("StyleBoxFlat_hd853")
@@ -319,10 +314,14 @@ theme_override_constants/shadow_offset_x = 6
 theme_override_constants/shadow_offset_y = 6
 theme_override_constants/outline_size = 18
 theme_override_fonts/font = SubResource("FontVariation_007gi")
-theme_override_font_sizes/font_size = 100
+theme_override_font_sizes/font_size = 75
 text = "CONVEYOR SHOWDOWN"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/ResultsUI/PanelContainer/VBoxContainer" unique_id=910441489]
+layout_mode = 2
+theme_override_constants/margin_bottom = 40
 
 [node name="ResultsLabel" type="Label" parent="CanvasLayer/ResultsUI/PanelContainer/VBoxContainer" unique_id=523565193]
 layout_mode = 2

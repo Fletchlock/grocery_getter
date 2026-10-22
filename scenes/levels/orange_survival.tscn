@@ -135,6 +135,7 @@ theme_override_font_sizes/font_size = 40
 text = "Players Remaining: 2/2"
 
 [node name="ResultsUI" type="Control" parent="CanvasLayer" unique_id=184331532]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -198,7 +199,6 @@ transform = Transform3D(1, 0, 0, 0, 0.95105654, 0.309017, 0, -0.309017, 0.951056
 
 [node name="IntroLayer" type="CanvasLayer" parent="." unique_id=1136399271]
 layer = 10
-visible = false
 
 [node name="BlackScreen" type="ColorRect" parent="IntroLayer" unique_id=1072964976]
 anchors_preset = 15
