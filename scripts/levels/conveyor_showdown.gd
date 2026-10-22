@@ -179,6 +179,7 @@ func _ready() -> void:
 # PROCESS
 # ============================================================
 
+
 func _process(delta: float) -> void:
 	var local_peer_id: int = multiplayer.get_unique_id()
 	var has_finished: bool = finished_players.has(local_peer_id)
@@ -187,11 +188,14 @@ func _process(delta: float) -> void:
 		not race_active or has_finished
 	)
 
+	# Each player checks their own fall.
+	if race_active and not race_finished and not has_finished:
+		_check_local_player_fall()
+
+	# Finished players can spectate.
 	if has_finished and not race_finished:
 		_update_spectator_camera(delta)
-	
-	if has_finished and not race_finished:
-		_update_spectator_camera(delta)
+
 
 
 func _physics_process(delta: float) -> void:
