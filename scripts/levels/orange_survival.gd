@@ -411,12 +411,20 @@ func _show_round_results(winners: Array[int]) -> void:
 		var result_text: String = "Survivors:\n"
 
 		for peer_id: int in winners:
-			result_text += str(peer_id) + "\n"
+			result_text += _get_player_display_name(peer_id) + "\n"
 
 		results_label.text = result_text
 
 	continue_label.text = "Waiting to continue..."
 
+
+func _get_player_display_name(peer_id: int) -> String:
+	var player_name: String = LobbyManager.get_player_name(peer_id)
+
+	if player_name.is_empty():
+		return "Player %d" % peer_id
+
+	return player_name
 
 
 func _update_results_countdown(delta: float) -> void:
