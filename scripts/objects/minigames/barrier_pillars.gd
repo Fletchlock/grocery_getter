@@ -1,3 +1,4 @@
+
 extends Node3D
 class_name BarrierPillars
 
@@ -11,16 +12,24 @@ enum BarrierType {
 
 @export var barrier_type: BarrierType = BarrierType.FULL
 
-@export var beam_width: float = 3.7
-@export var beam_thickness: float = 0.05
+@export_group("Beam")
+@export var beam_width: float = 16.22
+@export var beam_thickness: float = 0.005
 
-@export var low_height: float = 0.00
-@export var high_bottom: float = 2.0
-@export var full_height: float = 4.0
+@export_group("Low Barrier")
+@export var low_start: float = 0.5
+@export var low_height: float = 1.5
+
+@export_group("High Barrier")
+@export var high_start: float = 2.7
+@export var high_height: float = 2.0
+
+@export_group("Full Barrier")
+@export var full_start: float = 0.5
+@export var full_height: float = 5.5
 
 
 @onready var beam_visual: MeshInstance3D = $BeamVisual
-@onready var beam_body: StaticBody3D = $BeamBody
 @onready var beam_collision: CollisionShape3D = $BeamBody/CollisionShape3D
 
 
@@ -29,21 +38,25 @@ func _ready() -> void:
 
 
 func _setup_barrier() -> void:
+	var start: float = 0.0
 	var height: float = 0.0
-	var center_y: float = 0.0
 
 	match barrier_type:
 		BarrierType.LOW:
+			start = low_start
 			height = low_height
-			center_y = height * 0.5
 
 		BarrierType.HIGH:
-			height = maxf(full_height - high_bottom, 0.05)
-			center_y = high_bottom + height * 0.5
+			start = high_start
+			height = high_height
 
 		BarrierType.FULL:
+			start = full_start
 			height = full_height
-			center_y = height * 0.5
+
+	# Pillar meshes are centered at Y = 0.
+	# Their bottom is at Y = -3.0.
+	var center_y: float = -3.0 + start + height * 0.5
 
 	var beam_size: Vector3 = Vector3(
 		beam_width,
@@ -60,4 +73,4 @@ func _setup_barrier() -> void:
 	beam_collision.shape = collision_shape
 
 	beam_visual.position.y = center_y
-	beam_body.position.y = center_y
+	beam_collision.position.y = center_y
