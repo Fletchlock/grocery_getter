@@ -6,11 +6,12 @@
 size = Vector3(0.3, 6, 0.3)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7ajv0"]
+transparency = 1
 cull_mode = 2
-albedo_color = Color(0.92156863, 0, 0.3254902, 0)
+albedo_color = Color(0.9518965, 0.15860751, 0.9999998, 0.13725491)
 emission_enabled = true
-emission = Color(0.8285856, 0.060210004, 0.27607626, 1)
-emission_energy_multiplier = 2.0
+emission = Color(0.925391, 0.0007760602, 0.93841577, 1)
+emission_energy_multiplier = 3.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_hd853"]
 material = SubResource("StandardMaterial3D_7ajv0")
