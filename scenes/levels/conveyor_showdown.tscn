@@ -15,15 +15,25 @@
 [ext_resource type="Resource" uid="uid://bhmjxb87ib43y" path="res://resources/products/watermelon.tres" id="10_xsx0w"]
 [ext_resource type="Resource" uid="uid://c117r4ojbg6ym" path="res://resources/products/lemon.tres" id="11_e6ilc"]
 [ext_resource type="Resource" uid="uid://d0ysrbe7f2rwf" path="res://resources/products/mandarin.tres" id="12_v85xt"]
+[ext_resource type="Resource" uid="uid://drhqmd8mbofk" path="res://resources/products/eggs.tres" id="13_xgchh"]
 [ext_resource type="PackedScene" uid="uid://d4dkkmjdpe8lc" path="res://scenes/objects/minigames/barrier_pillars.tscn" id="15_4327s"]
 
 [sub_resource type="Environment" id="Environment_45b30"]
 background_mode = 1
-background_color = Color(0, 0.106943674, 0.20267391, 1)
+background_color = Color(0.06457782, 6.690776e-05, 0.13073266, 1)
 ambient_light_source = 2
-ambient_light_color = Color(1, 0.7993876, 0.625741, 1)
-ambient_light_energy = 1.2
+ambient_light_color = Color(0.92086434, 0.8682027, 0.93094397, 1)
+ambient_light_energy = 0.45
 glow_enabled = true
+glow_intensity = 1.15
+glow_bloom = 0.25
+fog_mode = 1
+fog_light_color = Color(0.64514774, 0.011099817, 0.5348194, 1)
+fog_density = 1.0
+fog_sky_affect = 0.135
+fog_height = -88.28
+fog_height_density = -0.5518
+fog_depth_curve = 5.0982404
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
 size = Vector3(16.52, 0.5, 16.52)
@@ -42,9 +52,11 @@ base_font = ExtResource("5_1shib")
 
 [node name="ConveyorShowdown" type="Node3D" unique_id=411679754 groups=["disable_player_sprint"]]
 script = ExtResource("1_iiidm")
-maximum_active_obstacles = 15
-obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("2_6vj14"), ExtResource("5_1vc2f"), ExtResource("6_hrf0q"), ExtResource("7_tkfah"), ExtResource("8_xsx0w"), ExtResource("9_4327s"), ExtResource("10_xgchh"), ExtResource("10_xsx0w")])
-obstacle_scale = 15.0
+minimum_spawn_interval = 1.0
+maximum_spawn_interval = 2.0
+maximum_active_obstacles = 30
+obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("2_6vj14"), ExtResource("5_1vc2f"), ExtResource("6_hrf0q"), ExtResource("7_tkfah"), ExtResource("8_xsx0w"), ExtResource("9_4327s"), ExtResource("10_xgchh"), ExtResource("10_xsx0w"), ExtResource("11_e6ilc"), ExtResource("12_v85xt"), ExtResource("13_xgchh")])
+obstacle_scale = 25.0
 rolling_obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("8_xsx0w"), ExtResource("9_4327s"), ExtResource("10_xgchh"), ExtResource("11_e6ilc"), ExtResource("12_v85xt"), ExtResource("10_xsx0w")])
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=321550915]
@@ -52,7 +64,9 @@ environment = SubResource("Environment_45b30")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1099457180]
 transform = Transform3D(0.56118006, -0.71877277, -0.41041768, 0.1662412, -0.38787246, 0.9065974, -0.8108272, -0.5769927, -0.098176755, 0, 0, 0)
-light_energy = 1.2
+light_color = Color(0.6525376, 0.8108198, 0.94237465, 1)
+light_energy = 2.943
+light_indirect_energy = 0.598
 shadow_enabled = true
 
 [node name="Players" type="Node3D" parent="." unique_id=950978207]
