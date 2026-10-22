@@ -30,6 +30,9 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 @export var obstacle_spawn_half_width: float = 8.0
 @export var rolling_obstacle_products: Array[ProductData] = []
 
+@export_group("Player Respawning")
+@export var respawn_y: float = -20.0
+
 @export_group("Results")
 @export var results_duration: float = 10.0
 
@@ -186,7 +189,9 @@ func _physics_process(delta: float) -> void:
 
 	if not race_active or race_finished:
 		return
-
+	
+	_check_fallen_players()
+	
 	race_elapsed_time += delta
 
 	# Spawn obstacles at randomized intervals.
@@ -476,6 +481,59 @@ func _set_local_player_movement_locked(locked: bool) -> void:
 		return
 
 	player.movement_locked = locked
+
+
+
+# ============================================================
+# PLAYER RESPAWNING
+# ============================================================
+
+func _check_fallen_players() -> void:
+	for player_node: Node in players.get_children():
+		if not player_node is CharacterBody3D:
+			continue
+
+		var player: CharacterBody3D = player_node as CharacterBody3D
+		var peer_id: int = player.get_multiplayer_authority()
+
+		if not race_players.has(peer_id):
+			continue
+
+		if finished_players.has(peer_id):
+			continue
+
+		if player.global_position.y > respawn_y:
+			continue
+
+		_respawn_player.rpc(peer_id)
+
+
+@rpc("authority", "call_local", "reliable")
+func _respawn_player(peer_id: int) -> void:
+	var player: CharacterBody3D = players.get_node_or_null(
+		str(peer_id)
+	) as CharacterBody3D
+
+	if player == null:
+		return
+
+	var spawn_index: int = race_players.find(peer_id)
+
+	if spawn_index < 0 or spawn_index >= spawn_points.size():
+		return
+
+	if not player.is_multiplayer_authority():
+		return
+
+	player.global_transform = spawn_points[spawn_index].global_transform
+	player.velocity = Vector3.ZERO
+
+	# Clear any remaining conveyor or obstacle forces.
+	player.set("knockback_velocity", Vector3.ZERO)
+	player.set("conveyor_velocity", Vector3.ZERO)
+
+	print("CONVEYOR SHOWDOWN: Player ", peer_id, " respawned.")
+
 
 
 # ============================================================
