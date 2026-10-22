@@ -15,6 +15,8 @@ size = Vector3(0.75454557, 0.7067013, 1.6119537)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_hd853"]
+
 [node name="Checkout" type="Node3D" unique_id=2036172686]
 script = ExtResource("1_ibuna")
 
@@ -73,3 +75,11 @@ bus = &"SFX"
 stream = ExtResource("6_m1o1u")
 volume_db = -10.066
 bus = &"SFX"
+
+[node name="ScanArea" type="Area3D" parent="." unique_id=1107148775]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.2066052)
+collision_layer = 256
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ScanArea" unique_id=1790967742]
+shape = SubResource("BoxShape3D_hd853")
+debug_color = Color(0.9131919, 0.0074887597, 0.9999998, 1)

@@ -15,6 +15,11 @@ class_name Checkout
 @onready var bag_point: Marker3D = $BagPoint
 @onready var bag_mesh: MeshInstance3D = $BagGrid/BagMesh
 
+# AI Checkout Scanner
+@onready var scan_area: Area3D = $ScanArea
+@onready var scanner_beep_player: AudioStreamPlayer3D = $ScannerBeepPlayer
+
+
 # Customers
 var checkout_customer: ShopperAI = null
 var waiting_customers: Array[ShopperAI] = []
@@ -37,6 +42,37 @@ func _process(_delta: float) -> void:
 		_check_checkout_bell()
 
 
+func get_interaction_prompt(player: CharacterBody3D) -> String:
+	if not player.network_holding_item:
+		return ""
+
+	if player.held_item == null:
+		return ""
+
+	var product: ProductData = player.held_item as ProductData
+
+	if product == null:
+		return ""
+
+	return "[E] Scan " + product.display_name
+
+
+func interact(player: CharacterBody3D) -> void:
+	if player == null or player.held_item == null:
+		return
+
+	var product: ProductData = player.held_item as ProductData
+
+	if product == null:
+		return
+
+	if product.product_category == "produce":
+		_open_produce_code_hud(player, product)
+		return
+
+	_request_ai_scan(player, product)
+
+
 func request_checkout(customer: ShopperAI) -> Marker3D:
 	if customer == checkout_customer:
 		return checkout_point
@@ -55,6 +91,174 @@ func request_checkout(customer: ShopperAI) -> Marker3D:
 	waiting_customers.append(customer)
 
 	return waiting_points[waiting_customers.size() - 1]
+
+
+func _request_ai_scan(
+	player: CharacterBody3D,
+	product: ProductData,
+	entered_code: String = ""
+) -> void:
+	if multiplayer.is_server():
+		_server_scan_ai_product(player, product, entered_code)
+	else:
+		request_scan_ai_product.rpc_id(
+			1,
+			player.get_path(),
+			product.resource_path,
+			entered_code
+		)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_scan_ai_product(
+	player_path: NodePath,
+	product_path: String,
+	entered_code: String = ""
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var peer_id: int = multiplayer.get_remote_sender_id()
+
+	var player: CharacterBody3D = get_node_or_null(
+		player_path
+	) as CharacterBody3D
+
+	if player == null:
+		return
+
+	if player.get_multiplayer_authority() != peer_id:
+		return
+
+	if not player.network_holding_item:
+		return
+
+	if player.network_held_item_path != product_path:
+		return
+
+	var product: ProductData = load(product_path) as ProductData
+
+	if product == null:
+		return
+
+	_server_scan_ai_product(player, product, entered_code)
+
+
+func _server_scan_ai_product(
+	player: CharacterBody3D,
+	product: ProductData,
+	entered_code: String = ""
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if player == null or product == null:
+		return
+
+	if not player.network_holding_item:
+		return
+
+	if player.network_held_item_path != product.resource_path:
+		return
+
+	# Produce must have the correct code before scanning.
+	if product.product_category == "produce":
+		if entered_code.is_empty():
+			return
+
+		if entered_code != product.product_code:
+			return
+
+	if not scan_ai_product(product):
+		return
+
+	var peer_id: int = player.get_multiplayer_authority()
+
+	# Close and reset the barcode HUD after a successful produce scan.
+	if product.product_category == "produce":
+		if peer_id == multiplayer.get_unique_id():
+			_apply_barcode_hud_state(false)
+			_reset_completed_barcode_code()
+		else:
+			_apply_barcode_hud_state.rpc_id(peer_id, false)
+			_reset_completed_barcode_code.rpc_id(peer_id)
+
+	# Remove the scanned product from the player's hand.
+	if peer_id == multiplayer.get_unique_id():
+		player._clear_held_item()
+	else:
+		player.clear_held_item.rpc_id(peer_id)
+
+
+func _open_produce_code_hud(
+	player: CharacterBody3D,
+	product: ProductData
+) -> void:
+	if player == null or product == null:
+		return
+
+	var player_peer_id: int = player.get_multiplayer_authority()
+
+	if player_peer_id == multiplayer.get_unique_id():
+		_apply_barcode_hud_state(true, product.product_code)
+	else:
+		_apply_barcode_hud_state.rpc_id(
+			player_peer_id,
+			true,
+			product.product_code
+		)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _apply_barcode_hud_state(
+	should_show: bool,
+	product_code: String = ""
+) -> void:
+	var hud: Node = get_tree().get_first_node_in_group(
+		"day_time_hud"
+	)
+
+	if hud == null:
+		return
+
+	if should_show:
+		hud.set_barcode_checkout(self)
+		hud.show_barcode_hud(product_code)
+	else:
+		hud.close_barcode_hud()
+
+
+func complete_produce_code(product_code: String) -> void:
+	var player: CharacterBody3D = (
+		get_tree().get_first_node_in_group("local_player")
+		as CharacterBody3D
+	)
+
+	if player == null or player.held_item == null:
+		return
+
+	var product: ProductData = player.held_item as ProductData
+
+	if product == null:
+		return
+
+	if product.product_category != "produce":
+		return
+
+	if product.product_code != product_code:
+		return
+
+	_request_ai_scan(player, product, product_code)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _reset_completed_barcode_code() -> void:
+	var hud: Node = get_tree().get_first_node_in_group(
+		"day_time_hud"
+	)
+
+	if hud != null:
+		hud.completed_barcode_code = ""
 
 
 # Called when the active shopper reaches CheckoutPoint.
@@ -152,7 +356,7 @@ func scan_ai_product(product: ProductData) -> bool:
 			break
 
 	_sync_grid_to_clients(bag_grid)
-
+	_play_scanner_beep.rpc()
 	_reset_checkout_wait()
 
 	if unscanned_items.is_empty() and checkout_customer != null:
@@ -279,3 +483,12 @@ func _check_checkout_bell() -> void:
 @rpc("authority", "call_local", "reliable")
 func _play_desk_bell() -> void:
 	desk_bell.play()
+
+
+@rpc("authority", "call_local", "reliable")
+func _play_scanner_beep() -> void:
+	if not is_instance_valid(scanner_beep_player):
+		return
+
+	scanner_beep_player.pitch_scale = randf_range(1.0, 1.05)
+	scanner_beep_player.play()
