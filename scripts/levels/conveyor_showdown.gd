@@ -189,6 +189,9 @@ func _process(delta: float) -> void:
 
 	if has_finished and not race_finished:
 		_update_spectator_camera(delta)
+	
+	if has_finished and not race_finished:
+		_update_spectator_camera(delta)
 
 
 func _physics_process(delta: float) -> void:
@@ -199,9 +202,7 @@ func _physics_process(delta: float) -> void:
 
 	if not race_active or race_finished:
 		return
-	
-	_check_fallen_players()
-	
+		
 	race_elapsed_time += delta
 	_update_race_timer(delta)
 
@@ -478,7 +479,9 @@ func _start_race() -> void:
 		for barrier: Node in pillars.get_children():
 			if barrier is BarrierPillars:
 				barrier.start_barrier()
-
+		
+		_sync_race_players.rpc(race_players)
+		
 		obstacle_spawn_timer = randf_range(
 			minimum_spawn_interval,
 			maximum_spawn_interval
@@ -501,33 +504,13 @@ func _set_local_player_movement_locked(locked: bool) -> void:
 	player.movement_locked = locked
 
 
-
 # ============================================================
 # PLAYER RESPAWNING
 # ============================================================
 
-func _check_fallen_players() -> void:
-	for player_node: Node in players.get_children():
-		if not player_node is CharacterBody3D:
-			continue
+func _check_local_player_fall() -> void:
+	var peer_id: int = multiplayer.get_unique_id()
 
-		var player: CharacterBody3D = player_node as CharacterBody3D
-		var peer_id: int = player.get_multiplayer_authority()
-
-		if not race_players.has(peer_id):
-			continue
-
-		if finished_players.has(peer_id):
-			continue
-
-		if player.global_position.y > respawn_y:
-			continue
-
-		_respawn_player.rpc(peer_id)
-
-
-@rpc("authority", "call_local", "reliable")
-func _respawn_player(peer_id: int) -> void:
 	var player: CharacterBody3D = players.get_node_or_null(
 		str(peer_id)
 	) as CharacterBody3D
@@ -535,23 +518,32 @@ func _respawn_player(peer_id: int) -> void:
 	if player == null:
 		return
 
+	if not player.is_multiplayer_authority():
+		return
+
+	if player.global_position.y > respawn_y:
+		return
+
+	_respawn_local_player(player, peer_id)
+
+
+func _respawn_local_player(
+	player: CharacterBody3D,
+	peer_id: int
+) -> void:
 	var spawn_index: int = race_players.find(peer_id)
 
 	if spawn_index < 0 or spawn_index >= spawn_points.size():
 		return
 
-	if not player.is_multiplayer_authority():
-		return
-
 	player.global_transform = spawn_points[spawn_index].global_transform
 	player.velocity = Vector3.ZERO
 
-	# Clear any remaining conveyor or obstacle forces.
+	# Clear remaining knockback and conveyor forces.
 	player.set("knockback_velocity", Vector3.ZERO)
 	player.set("conveyor_velocity", Vector3.ZERO)
 
 	print("CONVEYOR SHOWDOWN: Player ", peer_id, " respawned.")
-
 
 
 # ============================================================
@@ -584,6 +576,11 @@ func _update_race_timer(delta: float) -> void:
 func _sync_race_timer(time_remaining: float) -> void:
 	race_time_remaining = time_remaining
 	_update_race_hud(time_remaining)
+
+
+@rpc("authority", "call_local", "reliable")
+func _sync_race_players(participants: Array[int]) -> void:
+	race_players = participants.duplicate()
 
 
 func _update_race_hud(time_remaining: float) -> void:
