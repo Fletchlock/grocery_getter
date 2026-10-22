@@ -2,16 +2,20 @@
 
 [ext_resource type="Script" uid="uid://o8tn6a2m6noj" path="res://scripts/objects/misc/conveyor_belt.gd" id="1_45ubg"]
 [ext_resource type="ArrayMesh" uid="uid://byo7t6wrxosia" path="res://assets/models/minigames/conveyor40m_Cube_023.res" id="1_sqh2u"]
-[ext_resource type="Shader" uid="uid://dvlwyaeytcgxe" path="res://assets/shaders/conveyor_belt.gdshader" id="3_xnpjg"]
-[ext_resource type="Texture2D" uid="uid://c525b4bku0tqg" path="res://assets/images/patterned_rubber_seamless_texture.png" id="4_nu3wr"]
+[ext_resource type="Shader" uid="uid://cglin0j68kgsx" path="res://assets/shaders/conveyor_belt2.gdshader" id="3_a6oci"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_s3xd1"]
 render_priority = 0
-shader = ExtResource("3_xnpjg")
-shader_parameter/belt_texture = ExtResource("4_nu3wr")
-shader_parameter/scroll_speed = 2.5
-shader_parameter/scroll_direction = Vector2(0, -1)
-shader_parameter/uv_scale = Vector2(100, 100)
+shader = ExtResource("3_a6oci")
+shader_parameter/rubber_color = Color(0.055, 0.065, 0.075, 1)
+shader_parameter/groove_color = Color(0.018, 0.022, 0.028, 1)
+shader_parameter/highlight_color = Color(0.14, 0.17, 0.19, 1)
+shader_parameter/belt_speed = 1.0000005225000006
+shader_parameter/groove_density = 45.0
+shader_parameter/groove_width = 0.10000000405148
+shader_parameter/roughness_value = 0.88
+shader_parameter/metallic_value = 0.05
+shader_parameter/bump_strength = 0.50000002375
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
 size = Vector3(8.26, 0.5, 40)

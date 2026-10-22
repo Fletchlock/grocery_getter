@@ -234,7 +234,10 @@ func _start_intro_sequence() -> void:
 
 	if not is_inside_tree() or race_finished:
 		return
-
+	
+	# Spawn the first obstacle before the countdown.
+	_spawn_random_obstacle()	
+	
 	for number: int in [3, 2, 1]:
 		_show_countdown.rpc(str(number))
 
@@ -261,7 +264,8 @@ func _play_intro() -> void:
 func _play_intro_animation() -> void:
 	black_screen.modulate.a = 1.0
 	black_screen.show()
-
+	
+	
 	intro_label.modulate.a = 0.0
 	intro_label.show()
 
@@ -280,7 +284,7 @@ func _play_intro_animation() -> void:
 		1.0,
 		intro_fade_in
 	)
-
+		
 	await tween_in.finished
 
 	if not is_inside_tree():
@@ -451,8 +455,6 @@ func _start_race() -> void:
 		for barrier: Node in pillars.get_children():
 			if barrier is BarrierPillars:
 				barrier.start_barrier()
-
-		_spawn_random_obstacle()
 
 		obstacle_spawn_timer = randf_range(
 			minimum_spawn_interval,

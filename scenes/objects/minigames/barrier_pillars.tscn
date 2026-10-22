@@ -1,21 +1,19 @@
 [gd_scene format=3 uid="uid://d4dkkmjdpe8lc"]
 
 [ext_resource type="Script" uid="uid://co6j0yvd07mjq" path="res://scripts/objects/minigames/barrier_pillars.gd" id="1_ds0l5"]
+[ext_resource type="ArrayMesh" uid="uid://siq7mu1c3kq" path="res://assets/models/minigames/barrier_pillar_Cube_028.res" id="2_1qwmu"]
 [ext_resource type="Shader" uid="uid://m6vsp87d1j3x" path="res://assets/shaders/barrier_beam.gdshader" id="2_oyneu"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_6aigx"]
-size = Vector3(0.3, 6, 0.3)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ds0l5"]
 render_priority = 0
 shader = ExtResource("2_oyneu")
 shader_parameter/beam_color = Color(0.8975721, 1.5305579e-05, 0.60987407, 1)
 shader_parameter/highlight_color = Color(0.99999994, 0.3841806, 0.93803304, 1)
-shader_parameter/emission_strength = 4.0
+shader_parameter/emission_strength = 5.0000002375
 shader_parameter/flow_speed = 3.0000001425
 shader_parameter/streak_density = 25.00000114
-shader_parameter/flicker_strength = 0.12
-shader_parameter/opacity = 0.450000021375
+shader_parameter/flicker_strength = 0.250000011875
+shader_parameter/opacity = 0.350000016625
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7ajv0"]
 transparency = 1
@@ -37,12 +35,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
 script = ExtResource("1_ds0l5")
 
 [node name="LeftPillar" type="MeshInstance3D" parent="." unique_id=38345221]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.26, 0, 0)
-mesh = SubResource("BoxMesh_6aigx")
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -8.26, -3, 0)
+mesh = ExtResource("2_1qwmu")
 
 [node name="RightPillar" type="MeshInstance3D" parent="." unique_id=1108219956]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.26, 0, 0)
-mesh = SubResource("BoxMesh_6aigx")
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 8.26, -3, 0)
+mesh = ExtResource("2_1qwmu")
 
 [node name="BeamVisual" type="MeshInstance3D" parent="." unique_id=1220084380]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -50,7 +48,7 @@ material_override = SubResource("ShaderMaterial_ds0l5")
 mesh = SubResource("BoxMesh_hd853")
 
 [node name="BeamBody" type="StaticBody3D" parent="." unique_id=1896221339]
-collision_layer = 129
+collision_layer = 128
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BeamBody" unique_id=773312417]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

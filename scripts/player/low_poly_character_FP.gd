@@ -234,7 +234,10 @@ func _ready() -> void:
 
 	if is_multiplayer_authority():
 		var orange_survival: bool = (
-			get_parent().get_parent().name == "OrangeSurvival"
+			get_parent().get_parent().name in [
+				"OrangeSurvival",
+				"ConveyorShowdown"
+				]
 		)
 				
 		_set_perspective(not orange_survival)

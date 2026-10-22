@@ -16,7 +16,12 @@
 [ext_resource type="Resource" uid="uid://c117r4ojbg6ym" path="res://resources/products/lemon.tres" id="11_e6ilc"]
 [ext_resource type="Resource" uid="uid://d0ysrbe7f2rwf" path="res://resources/products/mandarin.tres" id="12_v85xt"]
 [ext_resource type="Resource" uid="uid://drhqmd8mbofk" path="res://resources/products/eggs.tres" id="13_xgchh"]
+[ext_resource type="Resource" uid="uid://bf46f4d7euqda" path="res://resources/products/pop_v&d_can.tres" id="14_ltl6m"]
+[ext_resource type="Resource" uid="uid://d03fjhs33m8gp" path="res://resources/products/pepper_orange.tres" id="15_1hqpl"]
 [ext_resource type="PackedScene" uid="uid://d4dkkmjdpe8lc" path="res://scenes/objects/minigames/barrier_pillars.tscn" id="15_4327s"]
+[ext_resource type="Resource" uid="uid://bhc6d3aw4m6hq" path="res://resources/products/pepper_yellow.tres" id="16_nmlk0"]
+[ext_resource type="Resource" uid="uid://cbyww3278lwgu" path="res://resources/products/pepper_green.tres" id="17_ocwwq"]
+[ext_resource type="Resource" uid="uid://d4dymab1d80dx" path="res://resources/products/pepper_red.tres" id="18_brsvn"]
 
 [sub_resource type="Environment" id="Environment_45b30"]
 background_mode = 1
@@ -42,7 +47,7 @@ size = Vector3(16.52, 0.5, 16.52)
 size = Vector3(16.52, 0.5, 16.52)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7ajv0"]
-size = Vector3(16, 3, 1)
+size = Vector3(17.219788, 6.631714, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hd853"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -52,12 +57,12 @@ base_font = ExtResource("5_1shib")
 
 [node name="ConveyorShowdown" type="Node3D" unique_id=411679754 groups=["disable_player_sprint"]]
 script = ExtResource("1_iiidm")
-minimum_spawn_interval = 1.0
-maximum_spawn_interval = 2.0
-maximum_active_obstacles = 30
-obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("2_6vj14"), ExtResource("5_1vc2f"), ExtResource("6_hrf0q"), ExtResource("7_tkfah"), ExtResource("8_xsx0w"), ExtResource("9_4327s"), ExtResource("10_xgchh"), ExtResource("10_xsx0w"), ExtResource("11_e6ilc"), ExtResource("12_v85xt"), ExtResource("13_xgchh")])
+minimum_spawn_interval = 1.5
+maximum_spawn_interval = 2.2
+maximum_active_obstacles = 40
+obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("2_6vj14"), ExtResource("5_1vc2f"), ExtResource("6_hrf0q"), ExtResource("7_tkfah"), ExtResource("8_xsx0w"), ExtResource("9_4327s"), ExtResource("10_xgchh"), ExtResource("10_xsx0w"), ExtResource("11_e6ilc"), ExtResource("12_v85xt"), ExtResource("13_xgchh"), ExtResource("14_ltl6m"), ExtResource("15_1hqpl"), ExtResource("16_nmlk0"), ExtResource("17_ocwwq"), ExtResource("18_brsvn")])
 obstacle_scale = 25.0
-rolling_obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("8_xsx0w"), ExtResource("9_4327s"), ExtResource("10_xgchh"), ExtResource("11_e6ilc"), ExtResource("12_v85xt"), ExtResource("10_xsx0w")])
+rolling_obstacle_products = Array[ExtResource("2_1shib")]([ExtResource("8_xsx0w"), ExtResource("9_4327s"), ExtResource("10_xgchh"), ExtResource("11_e6ilc"), ExtResource("12_v85xt"), ExtResource("10_xsx0w"), ExtResource("18_brsvn"), ExtResource("17_ocwwq"), ExtResource("16_nmlk0"), ExtResource("15_1hqpl")])
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=321550915]
 environment = SubResource("Environment_45b30")
@@ -94,24 +99,25 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 shape = SubResource("BoxShape3D_6aigx")
 
 [node name="PlayerSpawnPoints" type="Node3D" parent="Environment/StartingArea" unique_id=577713836]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.6614)
 
 [node name="SpawnPoint1" type="Marker3D" parent="Environment/StartingArea/PlayerSpawnPoints" unique_id=1039915510]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 500, 0)
 
 [node name="SpawnPoint2" type="Marker3D" parent="Environment/StartingArea/PlayerSpawnPoints" unique_id=1308743335]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 500, 0)
 
 [node name="SpawnPoint3" type="Marker3D" parent="Environment/StartingArea/PlayerSpawnPoints" unique_id=576566616]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 500, 0)
 
 [node name="SpawnPoint4" type="Marker3D" parent="Environment/StartingArea/PlayerSpawnPoints" unique_id=207840180]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 500, 0)
 
 [node name="FinishArea" type="Node3D" parent="Environment" unique_id=1959348031]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -48.26)
 
 [node name="FinishMesh" type="MeshInstance3D" parent="Environment/FinishArea" unique_id=822749353]
-transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
+transform = Transform3D(-2, 0, 1.7484555e-07, 0, 1, 0, -1.7484555e-07, 0, -2, 0, 0, 0)
 mesh = ExtResource("2_xr4oa")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Environment/FinishArea" unique_id=975591901]
@@ -121,26 +127,29 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 shape = SubResource("BoxShape3D_hd853")
 
 [node name="FinishLine" type="Area3D" parent="Environment/FinishArea" unique_id=719926581]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5360348, 6.748108)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5360348, -2.2874107)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/FinishArea/FinishLine" unique_id=975494234]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15274048, 1.8158569, 0)
 shape = SubResource("BoxShape3D_7ajv0")
 debug_color = Color(0.7647059, 0.105882354, 0.28235295, 0.84705883)
 
 [node name="ProductSpawnPoint" type="Marker3D" parent="Environment" unique_id=1119747582]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -40)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -54.095238)
 
 [node name="Pillars" type="Node3D" parent="Environment" unique_id=796078651]
 
 [node name="BarrierPillars1" parent="Environment/Pillars" unique_id=685020314 instance=ExtResource("15_4327s")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 18)
 barrier_type = 1
+maximum_interval = 4.0
 
 [node name="BarrierPillars2" parent="Environment/Pillars" unique_id=377388383 instance=ExtResource("15_4327s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -4)
 barrier_type = 0
 
 [node name="BarrierPillars3" parent="Environment/Pillars" unique_id=574727170 instance=ExtResource("15_4327s")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -26)
 
 [node name="Products" type="Node3D" parent="." unique_id=1647661018]
 
