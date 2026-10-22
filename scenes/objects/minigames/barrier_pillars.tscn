@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://d4dkkmjdpe8lc"]
+
+[ext_resource type="Script" uid="uid://co6j0yvd07mjq" path="res://scripts/objects/minigames/barrier_pillars.gd" id="1_ds0l5"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_6aigx"]
+size = Vector3(0.3, 6, 0.3)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7ajv0"]
+cull_mode = 2
+albedo_color = Color(0.92156863, 0, 0.3254902, 0)
+emission_enabled = true
+emission = Color(0.8285856, 0.060210004, 0.27607626, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_hd853"]
+material = SubResource("StandardMaterial3D_7ajv0")
+size = Vector3(16.22, 2, 0.005)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bcy86"]
+size = Vector3(16.22, 2, 0.005)
+
+[node name="BarrierPillars" type="Node3D" unique_id=685020314]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+script = ExtResource("1_ds0l5")
+
+[node name="LeftPillar" type="MeshInstance3D" parent="." unique_id=38345221]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.26, 0, 0)
+mesh = SubResource("BoxMesh_6aigx")
+
+[node name="RightPillar" type="MeshInstance3D" parent="." unique_id=1108219956]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.26, 0, 0)
+mesh = SubResource("BoxMesh_6aigx")
+
+[node name="BeamVisual" type="MeshInstance3D" parent="." unique_id=1220084380]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("BoxMesh_hd853")
+
+[node name="BeamBody" type="StaticBody3D" parent="." unique_id=1896221339]
+collision_layer = 129
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BeamBody" unique_id=773312417]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("BoxShape3D_bcy86")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=130908013]
