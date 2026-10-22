@@ -1,17 +1,29 @@
 [gd_scene format=3 uid="uid://d4dkkmjdpe8lc"]
 
 [ext_resource type="Script" uid="uid://co6j0yvd07mjq" path="res://scripts/objects/minigames/barrier_pillars.gd" id="1_ds0l5"]
+[ext_resource type="Shader" uid="uid://m6vsp87d1j3x" path="res://assets/shaders/barrier_beam.gdshader" id="2_oyneu"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_6aigx"]
 size = Vector3(0.3, 6, 0.3)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ds0l5"]
+render_priority = 0
+shader = ExtResource("2_oyneu")
+shader_parameter/beam_color = Color(0.8975721, 1.5305579e-05, 0.60987407, 1)
+shader_parameter/highlight_color = Color(0.99999994, 0.3841806, 0.93803304, 1)
+shader_parameter/emission_strength = 4.0
+shader_parameter/flow_speed = 3.0000001425
+shader_parameter/streak_density = 25.00000114
+shader_parameter/flicker_strength = 0.12
+shader_parameter/opacity = 0.450000021375
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7ajv0"]
 transparency = 1
 cull_mode = 2
-albedo_color = Color(0.9518965, 0.15860751, 0.9999998, 0.13725491)
+albedo_color = Color(0.9529412, 0.15686275, 1, 0.09803922)
 emission_enabled = true
-emission = Color(0.925391, 0.0007760602, 0.93841577, 1)
-emission_energy_multiplier = 3.0
+emission = Color(0.99999994, 0.1414409, 0.47514516, 1)
+emission_energy_multiplier = 2.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_hd853"]
 material = SubResource("StandardMaterial3D_7ajv0")
@@ -34,6 +46,7 @@ mesh = SubResource("BoxMesh_6aigx")
 
 [node name="BeamVisual" type="MeshInstance3D" parent="." unique_id=1220084380]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_ds0l5")
 mesh = SubResource("BoxMesh_hd853")
 
 [node name="BeamBody" type="StaticBody3D" parent="." unique_id=1896221339]

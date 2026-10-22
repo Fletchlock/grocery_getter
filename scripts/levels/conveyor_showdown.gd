@@ -70,6 +70,8 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 @onready var product_spawner: MultiplayerSpawner = $MultiplayerProductSpawner
 @onready var product_spawn_point: Marker3D = $Environment/ProductSpawnPoint
 
+# Barrier Reference
+@onready var pillars: Node3D = $Environment/Pillars
 
 # ============================================================
 # RACE STATE
@@ -439,12 +441,17 @@ func _spawn_conveyor_obstacle(data: Variant) -> Node:
 # RACE START
 # ============================================================
 
+
 @rpc("authority", "call_local", "reliable")
 func _start_race() -> void:
 	race_active = true
 	_show_countdown("GO!")
 
 	if multiplayer.is_server():
+		for barrier: Node in pillars.get_children():
+			if barrier is BarrierPillars:
+				barrier.start_barrier()
+
 		_spawn_random_obstacle()
 
 		obstacle_spawn_timer = randf_range(
@@ -453,6 +460,7 @@ func _start_race() -> void:
 		)
 
 	print("CONVEYOR SHOWDOWN: Race started!")
+
 
 
 func _set_local_player_movement_locked(locked: bool) -> void:
@@ -569,6 +577,10 @@ func _sync_race_finished(
 ) -> void:
 	race_finished = true
 	race_active = false
+
+	for barrier: Node in pillars.get_children():
+		if barrier is BarrierPillars:
+			barrier.stop_barrier()
 
 	finish_order = positions.duplicate()
 	finished_players = times.duplicate(true)
