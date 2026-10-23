@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://ch4myf7gfga6"
+uid="uid://bhju4sv2fdyub"
 path="res://godot/imported/hand_scanner_charger.glb-364662705114da10f3bc0d5abf0dc835.scn"
 
 [deps]
@@ -48,7 +48,7 @@ _subresources={
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
 "save_to_file/fallback_path": "res://assets/models/checkouts/hand_scanner_charger_Cube_029.res",
-"save_to_file/path": "uid://ba6w3g2dbvkvc"
+"save_to_file/path": "uid://c0aynk6swfmo7"
 }
 }
 }

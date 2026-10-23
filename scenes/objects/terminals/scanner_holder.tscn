@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://clwkhisl0383x"]
 
 [ext_resource type="Script" uid="uid://c3diu612edpuw" path="res://scripts/objects/terminals/scanner_holder.gd" id="1_6tb22"]
-[ext_resource type="ArrayMesh" uid="uid://bmegmowv76dhq" path="res://assets/models/checkouts/hand_scanner_charger_Cube_029.res" id="2_f0we5"]
+[ext_resource type="ArrayMesh" uid="uid://c0aynk6swfmo7" path="res://assets/models/checkouts/hand_scanner_charger_Cube_029.res" id="2_f0we5"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
 
