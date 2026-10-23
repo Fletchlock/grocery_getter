@@ -1191,7 +1191,10 @@ func _give_product_to_player(
 
 	if self is CheckoutGrid:
 		origin = player.ItemOrigin.CHECKOUT_GRID
-
+	
+	# The server records the authoritative pickup origin.
+	player.held_item_origin = origin
+	
 	if player_peer_id == multiplayer.get_unique_id():
 		player.receive_product(product_path, origin)
 	else:
@@ -1207,7 +1210,9 @@ func _clear_player_held_item(
 	) -> void:
 	if player == null:
 		return
-
+	
+	player.held_item_origin = player.ItemOrigin.NONE
+	
 	var player_peer_id: int = (
 		player.get_multiplayer_authority()
 	)
