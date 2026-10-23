@@ -24,6 +24,18 @@ func is_cart() -> bool:
 # This function must run on the SERVER side in a multiplayer match
 @rpc("any_peer", "call_local")
 func update_cart_authority(peer_id: int, state: bool) -> void:
+	
+	print(
+		"CART AUTHORITY CHANGE | Local peer: ",
+		multiplayer.get_unique_id(),
+		" | Old authority: ",
+		get_multiplayer_authority(),
+		" | New authority: ",
+		peer_id,
+		" | Pushing: ",
+		state
+	)
+	
 	set_multiplayer_authority(peer_id)
 	is_being_pushed = state
 	
