@@ -1204,7 +1204,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.43133545, 0.31524658, -0.3
 shape = SubResource("BoxShape3D_t6lx5")
 
 [node name="CheckoutScreen" parent="NavigationRegion3D/Checkout" index="9" unique_id=1333936591]
-transform = Transform3D(-2.1525198e-08, 0.17994371, -0.9035714, 1.1759457e-08, 0.3795, 0.4284374, 0.62, -9.506302e-10, -3.949636e-08, -0.34819078, 1.4940748, -0.7680025)
+transform = Transform3D(-1.6039744e-08, 0.18851246, -0.8845964, 8.762691e-09, 0.3975714, 0.4194402, 0.462, -9.958968e-10, -3.8666936e-08, -0.34819078, 1.4940748, -0.7680025)
 
 [node name="desk_bell2" parent="NavigationRegion3D/Checkout" unique_id=1702178815 instance=ExtResource("52_a8s8y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.29753923, 1.0330433, -0.31481647)

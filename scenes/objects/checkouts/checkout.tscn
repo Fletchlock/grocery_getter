@@ -19,8 +19,13 @@ size = Vector3(0.75454557, 0.7067013, 1.6119537)
 [sub_resource type="BoxShape3D" id="BoxShape3D_hd853"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_6aigx"]
+size = Vector2(1.4, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5e8nf"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
 bg_color = Color(0.08924944, 0.2548345, 0.50531375, 1)
 
 [node name="Checkout" type="Node3D" unique_id=2036172686]
@@ -95,6 +100,7 @@ mesh = SubResource("QuadMesh_6aigx")
 
 [node name="CheckoutViewport" type="SubViewport" parent="." unique_id=847904745]
 disable_3d = true
+size = Vector2i(700, 500)
 render_target_update_mode = 4
 
 [node name="CheckoutUI" type="Control" parent="CheckoutViewport" unique_id=1717233167]
@@ -125,25 +131,29 @@ theme_override_font_sizes/font_size = 20
 text = "READY TO SCAN"
 horizontal_alignment = 1
 
-[node name="ItemList" type="VBoxContainer" parent="CheckoutViewport/CheckoutUI/PanelContainer/VBoxContainer" unique_id=1675914593]
-layout_mode = 2
-
-[node name="Spacer" type="Control" parent="CheckoutViewport/CheckoutUI/PanelContainer/VBoxContainer" unique_id=1566875852]
+[node name="ScrollContainer" type="ScrollContainer" parent="CheckoutViewport/CheckoutUI/PanelContainer/VBoxContainer" unique_id=1383798404]
 layout_mode = 2
 size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+
+[node name="ItemList" type="VBoxContainer" parent="CheckoutViewport/CheckoutUI/PanelContainer/VBoxContainer/ScrollContainer" unique_id=1675914593]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
 
 [node name="HSeparator" type="HSeparator" parent="CheckoutViewport/CheckoutUI/PanelContainer/VBoxContainer" unique_id=498395288]
 layout_mode = 2
 
 [node name="SubtotalLabel" type="Label" parent="CheckoutViewport/CheckoutUI/PanelContainer/VBoxContainer" unique_id=652007227]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 26
 text = "12.95"
 horizontal_alignment = 2
 
 [node name="TotalLabel" type="Label" parent="CheckoutViewport/CheckoutUI/PanelContainer/VBoxContainer" unique_id=1861127133]
 layout_mode = 2
 theme_override_colors/font_color = Color(2.0214916e-06, 0.86096245, 0.45047575, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 26
 text = "20.95"
 horizontal_alignment = 2
