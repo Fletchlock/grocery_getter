@@ -16,7 +16,7 @@ points = PackedVector3Array(0.21834016, 1.0585136, 0.05662203, 0.25066078, 1.058
 size = Vector3(0.56610715, 0.767572, 0.5583141)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_15jub"]
-size = Vector3(0.55830383, 0.92556953, 0.091692924)
+size = Vector3(0.5790224, 1.0184852, 0.10198325)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_2ap80"]
 properties/0/path = NodePath(".:position")
@@ -40,7 +40,8 @@ radius = 0.038085938
 height = 0.7480469
 
 [node name="cart_small" type="RigidBody3D" unique_id=1722978453]
-collision_mask = 7
+collision_layer = 2
+collision_mask = 3
 mass = 3.0
 physics_material_override = SubResource("PhysicsMaterial_i4yyv")
 center_of_mass_mode = 1
@@ -70,7 +71,8 @@ interaction_top_padding = 0.0
 outline_material = ExtResource("4_ryc0r")
 
 [node name="InteractionArea" type="Area3D" parent="CartGrid" unique_id=853261953]
-collision_layer = 257
+collision_layer = 256
+collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CartGrid/InteractionArea" unique_id=648699600]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.2284558, 0.27242494, 0.2231862)
@@ -82,10 +84,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0448142, 0.0410389)
 
 [node name="InteractionArea" type="Area3D" parent="." unique_id=1100853670 groups=["interactable_items"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0442417, 0.04431644)
-collision_layer = 257
+collision_layer = 256
+collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea" unique_id=803431923]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00011444092, -0.1085614, -0.036162853)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.010335088, -0.16958159, -0.007575497)
 shape = SubResource("BoxShape3D_15jub")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=582863137]
