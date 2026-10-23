@@ -65,6 +65,15 @@ func update_cart_authority(peer_id: int, state: bool) -> void:
 		#linear_velocity = Vector3.ZERO
 		#angular_velocity = Vector3.ZERO
 
+
+@rpc("authority", "call_remote", "reliable")
+func confirm_cart_grab(peer_id: int) -> void:
+	if multiplayer.get_unique_id() != peer_id:
+		return
+
+	update_cart_authority(peer_id, true)
+
+
 func grab_cart(player_node: CharacterBody3D) -> void:
 	player_character = player_node
 
