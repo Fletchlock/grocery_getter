@@ -1466,7 +1466,7 @@ shape = SubResource("BoxShape3D_iteik")
 debug_color = Color(0, 0.6, 0.69803923, 0.92156863)
 
 [node name="RestockScanner" parent="ScannerHolder" unique_id=542482909 instance=ExtResource("63_8865k")]
-transform = Transform3D(-1, 0, -2.6226832e-07, 0, 1, 0, 2.6226832e-07, 0, -1, 0, 0, 0.07011223)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
 
 [node name="CollisionShape3D" parent="ScannerHolder/RestockScanner/Area3D" parent_id_path=PackedInt32Array(542482909, 14597974) index="0" unique_id=1347022100]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00093078613, 0.17451471, 0.05529785)

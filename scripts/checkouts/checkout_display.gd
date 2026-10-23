@@ -111,8 +111,6 @@ func add_scanned_item(
 
 
 func complete_sale() -> void:
-	_clear_item_list()
-
 	header_label.text = "SALE COMPLETE"
 	total_label.text = "TOTAL: $%.2f" % subtotal
 
