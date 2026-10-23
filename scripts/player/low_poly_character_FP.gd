@@ -139,8 +139,16 @@ var block_movement_until_keys_released := false
 var conveyor_velocity: Vector3 = Vector3.ZERO
 
 # === Held Item Variables ===
+enum ItemOrigin {
+	NONE,
+	PRODUCT_DISPLAY,
+	CART_GRID,
+	CHECKOUT_GRID
+}
+
 var held_item: ProductData = null
 var held_item_visual: MeshInstance3D = null
+var held_item_origin: ItemOrigin = ItemOrigin.NONE
 
 # === Held Restock Box Variables ===
 var held_restock_box: RestockBox = null
@@ -1970,6 +1978,7 @@ func _clear_held_item() -> void:
 		held_item_visual = null
 
 	held_item = null
+	held_item_origin = ItemOrigin.NONE
 
 
 func _update_network_held_item_visual() -> void:
@@ -2158,19 +2167,31 @@ func clear_held_item() -> void:
 	_clear_held_item()
 
 
-@rpc("any_peer", "call_remote", "reliable")
-func receive_product(product_path: String) -> void:
-	var loaded_resource: Resource = load(product_path)
 
-	if loaded_resource == null:
+@rpc("authority", "call_local", "reliable")
+func receive_product(
+	product_path: String,
+	origin: ItemOrigin = ItemOrigin.NONE
+	) -> void:
+	if not is_multiplayer_authority():
 		return
+
+	var loaded_resource: Resource = load(product_path)
 
 	if not loaded_resource is ProductData:
 		return
 
 	held_item = loaded_resource as ProductData
+	held_item_origin = origin
 
 	_create_held_item_visual()
+	
+	print(
+		"PRODUCT PICKUP: ",
+		held_item.display_name,
+		" | Origin: ",
+		ItemOrigin.keys()[held_item_origin]
+	)
 
 
 func play_footstep() -> void:

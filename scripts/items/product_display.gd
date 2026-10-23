@@ -242,12 +242,15 @@ func _take_product(player: CharacterBody3D) -> void:
 
 	var product_path: String = product_data.resource_path
 
+	var origin: int = player.ItemOrigin.PRODUCT_DISPLAY
+
 	if player.get_multiplayer_authority() == multiplayer.get_unique_id():
-		player.receive_product(product_path)
+		player.receive_product(product_path, origin)
 	else:
 		player.receive_product.rpc_id(
 			player.get_multiplayer_authority(),
-			product_path
+			product_path,
+			origin
 		)
 
 

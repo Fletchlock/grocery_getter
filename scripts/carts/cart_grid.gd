@@ -1181,26 +1181,24 @@ func _give_product_to_player(
 	player: CharacterBody3D,
 	product: ProductData
 	) -> void:
-	if player == null:
+	if player == null or product == null:
 		return
 
-	if product == null:
-		return
+	var player_peer_id: int = player.get_multiplayer_authority()
+	var product_path: String = product.resource_path
 
-	var player_peer_id: int = (
-		player.get_multiplayer_authority()
-	)
+	var origin: int = player.ItemOrigin.CART_GRID
 
-	var product_path: String = (
-		product.resource_path
-	)
+	if self is CheckoutGrid:
+		origin = player.ItemOrigin.CHECKOUT_GRID
 
 	if player_peer_id == multiplayer.get_unique_id():
-		player.receive_product(product_path)
+		player.receive_product(product_path, origin)
 	else:
 		player.receive_product.rpc_id(
 			player_peer_id,
-			product_path
+			product_path,
+			origin
 		)
 
 
