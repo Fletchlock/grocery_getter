@@ -15,7 +15,8 @@ var price_font_size: int = 26
 
 
 @onready var header_label: Label = $PanelContainer/VBoxContainer/HeaderLabel
-@onready var item_list: VBoxContainer = $PanelContainer/VBoxContainer/ItemList
+@onready var scroll_container: ScrollContainer = $PanelContainer/VBoxContainer/ScrollContainer
+@onready var item_list: VBoxContainer = $PanelContainer/VBoxContainer/ScrollContainer/ItemList
 @onready var separator: HSeparator = $PanelContainer/VBoxContainer/HSeparator
 @onready var subtotal_label: Label = $PanelContainer/VBoxContainer/SubtotalLabel
 @onready var total_label: Label = $PanelContainer/VBoxContainer/TotalLabel
@@ -47,7 +48,8 @@ func reset_display() -> void:
 	subtotal = 0.0
 
 	_clear_item_list()
-
+	scroll_container.scroll_vertical = 0
+	
 	header_label.text = "WELCOME"
 	subtotal_label.text = ""
 	total_label.text = ""
@@ -75,6 +77,7 @@ func add_scanned_item(
 	sale_complete_timer.stop()
 
 	var item_row: HBoxContainer = HBoxContainer.new()
+	item_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	item_list.add_child(item_row)
 
 	# Product name.
@@ -108,23 +111,30 @@ func add_scanned_item(
 
 	separator.show()
 	subtotal_label.show()
-
+	_scroll_to_latest_item.call_deferred()
 
 func complete_sale() -> void:
-	_clear_item_list()
-
 	header_label.text = "SALE COMPLETE"
 	total_label.text = "TOTAL: $%.2f" % subtotal
 
 	separator.hide()
 	subtotal_label.hide()
 
-	# Start the countdown before returning to WELCOME.
+	# Keep scanned items visible until the timer expires.
 	sale_complete_timer.start(sale_complete_delay)
 
 
 func _on_sale_complete_timer_timeout() -> void:
 	reset_display()
+
+
+func _scroll_to_latest_item() -> void:
+	if not is_inside_tree():
+		return
+
+	scroll_container.scroll_vertical = int(
+		scroll_container.get_v_scroll_bar().max_value
+	)
 
 
 func _clear_item_list() -> void:

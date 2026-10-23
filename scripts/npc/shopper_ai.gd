@@ -17,7 +17,7 @@ var selected_shopper_mesh: Mesh = null
 # Shopping
 @export_group("Shopping")
 @export var shopping_min_points: int = 3
-@export var shopping_max_points: int = 5
+@export var shopping_max_points: int = 6
 @export var shopping_idle_min: float = 2.0
 @export var shopping_idle_max: float = 3.0
 @export var shopping_start_delay_min: float = 1.0
