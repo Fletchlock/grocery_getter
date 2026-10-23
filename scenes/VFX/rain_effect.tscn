@@ -25,7 +25,7 @@ size = Vector2(0.025, 0.35)
 
 [node name="RainParticles" type="GPUParticles3D" parent="." unique_id=533857309]
 amount = 1000
-visibility_aabb = AABB(-18, -18, -18, 36, 36, 36)
+visibility_aabb = AABB(-15.345423, -16.372541, -15.342676, 30.657887, 16.817574, 30.690388)
 process_material = SubResource("ParticleProcessMaterial_g2jcm")
 draw_pass_1 = SubResource("QuadMesh_y7mgq")
 
