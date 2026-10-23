@@ -398,19 +398,30 @@ func _connect_order_carts() -> void:
 		if cart_grid == null:
 			continue
 
-		if not cart_grid.cart_contents_changed.is_connected(
+		if cart_grid is CheckoutGrid:
+			continue
+
+		if cart_grid.get_parent() is Checkout:
+			continue
+
+		if cart_grid.cart_contents_changed.is_connected(
 			_on_order_cart_contents_changed
 		):
-			cart_grid.cart_contents_changed.connect(
-				_on_order_cart_contents_changed
-			)
+			continue
+
+		cart_grid.cart_contents_changed.connect(
+			_on_order_cart_contents_changed
+		)
 
 
 func _on_order_cart_contents_changed(cart_grid: CartGrid) -> void:
-	active_order_cart = cart_grid
-
-	if current_order_list == null:
+	if cart_grid is CheckoutGrid:
 		return
+
+	if cart_grid.get_parent() is Checkout:
+		return
+
+	active_order_cart = cart_grid
 
 	if not is_instance_valid(current_order_list):
 		return

@@ -1248,7 +1248,7 @@ func _broadcast_cart_state(player: CharacterBody3D) -> void:
 	if player.get_multiplayer_authority() == multiplayer.get_unique_id():
 		cart_contents_changed.emit(self)
 	else:
-		notify_cart_tablet.rpc_id(
+		notify_cart_changed.rpc_id(
 			player.get_multiplayer_authority()
 		)
 
@@ -1261,7 +1261,7 @@ func sync_cart_state(
 
 
 @rpc("authority", "call_remote", "reliable")
-func notify_cart_tablet() -> void:
+func notify_cart_changed() -> void:
 	cart_contents_changed.emit(self)
 
 
