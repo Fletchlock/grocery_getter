@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://clwkhisl0383x"]
 
 [ext_resource type="Script" uid="uid://c3diu612edpuw" path="res://scripts/objects/terminals/scanner_holder.gd" id="1_6tb22"]
+[ext_resource type="ArrayMesh" uid="uid://bmegmowv76dhq" path="res://assets/models/checkouts/hand_scanner_charger_Cube_029.res" id="2_f0we5"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
 
@@ -12,3 +13,6 @@ collision_layer = 256
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ScannerHolderArea" unique_id=500106047]
 shape = SubResource("BoxShape3D_6aigx")
+
+[node name="ScannerChargerMesh" type="MeshInstance3D" parent="." unique_id=790887636]
+mesh = ExtResource("2_f0we5")
