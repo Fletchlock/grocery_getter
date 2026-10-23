@@ -2168,13 +2168,16 @@ func clear_held_item() -> void:
 
 
 
-@rpc("authority", "call_local", "reliable")
+
+@rpc("any_peer", "call_remote", "reliable")
 func receive_product(
 	product_path: String,
 	origin: ItemOrigin = ItemOrigin.NONE
 	) -> void:
-	if not is_multiplayer_authority():
-		return
+	# Only accept product deliveries from the server.
+	if not multiplayer.is_server():
+		if multiplayer.get_remote_sender_id() != 1:
+			return
 
 	var loaded_resource: Resource = load(product_path)
 
@@ -2185,13 +2188,14 @@ func receive_product(
 	held_item_origin = origin
 
 	_create_held_item_visual()
-	
+
 	print(
 		"PRODUCT PICKUP: ",
 		held_item.display_name,
 		" | Origin: ",
 		ItemOrigin.keys()[held_item_origin]
 	)
+
 
 
 func play_footstep() -> void:
