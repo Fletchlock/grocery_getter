@@ -60,6 +60,9 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 	if player.held_item == null:
 		return ""
 
+	if player.held_item_origin != player.ItemOrigin.CHECKOUT_GRID:
+		return ""
+
 	var product: ProductData = player.held_item as ProductData
 
 	if product == null:
@@ -71,7 +74,10 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 func interact(player: CharacterBody3D) -> void:
 	if player == null or player.held_item == null:
 		return
-
+	
+	if player.held_item_origin != player.ItemOrigin.CHECKOUT_GRID:
+		return
+	
 	var product: ProductData = player.held_item as ProductData
 
 	if product == null:
@@ -159,7 +165,7 @@ func _server_scan_ai_product(
 	player: CharacterBody3D,
 	product: ProductData,
 	entered_code: String = ""
-) -> void:
+	) -> void:
 	if not multiplayer.is_server():
 		return
 
@@ -171,7 +177,11 @@ func _server_scan_ai_product(
 
 	if player.network_held_item_path != product.resource_path:
 		return
-
+	
+	# Validate the origin recorded by the server.
+	if player.held_item_origin != player.ItemOrigin.CHECKOUT_GRID:
+		return
+	
 	# Produce must have the correct code before scanning.
 	if product.product_category == "produce":
 		if entered_code.is_empty():
@@ -182,7 +192,10 @@ func _server_scan_ai_product(
 
 	if not scan_ai_product(product):
 		return
-
+	
+	# Product was successfully scanned.
+	player.held_item_origin = player.ItemOrigin.NONE
+	
 	var peer_id: int = player.get_multiplayer_authority()
 
 	# Close and reset the barcode HUD after a successful produce scan.
@@ -247,7 +260,10 @@ func complete_produce_code(product_code: String) -> void:
 
 	if player == null or player.held_item == null:
 		return
-
+	
+	if player.held_item_origin != player.ItemOrigin.CHECKOUT_GRID:
+		return
+	
 	var product: ProductData = player.held_item as ProductData
 
 	if product == null:
