@@ -1,4 +1,6 @@
+
 extends RigidBody3D
+
 
 # === Exported Physics Configuration ===
 @export_group("Cart Tuning")
@@ -7,24 +9,120 @@ extends RigidBody3D
 @export var rotation_swing_speed: float = 5.5
 @export var rotation_align_speed: float = 22.0
 
+
 # === Internal State Variables ===
-# @export this so the MultiplayerSynchronizer replicates the state toggle to other clients!
 @export var is_being_pushed: bool = false
+
 var player_character: CharacterBody3D = null
 
-# Caches to handle direction processing and tracking memory
 var last_valid_forward: Vector3 = Vector3.FORWARD
 var current_smoothed_forward: Vector3 = Vector3.FORWARD
+
+# Server tracks who is actually using the cart.
+var _cart_owner_id: int = 0
+
+# Prevent duplicate local requests.
+var _request_pending: bool = false
+
+# Track the latest authority change on each peer.
+var _authority_sequence: int = 0
 
 
 func is_cart() -> bool:
 	return true
 
 
-# This function must run on the SERVER side in a multiplayer match
-@rpc("any_peer", "call_local")
-func update_cart_authority(peer_id: int, state: bool) -> void:
-	
+# ============================================================
+# MULTIPLAYER AUTHORITY
+# ============================================================
+
+# All authority requests go to the host.
+# The host validates and applies the change BEFORE notifying clients.
+@rpc("any_peer", "call_local", "reliable")
+func request_cart_authority(state: bool) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var sender_id: int = multiplayer.get_remote_sender_id()
+
+	if sender_id == 0:
+		sender_id = multiplayer.get_unique_id()
+
+	# Validate the request.
+	if state:
+		# Nobody else can grab an occupied cart.
+		if _cart_owner_id != 0:
+			_reject_cart_request(sender_id)
+			return
+	else:
+		# Only the player pushing the cart can release it.
+		if _cart_owner_id != sender_id:
+			_reject_cart_request(sender_id)
+			return
+
+	var new_authority: int = sender_id if state else 1
+
+	_cart_owner_id = sender_id if state else 0
+	_authority_sequence += 1
+
+	# STEP 1: Host changes authority locally.
+	_apply_cart_authority(new_authority, state)
+
+	# STEP 2: Host sends the change to all clients.
+	# This RPC is reliable and runs remotely only.
+	receive_cart_authority.rpc(
+		new_authority,
+		state,
+		_authority_sequence
+	)
+
+	_request_pending = false
+
+
+# Reject invalid requests without changing authority.
+func _reject_cart_request(peer_id: int) -> void:
+	if peer_id == 1:
+		_request_pending = false
+	else:
+		cart_request_rejected.rpc_id(peer_id)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func cart_request_rejected() -> void:
+	if multiplayer.get_remote_sender_id() != 1:
+		return
+
+	_request_pending = false
+	player_character = null
+
+	push_warning("Cart authority request rejected by host.")
+
+
+# Clients receive authority changes from the host.
+@rpc("any_peer", "call_remote", "reliable")
+func receive_cart_authority(
+	peer_id: int,
+	state: bool,
+	sequence: int
+) -> void:
+	# Only the host may authorize authority changes.
+	if multiplayer.get_remote_sender_id() != 1:
+		return
+
+	# Ignore outdated or duplicate authority changes.
+	if sequence <= _authority_sequence:
+		return
+
+	_authority_sequence = sequence
+
+	# STEP 3: Client changes authority only after host approval.
+	_apply_cart_authority(peer_id, state)
+
+	_request_pending = false
+
+
+# Apply the authority and physical state locally.
+func _apply_cart_authority(peer_id: int, state: bool) -> void:
 	print(
 		"CART AUTHORITY CHANGE | Local peer: ",
 		multiplayer.get_unique_id(),
@@ -35,61 +133,62 @@ func update_cart_authority(peer_id: int, state: bool) -> void:
 		" | Pushing: ",
 		state
 	)
-	
+
 	set_multiplayer_authority(peer_id)
 	is_being_pushed = state
-	
-	if state == true:
+
+	if state:
 		gravity_scale = 0.0
-		
-		# What the cart IS to the world: 
-		# Turning off Layer 1 stops the active pusher from colliding with it
+
 		set_collision_layer_value(1, false)
-		
-		# What the cart CAN SCAN/COLLIDE WITH:
-		# Keep Box 1 checked so the cart still collides with walls, floors, 
-		# and all other non-pushing players naturally.
 		set_collision_mask_value(1, true)
-		
+
 		linear_velocity = Vector3.ZERO
 		angular_velocity = Vector3.ZERO
 	else:
-		# Restore standard physical presence in the world when dropped
 		gravity_scale = 1.0
-		
+
 		set_collision_layer_value(1, true)
 		set_collision_mask_value(1, true)
-		
-		#With the below removed the cart will drift after release.
-		
-		#linear_velocity = Vector3.ZERO
-		#angular_velocity = Vector3.ZERO
+
+		# Preserve the original release velocity behavior.
 
 
-@rpc("authority", "call_remote", "reliable")
-func confirm_cart_grab(peer_id: int) -> void:
-	if multiplayer.get_unique_id() != peer_id:
-		return
-
-	update_cart_authority(peer_id, true)
-
+# ============================================================
+# GRAB / RELEASE
+# ============================================================
 
 func grab_cart(player_node: CharacterBody3D) -> void:
+	if _request_pending:
+		return
+
 	player_character = player_node
 
-	# Request the server to distribute multiplayer authority of this body to us
-	update_cart_authority.rpc(multiplayer.get_unique_id(), true)
-	
-	# Preserve the cart's current facing direction when grabbed.
+	# Preserve the cart's current facing direction.
 	last_valid_forward = -global_transform.basis.z.normalized()
 	current_smoothed_forward = last_valid_forward
 
+	_request_pending = true
+
+	# Ask the host. Do not change authority locally.
+	request_cart_authority.rpc_id(1, true)
+
 
 func release_cart() -> void:
-	player_character = null
-	
-	update_cart_authority.rpc(1, false)
+	if _request_pending:
+		return
 
+	player_character = null
+
+	_request_pending = true
+
+	# Ask the host to restore authority to peer 1.
+	request_cart_authority.rpc_id(1, false)
+
+
+# ============================================================
+# CART PHYSICS
+# ============================================================
 
 func _physics_process(delta: float) -> void:
 	# ============================================================
@@ -97,71 +196,85 @@ func _physics_process(delta: float) -> void:
 	# ============================================================
 	if not is_multiplayer_authority():
 		if is_being_pushed:
-			# If the network says a remote player is pushing this cart, turn off world gravity
-			# and let its synchronized velocities glide it forward organically between network packets!
 			gravity_scale = 0.0
-			
-			# Minor position snap correction: If network delay causes the cart to drift 
-			# slightly away from its synchronized vector, softly nudge it back into place
-			# without causing a violent visual snap.
-			#var net_pos = get_node("../" + str(get_multiplayer_authority())).global_position
 		else:
 			gravity_scale = 1.0
-		return # Exit out so remote clients don't run the pusher's target path calculations!
+
+		return
 
 	# ============================================================
 	# CONTROLLING PLAYER AUTHORITY MOVEMENTS (LOCAL PUSHER)
 	# ============================================================
 	if not is_being_pushed or player_character == null:
 		return
-		
-	# 1. Capture the controlling player's current camera direction.
+
+	# 1. Capture the controlling player's camera direction.
 	var camera_forward: Vector3 = player_character.get_camera_forward()
 
 	if camera_forward.length_squared() > 0.001:
 		last_valid_forward = camera_forward.normalized()
-		
-	# 2. Smoothly calculate the rotation swing lag
+
+	# 2. Smoothly calculate the rotation swing lag.
 	current_smoothed_forward = current_smoothed_forward.lerp(
-		last_valid_forward, 
+		last_valid_forward,
 		rotation_swing_speed * delta
 	).normalized()
-		
-	# 3. Position calculations (physics safe velocity translation)
-	var target_position = player_character.global_position + (current_smoothed_forward * attach_distance)
-	var distance_vector = target_position - global_position
-	
-	var desired_velocity = distance_vector * position_follow_speed
-	linear_velocity = linear_velocity.lerp(desired_velocity, 15.0 * delta)
-			
-	# 4. Final rotation matrix alignment
-	var target_look = global_position + current_smoothed_forward
-	var current_transform = global_transform
-	
+
+	# 3. Position calculations.
+	var target_position: Vector3 = (
+		player_character.global_position
+		+ current_smoothed_forward * attach_distance
+	)
+
+	var distance_vector: Vector3 = target_position - global_position
+
+	var desired_velocity: Vector3 = (
+		distance_vector * position_follow_speed
+	)
+
+	linear_velocity = linear_velocity.lerp(
+		desired_velocity,
+		15.0 * delta
+	)
+
+	# 4. Final rotation alignment.
+	var target_look: Vector3 = global_position + current_smoothed_forward
+	var current_transform: Transform3D = global_transform
+
 	if current_smoothed_forward.length_squared() > 0.001:
-		current_transform = current_transform.looking_at(target_look, Vector3.UP)
+		current_transform = current_transform.looking_at(
+			target_look,
+			Vector3.UP
+		)
+
 		global_transform.basis = global_transform.basis.slerp(
-			current_transform.basis, 
+			current_transform.basis,
 			rotation_align_speed * delta
 		)
 
 
+# ============================================================
+# INTERACTION PROMPT
+# ============================================================
+
 func get_interaction_prompt(player: CharacterBody3D) -> String:
 	if player.network_holding_item:
 		return ""
-	
+
 	if player.held_restock_box != null:
 		return ""
-	
+
 	if player_character != null:
 		return "[E] Release cart"
-	
+
 	return "[E] Grab cart"
 
 
-func interact(player: CharacterBody3D) -> void:
-	
+# ============================================================
+# INTERACTION
+# ============================================================
 
+func interact(player: CharacterBody3D) -> void:
 	if player != null:
 		if player.has_method("try_release_cart"):
 			player.try_release_cart()
@@ -179,6 +292,7 @@ func interact(player: CharacterBody3D) -> void:
 	for node: Node in players:
 		if node is CharacterBody3D:
 			var candidate: CharacterBody3D = node as CharacterBody3D
+
 			var distance: float = global_position.distance_squared_to(
 				candidate.global_position
 			)
