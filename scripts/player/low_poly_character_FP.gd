@@ -26,6 +26,8 @@ extends CharacterBody3D
 # Audio
 @onready var footstep_player: AudioStreamPlayer3D = $FirstPersonCameraPivot/FirstPersonCamera/FootstepPlayer
 @onready var audio_listener: AudioListener3D = $AudioListener3D
+var last_footstep_time: int = 0
+const FOOTSTEP_COOLDOWN_MS: int = 180
 
 
 @export_group("Cart")
@@ -2201,6 +2203,16 @@ func receive_product(
 func play_footstep() -> void:
 	if not is_multiplayer_authority():
 		return
+	
+	print("FOOTSTEP CALLED: ", Time.get_ticks_msec())
+	
+	var current_time: int = Time.get_ticks_msec()
+
+	if current_time - last_footstep_time < FOOTSTEP_COOLDOWN_MS:
+		return
+
+	last_footstep_time = current_time
+
 	var target_volume: float = -18.0
 	var min_pitch: float = 0.8
 	var max_pitch: float = 1.1
@@ -2209,10 +2221,10 @@ func play_footstep() -> void:
 		# If sprinting, use running pitches/volumes
 		min_pitch = 0.9
 		max_pitch = 1.2
-		target_volume = -8.0
+		target_volume = 0.0
 	elif is_crouching:
 		# If walking but crouching, lower the volume
-		target_volume = -24.0
+		target_volume = -20.0
 
 	var chosen_pitch = randf_range(min_pitch, max_pitch)
 

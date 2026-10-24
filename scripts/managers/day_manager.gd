@@ -9,7 +9,8 @@ const START_HOUR: int = 7
 const STORE_CLOSE_HOUR: int = 22
 const END_OF_DAY_HOUR: int = 23
 const END_OF_DAY_MINUTE: int = 59
-const REAL_SECONDS_PER_GAME_MINUTE: float = 1.33
+const REAL_SECONDS_PER_GAME_MINUTE: float = 1.25
+
 
 var current_day: int = 1
 var current_hour: int = START_HOUR

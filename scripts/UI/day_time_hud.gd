@@ -1,5 +1,11 @@
 extends Control
 
+@onready var ui_audio_player: AudioStreamPlayer = $AudioStreamPlayer
+
+const audio_order_canceled = preload("res://assets/sounds/836449__feraly__simple-or-cute-ui-ux-interface-cancel-sound.wav")
+const audio_order_available = preload("res://assets/sounds/836451__feraly__simple-or-cute-ui-ux-interface-hover-sound.wav") 
+const audio_order_accepted = preload("res://assets/sounds/836450__feraly__simple-or-cute-ui-ux-interface-confirm-sound.wav")
+
 
 @onready var clock_label: Label = $TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ClockLabel
 @onready var panel_container_2: PanelContainer = $TopCenterContainer/VBoxContainer/PanelContainer2
@@ -135,7 +141,8 @@ func _update_available_notifications() -> void:
 			continue
 
 		_add_available_notification(order)
-
+		play_ui_sounds(audio_order_available)
+		
 	for order_id: int in available_notifications.keys():
 		if waiting_ids.has(order_id):
 			continue
@@ -297,7 +304,8 @@ func _add_active_notification(order: OrderData) -> void:
 
 	notification_text.update_active_order(order)
 	notification_text.slide_in()
-
+	
+	play_ui_sounds(audio_order_accepted)
 
 func _remove_active_notification(order_id: int) -> void:
 	if not active_notifications.has(order_id):
@@ -365,6 +373,7 @@ func _update_personal_order_list() -> void:
 			current_order_list = null
 
 			old_list.slide_out()
+			play_ui_sounds(audio_order_canceled)
 			await old_list.animation_tween.finished
 
 			if is_instance_valid(old_list):
@@ -494,3 +503,9 @@ func _on_barcode_code_completed(product_code: String) -> void:
 
 func set_barcode_checkout(checkout: Node) -> void:
 	barcode_checkout = checkout
+
+
+# Audio
+func play_ui_sounds(stream : AudioStream) -> void:
+	ui_audio_player.stream = stream
+	ui_audio_player.play()
