@@ -589,7 +589,7 @@ func _sync_race_players(participants: Array[int]) -> void:
 
 func _update_race_hud(time_remaining: float) -> void:
 	var seconds: int = ceili(time_remaining)
-	var minutes: int = seconds / 60
+	var minutes: int = floori(float(seconds) / 60.0)
 	var leftover_seconds: int = seconds % 60
 
 	timer_label.text = "%02d:%02d" % [
