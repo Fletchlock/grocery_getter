@@ -1,9 +1,11 @@
+
 extends Node
 
 
 signal order_generated(order: OrderData)
 signal order_updated(order: OrderData)
 signal orders_synced
+
 
 @export_group("Order Generation")
 @export var available_products: Array[ProductData] = []
@@ -12,19 +14,11 @@ signal orders_synced
 @export var min_items: int = 1
 @export var max_items: int = 2
 
-@export_group("Dynamic Order Director")
-@export_range(0, 23) var order_start_hour: int = 8
-@export_range(0, 23) var order_end_hour: int = 21
-
-@export var max_outstanding_orders: int = 2
-
-@export var order_check_interval: float = 30.0
-@export var minimum_order_gap: float = 30.0
-@export var completion_recovery: float = 90.0
-
-@export_range(0.0, 1.0, 0.05) var quiet_order_chance: float = 0.40
-@export_range(0.0, 1.0, 0.05) var normal_order_chance: float = 0.60
-@export_range(0.0, 1.0, 0.05) var rush_order_chance: float = 0.25
+@export_group("Order Completion Time")
+@export var seconds_per_item: float = 30.0
+@export var minimum_completion_time: float = 60.0
+@export var time_reduction_per_day: float = 0.03
+@export var maximum_time_reduction: float = 0.40
 
 @export_group("Order Financial Rules")
 @export var acceptance_time_limit: int = 240
@@ -32,10 +26,45 @@ signal orders_synced
 @export var active_closing_penalty: float = 0.25
 @export var unaccepted_closing_penalty: float = 0.50
 
+@export_group("Dynamic Order Director")
+@export_range(0, 23) var order_start_hour: int = 8
+@export_range(1, 24) var order_end_hour: int = 21
+
+@export_group("Base Order Traffic")
+@export var order_interval_min: float = 60.0
+@export var order_interval_max: float = 90.0
+@export var minimum_order_gap: float = 20.0
+@export var completion_recovery: float = 60.0
+
+@export_group("Day Scaling")
+@export var day_growth_rate: float = 0.10
+@export var max_day_traffic_multiplier: float = 2.0
+
+@export_group("Player Scaling")
+@export var traffic_increase_per_player: float = 0.20
+@export var extra_orders_per_player: int = 1
+
+@export_group("Order Capacity")
+@export var starting_max_orders: int = 1
+@export var extra_orders_every_n_days: int = 3
+@export var max_outstanding_orders: int = 10
+
+@export_group("Time Of Day")
+@export_range(0, 23) var morning_end_hour: int = 11
+@export_range(0, 23) var lunch_end_hour: int = 14
+@export_range(0, 23) var afternoon_end_hour: int = 17
+@export_range(0, 23) var evening_end_hour: int = 19
+
+@export var morning_multiplier: float = 0.70
+@export var lunch_multiplier: float = 1.40
+@export var afternoon_multiplier: float = 1.0
+@export var evening_multiplier: float = 1.50
+@export var closing_multiplier: float = 0.60
+
+
 var orders: Array[OrderData] = []
 var next_order_id: int = 1
-var order_check_timer: float = 0.0
-var time_since_last_order: float = 0.0
+var order_spawn_timer: float = 0.0
 var recovery_timer: float = 0.0
 var order_director_running: bool = false
 var waiting_order_deadlines: Dictionary = {}
@@ -50,6 +79,7 @@ func _ready() -> void:
 	DayManager.day_started.connect(_on_day_started)
 	DayManager.clock_updated.connect(_on_clock_updated)
 
+
 func initialize_orders() -> void:
 	if not multiplayer.is_server():
 		return
@@ -61,11 +91,12 @@ func _initialize_orders() -> void:
 	orders.clear()
 	waiting_order_deadlines.clear()
 	pending_order_penalties.clear()
-	
-	order_check_timer = 0.0
-	time_since_last_order = 0.0
+
+	order_spawn_timer = 0.0
 	recovery_timer = 0.0
 	order_director_running = true
+
+	set_next_order_timer()
 
 	_sync_orders()
 
@@ -192,52 +223,126 @@ func _process(delta: float) -> void:
 
 
 func _update_order_director(delta: float) -> void:
-	# Recovery counts down in real time.
 	if recovery_timer > 0.0:
 		recovery_timer = maxf(recovery_timer - delta, 0.0)
 
+	if not DayManager.store_open:
+		return
+
 	var hour: int = DayManager.current_hour
 
-	# No new orders outside the generation window.
 	if hour < order_start_hour or hour >= order_end_hour:
-		order_check_timer = 0.0
-		time_since_last_order = 0.0
 		return
 
-	order_check_timer += delta
-	time_since_last_order += delta
-
-	if order_check_timer < order_check_interval:
-		return
-
-	order_check_timer = 0.0
-
-	# Don't generate during recovery.
 	if recovery_timer > 0.0:
 		return
 
-	# Enforce minimum spacing between orders.
-	if time_since_last_order < minimum_order_gap:
+	if _get_outstanding_order_count() >= get_current_max_orders():
 		return
 
-	# Don't exceed the outstanding order limit.
-	if _get_outstanding_order_count() >= max_outstanding_orders:
+	order_spawn_timer -= delta
+
+	if order_spawn_timer > 0.0:
 		return
 
-	var chance: float = _get_order_arrival_chance(hour)
-
-	if randf() > chance:
+	if available_products.is_empty():
+		set_next_order_timer()
 		return
 
 	_create_order()
 	_sync_orders()
 
-	time_since_last_order = 0.0
+	set_next_order_timer()
 
 	print(
 		"ORDER DIRECTOR: Generated order. Outstanding: ",
-		_get_outstanding_order_count()
+		_get_outstanding_order_count(),
+		"/",
+		get_current_max_orders()
 	)
+
+
+func get_player_count() -> int:
+	return clampi(multiplayer.get_peers().size() + 1, 1, 4)
+
+
+func get_day_traffic_multiplier() -> float:
+	var days_elapsed: int = maxi(0, DayManager.current_day - 1)
+
+	return minf(
+		1.0 + day_growth_rate * float(days_elapsed),
+		max_day_traffic_multiplier
+	)
+
+
+func get_player_traffic_multiplier() -> float:
+	var additional_players: int = get_player_count() - 1
+
+	return 1.0 + float(additional_players) * traffic_increase_per_player
+
+
+func get_time_of_day_multiplier() -> float:
+	var hour: int = DayManager.current_hour
+
+	if hour < morning_end_hour:
+		return morning_multiplier
+
+	if hour < lunch_end_hour:
+		return lunch_multiplier
+
+	if hour < afternoon_end_hour:
+		return afternoon_multiplier
+
+	if hour < evening_end_hour:
+		return evening_multiplier
+
+	return closing_multiplier
+
+
+func get_order_traffic_multiplier() -> float:
+	return maxf(
+		0.01,
+		get_day_traffic_multiplier()
+		* get_player_traffic_multiplier()
+		* get_time_of_day_multiplier()
+	)
+
+
+func get_current_max_orders() -> int:
+	var days_elapsed: int = maxi(0, DayManager.current_day - 1)
+
+	var day_bonus: int = 0
+
+	if extra_orders_every_n_days > 0:
+		day_bonus = floori(
+			float(days_elapsed) / float(extra_orders_every_n_days)
+		)
+
+	var player_bonus: int = (
+		(get_player_count() - 1) * extra_orders_per_player
+	)
+
+	return clampi(
+		starting_max_orders + day_bonus + player_bonus,
+		1,
+		maxi(1, max_outstanding_orders)
+	)
+
+
+func set_next_order_timer() -> void:
+	var multiplier: float = get_order_traffic_multiplier()
+
+	var minimum: float = maxf(
+		minimum_order_gap,
+		order_interval_min / multiplier
+	)
+
+	var maximum: float = maxf(
+		minimum,
+		order_interval_max / multiplier
+	)
+
+	order_spawn_timer = randf_range(minimum, maximum)
 
 
 func _get_outstanding_order_count() -> int:
@@ -318,19 +423,6 @@ func _get_order_reorder_cost(order: OrderData) -> float:
 	return total
 
 
-func _get_order_arrival_chance(hour: int) -> float:
-	if (
-		(hour >= 11 and hour < 13)
-		or (hour >= 16 and hour < 18)
-	):
-		return rush_order_chance
-
-	if hour < 10 or hour >= 20:
-		return quiet_order_chance
-
-	return normal_order_chance
-
-
 func _create_order() -> OrderData:
 	var order: OrderData = OrderData.new()
 
@@ -362,6 +454,7 @@ func _create_order() -> OrderData:
 		order.items.append(item)
 
 	order.initialize()
+	order.time_limit = _calculate_order_time_limit(order)
 
 	var current_game_minute: int = (
 		DayManager.current_hour * 60
@@ -421,10 +514,10 @@ func get_available_order() -> OrderData:
 func accept_order(player: CharacterBody3D) -> void:
 	if not multiplayer.is_server():
 		return
-	
+
 	if not DayManager.store_open:
 		return
-	
+
 	var peer_id: int = player.get_multiplayer_authority()
 
 	# A player can only own one active order.
@@ -438,7 +531,7 @@ func accept_order(player: CharacterBody3D) -> void:
 		order.state = OrderData.OrderState.ACTIVE
 		order.accepted_by_peer_id = peer_id
 		waiting_order_deadlines.erase(order.order_id)
-		
+
 		order_updated.emit(order)
 		_sync_orders()
 
@@ -509,6 +602,33 @@ func _update_order_timer(
 		cancel_order(order)
 
 
+func _calculate_order_time_limit(order: OrderData) -> float:
+	var total_items: int = 0
+
+	for item: OrderItem in order.items:
+		total_items += item.quantity
+
+	var days_elapsed: int = maxi(
+		0,
+		DayManager.current_day - 1
+	)
+
+	var reduction: float = clampf(
+		float(days_elapsed) * time_reduction_per_day,
+		0.0,
+		maximum_time_reduction
+	)
+
+	var base_time: float = (
+		float(total_items) * seconds_per_item
+	)
+
+	return maxf(
+		minimum_completion_time,
+		base_time * (1.0 - reduction)
+	)
+
+
 func complete_order(order: OrderData) -> void:
 	if not multiplayer.is_server():
 		return
@@ -519,7 +639,6 @@ func complete_order(order: OrderData) -> void:
 	order.state = OrderData.OrderState.COMPLETED
 
 	recovery_timer = completion_recovery
-	order_check_timer = 0.0
 
 	var _shopper_stats: Node3D = get_tree().get_first_node_in_group(
 		"shopper_stats"
@@ -599,6 +718,7 @@ func sync_orders(
 		return
 
 	orders.clear()
+	waiting_order_deadlines.clear()
 
 	for order_data: Dictionary in data:
 		var order: OrderData = OrderData.new()
@@ -608,6 +728,7 @@ func sync_orders(
 
 		if deadline >= 0:
 			waiting_order_deadlines[order.order_id] = deadline
+
 		order.state = order_data["state"]
 		order.accepted_by_peer_id = (
 			order_data["accepted_by_peer_id"]
@@ -631,8 +752,8 @@ func sync_orders(
 			)
 
 			order.items.append(item)
-		
+
 		orders.append(order)
 		order_updated.emit(order)
-	
+
 	orders_synced.emit()

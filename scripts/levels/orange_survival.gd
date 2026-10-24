@@ -8,14 +8,14 @@ extends Node3D
 
 @export_group("Orange Rotation")
 @export var starting_rotation_speed: float = 0.30
-@export var maximum_rotation_speed: float = 0.90
+@export var maximum_rotation_speed: float = 0.78
 @export var speed_increase: float = 0.10
 @export var speed_increase_interval: float = 10.0
 
 @export_group("Direction Changes")
 @export var minimum_direction_time: float = 2.5
 @export var maximum_direction_time: float = 4.0
-@export var reverse_chance: float = 0.50
+@export var reverse_chance: float = 0.42
 
 @export_group("Game Start")
 @export var intro_delay: float = 1.0

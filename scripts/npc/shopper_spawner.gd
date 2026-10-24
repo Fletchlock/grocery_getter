@@ -13,7 +13,7 @@ extends Node3D
 
 @export_group("Day Scaling")
 @export var day_growth_rate: float = 0.12
-@export var max_day_traffic_multiplier: float = 2.0
+@export var max_day_traffic_multiplier: float = 1.8
 
 @export_group("Player Scaling")
 @export var traffic_increase_per_player: float = 0.20
@@ -25,7 +25,7 @@ extends Node3D
 @export var max_shoppers: int = 20
 
 @export_group("Rush Hour")
-@export var rush_hour_multiplier: float = 1.50
+@export var rush_hour_multiplier: float = 1.40
 
 @onready var multiplayer_shopper_spawner: MultiplayerSpawner = $"../MultiplayerShopperSpawner"
 @onready var shopper_stats: Node3D = $"../ShopperStats"
