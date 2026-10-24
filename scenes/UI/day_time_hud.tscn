@@ -119,6 +119,8 @@ expand_margin_top = 5.0
 expand_margin_right = 10.0
 expand_margin_bottom = 5.0
 
+[sub_resource type="AudioStream" id="AudioStream_6aigx"]
+
 [node name="DayTimeHud" type="Control" unique_id=1121544524 groups=["day_time_hud"]]
 layout_mode = 3
 anchors_preset = 15
@@ -264,5 +266,10 @@ offset_bottom = 40.0
 [node name="BardcodeHud" parent="." unique_id=1388157964 instance=ExtResource("5_8arff")]
 layout_mode = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_52nrg")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1547641565]
+stream = SubResource("AudioStream_6aigx")
+max_polyphony = 6
+bus = &"SFX"
 
 [editable path="BardcodeHud"]

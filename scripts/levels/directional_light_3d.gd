@@ -12,7 +12,7 @@ extends DirectionalLight3D
 @export var night_ambient_energy: float = 0.10
 
 @export_group("Rain Schedule")
-@export_range(0.0, 1.0) var rain_chance: float = 0.20
+@export_range(0.0, 1.0) var rain_chance: float = 0.2
 @export var rain_min_hours: float = 6.0
 @export var rain_max_hours: float = 8.0
 @export var rain_transition_minutes: float = 30.0
@@ -40,6 +40,21 @@ extends DirectionalLight3D
 
 @onready var world_environment: WorldEnvironment = $"../WorldEnvironment"
 @onready var rain_particles: GPUParticles3D = $"../RainEffect/RainParticles"
+
+@export_group("Rain Audio")
+@export_range(-40.0, 0.0) var rain_max_volume_db: float = -8.0
+
+@onready var rain_audio: AudioStreamPlayer = $"../RainEffect/RainAudio"
+
+@export_group("Indoor Rain Audio")
+@export var indoor_rain_volume_db: float = -20.0
+@export var indoor_rain_cutoff_hz: float = 1200.0
+@export var outdoor_rain_cutoff_hz: float = 20000.0
+@export var indoor_audio_transition: float = 1.5
+
+var player_indoors: bool = false
+var indoor_audio_blend: float = 0.0
+
 
 const START_HOUR: int = 7
 const END_HOUR: int = 24
@@ -89,7 +104,14 @@ func _ready() -> void:
 	rain_particles.amount = maximum_rain_particles
 	rain_particles.amount_ratio = 0.0
 	rain_particles.emitting = false
-
+	rain_audio.volume_db = -80.0
+	rain_audio.finished.connect(_on_rain_audio_finished)
+	rain_audio.play()	
+	
+	print("RAIN AUDIO STREAM: ", rain_audio.stream)
+	print("RAIN AUDIO PLAYING: ", rain_audio.playing)
+	print("RAIN AUDIO BUS: ", rain_audio.bus)
+	
 	DayManager.clock_updated.connect(_on_clock_updated)
 	DayManager.day_started.connect(_on_day_started)
 
@@ -102,7 +124,7 @@ func _ready() -> void:
 	_update_sun()
 	_update_weather_fog()
 	_update_rain()
-
+	_update_rain_audio(0.0)
 
 func _process(delta: float) -> void:
 	if multiplayer.is_server():
@@ -117,7 +139,7 @@ func _process(delta: float) -> void:
 	_update_sun()
 	_update_weather_fog()
 	_update_rain()
-
+	_update_rain_audio(delta)
 
 func _get_current_game_minutes() -> float:
 	var minute_fraction: float = 0.0
@@ -364,6 +386,75 @@ func _update_rain() -> void:
 		rain_particles.amount_ratio = rain_intensity
 	else:
 		rain_particles.amount_ratio = 0.0
+
+
+func _update_rain_audio(delta: float) -> void:
+	var target_blend: float = 1.0 if player_indoors else 0.0
+
+	indoor_audio_blend = move_toward(
+		indoor_audio_blend,
+		target_blend,
+		delta / maxf(indoor_audio_transition, 0.01)
+	)
+
+	var indoor_volume: float = lerpf(
+		1.0,
+		db_to_linear(indoor_rain_volume_db),
+		indoor_audio_blend
+	)
+
+	rain_audio.volume_linear = (
+		rain_intensity
+		* db_to_linear(rain_max_volume_db)
+		* indoor_volume
+	)
+
+	var bus_index: int = AudioServer.get_bus_index("Rain")
+
+	if bus_index < 0:
+		return
+
+	var filter: AudioEffectLowPassFilter = (
+		AudioServer.get_bus_effect(bus_index, 0)
+		as AudioEffectLowPassFilter
+	)
+
+	if filter != null:
+		filter.cutoff_hz = lerpf(
+			outdoor_rain_cutoff_hz,
+			indoor_rain_cutoff_hz,
+			indoor_audio_blend
+		)
+
+
+func _on_indoor_audio_area_body_entered(body: Node3D) -> void:
+	if not body is CharacterBody3D:
+		return
+
+	if not body.is_in_group("player"):
+		return
+
+	if not body.is_multiplayer_authority():
+		return
+
+	player_indoors = true
+
+
+func _on_indoor_audio_area_body_exited(body: Node3D) -> void:
+	if not body is CharacterBody3D:
+		return
+
+	if not body.is_in_group("player"):
+		return
+
+	if not body.is_multiplayer_authority():
+		return
+
+	player_indoors = false
+
+
+func _on_rain_audio_finished() -> void:
+	rain_audio.play()
 
 
 func _on_clock_updated(_day: int, _hour: int, _minute: int) -> void:

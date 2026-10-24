@@ -18,6 +18,7 @@ class_name Checkout
 # AI Checkout Scanner
 @onready var scan_area: Area3D = $ScanArea
 @onready var scanner_beep_player: AudioStreamPlayer3D = $ScannerBeepPlayer
+@onready var checkout_finished_player: AudioStreamPlayer3D = $CheckoutFinishedPlayer
 
 # Checkout Display
 @onready var checkout_display: CheckoutDisplay = $CheckoutViewport/CheckoutUI
@@ -330,9 +331,10 @@ func customer_arrived_at_bag_point(customer: ShopperAI) -> void:
 	_stop_checkout_wait()
 	
 	# Shopper collects their bag.
+	_play_checkout_finished.rpc()
 	_clear_grid(bag_grid)
 	_sync_grid_to_clients(bag_grid)
-
+	
 	# Release checkout for the next shopper.
 	checkout_customer = null
 
@@ -525,6 +527,11 @@ func _play_scanner_beep() -> void:
 
 	scanner_beep_player.pitch_scale = randf_range(1.0, 1.05)
 	scanner_beep_player.play()
+
+
+@rpc("authority", "call_local", "reliable")
+func _play_checkout_finished() -> void:
+	checkout_finished_player.play()
 
 # Checkout Display RPC's
 

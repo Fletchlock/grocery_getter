@@ -57,6 +57,7 @@ animation = &"character_anims/run"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_e45vn"]
 animation = &"character_anims/run"
+play_mode = 1
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6v20i"]
 animation = &"character_anims/Walk"
@@ -91,6 +92,7 @@ filters = ["Armature/Skeleton3D:hand.L", "Armature/Skeleton3D:hand.R"]
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_y4gsw"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_td4dg"]
+graph_offset = Vector2(-116.67793, -37.087257)
 nodes/output/position = Vector2(976, 144)
 nodes/BlendSpace1D/node = SubResource("AnimationNodeBlendSpace1D_pttyk")
 nodes/BlendSpace1D/position = Vector2(272, 128)

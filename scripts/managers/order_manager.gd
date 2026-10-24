@@ -9,13 +9,13 @@ signal orders_synced
 
 @export_group("Order Generation")
 @export var available_products: Array[ProductData] = []
-@export var min_products: int = 3
-@export var max_products: int = 6
+@export var min_products: int = 2
+@export var max_products: int = 5
 @export var min_items: int = 1
-@export var max_items: int = 2
+@export var max_items: int = 3
 
 @export_group("Order Completion Time")
-@export var seconds_per_item: float = 30.0
+@export var seconds_per_item: float = 25.0
 @export var minimum_completion_time: float = 60.0
 @export var time_reduction_per_day: float = 0.03
 @export var maximum_time_reduction: float = 0.40
