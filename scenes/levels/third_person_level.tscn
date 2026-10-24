@@ -1595,9 +1595,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.041381836, 0.05500263, 0.1
 shape = SubResource("BoxShape3D_iteik")
 debug_color = Color(0, 0.6, 0.69803923, 0.92156863)
 
-[node name="ScannerChargerMesh" parent="ScannerHolder" index="1" unique_id=790887636]
-mesh = null
-
 [node name="RestockScanner" parent="ScannerHolder" unique_id=542482909 instance=ExtResource("63_8865k")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
 
