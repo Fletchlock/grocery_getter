@@ -55,6 +55,16 @@ extends DirectionalLight3D
 var player_indoors: bool = false
 var indoor_audio_blend: float = 0.0
 
+@export_group("Door Rain Audio")
+@export var automatic_doors: AutomaticDoors
+@export var door_audio_distance: float = 5.0
+@export var door_rain_cutoff_hz: float = 8000.0
+@export var door_audio_transition: float = 0.1
+@export var door_closed_position: float = 0.0
+@export var door_open_position: float = 1.0
+
+var door_audio_blend: float = 0.0
+
 
 const START_HOUR: int = 7
 const END_HOUR: int = 24
@@ -154,6 +164,66 @@ func _get_current_game_minutes() -> float:
 	return float(
 		DayManager.current_hour * 60 + DayManager.current_minute
 	) + minute_fraction
+
+
+func _get_door_audio_influence() -> float:
+	if not player_indoors:
+		return 0.0
+
+	if automatic_doors == null:
+		return 0.0
+
+	var audio_point: Marker3D = automatic_doors.get_node_or_null("AudioPoint") as Marker3D
+
+	if audio_point == null:
+		return 0.0
+
+	var local_player: CharacterBody3D = null
+
+	for player: Node in get_tree().get_nodes_in_group("player"):
+		if player is CharacterBody3D and player.is_multiplayer_authority():
+			local_player = player as CharacterBody3D
+			break
+
+	if local_player == null:
+		return 0.0
+
+	var player_pos: Vector2 = Vector2(
+		local_player.global_position.x,
+		local_player.global_position.z
+	)
+
+	var door_pos: Vector2 = Vector2(
+		audio_point.global_position.x,
+		audio_point.global_position.z
+	)
+
+	var distance: float = player_pos.distance_to(door_pos)
+
+	var distance_influence: float = 1.0 - smoothstep(
+		0.0,
+		maxf(door_audio_distance, 0.01),
+		distance
+	)
+
+	# Calculate opening from actual door positions.
+	var left_door: Node3D = automatic_doors.get_node_or_null("DoorLeft") as Node3D
+	var right_door: Node3D = automatic_doors.get_node_or_null("DoorRight") as Node3D
+
+	if left_door == null or right_door == null:
+		return 0.0
+
+	var current_separation: float = left_door.position.distance_to(right_door.position)
+
+	var open_amount: float = inverse_lerp(
+		door_closed_position,
+		door_open_position,
+		current_separation
+	)
+
+	open_amount = clampf(open_amount, 0.0, 1.0)
+
+	return distance_influence * open_amount
 
 
 func _update_sun() -> void:
@@ -409,6 +479,15 @@ func _update_rain_audio(delta: float) -> void:
 		* indoor_volume
 	)
 
+	# Smoothly blend the doorway rain influence.
+	var target_door_blend: float = _get_door_audio_influence()
+
+	door_audio_blend = move_toward(
+		door_audio_blend,
+		target_door_blend,
+		delta / maxf(door_audio_transition, 0.01)
+	)
+
 	var bus_index: int = AudioServer.get_bus_index("Rain")
 
 	if bus_index < 0:
@@ -420,10 +499,18 @@ func _update_rain_audio(delta: float) -> void:
 	)
 
 	if filter != null:
-		filter.cutoff_hz = lerpf(
+		var normal_cutoff: float = lerpf(
 			outdoor_rain_cutoff_hz,
 			indoor_rain_cutoff_hz,
 			indoor_audio_blend
+		)
+
+		var door_influence: float = door_audio_blend * indoor_audio_blend
+
+		filter.cutoff_hz = lerpf(
+			normal_cutoff,
+			door_rain_cutoff_hz,
+			door_influence
 		)
 
 
