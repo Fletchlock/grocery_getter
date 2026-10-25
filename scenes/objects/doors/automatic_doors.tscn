@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://v5ls3uv2nsxv"]
+
+[ext_resource type="ArrayMesh" uid="uid://dtniok2wmcrau" path="res://assets/models/buildings/store_small_door_L_Cube_008.res" id="1_lohbb"]
+[ext_resource type="ArrayMesh" uid="uid://bg3st2n6amo7c" path="res://assets/models/buildings/store_small_door_R_Cube.res" id="2_20qbh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
+
+[node name="AutomaticDoors" type="Node3D" unique_id=435809573]
+
+[node name="DoorLeft" type="Node3D" parent="." unique_id=280664018]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="DoorLeft" unique_id=1803222141]
+mesh = ExtResource("1_lohbb")
+
+[node name="DoorRight" type="Node3D" parent="." unique_id=218192644]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="DoorRight" unique_id=1706716857]
+mesh = ExtResource("2_20qbh")
+
+[node name="DetectionArea" type="Area3D" parent="." unique_id=1543465768]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea" unique_id=1057748828]
+shape = SubResource("BoxShape3D_6aigx")
+debug_color = Color(0.64673537, 0.21539006, 1, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1866058170]
