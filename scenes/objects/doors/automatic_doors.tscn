@@ -1,26 +1,109 @@
 [gd_scene format=3 uid="uid://v5ls3uv2nsxv"]
 
+[ext_resource type="Script" uid="uid://ck5w4ev1udi2n" path="res://scripts/objects/doors/automatic_doors.gd" id="1_20qbh"]
 [ext_resource type="ArrayMesh" uid="uid://dtniok2wmcrau" path="res://assets/models/buildings/store_small_door_L_Cube_008.res" id="1_lohbb"]
 [ext_resource type="ArrayMesh" uid="uid://bg3st2n6amo7c" path="res://assets/models/buildings/store_small_door_R_Cube.res" id="2_20qbh"]
 
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_20qbh"]
+points = PackedVector3Array(4.203226, 2.5165403, 10.17667, 3.1817594, 0.1817596, 10.03076, 3.1817594, 0.1817596, 10.17667, 3.1817594, 2.5165403, 10.03076, 4.203226, 0.1817596, 10.03076, 4.203226, 0.1817596, 10.17667, 3.1817594, 2.5165403, 10.17667, 4.203226, 2.5165403, 10.03076)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_unydt"]
+points = PackedVector3Array(5.203226, 2.5165403, 10.17667, 4.181859, 0.1817596, 10.03076, 4.181859, 0.1817596, 10.17667, 4.181859, 2.5165403, 10.03076, 5.203226, 0.1817596, 10.03076, 5.203226, 0.1817596, 10.17667, 4.181859, 2.5165403, 10.17667, 5.203226, 2.5165403, 10.03076)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
+size = Vector3(2.2268398, 2.321289, 3.1177273)
+
+[sub_resource type="Animation" id="Animation_lohbb"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DoorLeft:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("DoorRight:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_20qbh"]
+resource_name = "open"
+length = 0.75
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DoorLeft:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.75),
+"transitions": PackedFloat32Array(2.0000007, 0),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-0.95, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("DoorRight:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.75),
+"transitions": PackedFloat32Array(2, 0),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.95, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_unydt"]
+_data = {
+&"RESET": SubResource("Animation_lohbb"),
+&"open": SubResource("Animation_20qbh")
+}
 
 [node name="AutomaticDoors" type="Node3D" unique_id=435809573]
+script = ExtResource("1_20qbh")
 
 [node name="DoorLeft" type="Node3D" parent="." unique_id=280664018]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DoorLeft" unique_id=1803222141]
 mesh = ExtResource("1_lohbb")
 
+[node name="StaticBody3D" type="StaticBody3D" parent="DoorLeft/MeshInstance3D" unique_id=923465859]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DoorLeft/MeshInstance3D/StaticBody3D" unique_id=1906852305]
+shape = SubResource("ConvexPolygonShape3D_20qbh")
+
 [node name="DoorRight" type="Node3D" parent="." unique_id=218192644]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DoorRight" unique_id=1706716857]
 mesh = ExtResource("2_20qbh")
 
+[node name="StaticBody3D" type="StaticBody3D" parent="DoorRight/MeshInstance3D" unique_id=1968312845]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DoorRight/MeshInstance3D/StaticBody3D" unique_id=1273599889]
+shape = SubResource("ConvexPolygonShape3D_unydt")
+
 [node name="DetectionArea" type="Area3D" parent="." unique_id=1543465768]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.199971, 0.19997114, 10)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea" unique_id=1057748828]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.014400005, 1.1730704, 0.10106659)
 shape = SubResource("BoxShape3D_6aigx")
 debug_color = Color(0.64673537, 0.21539006, 1, 1)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1866058170]
+libraries/ = SubResource("AnimationLibrary_unydt")
