@@ -12,10 +12,10 @@ const CONVEYOR_OBSTACLE_SCENE: PackedScene = preload(
 # ============================================================
 
 @export_group("Game Start")
-@export var intro_delay: float = 1.0
-@export var intro_fade_in: float = 1.0
-@export var intro_hold: float = 2.0
-@export var intro_fade_out: float = 1.0
+@export var intro_delay: float = 1.5
+@export var intro_fade_in: float = 1.2
+@export var intro_hold: float = 3.5
+@export var intro_fade_out: float = 1.2
 @export var screen_fade_out: float = 0.2
 @export var countdown_interval: float = 1.0
 @export var go_display_duration: float = 0.6
@@ -122,6 +122,7 @@ var last_results_second: int = -1
 # ============================================================
 
 var obstacle_spawn_timer: float = 0.0
+var obstacle_spawning_active: bool = false
 
 
 # ============================================================
@@ -197,33 +198,35 @@ func _process(delta: float) -> void:
 		_update_spectator_camera(delta)
 
 
-
 func _physics_process(delta: float) -> void:
 	if not multiplayer.is_server():
 		return
 
 	_update_results_countdown(delta)
 
-	if not race_active or race_finished:
+	if race_finished:
 		return
-		
-	race_elapsed_time += delta
-	_update_race_timer(delta)
+
+	# Race timer only advances once the race starts.
+	if race_active:
+		race_elapsed_time += delta
+		_update_race_timer(delta)
 
 	if race_finished:
 		return
 
-	# Spawn obstacles at randomized intervals.
-	obstacle_spawn_timer -= delta
+	# Obstacles can spawn during the intro and race.
+	if obstacle_spawning_active:
+		obstacle_spawn_timer -= delta
 
-	if obstacle_spawn_timer <= 0.0:
-		if products.get_child_count() < maximum_active_obstacles:
-			_spawn_random_obstacle()
+		if obstacle_spawn_timer <= 0.0:
+			if products.get_child_count() < maximum_active_obstacles:
+				_spawn_random_obstacle()
 
-		obstacle_spawn_timer = randf_range(
-			minimum_spawn_interval,
-			maximum_spawn_interval
-		)
+			obstacle_spawn_timer = randf_range(
+				minimum_spawn_interval,
+				maximum_spawn_interval
+			)
 
 	# Remove obstacles that have passed the starting area.
 	for child: Node in products.get_children():
@@ -245,7 +248,11 @@ func _start_intro_sequence() -> void:
 		return
 
 	_play_intro.rpc()
-
+	
+	# Start filling the conveyor during the intro.
+	obstacle_spawning_active = true
+	obstacle_spawn_timer = 0.0
+	
 	var intro_duration: float = (
 		intro_delay
 		+ intro_fade_in
@@ -258,9 +265,6 @@ func _start_intro_sequence() -> void:
 
 	if not is_inside_tree() or race_finished:
 		return
-	
-	# Spawn the first obstacle before the countdown.
-	_spawn_random_obstacle()	
 	
 	for number: int in [3, 2, 1]:
 		_show_countdown.rpc(str(number))
@@ -485,14 +489,8 @@ func _start_race() -> void:
 				barrier.start_barrier()
 		
 		_sync_race_players.rpc(race_players)
-		
-		obstacle_spawn_timer = randf_range(
-			minimum_spawn_interval,
-			maximum_spawn_interval
-		)
 
 	print("CONVEYOR SHOWDOWN: Race started!")
-
 
 
 func _set_local_player_movement_locked(locked: bool) -> void:
@@ -680,7 +678,8 @@ func _finish_race() -> void:
 
 	race_finished = true
 	race_active = false
-
+	obstacle_spawning_active = false
+	
 	_sync_race_finished.rpc(
 		finish_order,
 		finished_players,
@@ -947,7 +946,7 @@ func _unhandled_input(event: InputEvent) -> void:
 # ============================================================
 
 func _on_all_peers_loaded(level_path: String) -> void:
-	if level_path != TransitionManager.CONVEYOR_SHOWDOWN_SCENE:
+	if level_path != scene_file_path:
 		return
 
 	if not multiplayer.is_server():

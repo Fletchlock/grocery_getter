@@ -816,7 +816,7 @@ func _set_local_player_movement_locked(locked: bool) -> void:
 	player.movement_locked = locked
 
 func _on_all_peers_loaded(level_path: String) -> void:
-	if level_path != TransitionManager.ORANGE_SURVIVAL_SCENE:
+	if level_path != scene_file_path:
 		return
 
 	if not multiplayer.is_server():
