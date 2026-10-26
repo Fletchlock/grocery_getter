@@ -90,7 +90,10 @@ bus = &"SFX"
 
 [node name="CheckoutFinishedPlayer" type="AudioStreamPlayer3D" parent="." unique_id=1645962293]
 stream = ExtResource("7_l61bx")
-volume_db = -20.0
+volume_db = -22.0
+unit_size = 2.0
+max_db = 0.0
+bus = &"SFX"
 
 [node name="ScanArea" type="Area3D" parent="." unique_id=1107148775]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.2066052)

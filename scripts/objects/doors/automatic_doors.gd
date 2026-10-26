@@ -7,6 +7,7 @@ class_name AutomaticDoors
 
 @onready var detection_area: Area3D = $DetectionArea
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var door_audio: AudioStreamPlayer3D = $DoorAudio
 
 
 var bodies_inside: Array[Node3D] = []
@@ -77,6 +78,9 @@ func _sync_door_animation(open: bool) -> void:
 		animation_player.play("open")
 	else:
 		animation_player.play_backwards("open")
+
+	# Play the door motor sound when movement begins.
+	door_audio.play()
 
 
 @rpc("any_peer", "reliable")

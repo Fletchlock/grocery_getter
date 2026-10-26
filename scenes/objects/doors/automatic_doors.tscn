@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://ck5w4ev1udi2n" path="res://scripts/objects/doors/automatic_doors.gd" id="1_20qbh"]
 [ext_resource type="ArrayMesh" uid="uid://dtniok2wmcrau" path="res://assets/models/buildings/store_small_door_L_Cube_008.res" id="1_lohbb"]
 [ext_resource type="ArrayMesh" uid="uid://bg3st2n6amo7c" path="res://assets/models/buildings/store_small_door_R_Cube.res" id="2_20qbh"]
+[ext_resource type="AudioStream" uid="uid://dcmtthm8lwkti" path="res://assets/sounds/538978__tbirch55__door-open.wav" id="4_unydt"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_20qbh"]
 points = PackedVector3Array(4.203226, 2.5165403, 10.17667, 3.1817594, 0.1817596, 10.03076, 3.1817594, 0.1817596, 10.17667, 3.1817594, 2.5165403, 10.03076, 4.203226, 0.1817596, 10.03076, 4.203226, 0.1817596, 10.17667, 3.1817594, 2.5165403, 10.17667, 4.203226, 2.5165403, 10.03076)
@@ -11,7 +12,7 @@ points = PackedVector3Array(4.203226, 2.5165403, 10.17667, 3.1817594, 0.1817596,
 points = PackedVector3Array(5.203226, 2.5165403, 10.17667, 4.181859, 0.1817596, 10.03076, 4.181859, 0.1817596, 10.17667, 4.181859, 2.5165403, 10.03076, 5.203226, 0.1817596, 10.03076, 5.203226, 0.1817596, 10.17667, 4.181859, 2.5165403, 10.17667, 5.203226, 2.5165403, 10.03076)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
-size = Vector3(2.2268398, 2.321289, 3.1177273)
+size = Vector3(2.2268398, 2.321289, 2.9435554)
 
 [sub_resource type="Animation" id="Animation_lohbb"]
 length = 0.001
@@ -101,7 +102,7 @@ shape = SubResource("ConvexPolygonShape3D_unydt")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.199971, 0.19997114, 10)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea" unique_id=1057748828]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.014400005, 1.1730704, 0.10106659)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.014400005, 1.1730704, 0.09620762)
 shape = SubResource("BoxShape3D_6aigx")
 debug_color = Color(0.64673537, 0.21539006, 1, 1)
 
@@ -110,3 +111,13 @@ libraries/ = SubResource("AnimationLibrary_unydt")
 
 [node name="AudioPoint" type="Marker3D" parent="." unique_id=167458985]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.199971, 0.19997114, 10)
+
+[node name="DoorAudio" type="AudioStreamPlayer3D" parent="." unique_id=1191574016]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2, 2.5, 10.087)
+stream = ExtResource("4_unydt")
+volume_db = -10.0
+unit_size = 3.0
+max_distance = 25.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 3500.0
+attenuation_filter_db = -6.0

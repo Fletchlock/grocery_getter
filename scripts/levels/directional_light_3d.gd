@@ -47,10 +47,10 @@ extends DirectionalLight3D
 @onready var rain_audio: AudioStreamPlayer = $"../RainEffect/RainAudio"
 
 @export_group("Indoor Rain Audio")
-@export var indoor_rain_volume_db: float = -20.0
-@export var indoor_rain_cutoff_hz: float = 1200.0
+@export var indoor_rain_volume_db: float = -24.0
+@export var indoor_rain_cutoff_hz: float = 2500.0
 @export var outdoor_rain_cutoff_hz: float = 20000.0
-@export var indoor_audio_transition: float = 1.5
+@export var indoor_audio_transition: float = 1.2
 
 var player_indoors: bool = false
 var indoor_audio_blend: float = 0.0
