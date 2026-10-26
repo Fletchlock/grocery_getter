@@ -40,10 +40,7 @@ func load_level(level_path: String) -> bool:
 	current_level = level_scene.instantiate()
 	game.add_child(current_level)
 
-	if level_path in [
-		TransitionManager.ORANGE_SURVIVAL_SCENE,
-		TransitionManager.CONVEYOR_SHOWDOWN_SCENE
-	]:
+	if MinigameManager.is_minigame_scene(level_path):
 		return true
 
 	var hud_scene: PackedScene = load(

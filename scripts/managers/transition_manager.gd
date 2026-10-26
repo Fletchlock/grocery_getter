@@ -3,8 +3,6 @@ extends Node
 
 signal all_peers_loaded(level_path: String)
 
-const ORANGE_SURVIVAL_SCENE: String = "res://scenes/levels/orange_survival.tscn"
-const CONVEYOR_SHOWDOWN_SCENE: String = "res://scenes/levels/conveyor_showdown.tscn"
 const GROCERY_STORE_SCENE: String = "res://scenes/levels/third_person_level.tscn"
 
 @onready var fade_rect: ColorRect = $CanvasLayer/ColorRect
@@ -21,33 +19,41 @@ func _ready() -> void:
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey:
 		return
+
 	if not event.pressed or event.echo:
 		return
+
 	if not multiplayer.is_server() or transitioning:
 		return
 
 	match event.keycode:
 		KEY_F6:
-			start_orange_survival()
+			_start_debug_minigame(0)
 
 		KEY_F7:
-			start_conveyor_showdown()
+			_start_debug_minigame(1)
 
 
-func start_orange_survival() -> void:
+func _start_debug_minigame(index: int) -> void:
+	if index < 0 or index >= MinigameManager.MINIGAMES.size():
+		return
+
+	var game: Dictionary = MinigameManager.MINIGAMES[index]
+	var scene_path: String = str(game["scene_path"])
+
+	start_minigame(scene_path)
+
+
+func start_minigame(scene_path: String) -> void:
 	if not multiplayer.is_server() or transitioning:
 		return
 
-	StoreManager.capture_restock_boxes()
-	_begin_coordinated_transition(ORANGE_SURVIVAL_SCENE)
-
-
-func start_conveyor_showdown() -> void:
-	if not multiplayer.is_server() or transitioning:
+	if not MinigameManager.is_minigame_scene(scene_path):
+		push_error("TRANSITION: Unregistered minigame: " + scene_path)
 		return
 
 	StoreManager.capture_restock_boxes()
-	_begin_coordinated_transition(CONVEYOR_SHOWDOWN_SCENE)
+	_begin_coordinated_transition(scene_path)
 
 
 func return_to_grocery_store() -> void:
@@ -157,10 +163,7 @@ func _load_transition_level(id: int, level_path: String) -> void:
 	await get_tree().process_frame
 
 	# Wait for this peer's own character in Orange Survival.
-	if level_path in [
-		ORANGE_SURVIVAL_SCENE,
-		CONVEYOR_SHOWDOWN_SCENE
-	]:
+	if MinigameManager.is_minigame_scene(level_path):
 		var level: Node = LevelManager.current_level
 		var player_container: Node = level.get_node("Players")
 		var local_id: String = str(multiplayer.get_unique_id())

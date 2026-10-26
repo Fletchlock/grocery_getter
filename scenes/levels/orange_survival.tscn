@@ -17,11 +17,11 @@ uv1_triplanar_sharpness = 1.9708505
 
 [sub_resource type="SphereMesh" id="SphereMesh_6aigx"]
 material = SubResource("ORMMaterial3D_ouxn3")
-radius = 10.0
-height = 20.0
+radius = 12.0
+height = 24.0
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_hd853"]
-radius = 10.0
+radius = 12.0
 
 [sub_resource type="Environment" id="Environment_45b30"]
 background_mode = 1
@@ -195,7 +195,7 @@ theme_override_font_sizes/font_size = 40
 text = "Waiting for next round..."
 
 [node name="SpectatorCamera" type="Camera3D" parent="." unique_id=164285949]
-transform = Transform3D(1, 0, 0, 0, 0.95105654, 0.309017, 0, -0.309017, 0.95105654, 0, 13.561, 7.674)
+transform = Transform3D(1, 0, 0, 0, 0.95105654, 0.309017, 0, -0.309017, 0.95105654, 0, 15.225577, 9.626876)
 
 [node name="IntroLayer" type="CanvasLayer" parent="." unique_id=1136399271]
 layer = 10

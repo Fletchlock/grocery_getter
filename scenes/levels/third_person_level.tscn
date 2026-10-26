@@ -473,7 +473,7 @@ rain_min_hours = 4.0
 rain_max_hours = 6.0
 rain_shadow_opacity = 0.1
 rain_max_volume_db = -5.0
-indoor_rain_volume_db = -6.0
+indoor_rain_volume_db = -8.0
 automatic_doors = NodePath("../StoreSmallGreybox/AutomaticDoors")
 door_audio_distance = 6.0
 door_open_position = 0.9
@@ -1343,6 +1343,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.61692715, 1.0330372, -1.70
 script = ExtResource("52_otsaw")
 item_scale = Vector3(0.8, 0.8, 0.8)
 rotation_variation_degrees = 0.0
+allow_item_shrinking = null
+minimum_item_scale = null
+shrink_step = null
+allowed_overlap = null
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Checkout/BagGrid/InteractionArea" parent_id_path=PackedInt32Array(2036172686, 514614208) index="0" unique_id=1370761931]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00048160553, 0.21938705, 0.1974678)
@@ -1369,7 +1373,7 @@ volume_db = -20.0
 
 [node name="CheckoutFinishedPlayer" parent="NavigationRegion3D/Checkout" index="8" unique_id=1645962293]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.44224787, 1.0971498, -1.2723484)
-volume_db = -28.0
+volume_db = -20.0
 
 [node name="ScanArea" parent="NavigationRegion3D/Checkout" index="9" unique_id=1107148775]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3656211, 0.701555, -0.39848804)

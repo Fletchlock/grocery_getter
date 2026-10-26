@@ -156,12 +156,7 @@ func _settle_closing_orders(day: int) -> void:
 				)
 
 			OrderData.OrderState.ACTIVE:
-				penalty = (
-					_get_order_reorder_cost(order)
-					* active_closing_penalty
-				)
-
-			_:
+				# Let accepted orders continue after closing.
 				continue
 
 		total_penalty += penalty
@@ -202,13 +197,12 @@ func _process(delta: float) -> void:
 	if not multiplayer.is_server():
 		return
 
-	# Preserve existing active-order timers.
-	if DayManager.store_open:
-		for order: OrderData in orders:
-			if order.state != OrderData.OrderState.ACTIVE:
-				continue
+	# Active orders continue running after store closing.
+	for order: OrderData in orders:
+		if order.state != OrderData.OrderState.ACTIVE:
+			continue
 
-			_update_order_timer(order, delta)
+		_update_order_timer(order, delta)
 
 	# Run the dynamic director.
 	if order_director_running and DayManager.clock_running:

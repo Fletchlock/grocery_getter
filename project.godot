@@ -33,6 +33,7 @@ DayManager="*uid://dg2kxouarefn2"
 StockOrderManager="*uid://crunbndowdwf6"
 StoreManager="*uid://rm40u211r6ke"
 SaveManager="*uid://c85vxole6c8pw"
+MinigameManager="*uid://d4aenawdhuk1v"
 
 [debug]
 

@@ -90,6 +90,7 @@ func are_all_players_punched_out() -> bool:
 
 
 
+
 func _try_advance_day() -> void:
 	if not multiplayer.is_server():
 		return
@@ -100,13 +101,25 @@ func _try_advance_day() -> void:
 	if not are_all_players_punched_out():
 		return
 
+	if TransitionManager.transitioning:
+		return
+
+	var next_scene: String = MinigameManager.get_next_minigame(
+		current_day
+	)
+
+	if next_scene.is_empty():
+		push_warning("DAY MANAGER: No eligible minigames.")
+		return
+
 	_day_transition_started = true
 	clock_running = false
 
 	print("DAY MANAGER: All players punched out.")
-	print("DAY MANAGER: Starting Orange Survival.")
+	print("DAY MANAGER: Starting minigame: ", next_scene)
 
-	TransitionManager.start_orange_survival()
+	TransitionManager.start_minigame(next_scene)
+
 
 
 func complete_minigame_and_advance_day() -> void:

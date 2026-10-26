@@ -270,6 +270,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_52nrg")
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1547641565]
 stream = SubResource("AudioStream_6aigx")
 max_polyphony = 6
-bus = &"SFX"
+bus = &"UI"
 
 [editable path="BardcodeHud"]
