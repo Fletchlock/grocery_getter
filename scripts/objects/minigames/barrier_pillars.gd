@@ -30,12 +30,12 @@ enum BarrierType {
 
 @export_group("Animation")
 @export var extension_time: float = 0.15
-@export var active_duration: float = 3.0
+@export var active_duration: float = 4.0
 @export var retraction_time: float = 0.15
 
 @export_group("Timing")
-@export var minimum_interval: float = 2.0
-@export var maximum_interval: float = 5.0
+@export var minimum_interval: float = 1.5
+@export var maximum_interval: float = 4.5
 
 
 @onready var beam_visual: MeshInstance3D = $BeamVisual
