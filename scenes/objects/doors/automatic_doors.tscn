@@ -115,7 +115,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.199971, 0.19997114, 10)
 [node name="DoorAudio" type="AudioStreamPlayer3D" parent="." unique_id=1191574016]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2, 2.5, 10.087)
 stream = ExtResource("4_unydt")
-volume_db = -10.0
+volume_db = -15.0
 unit_size = 3.0
 max_distance = 25.0
 bus = &"SFX"
