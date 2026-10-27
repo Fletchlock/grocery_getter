@@ -71,15 +71,3 @@ func reset_reputation() -> void:
 
 	reputation_changed.emit(store_reputation)
 	_sync_reputation.rpc(store_reputation, total_reviews)
-
-# debug ==========================
-func debug_test_reputation() -> void:
-	if not multiplayer.is_server():
-		return
-
-	var test_experience: ShopperExperience = ShopperExperience.new()
-
-	test_experience.increase(0.5, "Found all items")
-	test_experience.increase(0.5, "Friendly service")
-
-	submit_experience(test_experience)

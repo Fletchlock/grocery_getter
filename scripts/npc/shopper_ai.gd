@@ -45,6 +45,11 @@ var checkout_sale_recorded: bool = false
 var current_shopping_point: Node3D = null
 var shopping_point_checked: bool = false
 
+# Shopper Experience / Rating
+var experience: ShopperExperience = null
+var missed_shopping_items: int = 0
+
+
 # AI Movement and rotation
 @export var rotation_speed: float = 10.0
 @export var speed: float = 2.25
@@ -146,7 +151,12 @@ func _ready() -> void:
 	bag_mesh.hide()
 	
 	blink_timer = randf_range(blink_min_time, blink_max_time)
-
+	
+	if multiplayer.is_server():
+		experience = ShopperExperience.new(
+			ReputationManager.get_starting_experience()
+		)
+	
 	collect_shopping_points()
 
 	var start_delay: float = randf_range(
@@ -312,7 +322,9 @@ func start_shopping() -> void:
 	)
 
 	shopping_list.clear()
-
+	
+	missed_shopping_items = 0
+	
 	for i: int in range(shopping_count):
 		shopping_list.append(available_points[i])
 
@@ -323,6 +335,13 @@ func start_shopping() -> void:
 
 func go_to_next_shopping_point() -> void:
 	if current_shopping_index >= shopping_list.size():
+		if experience != null:
+			if missed_shopping_items == 0 and purchased_items.size() == shopping_list.size():
+				experience.increase(
+					ShopperExperience.ALL_ITEMS_FOUND_BONUS,
+					"Found all shopping items"
+				)
+
 		go_to_checkout()
 		return
 
@@ -417,7 +436,10 @@ func checkout_scanning_completed() -> void:
 
 	checkout_sale_recorded = true
 	checkout_completed.emit(purchase_total)
-
+	
+	if experience != null:
+		ReputationManager.submit_experience(experience)
+	
 	var checkout: Checkout = (
 		get_tree().get_first_node_in_group("checkout")
 		as Checkout
@@ -467,7 +489,15 @@ func _on_shopping_idle(delta: float) -> void:
 		go_to_next_shopping_point()
 		return
 
-	# No replacement is available. Continue without adding an item.
+	# No replacement is available.
+	missed_shopping_items += 1
+
+	if experience != null:
+		experience.decrease(
+			ShopperExperience.OUT_OF_STOCK_PENALTY,
+			"Product out of stock"
+		)
+
 	current_shopping_index += 1
 	go_to_next_shopping_point()
 
