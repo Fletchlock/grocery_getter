@@ -34,6 +34,7 @@ StockOrderManager="*uid://crunbndowdwf6"
 StoreManager="*uid://rm40u211r6ke"
 SaveManager="*uid://c85vxole6c8pw"
 MinigameManager="*uid://d4aenawdhuk1v"
+ReputationManager="*uid://bm2opfs15vjhp"
 
 [debug]
 
