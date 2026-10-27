@@ -472,8 +472,7 @@ script = ExtResource("57_8865k")
 rain_min_hours = 4.0
 rain_max_hours = 6.0
 rain_shadow_opacity = 0.1
-rain_max_volume_db = -5.0
-indoor_rain_volume_db = -8.0
+indoor_rain_volume_db = -12.0
 automatic_doors = NodePath("../StoreSmallGreybox/AutomaticDoors")
 door_audio_distance = 6.0
 door_open_position = 0.9
@@ -1343,10 +1342,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.61692715, 1.0330372, -1.70
 script = ExtResource("52_otsaw")
 item_scale = Vector3(0.8, 0.8, 0.8)
 rotation_variation_degrees = 0.0
-allow_item_shrinking = null
-minimum_item_scale = null
-shrink_step = null
-allowed_overlap = null
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Checkout/BagGrid/InteractionArea" parent_id_path=PackedInt32Array(2036172686, 514614208) index="0" unique_id=1370761931]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00048160553, 0.21938705, 0.1974678)
@@ -1364,7 +1359,8 @@ shape = SubResource("BoxShape3D_6evkd")
 
 [node name="DeskBellPlayer" parent="NavigationRegion3D/Checkout" index="6" unique_id=855594360]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.29738235, 1.0739629, -0.31418228)
-volume_db = -20.0
+volume_db = -15.0
+unit_size = 3.0
 bus = &"Master"
 
 [node name="ScannerBeepPlayer" parent="NavigationRegion3D/Checkout" index="7" unique_id=1748470177]
@@ -1602,7 +1598,8 @@ debug_color = Color(0.9437243, 0.6000647, 0.15216762, 0.85882354)
 [node name="OrderScannerBeepPlayer" type="AudioStreamPlayer3D" parent="OrderBoard2/AcceptOrderArea" unique_id=1932502648]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.93180776, 1.537569, -1.1848426)
 stream = ExtResource("33_bl6aj")
-volume_db = -10.066
+volume_db = -20.0
+unit_size = 3.0
 bus = &"SFX"
 
 [node name="checkout_sm_left2" type="Node3D" parent="." unique_id=982369446 groups=["level_geo"]]

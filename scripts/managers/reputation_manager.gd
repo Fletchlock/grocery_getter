@@ -80,3 +80,29 @@ func reset_reputation() -> void:
 
 	reputation_changed.emit(store_reputation)
 	_sync_reputation.rpc(store_reputation, total_reviews)
+
+
+func get_save_data() -> Dictionary:
+	return {
+		"store_reputation": store_reputation,
+		"total_reviews": total_reviews
+	}
+
+
+func load_save_data(data: Dictionary) -> void:
+	if not multiplayer.is_server():
+		return
+
+	store_reputation = clampf(
+		float(data.get("store_reputation", DEFAULT_REPUTATION)),
+		MIN_REPUTATION,
+		MAX_REPUTATION
+	)
+
+	total_reviews = maxi(
+		0,
+		int(data.get("total_reviews", 0))
+	)
+
+	reputation_changed.emit(store_reputation)
+	_sync_reputation.rpc(store_reputation, total_reviews)
