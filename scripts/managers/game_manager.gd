@@ -99,6 +99,7 @@ func start_multiplayer_game() -> void:
 			SaveManager.reset_creation_date_on_save = true
 			StoreManager.reset_store()
 			StockOrderManager.reset_stock_orders()
+			ReputationManager.reset_reputation()
 			DayManager.load_save_data({
 				"current_day": 1
 			})

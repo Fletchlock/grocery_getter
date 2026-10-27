@@ -205,49 +205,54 @@ layout_mode = 2
 theme_override_constants/separation = 2
 
 [node name="Star1" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=580123627]
-custom_minimum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+mouse_filter = 2
 nine_patch_stretch = true
 texture_under = ExtResource("7_lc70o")
-texture_over = ExtResource("8_newvj")
+texture_progress = ExtResource("8_newvj")
 
 [node name="Star2" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=1333299339]
-custom_minimum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+mouse_filter = 2
 nine_patch_stretch = true
 texture_under = ExtResource("7_lc70o")
-texture_over = ExtResource("8_newvj")
+texture_progress = ExtResource("8_newvj")
 
 [node name="Star3" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=825266277]
-custom_minimum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+mouse_filter = 2
 nine_patch_stretch = true
 texture_under = ExtResource("7_lc70o")
-texture_over = ExtResource("8_newvj")
+texture_progress = ExtResource("8_newvj")
 
 [node name="Star4" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=1093919580]
-custom_minimum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+mouse_filter = 2
 nine_patch_stretch = true
 texture_under = ExtResource("7_lc70o")
-texture_over = ExtResource("8_newvj")
+texture_progress = ExtResource("8_newvj")
 
 [node name="Star5" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=694500669]
-custom_minimum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+mouse_filter = 2
 nine_patch_stretch = true
 texture_under = ExtResource("7_lc70o")
-texture_over = ExtResource("8_newvj")
+texture_progress = ExtResource("8_newvj")
 
 [node name="PanelContainer2" type="PanelContainer" parent="TopCenterContainer/VBoxContainer" unique_id=847848388]
 modulate = Color(1, 1, 1, 0)
