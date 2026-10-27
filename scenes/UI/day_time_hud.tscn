@@ -5,6 +5,9 @@
 [ext_resource type="PackedScene" uid="uid://2wowol47x3tk" path="res://scenes/UI/online_order_active.tscn" id="3_glyqf"]
 [ext_resource type="PackedScene" uid="uid://c3gc8ev0p8236" path="res://scenes/UI/online_order_list.tscn" id="4_26j03"]
 [ext_resource type="PackedScene" uid="uid://c8nis4qdppl3y" path="res://scenes/UI/barcode_hud.tscn" id="5_8arff"]
+[ext_resource type="Texture2D" uid="uid://gah8ja27jky6" path="res://assets/images/store_icon.png" id="6_52nrg"]
+[ext_resource type="Texture2D" uid="uid://c0hdiam0nrkr0" path="res://assets/images/unfilled_star.png" id="7_lc70o"]
+[ext_resource type="Texture2D" uid="uid://bhnqe84ocqkbf" path="res://assets/images/filled_star.png" id="8_newvj"]
 
 [sub_resource type="Animation" id="Animation_prtv8"]
 length = 0.001
@@ -107,7 +110,7 @@ expand_margin_top = 5.0
 expand_margin_right = 10.0
 expand_margin_bottom = 5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_52nrg"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rludl"]
 resource_local_to_scene = true
 bg_color = Color(0.14509805, 0.3882353, 0.10980392, 0.78431374)
 border_width_left = 1
@@ -152,7 +155,7 @@ layout_mode = 2
 size_flags_vertical = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="TopCenterContainer/VBoxContainer" unique_id=1661235052]
-custom_minimum_size = Vector2(500, 0)
+custom_minimum_size = Vector2(720, 0)
 layout_mode = 2
 offset_transform_enabled = true
 mouse_filter = 2
@@ -162,7 +165,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_prtv8")
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TextureRect" type="TextureRect" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer" unique_id=1162855308]
+[node name="ShopperIcon" type="TextureRect" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer" unique_id=1162855308]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -186,6 +189,65 @@ size_flags_vertical = 0
 theme_override_font_sizes/font_size = 22
 text = "DAY: 01    TIME: 07:00 AM   $100.00"
 horizontal_alignment = 1
+
+[node name="ReputationContainer" type="HBoxContainer" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer" unique_id=1032023267]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StoreIcon" type="TextureRect" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer" unique_id=554188307]
+custom_minimum_size = Vector2(22, 22)
+layout_mode = 2
+texture = ExtResource("6_52nrg")
+expand_mode = 2
+
+[node name="StarsContainer" type="HBoxContainer" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer" unique_id=1894384667]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Star1" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=580123627]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+nine_patch_stretch = true
+texture_under = ExtResource("7_lc70o")
+texture_over = ExtResource("8_newvj")
+
+[node name="Star2" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=1333299339]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+nine_patch_stretch = true
+texture_under = ExtResource("7_lc70o")
+texture_over = ExtResource("8_newvj")
+
+[node name="Star3" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=825266277]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+nine_patch_stretch = true
+texture_under = ExtResource("7_lc70o")
+texture_over = ExtResource("8_newvj")
+
+[node name="Star4" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=1093919580]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+nine_patch_stretch = true
+texture_under = ExtResource("7_lc70o")
+texture_over = ExtResource("8_newvj")
+
+[node name="Star5" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=694500669]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+nine_patch_stretch = true
+texture_under = ExtResource("7_lc70o")
+texture_over = ExtResource("8_newvj")
 
 [node name="PanelContainer2" type="PanelContainer" parent="TopCenterContainer/VBoxContainer" unique_id=847848388]
 modulate = Color(1, 1, 1, 0)
@@ -265,7 +327,7 @@ offset_bottom = 40.0
 
 [node name="BardcodeHud" parent="." unique_id=1388157964 instance=ExtResource("5_8arff")]
 layout_mode = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_52nrg")
+theme_override_styles/panel = SubResource("StyleBoxFlat_rludl")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1547641565]
 stream = SubResource("AudioStream_6aigx")

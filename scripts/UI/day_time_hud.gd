@@ -13,6 +13,13 @@ const audio_order_accepted = preload("res://assets/sounds/836450__feraly__simple
 @onready var orders_container: VBoxContainer = $OrderNotifications/VBoxContainer
 @onready var order_list_container: VBoxContainer = $OrderList/VBoxContainer
 @onready var shopper_count: Label = $TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ShopperCount
+@onready var reputation_stars: Array[TextureProgressBar] = [
+	$TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer/Star1,
+	$TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer/Star2,
+	$TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer/Star3,
+	$TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer/Star4,
+	$TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer/Star5
+]
 
 @export var available_order_scene: PackedScene
 @export var active_order_scene: PackedScene
@@ -32,7 +39,9 @@ var barcode_checkout: Node = null
 func _ready() -> void:
 	LobbyManager.lobby_player_updated.connect(_on_lobby_player_updated)
 	DayManager.clock_updated.connect(_on_clock_updated)
-
+	ReputationManager.reputation_changed.connect(_update_reputation_stars)
+	_update_reputation_stars(ReputationManager.store_reputation)
+	
 	# Display the current clock immediately, in case the clock
 	# was synchronized before this HUD finished loading.
 	_on_clock_updated(
@@ -61,7 +70,8 @@ func _exit_tree() -> void:
 		DayManager.clock_updated.disconnect(_on_clock_updated)
 	if OrderManager.orders_synced.is_connected(_update_order_notifications):
 		OrderManager.orders_synced.disconnect(_update_order_notifications)
-
+	if ReputationManager.reputation_changed.is_connected(_update_reputation_stars):
+		ReputationManager.reputation_changed.disconnect(_update_reputation_stars)
 
 func _on_lobby_player_updated(_peer_id: int) -> void:
 	_update_active_notifications()
@@ -162,6 +172,17 @@ func _update_available_countdowns() -> void:
 		)
 
 		notification_text.update_acceptance_countdown()
+
+
+func _update_reputation_stars(rating: float) -> void:
+	for i: int in range(reputation_stars.size()):
+		var fill_amount: float = clampf(
+			rating - float(i),
+			0.0,
+			1.0
+		)
+
+		reputation_stars[i].value = fill_amount * 100.0
 
 
 func _add_available_notification(order: OrderData) -> void:
