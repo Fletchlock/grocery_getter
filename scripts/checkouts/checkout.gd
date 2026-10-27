@@ -512,6 +512,14 @@ func _check_checkout_bell() -> void:
 		return
 
 	_reset_checkout_wait()
+
+	if is_instance_valid(checkout_customer):
+		if checkout_customer.experience != null:
+			checkout_customer.experience.decrease(
+				ShopperExperience.CHECKOUT_BELL_PENALTY,
+				"Waited too long at checkout"
+			)
+
 	_play_desk_bell.rpc()
 
 
