@@ -76,7 +76,7 @@ func _process(delta: float) -> void:
 
 func set_next_spawn_timer() -> void:
 	var traffic_multiplier: float = maxf(
-		1.0,
+		0.01,
 		get_traffic_multiplier()
 	)
 
@@ -91,7 +91,20 @@ func set_next_spawn_timer() -> void:
 	)
 
 	spawn_timer = randf_range(minimum, maximum)
-
+	
+	if multiplayer.is_server():
+		print(
+			"SHOPPER TRAFFIC | Rep: %.1f (x%.2f) | Day: x%.2f | Players: x%.2f | Rush: x%.2f | Total: x%.2f | Next: %.1fs"
+			% [
+				ReputationManager.get_display_rating(),
+				ReputationManager.get_traffic_multiplier(),
+				get_day_traffic_multiplier(),
+				get_player_traffic_multiplier(),
+				rush_hour_multiplier if DayManager.rush_hour else 1.0,
+				traffic_multiplier,
+				spawn_timer
+			]
+		)
 
 # Traffic functions
 
@@ -118,6 +131,7 @@ func get_traffic_multiplier() -> float:
 	var multiplier: float = (
 		get_day_traffic_multiplier()
 		* get_player_traffic_multiplier()
+		* ReputationManager.get_traffic_multiplier()
 	)
 
 	if DayManager.rush_hour:

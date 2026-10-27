@@ -4,15 +4,24 @@ extends Node
 signal reputation_changed(new_rating: float)
 
 
-const DEFAULT_REPUTATION: float = 2.5
+const DEFAULT_REPUTATION: float = 1.5
 const MIN_REPUTATION: float = 0.0
 const MAX_REPUTATION: float = 5.0
 const EXPERIENCE_WEIGHT: float = 0.05
-
+const MIN_TRAFFIC_MULTIPLIER: float = 0.5
+const MAX_TRAFFIC_MULTIPLIER: float = 1.5
 
 var store_reputation: float = DEFAULT_REPUTATION
 var total_reviews: int = 0
 
+
+func get_traffic_multiplier() -> float:
+	return lerpf(
+		MIN_TRAFFIC_MULTIPLIER,
+		MAX_TRAFFIC_MULTIPLIER,
+		clampf(store_reputation / MAX_REPUTATION, 0.0, 1.0)
+	)
+	
 
 func get_display_rating() -> float:
 	return roundf(store_reputation * 10.0) / 10.0
