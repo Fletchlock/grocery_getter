@@ -2204,8 +2204,6 @@ func play_footstep() -> void:
 	if not is_multiplayer_authority():
 		return
 	
-	print("FOOTSTEP CALLED: ", Time.get_ticks_msec())
-	
 	var current_time: int = Time.get_ticks_msec()
 
 	if current_time - last_footstep_time < FOOTSTEP_COOLDOWN_MS:
