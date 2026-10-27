@@ -8,8 +8,8 @@ extends Node3D
 
 @export_group("Base Traffic")
 @export var spawn_interval_min: float = 60.0
-@export var spawn_interval_max: float = 80.0
-@export var minimum_spawn_interval: float = 12.0
+@export var spawn_interval_max: float = 90.0
+@export var minimum_spawn_interval: float = 20.0
 
 @export_group("Day Scaling")
 @export var day_growth_rate: float = 0.12
@@ -20,7 +20,7 @@ extends Node3D
 @export var extra_shoppers_per_player: int = 2
 
 @export_group("Shopper Capacity")
-@export var starting_max_shoppers: int = 3
+@export var starting_max_shoppers: int = 2
 @export var extra_shoppers_every_n_days: int = 2
 @export var max_shoppers: int = 20
 
@@ -203,7 +203,7 @@ func spawn_shopper() -> void:
 		shopper.reached_enter_point.connect(
 			_on_shopper_reached_enter_point
 		)
-
+	
 	if shopper.has_signal("finished_shopping"):
 		shopper.finished_shopping.connect(
 			_on_shopper_finished_shopping
