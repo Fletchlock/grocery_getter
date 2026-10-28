@@ -32,7 +32,12 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_8u6ci")
 script = ExtResource("1_gxxt4")
 
+[node name="ArrowContainer" type="HBoxContainer" parent="." unique_id=1625439134]
+layout_mode = 2
+size_flags_horizontal = 4
+
 [node name="Label" type="Label" parent="." unique_id=1164776408]
+visible = false
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/outline_size = 6
@@ -40,3 +45,9 @@ theme_override_font_sizes/font_size = 32
 text = "Enter product code: "
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="CorrectSound" type="AudioStreamPlayer" parent="." unique_id=452648096]
+volume_db = -9.0
+
+[node name="ErrorSound" type="AudioStreamPlayer" parent="." unique_id=1752663887]
+volume_db = -14.0
