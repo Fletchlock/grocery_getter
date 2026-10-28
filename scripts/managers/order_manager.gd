@@ -6,6 +6,10 @@ signal order_generated(order: OrderData)
 signal order_updated(order: OrderData)
 signal orders_synced
 
+# Reputation rewards and penalties
+const QUICK_ACCEPTANCE_MINUTES: int = 10
+const QUICK_ACCEPTANCE_REWARD: float = 0.5
+
 
 @export_group("Order Generation")
 @export var available_products: Array[ProductData] = []
@@ -523,9 +527,32 @@ func accept_order(player: CharacterBody3D) -> void:
 		if order.state != OrderData.OrderState.WAITING:
 			continue
 
+		var current_game_minute: int = (
+			DayManager.current_hour * 60
+			+ DayManager.current_minute
+		)
+
+		var acceptance_deadline: int = int(
+			waiting_order_deadlines.get(order.order_id, -1)
+		)
+
+		var minutes_since_creation: int = 999999
+
+		if acceptance_deadline >= 0:
+			minutes_since_creation = (
+				current_game_minute
+				- (acceptance_deadline - acceptance_time_limit)
+			)
+
 		order.state = OrderData.OrderState.ACTIVE
 		order.accepted_by_peer_id = peer_id
 		waiting_order_deadlines.erase(order.order_id)
+
+		if minutes_since_creation <= QUICK_ACCEPTANCE_MINUTES:
+			ReputationManager.submit_order_reputation(
+				QUICK_ACCEPTANCE_REWARD,
+				"Online order #%d accepted quickly" % order.order_id
+			)
 
 		order_updated.emit(order)
 		_sync_orders()
