@@ -16,7 +16,7 @@ const VERY_LATE_PENALTY: float = -0.5
 const LATE_THRESHOLD_SECONDS: float = 15.0
 const UNACCEPTED_ORDER_PENALTY: float = -1.0
 const CANCELLED_ORDER_PENALTY: float = -1.0
-
+const INCORRECT_ITEM_PENALTY: float = -0.5
 
 @export_group("Order Generation")
 @export var available_products: Array[ProductData] = []
@@ -580,6 +580,102 @@ func accept_order(player: CharacterBody3D) -> void:
 		return
 
 
+# -------------------------------------------------------------------
+# New online order checkout system
+# -------------------------------------------------------------------
+
+func start_order_checkout(peer_id: int) -> bool:
+	if not multiplayer.is_server():
+		return false
+
+	var order: OrderData = get_player_order(peer_id)
+
+	if order == null:
+		return false
+
+	if order.checkout_started:
+		return false
+
+	order.checkout_started = true
+	order.scanned_items.clear()
+	order.checkout_result.clear()
+	order.validated_profit = 0.0
+	order.incorrect_item_count = 0
+
+	order_updated.emit(order)
+	_sync_orders()
+
+	return true
+
+
+func record_checkout_scan(
+	peer_id: int,
+	product: ProductData
+) -> bool:
+	if not multiplayer.is_server():
+		return false
+
+	var order: OrderData = get_player_order(peer_id)
+
+	if order == null or not order.checkout_started:
+		return false
+
+	if not order.record_scanned_product(product):
+		return false
+
+	order_updated.emit(order)
+	_sync_orders()
+
+	return true
+
+
+func finish_order_checkout(peer_id: int) -> bool:
+	if not multiplayer.is_server():
+		return false
+
+	var order: OrderData = get_player_order(peer_id)
+
+	if order == null or not order.checkout_started:
+		return false
+
+	# The checkout scene must verify that OrderGrid is empty
+	# before calling this function.
+	order.validate_checkout()
+
+	var mistake_penalty: float = (
+		float(order.incorrect_item_count)
+		* INCORRECT_ITEM_PENALTY
+	)
+
+	if order.incorrect_item_count > 0:
+		ReputationManager.submit_order_reputation(
+			mistake_penalty,
+			"Online order #%d had %d incorrect units" % [
+				order.order_id,
+				order.incorrect_item_count
+			]
+		)
+
+	# Apply the same time-based profit ratio to the value
+	# of the correctly supplied products.
+	var payout_ratio: float = 0.0
+
+	if order.base_profit > 0.0:
+		payout_ratio = clampf(
+			order.current_profit / order.base_profit,
+			0.0,
+			1.0
+		)
+
+	order.current_profit = (
+		order.validated_profit * payout_ratio
+	)
+
+	complete_order(order)
+
+	return true
+
+
 func submit_product(
 	player: CharacterBody3D,
 	product: ProductData
@@ -782,7 +878,13 @@ func _sync_orders() -> void:
 			),
 			"items": []
 		}
-
+		
+		order_data["checkout_started"] = order.checkout_started
+		order_data["scanned_items"] = order.scanned_items.duplicate(true)
+		order_data["checkout_result"] = order.checkout_result.duplicate(true)
+		order_data["validated_profit"] = order.validated_profit
+		order_data["incorrect_item_count"] = order.incorrect_item_count
+		
 		for item: OrderItem in order.items:
 			order_data["items"].append({
 				"product_path": item.product.resource_path,
@@ -823,7 +925,27 @@ func sync_orders(
 		order.time_limit = order_data["time_limit"]
 		order.base_profit = order_data["base_profit"]
 		order.current_profit = order_data["current_profit"]
+		
+		order.checkout_started = bool(
+			order_data.get("checkout_started", false)
+		)
 
+		order.scanned_items = (
+			order_data.get("scanned_items", {}) as Dictionary
+		).duplicate(true)
+
+		order.checkout_result = (
+			order_data.get("checkout_result", {}) as Dictionary
+		).duplicate(true)
+
+		order.validated_profit = float(
+			order_data.get("validated_profit", 0.0)
+		)
+
+		order.incorrect_item_count = int(
+			order_data.get("incorrect_item_count", 0)
+		)
+		
 		for item_data: Dictionary in order_data["items"]:
 			var item: OrderItem = OrderItem.new()
 

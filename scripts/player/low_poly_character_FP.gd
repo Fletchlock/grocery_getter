@@ -145,7 +145,8 @@ enum ItemOrigin {
 	NONE,
 	PRODUCT_DISPLAY,
 	CART_GRID,
-	CHECKOUT_GRID
+	CHECKOUT_GRID,
+	ORDER_GRID
 }
 
 var held_item: ProductData = null
