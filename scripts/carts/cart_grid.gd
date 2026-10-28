@@ -552,6 +552,8 @@ func _give_product_to_player(player: CharacterBody3D, product: ProductData) -> v
 	var origin: int = player.ItemOrigin.CART_GRID
 	if self is CheckoutGrid:
 		origin = player.ItemOrigin.CHECKOUT_GRID
+	if self is OrderGrid:
+		origin = player.ItemOrigin.ORDER_GRID
 	player.held_item_origin = origin
 	if peer_id == multiplayer.get_unique_id():
 		player.receive_product(product.resource_path, origin)
