@@ -16,7 +16,7 @@ enum OrderState {
 
 @export_group("Timing")
 var time_limit: float = 0.0
-@export var late_loss_per_second: float = 0.01
+@export var late_loss_per_second: float = 0.1
 
 
 var elapsed_time: float = 0.0
