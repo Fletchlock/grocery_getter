@@ -463,7 +463,7 @@ func _create_order() -> OrderData:
 	orders.append(order)
 
 	order_generated.emit(order)
-
+	
 	return order
 
 
