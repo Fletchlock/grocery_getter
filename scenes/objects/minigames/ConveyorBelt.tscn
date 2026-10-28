@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b1x1g7c20n23o"]
 
 [ext_resource type="Script" uid="uid://o8tn6a2m6noj" path="res://scripts/objects/misc/conveyor_belt.gd" id="1_45ubg"]
-[ext_resource type="ArrayMesh" uid="uid://byo7t6wrxosia" path="res://assets/models/minigames/conveyor40m_Cube_023.res" id="1_sqh2u"]
+[ext_resource type="ArrayMesh" uid="uid://c8k0een0sbi3" path="res://assets/models/minigames/conveyor40m_Cube_023.res" id="1_sqh2u"]
 [ext_resource type="Shader" uid="uid://cglin0j68kgsx" path="res://assets/shaders/conveyor_belt2.gdshader" id="3_a6oci"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_s3xd1"]

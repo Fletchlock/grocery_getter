@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://v5ls3uv2nsxv"]
 
 [ext_resource type="Script" uid="uid://ck5w4ev1udi2n" path="res://scripts/objects/doors/automatic_doors.gd" id="1_20qbh"]
-[ext_resource type="ArrayMesh" uid="uid://dtniok2wmcrau" path="res://assets/models/buildings/store_small_door_L_Cube_008.res" id="1_lohbb"]
-[ext_resource type="ArrayMesh" uid="uid://bg3st2n6amo7c" path="res://assets/models/buildings/store_small_door_R_Cube.res" id="2_20qbh"]
+[ext_resource type="ArrayMesh" uid="uid://dk4bnrooxrl06" path="res://assets/models/buildings/store_small_door_L_Cube_008.res" id="1_lohbb"]
+[ext_resource type="ArrayMesh" uid="uid://dcp4rtf3a0uav" path="res://assets/models/buildings/store_small_door_R_Cube.res" id="2_20qbh"]
 [ext_resource type="AudioStream" uid="uid://dcmtthm8lwkti" path="res://assets/sounds/538978__tbirch55__door-open.wav" id="4_unydt"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_20qbh"]
