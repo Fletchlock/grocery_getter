@@ -1148,7 +1148,7 @@ metadata/_edit_lock_ = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.13303673, 17.200169)
 metadata/_edit_lock_ = true
 
-[node name="StaticBody3D" parent="NavigationRegion3D/Shelves/Freezer_Left_5row3/Freezer_Left_5row" parent_id_path=PackedInt32Array(2056952461, 1043358842) index="0" unique_id=125499396]
+[node name="StaticBody3D" parent="NavigationRegion3D/Shelves/Freezer_Left_5row3/Freezer_Left_5row" parent_id_path=PackedInt32Array(2056952461, 2019239755) index="0" unique_id=125499396]
 collision_layer = 64
 collision_mask = 64
 
@@ -1160,7 +1160,7 @@ shape = SubResource("BoxShape3D_4av8r")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.13303673, 14.200169)
 metadata/_edit_lock_ = true
 
-[node name="StaticBody3D" parent="NavigationRegion3D/Shelves/Freezer_Right_5row3/Freezer_Right_5row" parent_id_path=PackedInt32Array(825118052, 2087140212) index="0" unique_id=83913552]
+[node name="StaticBody3D" parent="NavigationRegion3D/Shelves/Freezer_Right_5row3/Freezer_Right_5row" parent_id_path=PackedInt32Array(825118052, 670233305) index="0" unique_id=83913552]
 collision_layer = 64
 collision_mask = 64
 
@@ -1415,13 +1415,13 @@ transform = Transform3D(0.9326745, 0, -0.36071923, 0, 1, 0, 0.36071923, 0, 0.932
 [node name="StoreSmallGreybox" parent="." unique_id=253599967 groups=["level_geo"] instance=ExtResource("15_tcjw2")]
 transform = Transform3D(-1.0000001, 0, -8.7422784e-08, 0, 1, 0, 8.7422784e-08, 0, -1.0000001, -0.53600764, -1.5205572, -3.3310928)
 
-[node name="store_small" parent="StoreSmallGreybox" index="0" unique_id=598108176]
+[node name="store_small" parent="StoreSmallGreybox" index="0" unique_id=526915665]
 transform = Transform3D(1, 0, 1.0899726e-11, 0, 1, 0, -1.0899726e-11, 0, 1, 0.463, 0, -0.33)
 
-[node name="store_small_windows" parent="StoreSmallGreybox" index="1" unique_id=1832254099]
+[node name="store_small_windows" parent="StoreSmallGreybox" index="1" unique_id=1803298143]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.463, 0, -0.33)
 
-[node name="CollisionShape3D" parent="StoreSmallGreybox/store_small_windows/StaticBody3D" parent_id_path=PackedInt32Array(253599967, 2072053356) index="0" unique_id=909082370]
+[node name="CollisionShape3D" parent="StoreSmallGreybox/store_small_windows/StaticBody3D" parent_id_path=PackedInt32Array(253599967, 759605307) index="0" unique_id=419032620]
 shape = SubResource("ConcavePolygonShape3D_mcoed")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
