@@ -9,7 +9,11 @@ signal orders_synced
 # Reputation rewards and penalties
 const QUICK_ACCEPTANCE_MINUTES: int = 10
 const QUICK_ACCEPTANCE_REWARD: float = 0.5
-
+const FAST_COMPLETION_REWARD: float = 1.0
+const NORMAL_COMPLETION_REWARD: float = 0.2
+const SLIGHTLY_LATE_PENALTY: float = -0.2
+const VERY_LATE_PENALTY: float = -0.5
+const LATE_THRESHOLD_SECONDS: float = 15.0
 
 @export_group("Order Generation")
 @export var available_products: Array[ProductData] = []
@@ -19,7 +23,7 @@ const QUICK_ACCEPTANCE_REWARD: float = 0.5
 @export var max_items: int = 3
 
 @export_group("Order Completion Time")
-@export var seconds_per_item: float = 25.0
+@export var seconds_per_item: float = 20.0
 @export var minimum_completion_time: float = 60.0
 @export var time_reduction_per_day: float = 0.03
 @export var maximum_time_reduction: float = 0.40
@@ -659,7 +663,9 @@ func complete_order(order: OrderData) -> void:
 		return
 
 	order.state = OrderData.OrderState.COMPLETED
-
+	
+	_apply_completion_reputation(order)
+	
 	recovery_timer = completion_recovery
 
 	var _shopper_stats: Node3D = get_tree().get_first_node_in_group(
@@ -696,6 +702,39 @@ func _is_order_complete(order: OrderData) -> bool:
 			return false
 
 	return true
+
+
+func _apply_completion_reputation(order: OrderData) -> void:
+	var elapsed: float = order.elapsed_time
+	var allotted: float = order.time_limit
+	var change: float = 0.0
+	var reason: String = ""
+
+	if elapsed > allotted:
+		var seconds_late: float = elapsed - allotted
+
+		if seconds_late < LATE_THRESHOLD_SECONDS:
+			change = SLIGHTLY_LATE_PENALTY
+			reason = "Order #%d completed %.1f seconds late" % [
+				order.order_id,
+				seconds_late
+			]
+		else:
+			change = VERY_LATE_PENALTY
+			reason = "Order #%d completed %.1f seconds late" % [
+				order.order_id,
+				seconds_late
+			]
+
+	elif elapsed < allotted * 0.5:
+		change = FAST_COMPLETION_REWARD
+		reason = "Order #%d completed quickly" % order.order_id
+
+	else:
+		change = NORMAL_COMPLETION_REWARD
+		reason = "Order #%d completed on time" % order.order_id
+
+	ReputationManager.submit_order_reputation(change, reason)
 
 
 func _sync_orders() -> void:

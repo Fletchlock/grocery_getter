@@ -22,7 +22,7 @@ extends Node3D
 @export_group("Shopper Capacity")
 @export var starting_max_shoppers: int = 2
 @export var extra_shoppers_every_n_days: int = 2
-@export var max_shoppers: int = 20
+@export var max_shoppers: int = 0
 
 @export_group("Rush Hour")
 @export var rush_hour_multiplier: float = 1.40
