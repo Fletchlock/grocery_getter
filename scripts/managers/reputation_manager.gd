@@ -13,7 +13,7 @@ const MAX_TRAFFIC_MULTIPLIER: float = 1.5
 
 var store_reputation: float = DEFAULT_REPUTATION
 var total_reviews: int = 0
-
+var total_order_events: int = 0
 
 func get_traffic_multiplier() -> float:
 	return lerpf(
@@ -63,6 +63,35 @@ func submit_experience(experience: ShopperExperience) -> void:
 	_sync_reputation.rpc(store_reputation, total_reviews)
 
 
+func submit_order_reputation(change: float, reason: String) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var previous_rating: float = store_reputation
+
+	store_reputation = clampf(
+		store_reputation + change * EXPERIENCE_WEIGHT,
+		MIN_REPUTATION,
+		MAX_REPUTATION
+	)
+
+	total_order_events += 1
+
+	print(
+		"ORDER REPUTATION: %s | Change %+.1f | Store %.3f -> %.3f | Events %d"
+		% [
+			reason,
+			change,
+			previous_rating,
+			store_reputation,
+			total_order_events
+		]
+	)
+
+	reputation_changed.emit(store_reputation)
+	_sync_reputation.rpc(store_reputation, total_reviews)
+
+
 @rpc("authority", "call_remote", "reliable")
 func _sync_reputation(rating: float, reviews: int) -> void:
 	store_reputation = clampf(rating, MIN_REPUTATION, MAX_REPUTATION)
@@ -77,7 +106,8 @@ func reset_reputation() -> void:
 
 	store_reputation = DEFAULT_REPUTATION
 	total_reviews = 0
-
+	total_order_events = 0
+	
 	reputation_changed.emit(store_reputation)
 	_sync_reputation.rpc(store_reputation, total_reviews)
 
@@ -85,7 +115,8 @@ func reset_reputation() -> void:
 func get_save_data() -> Dictionary:
 	return {
 		"store_reputation": store_reputation,
-		"total_reviews": total_reviews
+		"total_reviews": total_reviews,
+		"total_order_events": total_order_events
 	}
 
 
@@ -103,6 +134,11 @@ func load_save_data(data: Dictionary) -> void:
 		0,
 		int(data.get("total_reviews", 0))
 	)
-
+	
+	total_order_events = maxi(
+		0,
+		int(data.get("total_order_events", 0))
+	)
+	
 	reputation_changed.emit(store_reputation)
 	_sync_reputation.rpc(store_reputation, total_reviews)
