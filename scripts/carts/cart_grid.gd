@@ -489,32 +489,38 @@ func request_add_item(player_path: NodePath, product_path: String) -> void:
 func _add_item_from_player(player: CharacterBody3D, product_path: String) -> void:
 	if player == null or product_path.is_empty():
 		return
+
 	var product: ProductData = load(product_path) as ProductData
+
 	if product == null:
 		return
+
 	var peer_id: int = player.get_multiplayer_authority()
-	if order_owner_peer_id == 0:
-		if not add_item(product):
+	var player_order: OrderData = OrderManager.get_player_order(peer_id)
+
+	# Keep carts assigned to an active order protected
+	# from other players.
+	if order_owner_peer_id != 0:
+		var owner_order: OrderData = OrderManager.get_player_order(
+			order_owner_peer_id
+		)
+
+		if owner_order != null and peer_id != order_owner_peer_id:
 			return
-		if OrderManager.get_player_order(peer_id) != null:
-			order_owner_peer_id = peer_id
-		_clear_player_held_item(player)
-		_broadcast_cart_state(player)
+
+		# Release ownership from an inactive order.
+		if owner_order == null:
+			order_owner_peer_id = 0
+
+	# Any product can now be placed into the cart.
+	# No order-list or quantity validation.
+	if not add_item(product):
 		return
 
-	var player_order: OrderData = OrderManager.get_player_order(peer_id)
-	if player_order != null and peer_id != order_owner_peer_id:
-		return
-	var owner_order: OrderData = OrderManager.get_player_order(order_owner_peer_id)
-	if owner_order == null:
-		return
-	var allowed: bool = false
-	for order_item: OrderItem in owner_order.items:
-		if order_item.product == product and not order_item.is_complete():
-			allowed = true
-			break
-	if not allowed or not add_item(product):
-		return
+	# Assign the cart when an order picker first uses it.
+	if order_owner_peer_id == 0 and player_order != null:
+		order_owner_peer_id = peer_id
+
 	_clear_player_held_item(player)
 	_broadcast_cart_state(player)
 
