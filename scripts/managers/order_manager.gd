@@ -299,6 +299,7 @@ func get_order_traffic_multiplier() -> float:
 		get_day_traffic_multiplier()
 		* get_player_traffic_multiplier()
 		* get_time_of_day_multiplier()
+		* ReputationManager.get_traffic_multiplier()
 	)
 
 
