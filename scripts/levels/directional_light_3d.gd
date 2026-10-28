@@ -378,6 +378,12 @@ func _sync_rain_schedule(
 	rain_start_minute = start_minute
 	rain_end_minute = end_minute
 
+	_update_rain_intensity()
+	_update_sun()
+	_update_weather_fog()
+	_update_rain()
+	_update_rain_audio(0.0)
+
 
 func _update_rain_intensity() -> void:
 	rain_intensity = 0.0
@@ -547,6 +553,9 @@ func _on_rain_audio_finished() -> void:
 func _on_clock_updated(_day: int, _hour: int, _minute: int) -> void:
 	if not multiplayer.is_server():
 		local_minute_timer = 0.0
+
+		if scheduled_day != DayManager.current_day:
+			_request_rain_schedule.rpc_id(1)
 
 
 func _on_day_started(_day: int) -> void:
