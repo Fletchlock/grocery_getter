@@ -14,6 +14,9 @@ const NORMAL_COMPLETION_REWARD: float = 0.2
 const SLIGHTLY_LATE_PENALTY: float = -0.2
 const VERY_LATE_PENALTY: float = -0.5
 const LATE_THRESHOLD_SECONDS: float = 15.0
+const UNACCEPTED_ORDER_PENALTY: float = -1.0
+const CANCELLED_ORDER_PENALTY: float = -1.0
+
 
 @export_group("Order Generation")
 @export var available_products: Array[ProductData] = []
@@ -23,7 +26,7 @@ const LATE_THRESHOLD_SECONDS: float = 15.0
 @export var max_items: int = 3
 
 @export_group("Order Completion Time")
-@export var seconds_per_item: float = 20.0
+@export var seconds_per_item: float = 15.0
 @export var minimum_completion_time: float = 60.0
 @export var time_reduction_per_day: float = 0.03
 @export var maximum_time_reduction: float = 0.40
@@ -163,8 +166,16 @@ func _settle_closing_orders(day: int) -> void:
 					* unaccepted_closing_penalty
 				)
 
+				ReputationManager.submit_order_reputation(
+					UNACCEPTED_ORDER_PENALTY,
+					"Online order #%d unaccepted at closing" % order.order_id
+				)
+
 			OrderData.OrderState.ACTIVE:
 				# Let accepted orders continue after closing.
+				continue
+
+			_:
 				continue
 
 		total_penalty += penalty
@@ -399,7 +410,12 @@ func _expire_waiting_order(order: OrderData) -> void:
 	waiting_order_deadlines.erase(order.order_id)
 
 	order.state = OrderData.OrderState.CANCELLED
-
+	
+	ReputationManager.submit_order_reputation(
+		UNACCEPTED_ORDER_PENALTY,
+		"Online order #%d expired without acceptance" % order.order_id
+	)
+	
 	order_updated.emit(order)
 	_sync_orders()
 
@@ -599,9 +615,10 @@ func submit_product(
 
 
 func _update_order_timer(
-	order: OrderData,
-	delta: float
-) -> void:
+		order: OrderData,
+		delta: float
+	) -> void:
+		
 	order.elapsed_time += delta
 
 	if order.elapsed_time <= order.time_limit:
@@ -687,10 +704,18 @@ func complete_order(order: OrderData) -> void:
 
 
 func cancel_order(order: OrderData) -> void:
+	if not multiplayer.is_server():
+		return
+
 	if order.state != OrderData.OrderState.ACTIVE:
 		return
 
 	order.state = OrderData.OrderState.CANCELLED
+
+	ReputationManager.submit_order_reputation(
+		CANCELLED_ORDER_PENALTY,
+		"Online order #%d cancelled at $0 profit" % order.order_id
+	)
 
 	order_updated.emit(order)
 	_sync_orders()
