@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cgt13xa48an24" path="res://scripts/checkouts/order_grid.gd" id="1_2llfw"]
 [ext_resource type="Script" uid="uid://bkd0j74vb2lai" path="res://scripts/checkouts/cart_parking_area.gd" id="2_dkaf2"]
+[ext_resource type="Material" uid="uid://d3iscxpv066o5" path="res://assets/materials/outline_standard_material_3d.tres" id="2_mcdyc"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2bvqw"]
 size = Vector3(0.75454557, 0.7067013, 1.6119537)
@@ -12,6 +13,8 @@ size = Vector3(0.75454557, 0.7067013, 1.6119537)
 
 [node name="OrderGrid" type="Node3D" parent="." unique_id=925843198]
 script = ExtResource("1_2llfw")
+max_items = 30
+outline_material = ExtResource("2_mcdyc")
 metadata/_custom_type_script = "uid://cjpcpdqhqpcgo"
 
 [node name="InteractionArea" type="Area3D" parent="OrderGrid" unique_id=2127909686]
@@ -22,7 +25,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.016851068, 0.64090204, 0.69
 shape = SubResource("BoxShape3D_2bvqw")
 debug_color = Color(0.9847451, 0.4989375, 0.4725191, 1)
 
-[node name="CartParkingArea" type="Area3D" parent="." unique_id=1605521636]
+[node name="CartParkingArea" type="Area3D" parent="." unique_id=1605521636 groups=["online_order_cart_parking"]]
 collision_mask = 2
 script = ExtResource("2_dkaf2")
 

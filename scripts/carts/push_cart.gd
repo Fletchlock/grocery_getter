@@ -75,7 +75,8 @@ func request_cart_authority(state: bool) -> void:
 		state,
 		_authority_sequence
 	)
-
+	if not state:
+		_try_unload_at_online_checkout(sender_id)
 	_request_pending = false
 
 
@@ -303,3 +304,24 @@ func interact(player: CharacterBody3D) -> void:
 
 	if closest_player != null and closest_player.has_method("try_grab_cart"):
 		closest_player.try_grab_cart(self)
+
+
+# Unload cart at online order checkout
+
+func _try_unload_at_online_checkout(peer_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var parking_areas: Array[Node] = get_tree().get_nodes_in_group(
+		"online_order_cart_parking"
+	)
+
+	for node: Node in parking_areas:
+		var parking_area: CartParkingArea = node as CartParkingArea
+
+		if parking_area == null:
+			continue
+
+		if parking_area.contains_cart(self):
+			parking_area.unload_cart(self, peer_id)
+			return
