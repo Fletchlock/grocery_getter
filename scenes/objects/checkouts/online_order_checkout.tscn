@@ -3,11 +3,14 @@
 [ext_resource type="Script" uid="uid://cgt13xa48an24" path="res://scripts/checkouts/order_grid.gd" id="1_2llfw"]
 [ext_resource type="Script" uid="uid://bkd0j74vb2lai" path="res://scripts/checkouts/cart_parking_area.gd" id="2_dkaf2"]
 [ext_resource type="Material" uid="uid://d3iscxpv066o5" path="res://assets/materials/outline_standard_material_3d.tres" id="2_mcdyc"]
+[ext_resource type="Script" uid="uid://byvybsttl687x" path="res://scripts/checkouts/finish_checkout_area.gd" id="4_sgntm"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2bvqw"]
 size = Vector3(0.75454557, 0.7067013, 1.6119537)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hd853"]
 
 [node name="OnlineOrderCheckout" type="Node3D" unique_id=1648185858]
 
@@ -32,3 +35,12 @@ script = ExtResource("2_dkaf2")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CartParkingArea" unique_id=1267517600]
 shape = SubResource("BoxShape3D_6aigx")
 debug_color = Color(0, 0.6, 0.69803923, 1)
+
+[node name="FinishCheckoutArea" type="Area3D" parent="." unique_id=1749312188 node_paths=PackedStringArray("order_grid")]
+collision_layer = 257
+script = ExtResource("4_sgntm")
+order_grid = NodePath("../OrderGrid")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FinishCheckoutArea" unique_id=946718506]
+shape = SubResource("BoxShape3D_hd853")
+debug_color = Color(0.827451, 0.39607844, 0.050980393, 1)
