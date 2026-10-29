@@ -60,10 +60,13 @@ func setup_order(order: OrderData) -> void:
 func update_order(order: OrderData) -> void:
 	if order.order_id != order_id:
 		return
-	
+
 	_update_remaining_time(order)
-	
+
 	for item: OrderItem in order.items:
+		if item.product == null:
+			continue
+
 		var product_path: String = item.product.resource_path
 
 		if not item_rows.has(product_path):
@@ -74,25 +77,20 @@ func update_order(order: OrderData) -> void:
 		var product_label: Label = row["name"]
 		var quantity_label: Label = row["quantity"]
 
-		var cart_quantity: int = _get_cart_quantity(item.product)
+		# Always show the original requested quantity.
+		# Picking and scanning do not change this value.
+		quantity_label.text = "x%d" % item.quantity
 
-		var display_quantity: int = mini(
-			item.quantity_fulfilled + cart_quantity,
-			item.quantity
+		# Keep the order list neutral until checkout is finished.
+		product_label.add_theme_color_override(
+			"font_color",
+			incomplete_color
 		)
 
-		quantity_label.text = "%d/%d" % [
-			display_quantity,
-			item.quantity
-		]
-
-		var color: Color = incomplete_color
-
-		if display_quantity >= item.quantity:
-			color = completed_color
-
-		product_label.add_theme_color_override("font_color", color)
-		quantity_label.add_theme_color_override("font_color", color)
+		quantity_label.add_theme_color_override(
+			"font_color",
+			incomplete_color
+		)
 
 
 func _update_remaining_time(order: OrderData) -> void:

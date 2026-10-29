@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bkd0j74vb2lai" path="res://scripts/checkouts/cart_parking_area.gd" id="2_dkaf2"]
 [ext_resource type="Material" uid="uid://d3iscxpv066o5" path="res://assets/materials/outline_standard_material_3d.tres" id="2_mcdyc"]
 [ext_resource type="Script" uid="uid://byvybsttl687x" path="res://scripts/checkouts/finish_checkout_area.gd" id="4_sgntm"]
+[ext_resource type="Script" uid="uid://upu8oii4xojm" path="res://scripts/checkouts/online_checkout_display.gd" id="5_uwfqi"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2bvqw"]
 size = Vector3(0.75454557, 0.7067013, 1.6119537)
@@ -11,6 +12,16 @@ size = Vector3(0.75454557, 0.7067013, 1.6119537)
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hd853"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_sgntm"]
+size = Vector2(1.4, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uwfqi"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.08924944, 0.2548345, 0.50531375, 1)
 
 [node name="OnlineOrderCheckout" type="Node3D" unique_id=1648185858]
 
@@ -44,3 +55,66 @@ order_grid = NodePath("../OrderGrid")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="FinishCheckoutArea" unique_id=946718506]
 shape = SubResource("BoxShape3D_hd853")
 debug_color = Color(0.827451, 0.39607844, 0.050980393, 1)
+
+[node name="CheckoutScreen" type="MeshInstance3D" parent="." unique_id=985737513]
+mesh = SubResource("QuadMesh_sgntm")
+
+[node name="CheckoutViewport" type="SubViewport" parent="." unique_id=405642873]
+disable_3d = true
+size = Vector2i(700, 500)
+render_target_update_mode = 4
+
+[node name="OnlineCheckoutUI" type="Control" parent="CheckoutViewport" unique_id=156759089]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_uwfqi")
+
+[node name="PanelContainer" type="PanelContainer" parent="CheckoutViewport/OnlineCheckoutUI" unique_id=505535392]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_uwfqi")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CheckoutViewport/OnlineCheckoutUI/PanelContainer" unique_id=1265899358]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HeaderLabel" type="Label" parent="CheckoutViewport/OnlineCheckoutUI/PanelContainer/VBoxContainer" unique_id=1255083783]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "ONLINE ORDERS"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CheckoutViewport/OnlineCheckoutUI/PanelContainer/VBoxContainer" unique_id=1601582808]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+
+[node name="ItemList" type="VBoxContainer" parent="CheckoutViewport/OnlineCheckoutUI/PanelContainer/VBoxContainer/ScrollContainer" unique_id=623366128]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="HSeparator" type="HSeparator" parent="CheckoutViewport/OnlineCheckoutUI/PanelContainer/VBoxContainer" unique_id=169477001]
+layout_mode = 2
+
+[node name="SubtotalLabel" type="Label" parent="CheckoutViewport/OnlineCheckoutUI/PanelContainer/VBoxContainer" unique_id=421782590]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "12.95"
+horizontal_alignment = 2
+
+[node name="TotalLabel" type="Label" parent="CheckoutViewport/OnlineCheckoutUI/PanelContainer/VBoxContainer" unique_id=464156062]
+layout_mode = 2
+theme_override_colors/font_color = Color(2.0214916e-06, 0.86096245, 0.45047575, 1)
+theme_override_font_sizes/font_size = 26
+text = "20.95"
+horizontal_alignment = 2
