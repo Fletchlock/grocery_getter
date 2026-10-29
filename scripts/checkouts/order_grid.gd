@@ -3,6 +3,7 @@
 extends CartGrid
 class_name OrderGrid
 
+signal checkout_owner_changed
 
 func can_use_checkout(peer_id: int) -> bool:
 	if order_owner_peer_id == 0:
@@ -41,9 +42,10 @@ func release_checkout() -> void:
 	sync_checkout_owner.rpc(0)
 
 
-@rpc("authority", "call_remote", "reliable")
+@rpc("authority", "call_local", "reliable")
 func sync_checkout_owner(peer_id: int) -> void:
 	order_owner_peer_id = peer_id
+	checkout_owner_changed.emit()
 
 
 func take_last_item() -> ProductData:
