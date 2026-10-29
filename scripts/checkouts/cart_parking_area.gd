@@ -39,7 +39,17 @@ func unload_cart(cart: RigidBody3D, peer_id: int) -> void:
 
 	if order == null:
 		return
+	
+		# A different player already owns this checkout.
+	if order_grid.order_owner_peer_id != 0:
+		if not order_grid.can_use_checkout(peer_id):
+			print("OrderGrid is being used by another player.")
+			return
 
+	# Reserve the checkout for this player.
+	if not order_grid.claim_checkout(peer_id):
+		return
+	
 	if not order.checkout_started:
 		if not OrderManager.start_order_checkout(peer_id):
 			return

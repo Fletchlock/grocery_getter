@@ -116,43 +116,34 @@ func _get_order_summary(order: OrderData) -> String:
 
 
 func get_interaction_prompt(player: CharacterBody3D) -> String:
+	var peer_id: int = player.get_multiplayer_authority()
+
 	if player.network_holding_item:
-		if player.held_item == null:
+		var product: ProductData = player.held_item as ProductData
+
+		if product == null:
 			return ""
 
-		var player_peer_id: int = player.get_multiplayer_authority()
+		var order: OrderData = OrderManager.get_player_order(peer_id)
 
-		# Preserve online-order checkout when the player owns an order.
-		if online_order_checkout:
-			if OrderManager.get_player_order(player_peer_id) != null:
-				return "[E] Checkout " + player.held_item.display_name
+		if order == null or not order.checkout_started:
+			return ""
 
-		# Otherwise, allow scanning for the active AI shopper.
-		var checkout: Checkout = (
-			get_tree().get_first_node_in_group("checkout")
-			as Checkout
-		)
+		if player.held_item_origin != player.ItemOrigin.ORDER_GRID:
+			return ""
 
-		if checkout != null:
-			if not multiplayer.is_server():
-				return "[E] Scan " + player.held_item.display_name
+		return "[E] Scan " + product.display_name
 
-			if checkout.can_scan_ai_product(player.held_item):
-				return "[E] Scan " + player.held_item.display_name
-
+	# Players with an active order cannot accept another.
+	if OrderManager.get_player_order(peer_id) != null:
 		return ""
 
-	if OrderManager.get_player_order(
-		player.get_multiplayer_authority()
-	) != null:
+	if not allow_orders:
 		return ""
 
 	if OrderManager.get_available_order() == null:
 		return ""
-	
-	if not allow_orders:
-		return ""
-	
+
 	return "[E] Accept Order"
 
 
@@ -173,21 +164,25 @@ func get_interaction_prompt_position(
 	)
 
 
-
 func interact(player: CharacterBody3D) -> void:
-	if player.network_holding_item:
-		if player.held_item == null:
-			return
+	if player == null:
+		return
 
-		var product := player.held_item as ProductData
+	var peer_id: int = player.get_multiplayer_authority()
+
+	if player.network_holding_item:
+		var product: ProductData = player.held_item as ProductData
+
 		if product == null:
 			return
 
-		var player_peer_id := player.get_multiplayer_authority()
+		var order: OrderData = OrderManager.get_player_order(peer_id)
 
-		if online_order_checkout:
-			if OrderManager.get_player_order(player_peer_id) == null:
-				return
+		if order == null or not order.checkout_started:
+			return
+
+		if player.held_item_origin != player.ItemOrigin.ORDER_GRID:
+			return
 
 		if product.product_category == "produce":
 			_open_produce_code_hud(player, product)
@@ -199,12 +194,16 @@ func interact(player: CharacterBody3D) -> void:
 			request_submit_product.rpc_id(
 				1,
 				player.get_path(),
-				player.held_item.resource_path
+				product.resource_path
 			)
+
 		return
 
-	# No item is being held, so E can accept an available order.
+	# Accepting an order is only allowed at an order board.
 	if not allow_orders:
+		return
+
+	if OrderManager.get_player_order(peer_id) != null:
 		return
 
 	if multiplayer.is_server():
@@ -248,7 +247,6 @@ func request_accept_order(
 	OrderManager.accept_order(player)
 
 
-
 @rpc("any_peer", "call_remote", "reliable")
 func request_submit_product(
 	player_path: NodePath,
@@ -269,28 +267,26 @@ func request_submit_product(
 	if player.get_multiplayer_authority() != requesting_peer_id:
 		return
 
-	if online_order_checkout:
-		if OrderManager.get_player_order(requesting_peer_id) == null:
-			return
+	var order: OrderData = OrderManager.get_player_order(
+		requesting_peer_id
+	)
 
-	# Validate the replicated held-item state.
+	if order == null or not order.checkout_started:
+		return
+
 	if not player.network_holding_item:
 		return
 
 	if player.network_held_item_path != product_path:
 		return
 
-	# Load the product on the server instead of relying on held_item,
-	# which is local to the owning player.
-	var loaded_resource: Resource = load(product_path)
-
-	if loaded_resource == null:
+	if player.held_item_origin != player.ItemOrigin.ORDER_GRID:
 		return
 
-	if not loaded_resource is ProductData:
-		return
+	var product: ProductData = load(product_path) as ProductData
 
-	var product: ProductData = loaded_resource as ProductData
+	if product == null:
+		return
 
 	_submit_product_to_checkout(player, product)
 
@@ -299,46 +295,68 @@ func _submit_product_to_checkout(
 	player: CharacterBody3D,
 	product: ProductData
 ) -> bool:
-	var player_peer_id: int = player.get_multiplayer_authority()
-	var player_order: OrderData = OrderManager.get_player_order(
-		player_peer_id
-	)
-
-	var checkout: Checkout = (
-		get_tree().get_first_node_in_group("checkout")
-		as Checkout
-	)
-
-	var submitted: bool = false
-
-	if player_order != null:
-		# Existing online-order flow.
-		submitted = OrderManager.submit_product(player, product)
-	elif checkout != null:
-		# AI shopper checkout flow.
-		submitted = checkout.scan_ai_product(product)
-
-	print("Product submitted: ", submitted)
-	if not submitted:
+	if not multiplayer.is_server():
 		return false
 
-	if product.product_category == "produce":
-		_set_barcode_hud_for_player(player_peer_id, false)
+	if player == null or product == null:
+		return false
 
-	if player_peer_id == multiplayer.get_unique_id():
-		var hud := get_tree().get_first_node_in_group("day_time_hud")
+	var peer_id: int = player.get_multiplayer_authority()
+	
+	var order_grid: OrderGrid = (
+		get_tree().get_first_node_in_group("online_order_grid")
+		as OrderGrid
+	)
+
+	if order_grid == null:
+		return false
+
+	if not order_grid.can_use_checkout(peer_id):
+		return false
+	
+	var order: OrderData = OrderManager.get_player_order(peer_id)
+
+	if order == null or not order.checkout_started:
+		return false
+
+	# Verify the item is actually held by this player.
+	if not player.network_holding_item:
+		return false
+
+	if player.network_held_item_path != product.resource_path:
+		return false
+
+	# This origin was assigned by the server when the
+	# product was taken from OrderGrid.
+	if player.held_item_origin != player.ItemOrigin.ORDER_GRID:
+		return false
+
+	if not OrderManager.record_checkout_scan(peer_id, product):
+		return false
+
+	# Product successfully scanned.
+	player.held_item_origin = player.ItemOrigin.NONE
+
+	if product.product_category == "produce":
+		_set_barcode_hud_for_player(peer_id, false)
+
+	if peer_id == multiplayer.get_unique_id():
+		var hud: Node = get_tree().get_first_node_in_group(
+			"day_time_hud"
+		)
+
 		if hud != null:
 			hud.completed_barcode_code = ""
 	else:
-		_reset_completed_barcode_code.rpc_id(player_peer_id)
+		_reset_completed_barcode_code.rpc_id(peer_id)
 
-	if player_peer_id == multiplayer.get_unique_id():
+	if peer_id == multiplayer.get_unique_id():
 		player._clear_held_item()
 	else:
-		player.clear_held_item.rpc_id(player_peer_id)
-	
+		player.clear_held_item.rpc_id(peer_id)
+
 	_play_order_scanner_beep.rpc()
-	
+
 	return true
 
 
@@ -426,18 +444,32 @@ func _open_produce_code_hud(
 
 
 func complete_produce_code(product_code: String) -> void:
-	print("Barcode completed: ", product_code)
-	var player := get_tree().get_first_node_in_group("local_player") \
+	var player: CharacterBody3D = (
+		get_tree().get_first_node_in_group("local_player")
 		as CharacterBody3D
+	)
 
-	if player == null or player.held_item == null:
+	if player == null:
 		return
 
-	var product := player.held_item as ProductData
-	if product == null or product.product_category != "produce":
+	var product: ProductData = player.held_item as ProductData
+
+	if product == null:
+		return
+
+	if product.product_category != "produce":
 		return
 
 	if product.product_code != product_code:
+		return
+
+	if player.held_item_origin != player.ItemOrigin.ORDER_GRID:
+		return
+
+	var peer_id: int = player.get_multiplayer_authority()
+	var order: OrderData = OrderManager.get_player_order(peer_id)
+
+	if order == null or not order.checkout_started:
 		return
 
 	if multiplayer.is_server():
@@ -446,7 +478,7 @@ func complete_produce_code(product_code: String) -> void:
 		request_submit_product.rpc_id(
 			1,
 			player.get_path(),
-			player.held_item.resource_path
+			product.resource_path
 		)
 
 

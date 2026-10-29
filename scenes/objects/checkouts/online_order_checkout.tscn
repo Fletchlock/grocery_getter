@@ -11,7 +11,7 @@ size = Vector3(0.75454557, 0.7067013, 1.6119537)
 
 [node name="OnlineOrderCheckout" type="Node3D" unique_id=1648185858]
 
-[node name="OrderGrid" type="Node3D" parent="." unique_id=925843198]
+[node name="OrderGrid" type="Node3D" parent="." unique_id=925843198 groups=["online_order_grid"]]
 script = ExtResource("1_2llfw")
 max_items = 30
 outline_material = ExtResource("2_mcdyc")
