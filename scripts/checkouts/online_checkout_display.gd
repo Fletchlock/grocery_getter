@@ -245,6 +245,19 @@ func _show_checkout_results(order: OrderData) -> void:
 	results_timer.start(results_display_duration)
 
 
+@rpc("authority", "call_local", "reliable")
+func show_finished_order(order_id: int) -> void:
+	var order: OrderData = OrderManager.get_order(order_id)
+
+	if order == null:
+		return
+
+	if order.state != OrderData.OrderState.COMPLETED:
+		return
+
+	_show_checkout_results(order)
+
+
 func _get_order_summary(order: OrderData) -> String:
 	match order.state:
 		OrderData.OrderState.WAITING:

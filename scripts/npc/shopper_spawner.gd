@@ -55,7 +55,8 @@ func _process(delta: float) -> void:
 
 	current_max_shoppers = get_current_max_shoppers()
 
-	# Spawn the first shopper immediately each day.
+	# Spawn the first shopper immediately each day. UNCOMMENT TO ACTIVATE!!!
+	
 	if last_open_day != DayManager.current_day:
 		last_open_day = DayManager.current_day
 

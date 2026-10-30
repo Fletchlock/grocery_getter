@@ -5,9 +5,10 @@
 [ext_resource type="PackedScene" uid="uid://2wowol47x3tk" path="res://scenes/UI/online_order_active.tscn" id="3_glyqf"]
 [ext_resource type="PackedScene" uid="uid://c3gc8ev0p8236" path="res://scenes/UI/online_order_list.tscn" id="4_26j03"]
 [ext_resource type="PackedScene" uid="uid://c8nis4qdppl3y" path="res://scenes/UI/barcode_hud.tscn" id="5_8arff"]
-[ext_resource type="Texture2D" uid="uid://gah8ja27jky6" path="res://assets/images/store_icon.png" id="6_52nrg"]
-[ext_resource type="Texture2D" uid="uid://c0hdiam0nrkr0" path="res://assets/images/unfilled_star.png" id="7_lc70o"]
-[ext_resource type="Texture2D" uid="uid://bhnqe84ocqkbf" path="res://assets/images/filled_star.png" id="8_newvj"]
+[ext_resource type="Texture2D" uid="uid://dxgajygw4gxx1" path="res://assets/images/store_icon_2.png" id="6_lc70o"]
+[ext_resource type="Texture2D" uid="uid://b7mlpwifyvqsi" path="res://assets/images/top_bar_background.png" id="6_newvj"]
+[ext_resource type="Texture2D" uid="uid://b1pmpfog6myug" path="res://assets/images/star_unfilled.png" id="7_lc70o"]
+[ext_resource type="Texture2D" uid="uid://cbem724xdcnhn" path="res://assets/images/star_filled.png" id="8_newvj"]
 
 [sub_resource type="Animation" id="Animation_prtv8"]
 length = 0.001
@@ -83,20 +84,27 @@ _data = {
 &"restock banner out": SubResource("Animation_glyqf")
 }
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lc70o"]
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+texture = ExtResource("6_newvj")
+texture_margin_left = 12.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 12.0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_26j03"]
+load_path = "res://godot/imported/ShopperIcon.png-3c245b2ae580c760badfa61d134ab832.ctex"
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_prtv8"]
 resource_local_to_scene = true
-bg_color = Color(0.078431375, 0.078431375, 0.078431375, 0.78431374)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
+bg_color = Color(0.078431375, 0.078431375, 0.078431375, 0.19607843)
 expand_margin_left = 10.0
 expand_margin_top = 5.0
 expand_margin_right = 10.0
 expand_margin_bottom = 5.0
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_26j03"]
-load_path = "res://godot/imported/ShopperIcon.png-3c245b2ae580c760badfa61d134ab832.ctex"
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8arff"]
 resource_local_to_scene = true
@@ -146,26 +154,26 @@ custom_minimum_size = Vector2(0, 120)
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 120.0
+offset_bottom = 79.0
 grow_horizontal = 2
-offset_transform_enabled = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TopCenterContainer" unique_id=599350374]
 layout_mode = 2
 size_flags_vertical = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="TopCenterContainer/VBoxContainer" unique_id=1661235052]
-custom_minimum_size = Vector2(720, 0)
+custom_minimum_size = Vector2(750, 0)
 layout_mode = 2
-offset_transform_enabled = true
+size_flags_horizontal = 4
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_prtv8")
+theme_override_styles/panel = SubResource("StyleBoxTexture_lc70o")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TopCenterContainer/VBoxContainer/PanelContainer" unique_id=2123907904]
 layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="ShopperIcon" type="TextureRect" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer" unique_id=1162855308]
+texture_filter = 3
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -178,7 +186,13 @@ stretch_mode = 5
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 22
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.39215687)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 4
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 24
 text = "10"
 horizontal_alignment = 1
 
@@ -186,25 +200,38 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
-theme_override_font_sizes/font_size = 22
-text = "DAY: 01    TIME: 07:00 AM   $100.00"
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.39215687)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 4
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 24
+text = "DAY: 01    TIME: 07:00 AM   $10000.00"
 horizontal_alignment = 1
 
 [node name="ReputationContainer" type="HBoxContainer" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer" unique_id=1032023267]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
+alignment = 1
 
 [node name="StoreIcon" type="TextureRect" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer" unique_id=554188307]
-custom_minimum_size = Vector2(22, 22)
+texture_filter = 3
+custom_minimum_size = Vector2(32, 32)
+custom_maximum_size = Vector2(28, 28)
 layout_mode = 2
-texture = ExtResource("6_52nrg")
-expand_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("6_lc70o")
+expand_mode = 3
+stretch_mode = 5
 
 [node name="StarsContainer" type="HBoxContainer" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer" unique_id=1894384667]
 layout_mode = 2
 theme_override_constants/separation = 2
 
 [node name="Star1" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=580123627]
+texture_filter = 1
 custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -215,6 +242,7 @@ texture_under = ExtResource("7_lc70o")
 texture_progress = ExtResource("8_newvj")
 
 [node name="Star2" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=1333299339]
+texture_filter = 1
 custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -225,6 +253,7 @@ texture_under = ExtResource("7_lc70o")
 texture_progress = ExtResource("8_newvj")
 
 [node name="Star3" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=825266277]
+texture_filter = 1
 custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -235,6 +264,7 @@ texture_under = ExtResource("7_lc70o")
 texture_progress = ExtResource("8_newvj")
 
 [node name="Star4" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=1093919580]
+texture_filter = 1
 custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -245,6 +275,7 @@ texture_under = ExtResource("7_lc70o")
 texture_progress = ExtResource("8_newvj")
 
 [node name="Star5" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=694500669]
+texture_filter = 1
 custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 size_flags_horizontal = 4

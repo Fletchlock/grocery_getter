@@ -87,6 +87,16 @@ func _finish_checkout(peer_id: int) -> void:
 	if not OrderManager.finish_order_checkout(peer_id):
 		return
 
+	# Explicitly tell the checkout screen to show the results.
+	var checkout_display: OnlineCheckoutDisplay = (
+		get_parent().get_node_or_null(
+			"CheckoutViewport/OnlineCheckoutUI"
+		) as OnlineCheckoutDisplay
+	)
+
+	if checkout_display != null:
+		checkout_display.show_finished_order.rpc(order.order_id)
+
 	order_grid.release_checkout()
 
 	print(

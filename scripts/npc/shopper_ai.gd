@@ -16,8 +16,8 @@ var selected_shopper_mesh: Mesh = null
 
 # Shopping
 @export_group("Shopping")
-@export var shopping_min_points: int = 3
-@export var shopping_max_points: int = 6
+@export var shopping_min_points: int = 2
+@export var shopping_max_points: int = 5
 @export var shopping_idle_min: float = 2.0
 @export var shopping_idle_max: float = 3.0
 @export var shopping_start_delay_min: float = 1.0
@@ -608,26 +608,26 @@ func _on_moving(delta: float) -> void:
 				state = State.SHOPPING_WAITING
 				return
 	
-	var direction: Vector3 = (
-		next_position - current_position
-	).normalized()
+	var direction: Vector3 = next_position - current_position
+	direction.y = 0.0
+	direction = direction.normalized()
 
 	var new_velocity: Vector3 = direction * speed
 
 	navigation_agent_3d.velocity = new_velocity
 
 	# Only set target_rotation towards velocity direction when MOVING, SHOPPING or EXITING
-	if new_velocity.length_squared() > 0.01 and state in [
-		State.ENTERING,
-		State.MOVING,
-		State.SHOPPING,
-		State.SHOPPING_WAITING,
-		State.CHECKOUT,
-		State.BAGGING,
-		State.CHECKOUT_LINEUP,
-		State.EXITING
-	]:
-		target_rotation = atan2(direction.x, direction.z)
+	#if new_velocity.length_squared() > 0.01 and state in [
+		#State.ENTERING,
+		#State.MOVING,
+		#State.SHOPPING,
+		#State.SHOPPING_WAITING,
+		#State.CHECKOUT,
+		#State.BAGGING,
+		#State.CHECKOUT_LINEUP,
+		#State.EXITING
+	#]:
+		#target_rotation = atan2(direction.x, direction.z)
 
 	if current_position.distance_to(last_position) < 0.05:
 		stuck_timer += delta
@@ -809,7 +809,7 @@ func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
 	]:
 		#velocity.x = move_toward(velocity.x, safe_velocity.x, 0.55)
 		#velocity.z = move_toward(velocity.z, safe_velocity.z, 0.55)
-		var acceleration: float = 12.0
+		var acceleration: float = 20.0
 		var delta: float = get_physics_process_delta_time()
 
 		velocity.x = move_toward(
@@ -826,6 +826,15 @@ func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
 		
 		move_and_slide()
 
+		# Face the actual horizontal movement direction.
+		var horizontal_velocity: Vector3 = get_real_velocity()
+		horizontal_velocity.y = 0.0
+
+		if horizontal_velocity.length_squared() > 0.16:
+			target_rotation = atan2(
+				horizontal_velocity.x,
+				horizontal_velocity.z
+			)
 		
 		
 # ---------------------------------------------------------

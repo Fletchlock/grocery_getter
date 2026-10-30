@@ -7,7 +7,8 @@
 [ext_resource type="AudioStream" uid="uid://bxk6rpou86l15" path="res://assets/sounds/footstep-on-stone-2.wav" id="4_g3uw4"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kpjcp"]
-radius = 0.25439453
+margin = 0.06
+radius = 0.32
 height = 1.8647461
 
 [sub_resource type="Skin" id="Skin_nqtw5"]
@@ -83,6 +84,7 @@ properties/4/replication_mode = 1
 radius = 0.5971316
 
 [node name="Shopper AI" type="CharacterBody3D" unique_id=810827079]
+collision_layer = 8
 script = ExtResource("1_h2sg7")
 shopping_wait_max = 5.0
 look_speed = 1.5
@@ -90,11 +92,15 @@ look_speed = 1.5
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=131252810]
 path_desired_distance = 0.5
 target_desired_distance = 0.4
+simplify_path = true
+simplify_epsilon = 0.1
 avoidance_enabled = true
-radius = 0.3
-neighbor_distance = 4.0
+radius = 0.42
+neighbor_distance = 5.0
 max_neighbors = 9
-time_horizon_agents = 1.25
+time_horizon_agents = 1.5
+time_horizon_obstacles = 2.0
+max_speed = 2.5
 debug_path_custom_color = Color(1, 0, 0, 1)
 
 [node name="BodyCollision" type="CollisionShape3D" parent="." unique_id=1289089239]
