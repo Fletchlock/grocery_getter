@@ -1,20 +1,17 @@
 [gd_scene format=3 uid="uid://2wowol47x3tk"]
 
+[ext_resource type="Texture2D" uid="uid://b3ch0sgodv70f" path="res://assets/images/order_notify_bg_blue.png" id="1_me23d"]
 [ext_resource type="Script" uid="uid://dgd0yhej1o8qr" path="res://scripts/UI/order_notification.gd" id="1_tobjv"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8u6ci"]
-resource_local_to_scene = true
-bg_color = Color(0.011764706, 0.2901961, 0.65882355, 0.78431374)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-expand_margin_left = 10.0
-expand_margin_top = 5.0
-expand_margin_right = 10.0
-expand_margin_bottom = 5.0
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_h6ycq"]
+texture = ExtResource("1_me23d")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
 
 [node name="OnlineOrderAvailable" type="PanelContainer" unique_id=1388157964]
+texture_filter = 3
 custom_minimum_size = Vector2(310, 0)
 anchors_preset = 1
 anchor_left = 1.0
@@ -26,7 +23,7 @@ offset_bottom = 53.0
 grow_horizontal = 0
 offset_transform_enabled = true
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_8u6ci")
+theme_override_styles/panel = SubResource("StyleBoxTexture_h6ycq")
 script = ExtResource("1_tobjv")
 
 [node name="Label" type="Label" parent="." unique_id=1164776408]
