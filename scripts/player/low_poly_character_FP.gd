@@ -1444,11 +1444,11 @@ func update_crouch_collision() -> void:
 		return
 
 	if is_crouching:
-		capsule.radius = 0.6
+		capsule.radius = 0.4
 		capsule.height = 1.6
 		collision_shape.position.y = 0.8
 	else:
-		capsule.radius = 0.35
+		capsule.radius = 0.4
 		capsule.height = 2.0
 		collision_shape.position.y = 1.0
 
