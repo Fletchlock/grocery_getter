@@ -1,22 +1,20 @@
 [gd_scene format=3 uid="uid://c3gc8ev0p8236"]
 
+[ext_resource type="Texture2D" uid="uid://b7jj5sc74vn78" path="res://assets/images/order_list_background.png" id="1_h6ycq"]
 [ext_resource type="Script" uid="uid://crisj2vxhhv1p" path="res://scripts/UI/online_order_list.gd" id="1_shadn"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_26j03"]
-bg_color = Color(0.011257494, 0.28827852, 0.66006905, 0.78431374)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-expand_margin_left = 10.0
-expand_margin_top = 10.0
-expand_margin_right = 10.0
-expand_margin_bottom = 10.0
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ojtfd"]
+texture = ExtResource("1_h6ycq")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
 
 [node name="OnlineOrderList" type="PanelContainer" unique_id=121303817]
+texture_filter = 3
 offset_right = 32.0
 offset_bottom = 120.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_26j03")
+theme_override_styles/panel = SubResource("StyleBoxTexture_ojtfd")
 script = ExtResource("1_shadn")
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=794434597]
