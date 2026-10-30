@@ -7,8 +7,8 @@ extends Node3D
 # ============================================================
 
 @export_group("Orange Rotation")
-@export var starting_rotation_speed: float = 0.20
-@export var maximum_rotation_speed: float = 0.65
+@export var starting_rotation_speed: float = 0.15
+@export var maximum_rotation_speed: float = 0.45
 @export var speed_increase: float = 0.08
 @export var speed_increase_interval: float = 10.0
 
@@ -27,7 +27,7 @@ extends Node3D
 @export var go_display_duration: float = 0.6
 
 @export_group("Elimination")
-@export var elimination_height: float = -24.0
+@export var elimination_height: float = -30.0
 
 @export_group("Survival Timer")
 @export var round_duration: float = 60.0
