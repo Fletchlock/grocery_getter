@@ -378,7 +378,6 @@ radius = 0.5971316
 
 [node name="Shopper AI" type="CharacterBody3D" unique_id=810827079]
 script = ExtResource("1_iw64w")
-shopping_min_points = 2
 shopping_start_delay_max = 5.0
 shopping_wait_max = 5.0
 look_speed = 1.5

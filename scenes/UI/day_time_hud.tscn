@@ -6,9 +6,11 @@
 [ext_resource type="PackedScene" uid="uid://c3gc8ev0p8236" path="res://scenes/UI/online_order_list.tscn" id="4_26j03"]
 [ext_resource type="PackedScene" uid="uid://c8nis4qdppl3y" path="res://scenes/UI/barcode_hud.tscn" id="5_8arff"]
 [ext_resource type="Texture2D" uid="uid://dxgajygw4gxx1" path="res://assets/images/store_icon_2.png" id="6_lc70o"]
-[ext_resource type="Texture2D" uid="uid://b7mlpwifyvqsi" path="res://assets/images/top_bar_background.png" id="6_newvj"]
+[ext_resource type="Texture2D" uid="uid://ifkotnnto2y6" path="res://assets/images/order_notify_bg_dk_grey.png" id="6_xiw3s"]
 [ext_resource type="Texture2D" uid="uid://b1pmpfog6myug" path="res://assets/images/star_unfilled.png" id="7_lc70o"]
 [ext_resource type="Texture2D" uid="uid://cbem724xdcnhn" path="res://assets/images/star_filled.png" id="8_newvj"]
+[ext_resource type="Texture2D" uid="uid://dcbfwxda8kuuw" path="res://assets/images/order_notify_bg_grey.png" id="10_2toow"]
+[ext_resource type="Texture2D" uid="uid://bej7ittej76m0" path="res://assets/images/order_notify_bg_red.png" id="10_xiw3s"]
 
 [sub_resource type="Animation" id="Animation_prtv8"]
 length = 0.001
@@ -85,15 +87,15 @@ _data = {
 }
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lc70o"]
-content_margin_left = 10.0
-content_margin_top = 5.0
-content_margin_right = 10.0
-content_margin_bottom = 5.0
-texture = ExtResource("6_newvj")
-texture_margin_left = 10.0
-texture_margin_top = 10.0
-texture_margin_right = 10.0
-texture_margin_bottom = 10.0
+content_margin_left = 15.0
+content_margin_top = 10.0
+content_margin_right = 15.0
+content_margin_bottom = 10.0
+texture = ExtResource("6_xiw3s")
+texture_margin_left = 15.0
+texture_margin_top = 15.0
+texture_margin_right = 15.0
+texture_margin_bottom = 15.0
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_26j03"]
 load_path = "res://godot/imported/ShopperIcon.png-3c245b2ae580c760badfa61d134ab832.ctex"
@@ -106,29 +108,19 @@ expand_margin_top = 5.0
 expand_margin_right = 10.0
 expand_margin_bottom = 5.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8arff"]
-resource_local_to_scene = true
-bg_color = Color(0.5232661, 0, 0.09202028, 0.78431374)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-expand_margin_left = 10.0
-expand_margin_top = 5.0
-expand_margin_right = 10.0
-expand_margin_bottom = 5.0
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xiw3s"]
+texture = ExtResource("10_xiw3s")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_newvj"]
-resource_local_to_scene = true
-bg_color = Color(0.14509805, 0.3882353, 0.10980392, 0.78431374)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-expand_margin_left = 10.0
-expand_margin_top = 5.0
-expand_margin_right = 10.0
-expand_margin_bottom = 5.0
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gfpo6"]
+texture = ExtResource("10_2toow")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
 
 [sub_resource type="AudioStream" id="AudioStream_6aigx"]
 
@@ -162,6 +154,7 @@ layout_mode = 2
 size_flags_vertical = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="TopCenterContainer/VBoxContainer" unique_id=1661235052]
+texture_filter = 3
 custom_minimum_size = Vector2(750, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -322,7 +315,7 @@ layout_mode = 2
 offset_transform_enabled = true
 offset_transform_position = Vector2(0, -70)
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_8arff")
+theme_override_styles/panel = SubResource("StyleBoxTexture_xiw3s")
 
 [node name="RestockLabel" type="Label" parent="CenterContainer/VBoxContainer/PanelContainer" unique_id=376943300]
 layout_mode = 2
@@ -369,7 +362,7 @@ offset_bottom = 40.0
 
 [node name="BardcodeHud" parent="." unique_id=1388157964 instance=ExtResource("5_8arff")]
 layout_mode = 1
-theme_override_styles/panel = SubResource("StyleBoxFlat_newvj")
+theme_override_styles/panel = SubResource("StyleBoxTexture_gfpo6")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1547641565]
 stream = SubResource("AudioStream_6aigx")

@@ -57,12 +57,12 @@ func _ready() -> void:
 
 
 func _setup_screen_material() -> void:
-	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.albedo_texture = checkout_viewport.get_texture()
-	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	var screen_material: StandardMaterial3D = StandardMaterial3D.new()
+	screen_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	screen_material.albedo_texture = checkout_viewport.get_texture()
+	screen_material.cull_mode = BaseMaterial3D.CULL_DISABLED
 
-	checkout_screen.material_override = material
+	checkout_screen.material_override = screen_material
 
 
 func _on_order_changed(_order: OrderData) -> void:

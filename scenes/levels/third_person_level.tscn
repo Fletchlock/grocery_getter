@@ -313,7 +313,7 @@ size = Vector3(0.6343573, 0.39665717, 0.9903818)
 size = Vector3(0.6832653, 0.4479164, 0.9516773)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_iff1d"]
-size = Vector3(0.7787075, 0.8808441, 0.93130636)
+size = Vector3(0.9972639, 0.8808441, 0.93130636)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_t08rh"]
 size = Vector3(0.32159424, 0.064086914, 0.78445435)
@@ -1158,7 +1158,7 @@ metadata/_edit_lock_ = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.13303673, 17.200169)
 metadata/_edit_lock_ = true
 
-[node name="Freezer_Left_5row" parent="NavigationRegion3D/Shelves/Freezer_Left_5row3" index="0" unique_id=2019239755]
+[node name="Freezer_Left_5row" parent="NavigationRegion3D/Shelves/Freezer_Left_5row3" index="0" unique_id=1948384799]
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Shelves/Freezer_Left_5row3/Freezer_Left_5row/StaticBody3D" parent_id_path=PackedInt32Array(2056952461, 125499396) index="0" unique_id=911486562]
@@ -1175,7 +1175,7 @@ metadata/_edit_lock_ = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.13303673, 14.200169)
 metadata/_edit_lock_ = true
 
-[node name="Freezer_Right_5row" parent="NavigationRegion3D/Shelves/Freezer_Right_5row3" index="0" unique_id=670233305]
+[node name="Freezer_Right_5row" parent="NavigationRegion3D/Shelves/Freezer_Right_5row3" index="0" unique_id=1148908231]
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Shelves/Freezer_Right_5row3/Freezer_Right_5row/StaticBody3D" parent_id_path=PackedInt32Array(825118052, 83913552) index="0" unique_id=286493962]
@@ -1429,7 +1429,7 @@ shape = SubResource("BoxShape3D_m7tku")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1338768, -0.89955837, -0.073040485)
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/OnlineOrderCheckout/CartParkingArea" index="0" unique_id=1267517600]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37914896, 0.45415497, 0.07596612)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.26987076, 0.45415497, 0.07596612)
 shape = SubResource("BoxShape3D_iff1d")
 
 [node name="FinishCheckoutArea" parent="NavigationRegion3D/OnlineOrderCheckout" index="2" unique_id=1749312188]
@@ -1443,7 +1443,7 @@ shape = SubResource("BoxShape3D_t08rh")
 transform = Transform3D(-1.1977267e-08, 0.18864034, -0.8844614, 1.7316035e-08, 0.39751074, 0.41972476, 0.462, -1.0008471e-08, -3.8661035e-08, 0.27299976, 0.46429467, -0.9809253)
 
 [node name="PunchClock" parent="NavigationRegion3D" unique_id=167766037 instance=ExtResource("50_smqka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.405, 1.5, 20.598)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.405, 1.5, 20.50104)
 
 [node name="DesertGround" parent="." unique_id=2134704437 groups=["level_geo"] instance=ExtResource("15_17biw")]
 transform = Transform3D(0.93267465, 0, -0.36071923, 0, 1, 0, 0.36071923, 0, 0.93267465, 0, -1.51, -11.964)
@@ -1454,13 +1454,13 @@ transform = Transform3D(0.9326745, 0, -0.36071923, 0, 1, 0, 0.36071923, 0, 0.932
 [node name="StoreSmallGreybox" parent="." unique_id=253599967 instance=ExtResource("15_tcjw2")]
 transform = Transform3D(-1.0000001, 0, -8.7422784e-08, 0, 1, 0, 8.7422784e-08, 0, -1.0000001, -0.53600764, -1.5205572, -3.3310928)
 
-[node name="store_small" parent="StoreSmallGreybox" index="0" unique_id=526915665 groups=["level_geo"]]
+[node name="store_small" parent="StoreSmallGreybox" index="0" unique_id=1623328490 groups=["level_geo"]]
 transform = Transform3D(1, 0, 1.0899726e-11, 0, 1, 0, -1.0899726e-11, 0, 1, 0.463, 0, -0.33)
 
-[node name="store_small_windows" parent="StoreSmallGreybox" index="1" unique_id=1803298143 groups=["level_geo"]]
+[node name="store_small_windows" parent="StoreSmallGreybox" index="1" unique_id=91259702 groups=["level_geo"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.463, 0, -0.33)
 
-[node name="CollisionShape3D" parent="StoreSmallGreybox/store_small_windows/StaticBody3D" parent_id_path=PackedInt32Array(253599967, 759605307) index="0" unique_id=419032620]
+[node name="CollisionShape3D" parent="StoreSmallGreybox/store_small_windows/StaticBody3D" parent_id_path=PackedInt32Array(253599967, 2128795924) index="0" unique_id=1518899647]
 shape = SubResource("ConcavePolygonShape3D_mcoed")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
@@ -1550,54 +1550,6 @@ transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, -6.0
 [node name="raykin2" parent="." unique_id=1413140257 instance=ExtResource("8_ijfqo")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -4.5812306, 3.879442, -12.014489)
 
-[node name="OrderBoard" type="Node3D" parent="." unique_id=1669689231 groups=["order_board"]]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -6.150495, 0.05336976, -10.684111)
-visible = false
-script = ExtResource("32_gc6kj")
-allow_orders = false
-
-[node name="Label3D" type="Label3D" parent="OrderBoard" unique_id=972216908]
-transform = Transform3D(0.48462108, -6.575805e-09, -2.8499656e-09, 9.228586e-09, 0.31082386, 0.28437203, -2.1158915e-09, -0.1504369, 0.5875529, 0.11686516, -0.012449622, -0.042379856)
-texture_filter = 2
-text = "==========================
-Order #
--
-Bread                  2/2
-Peas                   1/1
-Flour                  1/2
-Gala Apples            2/2
--
-==========================
-TIME LEFT
-05:00
--
-PROFIT
-$50
-=========================="
-font_size = 12
-outline_size = 2
-
-[node name="AcceptOrderArea" type="Area3D" parent="OrderBoard" unique_id=1066872346]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.11459637, -0.504532, 0.4231925)
-collision_layer = 256
-
-[node name="CSGMesh3D" type="CSGMesh3D" parent="OrderBoard/AcceptOrderArea" unique_id=1863740499]
-transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
-visible = false
-mesh = SubResource("BoxMesh_8jmo3")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="OrderBoard/AcceptOrderArea" unique_id=1527627947]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.38742065, 0.03677243, 0.0031409264)
-shape = SubResource("BoxShape3D_62gvq")
-debug_color = Color(0.9437243, 0.6000647, 0.15216762, 0.85882354)
-
-[node name="OrderScannerBeepPlayer" type="AudioStreamPlayer3D" parent="OrderBoard/AcceptOrderArea" unique_id=1519560717]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.61456203, 0.38284898, -0.6752362)
-visible = false
-stream = ExtResource("33_bl6aj")
-volume_db = -80.0
-bus = &"SFX"
-
 [node name="OrderBoard2" type="Node3D" parent="." unique_id=1136260268 groups=["order_board"]]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 3.1018028, 0.05336976, 6.292492)
 script = ExtResource("32_gc6kj")
@@ -1605,6 +1557,7 @@ online_order_checkout = true
 
 [node name="Label3D" type="Label3D" parent="OrderBoard2" unique_id=1379233260]
 transform = Transform3D(0.48462105, 8.772719e-09, 2.698652e-09, -1.2133326e-08, 0.34439978, -0.04750304, -2.894211e-09, 0.025129765, 0.6510217, 0.11686516, 0.43512428, -0.24709892)
+visible = false
 texture_filter = 2
 text = "==========================
 Order #
