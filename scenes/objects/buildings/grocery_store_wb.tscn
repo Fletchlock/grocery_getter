@@ -4,5 +4,5 @@
 
 [node name="grocery_store_WB" unique_id=1907441500 instance=ExtResource("1_2hwxv")]
 
-[node name="Shelves" parent="." index="1" unique_id=439814371]
+[node name="Shelves" parent="." index="1" unique_id=216666344]
 collision_priority = 2.0
