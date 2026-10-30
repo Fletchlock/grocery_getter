@@ -173,7 +173,9 @@ func _process(delta: float) -> void:
 	if not clock_running:
 		return
 		
-	_minute_timer += delta
+	# hold F12 to speed up the clock for quicker testing and debugging
+	var speed_multiplier: float = 25.0 if Input.is_key_pressed(KEY_F12) else 1.0
+	_minute_timer += delta * speed_multiplier 
 	
 	while _minute_timer >= REAL_SECONDS_PER_GAME_MINUTE:
 		_minute_timer -= REAL_SECONDS_PER_GAME_MINUTE

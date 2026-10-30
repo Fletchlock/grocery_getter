@@ -35,6 +35,7 @@ var barcode_hud: Control = null
 var barcode_player: Node = null
 var completed_barcode_code: String = ""
 var barcode_checkout: Node = null
+var saved_scan_combo: int = 0
 
 func _ready() -> void:
 	LobbyManager.lobby_player_updated.connect(_on_lobby_player_updated)
@@ -473,6 +474,7 @@ func show_barcode_hud(product_code: String) -> void:
 			return
 
 		barcode_hud = barcode_hud_scene.instantiate() as Control
+		barcode_hud.scan_combo = saved_scan_combo
 		if barcode_hud == null:
 			push_warning("Barcode HUD scene root must be a Control node.")
 			return
@@ -515,6 +517,9 @@ func close_barcode_hud() -> void:
 
 
 func _on_barcode_code_completed(product_code: String) -> void:
+	if is_instance_valid(barcode_hud):
+		saved_scan_combo = barcode_hud.scan_combo
+
 	if not is_instance_valid(barcode_checkout):
 		push_warning("No valid checkout is associated with the barcode HUD.")
 		return
