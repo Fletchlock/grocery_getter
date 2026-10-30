@@ -28,11 +28,12 @@ grow_vertical = 2
 
 [node name="Label" type="Label" parent="VBoxContainer" unique_id=1699724925]
 layout_mode = 2
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 40
 text = "Available Games"
 
 [node name="StatusLabel" type="Label" parent="VBoxContainer" unique_id=2114575507]
 layout_mode = 2
+theme_override_font_sizes/font_size = 26
 text = "Searching for games..."
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=58139041]
