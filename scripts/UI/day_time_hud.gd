@@ -121,7 +121,7 @@ func _update_clock_label() -> void:
 	else:
 		shopper_count.text = "0"
 	
-	clock_label.text = "DAY: %02d    TIME: %02d:%02d %s    $%.2f" % [
+	clock_label.text = "DAY: %02d      %02d:%02d %s      $%.2f" % [
 		DayManager.current_day,
 		display_hour,
 		DayManager.current_minute,
