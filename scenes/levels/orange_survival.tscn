@@ -204,7 +204,7 @@ theme_override_font_sizes/font_size = 40
 text = "Waiting for next round..."
 
 [node name="SpectatorCamera" type="Camera3D" parent="." unique_id=164285949]
-transform = Transform3D(1, 0, 0, 0, 0.95105654, 0.309017, 0, -0.309017, 0.95105654, 0, 15.225577, 9.626876)
+transform = Transform3D(1, 0, 0, 0, 0.73251456, 0.6807514, 0, -0.6807514, 0.73251456, 0, 22.838919, 11.869922)
 
 [node name="IntroLayer" type="CanvasLayer" parent="." unique_id=1136399271]
 layer = 10
