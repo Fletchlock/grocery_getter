@@ -1,0 +1,85 @@
+[gd_scene format=3 uid="uid://dk0bxbt68db3m"]
+
+[ext_resource type="ArrayMesh" uid="uid://2ddhk7ry0dg5" path="res://assets/models/checkouts/product_display_tag_Cube_032.res" id="1_1dc2r"]
+[ext_resource type="Script" uid="uid://ctsujh443v0wm" path="res://scripts/items/shelf_tag.gd" id="1_5d2yq"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_5d2yq"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f6fed"]
+resource_name = "m_product_tag_viewport_area"
+cull_mode = 2
+shading_mode = 0
+albedo_color = Color(0.9063318, 0.9063318, 0.9063318, 1)
+albedo_texture = SubResource("ViewportTexture_5d2yq")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1dc2r"]
+bg_color = Color(0.9137255, 0.92941177, 0.8980392, 1)
+corner_detail = 1
+
+[node name="ShelfTag" type="Node3D" unique_id=1652248112]
+script = ExtResource("1_5d2yq")
+
+[node name="TagMesh" type="MeshInstance3D" parent="." unique_id=925913828]
+mesh = ExtResource("1_1dc2r")
+surface_material_override/1 = SubResource("StandardMaterial3D_f6fed")
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=181439548]
+disable_3d = true
+size = Vector2i(512, 128)
+render_target_update_mode = 4
+
+[node name="PanelContainer" type="PanelContainer" parent="SubViewport" unique_id=1346561204]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1dc2r")
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewport/PanelContainer" unique_id=435803029]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/PanelContainer/MarginContainer" unique_id=44910100]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ProductName" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer" unique_id=920593429]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+text = "CEREAL"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer" unique_id=924325212]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="ProductPrice" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=268054111]
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+offset_transform_enabled = true
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 32
+text = "$4.99"
+vertical_alignment = 2
+
+[node name="Control" type="Control" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=780196904]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="StockStatus" type="Label" parent="SubViewport/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1901532135]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(0.6379196, 0, 0.1342732, 1)
+theme_override_font_sizes/font_size = 26
+text = "OUT OF STOCK"
+horizontal_alignment = 2
+vertical_alignment = 2

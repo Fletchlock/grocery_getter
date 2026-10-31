@@ -33,6 +33,7 @@ var product_marker: Marker3D = null
 var product_grid: Node3D = null
 var mesh_outline: Node3D = null
 var collision_shape: CollisionShape3D = null
+var shelf_tag: ShelfTag = null
 
 var _last_marker_position: Vector3 = Vector3.INF
 var _last_product_data: ProductData = null
@@ -63,6 +64,7 @@ func _ready() -> void:
 	_ensure_unique_collision_shape()
 	_update_product_display()
 	_update_interaction_zone()
+	_update_shelf_tag()
 	_last_network_quantity = quantity
 	_cache_preview_state()
 
@@ -81,6 +83,7 @@ func _process(_delta: float) -> void:
 		if _preview_needs_update():
 			_update_product_display()
 			_update_interaction_zone()
+			_update_shelf_tag()
 			_cache_preview_state()
 
 		return
@@ -89,6 +92,7 @@ func _process(_delta: float) -> void:
 		_last_network_quantity = quantity
 		_update_product_display()
 		_update_interaction_zone()
+		_update_shelf_tag()
 		_save_stock_quantity()
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -323,7 +327,9 @@ func _find_nodes() -> void:
 
 	if collision_shape == null:
 		collision_shape = get_node_or_null("Area3D/CollisionShape3D")
-
+	
+	if shelf_tag == null:
+		shelf_tag = get_node_or_null("ShelfTag") as ShelfTag
 
 func _get_product_mesh() -> Mesh:
 	if product_data == null:
@@ -447,6 +453,16 @@ func _update_product_display() -> void:
 			variation_rotation
 		)
 
+
+func _update_shelf_tag() -> void:
+	if shelf_tag == null:
+		return
+
+	shelf_tag.update_display(
+		product_data,
+		quantity
+	)
+	
 
 func _create_product(
 	product_position: Vector3,
