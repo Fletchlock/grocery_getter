@@ -593,7 +593,7 @@ shape = SubResource("BoxShape3D_5gipu")
 transform = Transform3D(-1, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -1, 0.9734793, 0, 1.0372744)
 
 [node name="ShelfTag" parent="NavigationRegion3D/Items/Bread" index="5" unique_id=1652248112]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.12236643, 0.06586757, 0.9914279)
+transform = Transform3D(1, -6.391206e-09, -4.6976467e-10, 6.391206e-09, 0.98925304, 0.14621374, -4.6976467e-10, -0.14621374, 0.98925304, 0.122366905, 0.06586757, 0.9914279)
 
 [node name="Cereal" parent="NavigationRegion3D/Items" unique_id=452188552 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.2568028, 0.3727951, -3.0171385)
@@ -636,7 +636,7 @@ shape = SubResource("BoxShape3D_a11xa")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.1838626, 0, 0.70059395)
 
 [node name="ShelfTag" parent="NavigationRegion3D/Items/Corn Can" index="5" unique_id=1652248112]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10641116, -0.022343397, 0.5733342)
+transform = Transform3D(1, -5.1143054e-09, -1.4972557e-10, 5.1143054e-09, 0.9982874, 0.058500834, -1.4972557e-10, -0.058500834, 0.9982874, 0.10641116, -0.022343397, 0.5733342)
 
 [node name="Tomatoes" parent="NavigationRegion3D/Items" unique_id=656946575 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -3.9669728, -0.9210001, 1.1196294)
@@ -682,7 +682,7 @@ shape = SubResource("BoxShape3D_pvbuq")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.7403743, 0.3155322, 0.8113041)
 
 [node name="ShelfTag" parent="NavigationRegion3D/Items/Bag Mandarin" index="5" unique_id=1652248112]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.065488815, 0.43931246, -0.29905272)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06548643, 0.30915177, 0.6031022)
 
 [node name="Eggs" parent="NavigationRegion3D/Items" unique_id=718564412 instance=ExtResource("16_om5ry")]
 transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, -7.8457603, 0.009030938, -2.756401)
@@ -773,7 +773,7 @@ shape = SubResource("BoxShape3D_hiidl")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.33683014, 0.0870316, 1.0028168)
 
 [node name="ShelfTag" parent="NavigationRegion3D/Items/Limes" index="5" unique_id=1652248112]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.14910507, 0.072904825, 0.7847042)
+transform = Transform3D(1, 2.973362e-08, 3.4154226e-09, -2.9733618e-08, 0.97395486, 0.226742, 3.4153942e-09, -0.226742, 0.97395486, 0.14910507, 0.07729247, 0.7831321)
 
 [node name="Sugar" parent="NavigationRegion3D/Items" unique_id=267980143 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.828885, 0.09913218, 1.2525101)
@@ -818,7 +818,7 @@ shape = SubResource("BoxShape3D_exc4y")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.33683014, 0.0870316, 1.0028168)
 
 [node name="ShelfTag" parent="NavigationRegion3D/Items/Lemons" index="5" unique_id=1652248112]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.12854671, 0.07107487, 0.785398)
+transform = Transform3D(1, 2.973362e-08, 3.4154226e-09, -2.9733618e-08, 0.97395486, 0.226742, 3.4153942e-09, -0.226742, 0.97395486, 0.12854671, 0.07563004, 0.78389645)
 
 [node name="Peas Can" parent="NavigationRegion3D/Items" unique_id=1581059352 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.5494943, 0.523396, -0.8297045)
@@ -864,7 +864,7 @@ shape = SubResource("BoxShape3D_2awjq")
 transform = Transform3D(-1, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -1, 0.27979374, 0, 0.697917)
 
 [node name="ShelfTag" parent="NavigationRegion3D/Items/Beans Can" index="5" unique_id=1652248112]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.11462659, -0.01957786, 0.52792263)
+transform = Transform3D(1, -1.3504944e-08, -1.0494077e-09, 1.3504944e-08, 0.98799616, 0.15447855, -1.0494077e-09, -0.15447855, 0.98799616, 0.11462659, -0.01957786, 0.52792263)
 
 [node name="Pear Green" parent="NavigationRegion3D/Items" unique_id=1552644355 instance=ExtResource("16_om5ry")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29876247, 0.060275435, -3.36829)
@@ -929,7 +929,7 @@ shape = SubResource("BoxShape3D_agcrd")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.20319676, 0, 0.62655187)
 
 [node name="ShelfTag" parent="NavigationRegion3D/Items/Apple Gala" index="5" unique_id=1652248112]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.009692192, -0.021009445, 0.5221834)
+transform = Transform3D(1, 0, 0, 0, 0.9943748, 0.1059183, 0, -0.1059183, 0.9943748, 0.009692192, -0.021009445, 0.5221834)
 
 [node name="Apple Red Del" parent="NavigationRegion3D/Items" unique_id=233144999 instance=ExtResource("16_om5ry")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29876256, 0.060275435, -8.36829)
@@ -1118,7 +1118,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7274877, 0.21921843, 0.2392
 shape = SubResource("BoxShape3D_1heq5")
 
 [node name="ShelfTag" parent="NavigationRegion3D/Items/Watermelon" index="5" unique_id=1652248112]
-transform = Transform3D(1, 3.5527137e-15, -2.842171e-14, 0, 1, 2.1175824e-22, 2.842171e-14, 3.2722593e-16, 1, 0.20643902, 0.4388249, -0.15011358)
+transform = Transform3D(1, 5.7731597e-15, -4.6185278e-14, 0, 1, 3.4410713e-22, 4.6185278e-14, 3.2722582e-16, 1, 0.20643902, 0.3086648, 0.75204134)
 
 [node name="Canuck Cola" parent="NavigationRegion3D/Items" unique_id=2109163323 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.950366, 0.2830968, -1.6984406)
@@ -1200,7 +1200,7 @@ shape = SubResource("BoxShape3D_nhbh4")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.2404871, 0, 0.83547354)
 
 [node name="ShelfTag" parent="NavigationRegion3D/Items/V&D Can" index="5" unique_id=1652248112]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.12888527, -0.018599868, 0.5232571)
+transform = Transform3D(1, 2.5436298e-09, 3.701217e-11, -2.5436298e-09, 0.9995766, 0.029095734, 3.701217e-11, -0.029095734, 0.9995766, 0.12888527, -0.018599868, 0.5273274)
 
 [node name="Fantasi 1litre" parent="NavigationRegion3D/Items" unique_id=24309262 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -6.3386555, 0.09913218, 0.97072154)
