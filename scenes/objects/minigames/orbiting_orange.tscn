@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://bt3bubw64bv10"]
+
+[ext_resource type="Script" uid="uid://81b4dqapogb3" path="res://scripts/levels/orbiting_orange.gd" id="1_t2upu"]
+[ext_resource type="ArrayMesh" uid="uid://bib44o7bqg1ht" path="res://assets/models/items/Orange_Cube_045.res" id="2_uxmaw"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_6aigx"]
+radius = 1.0
+
+[node name="OrbitingOrange" type="AnimatableBody3D" unique_id=1296395538]
+script = ExtResource("1_t2upu")
+trail_duration = 3.0
+trail_width = 0.2
+spin_speed = 4.0
+
+[node name="SpinPivot" type="Node3D" parent="." unique_id=595209998]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SpinPivot" unique_id=254071007]
+transform = Transform3D(21, 0, 0, 0, 21, 0, 0, 0, 21, 0, -0.85, 0)
+mesh = ExtResource("2_uxmaw")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=71347658]
+shape = SubResource("SphereShape3D_6aigx")
+debug_color = Color(0.77985317, 0.20562062, 1, 1)
+
+[node name="OrbitTrail" type="MeshInstance3D" parent="." unique_id=823835154]

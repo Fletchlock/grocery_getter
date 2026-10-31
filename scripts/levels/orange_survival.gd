@@ -8,7 +8,7 @@ extends Node3D
 
 @export_group("Orange Rotation")
 @export var starting_rotation_speed: float = 0.15
-@export var maximum_rotation_speed: float = 0.45
+@export var maximum_rotation_speed: float = 0.38
 @export var speed_increase: float = 0.08
 @export var speed_increase_interval: float = 10.0
 
@@ -31,6 +31,18 @@ extends Node3D
 
 @export_group("Survival Timer")
 @export var round_duration: float = 60.0
+
+@export_group("Orbiting Oranges")
+@export var orbiting_orange_radius: float = 1.0
+@export var orbit_surface_clearance: float = 2.0
+@export var orbit_duration: float = 6.67
+@export var second_orange_spawn_time: float = 30.0
+@export var third_orange_spawn_time: float = 45.0
+
+@export_group("Orbiting Orange Knockback")
+@export var orbit_knockback_sideways: float = 5.0
+@export var orbit_knockback_upward: float = 14.0
+@export var orbit_knockback_cooldown: float = 0.8
 
 @export_group("Spectator Camera")
 @export var spectator_follow_offset: Vector3 = Vector3(0.0, 4.0, 8.0)
@@ -66,6 +78,18 @@ extends Node3D
 	$SpawnPoints/SpawnPoint3,
 	$SpawnPoints/SpawnPoint4
 ]
+
+
+# ============================================================
+# ORBITING ORANGE STATE
+# ============================================================
+
+const ORBITING_ORANGE_SCENE: PackedScene = preload(
+	"res://scenes/objects/minigames/orbiting_orange.tscn"
+)
+
+var orbiting_oranges: Array[OrbitingOrange] = []
+var _orbit_elapsed_time: float = 0.0
 
 
 # ============================================================
@@ -194,9 +218,7 @@ func _physics_process(delta: float) -> void:
 		return
 	
 	_update_results_countdown(delta)
-
-	if not orange_rotating:
-		return
+	_update_orbiting_oranges(delta)
 	
 	if not orange_rotating:
 		return
@@ -246,6 +268,76 @@ func _change_rotation_direction() -> void:
 			0.0,
 			sin(angle)
 		).normalized()
+
+
+# ============================================================
+# ORBITING ORANGES
+# ============================================================
+
+func _update_orbiting_oranges(delta: float) -> void:
+	if not round_active or round_finished:
+		return
+
+	_orbit_elapsed_time += delta
+
+	if orbiting_oranges.size() == 1:
+		if _orbit_elapsed_time >= second_orange_spawn_time:
+			_spawn_orbiting_orange.rpc(1)
+
+	if orbiting_oranges.size() == 2:
+		if _orbit_elapsed_time >= third_orange_spawn_time:
+			_spawn_orbiting_orange.rpc(2)
+
+
+@rpc("authority", "call_local", "reliable")
+func _spawn_orbiting_orange(index: int) -> void:
+	if index < 0 or index >= 3:
+		return
+
+	if orbiting_oranges.size() != index:
+		return
+
+	var small_orange: OrbitingOrange = (
+		ORBITING_ORANGE_SCENE.instantiate() as OrbitingOrange
+	)
+
+	var large_orange_radius: float = 15.0
+	var path_radius: float = (
+		large_orange_radius
+		+ orbit_surface_clearance
+		+ orbiting_orange_radius
+	)
+
+	small_orange.configure(
+		orange.global_position,
+		path_radius,
+		orbiting_orange_radius,
+		orbit_duration,
+		orbit_knockback_sideways,
+		orbit_knockback_upward,
+		orbit_knockback_cooldown
+	)
+	
+	match index:
+		0:
+			small_orange.orbit_duration = 7.0
+		1:
+			small_orange.orbit_duration = 8.5
+		2:
+			small_orange.orbit_duration = 10.0
+	
+	small_orange.orbit_plane_angle = deg_to_rad(float(index) * 60.0)
+
+	add_child(small_orange)
+
+	orbiting_oranges.append(small_orange)
+	small_orange.movement_enabled = true
+
+
+func _stop_orbiting_oranges() -> void:
+	for small_orange: OrbitingOrange in orbiting_oranges:
+		if is_instance_valid(small_orange):
+			small_orange.movement_enabled = false
 
 
 # ============================================================
@@ -379,7 +471,8 @@ func _sync_round_finished(winners: Array[int]) -> void:
 	round_finished = true
 	round_active = false
 	orange_rotating = false
-
+	_stop_orbiting_oranges()
+	
 	if winners.is_empty():
 		print(
 			"ORANGE SURVIVAL: Everyone eliminated! No winners."
@@ -803,6 +896,8 @@ func _start_round() -> void:
 
 	if multiplayer.is_server():
 		orange_rotating = true
+		_orbit_elapsed_time = 0.0
+		_spawn_orbiting_orange.rpc(0)
 
 
 func _set_local_player_movement_locked(locked: bool) -> void:

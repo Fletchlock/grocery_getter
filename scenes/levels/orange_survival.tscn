@@ -11,7 +11,7 @@ albedo_texture = ExtResource("2_7keis")
 normal_enabled = true
 normal_texture = ExtResource("4_hdt1s")
 heightmap_texture = ExtResource("3_007gi")
-uv1_scale = Vector3(0.1, 0.1, 0.1)
+uv1_scale = Vector3(0.04, 0.04, 0.04)
 uv1_triplanar = true
 uv1_triplanar_sharpness = 1.9708505
 
@@ -44,6 +44,14 @@ base_font = ExtResource("5_007gi")
 
 [node name="OrangeSurvival" type="Node3D" unique_id=411679754]
 script = ExtResource("1_mbahj")
+maximum_rotation_speed = 0.3
+speed_increase = 0.03
+orbit_surface_clearance = 0.2
+orbit_duration = 7.0
+second_orange_spawn_time = 20.0
+third_orange_spawn_time = 40.0
+orbit_knockback_sideways = 2.0
+orbit_knockback_upward = 18.0
 
 [node name="Orange" type="AnimatableBody3D" parent="." unique_id=476095283]
 
@@ -59,7 +67,7 @@ shape = SubResource("SphereShape3D_hd853")
 spawn_path = NodePath("../Players")
 
 [node name="SpawnPoints" type="Node3D" parent="." unique_id=577713836]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.543953, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 550, 0)
 
 [node name="SpawnPoint1" type="Marker3D" parent="SpawnPoints" unique_id=1039915510]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, -2)
