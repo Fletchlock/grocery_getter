@@ -1221,6 +1221,8 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.07
 [node name="ShelfTag" parent="NavigationRegion3D/Items/Fantasi 1litre" index="5" unique_id=1652248112]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.14244461, -0.015990615, 0.5292512)
 
+[node name="Events" type="Node3D" parent="NavigationRegion3D" unique_id=1317218212]
+
 [node name="Shelves" type="Node3D" parent="NavigationRegion3D" unique_id=489182429]
 metadata/_edit_lock_ = true
 
@@ -1544,6 +1546,10 @@ transform = Transform3D(-1.1977267e-08, 0.18864034, -0.8844614, 1.7316035e-08, 0
 
 [node name="PunchClock" parent="NavigationRegion3D" unique_id=167766037 instance=ExtResource("50_smqka")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.405, 1.5, 20.50104)
+
+[node name="MultiplayerEventSpawner" type="MultiplayerSpawner" parent="NavigationRegion3D" unique_id=701805818]
+_spawnable_scenes = PackedStringArray("uid://b0n5qxacj86le")
+spawn_path = NodePath("../Events")
 
 [node name="DesertGround" parent="." unique_id=2134704437 groups=["level_geo"] instance=ExtResource("15_17biw")]
 transform = Transform3D(0.93267465, 0, -0.36071923, 0, 1, 0, 0.36071923, 0, 0.93267465, 0, -1.51, -11.964)

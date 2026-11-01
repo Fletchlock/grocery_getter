@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://b0n5qxacj86le"]
+
+[ext_resource type="ArrayMesh" uid="uid://bfbbr4uatyn57" path="res://assets/models/events/spill_puddle_Cube_034.res" id="1_3v0cl"]
+
+[node name="Spill" type="Node3D" unique_id=925140084]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=830425592]
+mesh = ExtResource("1_3v0cl")
