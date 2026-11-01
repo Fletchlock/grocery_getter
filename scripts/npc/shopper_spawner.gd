@@ -228,6 +228,13 @@ func spawn_shopper() -> void:
 		shopper.checkout_completed.connect(
 			_on_shopper_checkout_completed
 		)
+	
+	# For spill or event triggering
+	if multiplayer.is_server():
+		if shopper.has_signal("shopping_at_point"):
+			shopper.shopping_at_point.connect(
+				EventManager.on_shopper_at_point
+			)
 
 
 func _spawn_shopper(data: Variant) -> Node:
