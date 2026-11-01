@@ -1548,7 +1548,6 @@ transform = Transform3D(-1.1977267e-08, 0.18864034, -0.8844614, 1.7316035e-08, 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.405, 1.5, 20.50104)
 
 [node name="MultiplayerEventSpawner" type="MultiplayerSpawner" parent="NavigationRegion3D" unique_id=701805818]
-_spawnable_scenes = PackedStringArray("uid://b0n5qxacj86le")
 spawn_path = NodePath("../Events")
 
 [node name="DesertGround" parent="." unique_id=2134704437 groups=["level_geo"] instance=ExtResource("15_17biw")]
