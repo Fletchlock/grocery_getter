@@ -6,7 +6,7 @@ class_name ShopperAI
 signal reached_enter_point
 signal checkout_completed(purchase_total: float)
 signal finished_shopping
-
+signal shopping_at_point(shopper: ShopperAI, shopping_point: Node3D)
 
 # Character refs
 @onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/npc_shopper_01
@@ -729,8 +729,12 @@ func _on_navigation_agent_3d_target_reached() -> void:
 			shopping_idle_min,
 			shopping_idle_max
 		)
-	
+
 		state = State.SHOPPING_IDLE
+
+		if is_multiplayer_authority() and is_instance_valid(current_shopping_point):
+			shopping_at_point.emit(self, current_shopping_point)
+
 		return
 
 	if state == State.EXITING:
