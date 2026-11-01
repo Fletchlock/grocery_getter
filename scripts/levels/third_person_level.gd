@@ -16,7 +16,12 @@ func _ready() -> void:
 		$MultiplayerSpawner,
 		spawn_points
 	)
-
+	
+	EventManager.setup_level(
+		$NavigationRegion3D/Events,
+		$NavigationRegion3D/MultiplayerEventSpawner
+	)
+	
 	if multiplayer.is_server() and NetworkManager.peer != null:
 		# Spawn the host.
 		SpawnManager.spawn_player(multiplayer.get_unique_id())
