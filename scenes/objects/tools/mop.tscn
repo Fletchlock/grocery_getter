@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://daon7c0lu128h"]
+
+[ext_resource type="ArrayMesh" uid="uid://lupicwrypa6y" path="res://assets/models/events/mop_Cylinder_003.res" id="1_1ee57"]
+[ext_resource type="Script" uid="uid://baobtm40m61nm" path="res://scripts/objects/tools/mop.gd" id="1_7p7fi"]
+[ext_resource type="Material" uid="uid://d3iscxpv066o5" path="res://assets/materials/outline_standard_material_3d.tres" id="2_p4a5y"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_p4a5y"]
+size = Vector3(0.05, 1.3203721, 0.05)
+
+[node name="Mop" type="Node3D" unique_id=1045410097]
+script = ExtResource("1_7p7fi")
+outline_material = ExtResource("2_p4a5y")
+
+[node name="MopMesh" type="MeshInstance3D" parent="." unique_id=1244516268]
+mesh = ExtResource("1_1ee57")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1991752432]
+collision_layer = 257
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1836006646]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.04178804, 0)
+shape = SubResource("BoxShape3D_p4a5y")
+
+[node name="MeshOutline" type="Node3D" parent="Area3D" unique_id=261811301]
+visible = false
