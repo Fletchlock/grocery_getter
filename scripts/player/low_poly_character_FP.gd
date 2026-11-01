@@ -165,6 +165,18 @@ var held_restock_scanner_holder: Node3D = null
 var last_restock_wheel_time_usec: int = 0
 var _network_holding_restock_scanner_last_received: bool = false
 
+# === Held Mop Variables
+const MOP_SCENE: PackedScene = preload(
+	"res://scenes/objects/tools/mop.tscn"
+)
+
+@export_group("Held Mop")
+@export var mop_hold_position: Vector3 = Vector3(0.25, 0.00, 0.00)
+@export var mop_hold_rotation: Vector3 = Vector3(110.0, 0.0, -25.0)
+
+var held_mop: Node3D = null
+
+
 @export_group("Crouch Held Item")
 @export var crouch_hand_offset: float = -0.35
 @export var crouch_hand_lerp_speed: float = 10.0
@@ -1650,6 +1662,124 @@ func _server_pickup_restock_box(
 	box.set_meta("picked_up", true)
 
 	remove_world_restock_box.rpc(box_path)
+
+
+# Mop pick up
+func request_pickup_mop(mop: Node3D) -> void:
+	if mop == null:
+		return
+
+	if held_mop != null:
+		return
+
+	if held_item != null:
+		return
+
+	if held_restock_box != null:
+		return
+
+	if held_restock_scanner != null:
+		return
+
+	if attached_cart != null:
+		return
+
+	var mop_path: NodePath = mop.get_path()
+
+	if multiplayer.is_server():
+		_server_pickup_mop(mop_path, get_multiplayer_authority())
+	else:
+		request_pickup_mop_rpc.rpc_id(1, mop_path)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_pickup_mop_rpc(mop_path: NodePath) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
+
+	if get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	_server_pickup_mop(mop_path, requesting_peer_id)
+
+
+func _server_pickup_mop(
+	mop_path: NodePath,
+	requesting_peer_id: int
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	if held_mop != null:
+		return
+
+	if held_item != null:
+		return
+
+	if held_restock_box != null:
+		return
+
+	if held_restock_scanner != null:
+		return
+
+	if attached_cart != null:
+		return
+
+	var mop_node: Mop = get_node_or_null(mop_path) as Mop
+
+	if mop_node == null:
+		return
+
+	if not mop_node.server_claim():
+		return
+
+	_grant_mop.rpc()
+
+
+@rpc("authority", "call_local", "reliable")
+func _grant_mop() -> void:
+	if not is_multiplayer_authority():
+		return
+
+	if held_mop != null:
+		return
+
+	var mop_visual: Node3D = MOP_SCENE.instantiate() as Node3D
+
+	if mop_visual == null:
+		return
+
+	held_mop = mop_visual
+	held_item_holder.add_child(held_mop)
+
+	held_mop.position = mop_hold_position
+	held_mop.rotation_degrees = mop_hold_rotation
+
+	var area: Area3D = held_mop.get_node_or_null("Area3D") as Area3D
+
+	if area != null:
+		area.monitoring = false
+		area.monitorable = false
+
+		var collision_shape: CollisionShape3D = (
+			area.get_node_or_null("CollisionShape3D")
+			as CollisionShape3D
+		)
+
+		if collision_shape != null:
+			collision_shape.set_deferred("disabled", true)
+
+	var outline: Node3D = held_mop.get_node_or_null(
+		"Area3D/MeshOutline"
+	) as Node3D
+
+	if outline != null:
+		outline.visible = false
 
 
 @rpc("any_peer", "call_local", "reliable")
