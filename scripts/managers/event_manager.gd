@@ -87,11 +87,14 @@ func on_shopper_at_point(
 	if randf() * 100.0 >= spill_chance:
 		return
 
-	# Position spill 30 cm in front of the shopper.
-	var forward: Vector3 = -shopper.global_transform.basis.z
-	forward.y = 0.0
-	forward = forward.normalized()
+	# Calculate the shopper's facing direction.
+	var forward: Vector3 = Vector3(
+		sin(shopper.target_rotation),
+		0.0,
+		cos(shopper.target_rotation)
+	)
 
+	# Spawn 30 cm in front of the shopper.
 	var spill_position: Vector3 = (
 		shopper.global_position + forward * 0.3
 	)
@@ -103,8 +106,8 @@ func on_shopper_at_point(
 
 	var ray_query: PhysicsRayQueryParameters3D = (
 		PhysicsRayQueryParameters3D.create(
-			shopper.global_position + Vector3.UP * 0.5,
-			shopper.global_position + Vector3.DOWN * 2.0
+			spill_position + Vector3.UP * 0.5,
+			spill_position + Vector3.DOWN * 2.0
 		)
 	)
 

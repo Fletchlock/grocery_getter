@@ -478,6 +478,10 @@ func _on_shopping_idle(delta: float) -> void:
 
 	if purchased_product != null:
 		purchased_items.append(purchased_product)
+
+		if is_multiplayer_authority() and is_instance_valid(current_shopping_point):
+			shopping_at_point.emit(self, current_shopping_point)
+
 		release_shopping_point()
 		current_shopping_index += 1
 		go_to_next_shopping_point()
@@ -723,18 +727,13 @@ func _on_navigation_agent_3d_target_reached() -> void:
 		target_rotation = atan2(forward.x, forward.z)
 
 		rotation.y = target_rotation
-		
-		
+				
 		shopping_idle_timer = randf_range(
 			shopping_idle_min,
 			shopping_idle_max
 		)
 
 		state = State.SHOPPING_IDLE
-
-		if is_multiplayer_authority() and is_instance_valid(current_shopping_point):
-			shopping_at_point.emit(self, current_shopping_point)
-
 		return
 
 	if state == State.EXITING:
