@@ -159,11 +159,17 @@ func is_full() -> bool:
 func _can_fit_product(product: ProductData) -> bool:
 	if product == null or is_full():
 		return false
+
+	if fit_cache_valid and cached_fit_product == product:
+		return cached_fit_position != Vector3.INF
+
 	var placement: Vector3 = _find_position_for_new_item(product)
+
 	cached_fit_product = product
 	cached_fit_position = placement
 	cached_fit_scale = _candidate_scale
 	fit_cache_valid = true
+
 	return placement != Vector3.INF
 
 
