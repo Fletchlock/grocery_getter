@@ -177,7 +177,6 @@ const MOP_SCENE: PackedScene = preload(
 var held_mop: Node3D = null
 
 @export_group("Spill Cleaning")
-@export var spill_cleaning_duration: float = 3.0
 @export var spill_cleaning_distance: float = 3.0
 
 var cleaning_spill: Spill = null
@@ -1819,6 +1818,7 @@ func _start_spill_cleaning() -> bool:
 	return true
 
 
+
 func _update_spill_cleaning(delta: float) -> void:
 	if cleaning_spill == null:
 		return
@@ -1847,15 +1847,7 @@ func _update_spill_cleaning(delta: float) -> void:
 
 	cleaning_progress += delta
 
-	var progress_ratio: float = clampf(
-		cleaning_progress / spill_cleaning_duration,
-		0.0,
-		1.0
-	)
-
-	cleaning_spill.update_cleaning_visual(progress_ratio)
-
-	if cleaning_progress >= spill_cleaning_duration:
+	if cleaning_progress >= cleaning_spill.cleaning_duration:
 		var spill_path: NodePath = cleaning_spill.get_path()
 
 		if multiplayer.is_server():
@@ -1867,6 +1859,7 @@ func _update_spill_cleaning(delta: float) -> void:
 			_request_finish_spill_cleaning.rpc_id(1, spill_path)
 
 		_stop_spill_cleaning()
+
 
 
 func _stop_spill_cleaning() -> void:
@@ -1898,6 +1891,7 @@ func _request_begin_spill_cleaning(
 	)
 
 
+
 func _server_begin_spill_cleaning(
 	spill_path: NodePath,
 	requesting_peer_id: int
@@ -1916,8 +1910,21 @@ func _server_begin_spill_cleaning(
 	if not _server_can_clean_spill(spill):
 		return
 
+	# Reset any previous cleaning attempt.
+	if not server_cleaning_spill_path.is_empty():
+		var previous_spill: Spill = (
+			get_node_or_null(server_cleaning_spill_path) as Spill
+		)
+
+		if is_instance_valid(previous_spill):
+			previous_spill.stop_network_cleaning.rpc()
+
 	server_cleaning_spill_path = spill_path
 	server_cleaning_started_usec = Time.get_ticks_usec()
+
+	# Start the shrinking effect for everyone.
+	spill.start_network_cleaning.rpc()
+
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -1954,12 +1961,12 @@ func _server_finish_spill_cleaning(
 		/ 1000000.0
 	)
 
-	if elapsed_seconds < spill_cleaning_duration - 0.1:
-		return
-
 	var spill: Spill = get_node_or_null(spill_path) as Spill
-
+	
 	if not _server_can_clean_spill(spill):
+		return
+	
+	if elapsed_seconds < spill.cleaning_duration - 0.1:
 		return
 
 	server_cleaning_spill_path = NodePath()
@@ -1978,6 +1985,7 @@ func _request_cancel_spill_cleaning() -> void:
 	)
 
 
+
 func _server_cancel_spill_cleaning(
 	requesting_peer_id: int
 ) -> void:
@@ -1987,8 +1995,17 @@ func _server_cancel_spill_cleaning(
 	if get_multiplayer_authority() != requesting_peer_id:
 		return
 
+	if not server_cleaning_spill_path.is_empty():
+		var spill: Spill = (
+			get_node_or_null(server_cleaning_spill_path) as Spill
+		)
+
+		if is_instance_valid(spill):
+			spill.stop_network_cleaning.rpc()
+
 	server_cleaning_spill_path = NodePath()
 	server_cleaning_started_usec = 0
+
 
 
 func _server_can_clean_spill(spill: Spill) -> bool:
