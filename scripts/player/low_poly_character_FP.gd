@@ -1742,7 +1742,7 @@ func _server_pickup_mop(
 	if mop_node == null:
 		return
 
-	if not mop_node.server_claim():
+	if not mop_node.server_claim(requesting_peer_id):
 		return
 
 	server_holding_mop = true
@@ -1764,7 +1764,13 @@ func _grant_mop() -> void:
 
 	held_mop = mop_visual
 	held_item_holder.add_child(held_mop)
+	# Hide the bucket on the held copy only.
+	var bucket_mesh: MeshInstance3D = (
+		held_mop.get_node_or_null("BucketMesh") as MeshInstance3D
+	)
 
+	if bucket_mesh != null:
+		bucket_mesh.hide()
 	held_mop.position = mop_hold_position
 	held_mop.rotation_degrees = mop_hold_rotation
 
@@ -1774,13 +1780,13 @@ func _grant_mop() -> void:
 		area.monitoring = false
 		area.monitorable = false
 
-		var collision_shape: CollisionShape3D = (
+		var mop_collision_shape: CollisionShape3D = (
 			area.get_node_or_null("CollisionShape3D")
 			as CollisionShape3D
 		)
 
-		if collision_shape != null:
-			collision_shape.set_deferred("disabled", true)
+		if mop_collision_shape != null:
+			mop_collision_shape.set_deferred("disabled", true)
 
 	var outline: Node3D = held_mop.get_node_or_null(
 		"Area3D/MeshOutline"
@@ -1788,7 +1794,103 @@ func _grant_mop() -> void:
 
 	if outline != null:
 		outline.visible = false
+	
+	var return_area: Area3D = (
+		held_mop.get_node_or_null("ReturnArea") as Area3D
+	)
 
+	if return_area != null:
+		return_area.monitoring = false
+		return_area.monitorable = false
+
+		var return_shape: CollisionShape3D = (
+			return_area.get_node_or_null("CollisionShape3D")
+			as CollisionShape3D
+		)
+
+		if return_shape != null:
+			return_shape.set_deferred("disabled", true)
+
+func request_return_mop(mop: Mop) -> void:
+	if held_mop == null:
+		return
+
+	if mop == null:
+		return
+
+	if cleaning_spill != null:
+		return
+
+	var mop_path: NodePath = mop.get_path()
+
+	if multiplayer.is_server():
+		_server_return_mop(
+			mop_path,
+			get_multiplayer_authority()
+		)
+	else:
+		_request_return_mop.rpc_id(1, mop_path)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_return_mop(mop_path: NodePath) -> void:
+	if not multiplayer.is_server():
+		return
+
+	_server_return_mop(
+		mop_path,
+		multiplayer.get_remote_sender_id()
+	)
+
+
+func _server_return_mop(
+	mop_path: NodePath,
+	requesting_peer_id: int
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	if not server_holding_mop:
+		return
+
+	if not server_cleaning_spill_path.is_empty():
+		return
+
+	var mop: Mop = get_node_or_null(mop_path) as Mop
+
+	if mop == null:
+		return
+
+	var return_area: Area3D = (
+		mop.get_node_or_null("ReturnArea") as Area3D
+	)
+
+	if return_area == null:
+		return
+
+	if global_position.distance_to(
+		return_area.global_position
+	) > 3.0:
+		return
+
+	if not mop.server_return(requesting_peer_id):
+		return
+
+	server_holding_mop = false
+	_clear_mop.rpc()
+
+
+@rpc("authority", "call_local", "reliable")
+func _clear_mop() -> void:
+	if not is_multiplayer_authority():
+		return
+
+	if held_mop != null:
+		held_mop.queue_free()
+		held_mop = null
 
 
 func _start_spill_cleaning() -> bool:
