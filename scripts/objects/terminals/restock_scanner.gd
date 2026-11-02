@@ -4,8 +4,10 @@ extends Node3D
 
 var is_available: bool = true
 
-var order_window_open_hour: int = 8
+var order_window_open_hour: int = 9
 var order_window_close_hour: int = 20
+
+const MIN_ORDER_QUANTITY: int = 10
 
 var order_selection_active: bool = false
 var selected_product_display: Node = null
@@ -46,11 +48,27 @@ func get_product_display_from_target(target: Object) -> Node:
 			and current.get("quantity") != null
 			and current.get("max_quantity") != null
 		):
+			if not bool(current.get("is_unlocked")):
+				return null
+
 			return current
 
 		current = current.get_parent()
 
 	return null
+
+
+func can_order_display(display: Node) -> bool:
+	if not is_instance_valid(display):
+		return false
+
+	if not bool(display.get("is_unlocked")):
+		return false
+
+	if display.get("product_data") == null:
+		return false
+
+	return is_ordering_window_open()
 
 
 func get_missing_stock(display: Node) -> int:
@@ -64,15 +82,12 @@ func get_missing_stock(display: Node) -> int:
 
 
 func begin_order_selection(display: Node) -> void:
-	if display == null:
-		return
-
-	if not is_ordering_window_open():
+	if not can_order_display(display):
 		return
 
 	var missing: int = get_missing_stock(display)
 
-	if missing <= 0:
+	if missing < MIN_ORDER_QUANTITY:
 		return
 
 	selected_product_display = display
@@ -86,23 +101,21 @@ func adjust_order_quantity(direction: int) -> void:
 		return
 
 	if direction < 0:
-		if selected_order_quantity <= 10:
+		if selected_order_quantity <= MIN_ORDER_QUANTITY:
 			selected_order_quantity = 0
 		else:
-			selected_order_quantity = int(
-				floor(float(selected_order_quantity - 1) / 10.0)
-			) * 10
+			selected_order_quantity = maxi(
+				MIN_ORDER_QUANTITY,
+				selected_order_quantity - 10
+			)
 
 	elif direction > 0:
 		if selected_order_quantity == 0:
-			selected_order_quantity = mini(
-				10,
-				selected_max_quantity
-			)
+			selected_order_quantity = MIN_ORDER_QUANTITY
 		else:
 			selected_order_quantity = mini(
 				selected_max_quantity,
-				(floori(float(selected_order_quantity) / 10.0) + 1) * 10
+				selected_order_quantity + 10
 			)
 
 
@@ -133,7 +146,14 @@ func confirm_order_selection() -> void:
 	if not order_selection_active:
 		return
 
-	if selected_order_quantity <= 0:
+	if not can_order_display(selected_product_display):
+		cancel_order_selection()
+		return
+
+	if (
+		selected_order_quantity < MIN_ORDER_QUANTITY
+		or selected_order_quantity > selected_max_quantity
+	):
 		cancel_order_selection()
 		return
 
@@ -184,11 +204,14 @@ func get_targeted_product_display(
 
 
 func get_stock_order_prompt(display: Node) -> String:
-	if display == null:
+	if not is_instance_valid(display):
+		return ""
+
+	if not bool(display.get("is_unlocked")):
 		return ""
 	
 	if not is_ordering_window_open():
-		return "Stock ordering opens at 6 PM"
+		return "Stock ordering opens at 9 AM"
 	
 	var product_data: ProductData = display.get(
 		"product_data"

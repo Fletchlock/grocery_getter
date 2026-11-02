@@ -1114,6 +1114,8 @@ rotation_variation = 25.0
 variation_seed = 999
 max_quantity = 36
 quantity = 22
+initially_locked = true
+unlock_rating = 2.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Watermelon/Area3D" parent_id_path=PackedInt32Array(2023423376, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7274877, 0.21921843, 0.23921847)
@@ -1212,6 +1214,8 @@ grid_rows = 5
 product_gap = 0.03
 max_quantity = 25
 quantity = 18
+initially_locked = true
+unlock_rating = 2.5
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Fantasi 1litre/Area3D" parent_id_path=PackedInt32Array(24309262, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22568205, 0.13357249, 0.22568205)

@@ -74,6 +74,10 @@ func set_product_unlocked(unlocked: bool) -> void:
 		_save_stock_quantity()
 
 
+func is_available_for_restock_order() -> bool:
+	return is_unlocked and product_data != null
+
+
 func _ready() -> void:
 	_ensure_save_id()
 	_find_nodes()
@@ -85,6 +89,7 @@ func _ready() -> void:
 	# Restore previously saved stock before initializing visuals.
 	
 	if not Engine.is_editor_hint():
+		add_to_group("product_displays")
 		_restore_stock_quantity()
 
 	if not is_unlocked:
