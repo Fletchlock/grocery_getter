@@ -42,8 +42,18 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_kefec")
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
+size = Vector3(0.64520264, 0.13134384, 0.46832275)
+
 [node name="Spill" type="Node3D" unique_id=925140084]
 script = ExtResource("1_cv0sx")
 
 [node name="SpillMesh" type="MeshInstance3D" parent="." unique_id=830425592]
 mesh = SubResource("ArrayMesh_3v0cl")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=869089740]
+collision_layer = 256
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1084317280]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0039367676, 0.06567192, 0.01889038)
+shape = SubResource("BoxShape3D_6aigx")

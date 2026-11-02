@@ -176,6 +176,15 @@ const MOP_SCENE: PackedScene = preload(
 
 var held_mop: Node3D = null
 
+@export_group("Spill Cleaning")
+@export var spill_cleaning_duration: float = 3.0
+@export var spill_cleaning_distance: float = 3.0
+
+var cleaning_spill: Spill = null
+var cleaning_progress: float = 0.0
+var server_holding_mop: bool = false
+var server_cleaning_spill_path: NodePath = NodePath()
+var server_cleaning_started_usec: int = 0
 
 @export_group("Crouch Held Item")
 @export var crouch_hand_offset: float = -0.35
@@ -350,10 +359,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact") and Input.is_action_just_pressed("interact"):
 		if attached_cart != null:
 			try_release_cart()
-		elif held_restock_scanner != null:
-			if interact_raycast_3d.has_method("interact"):
-				interact_raycast_3d.interact()
-		else:
+		elif not _start_spill_cleaning():
 			if interact_raycast_3d.has_method("interact"):
 				interact_raycast_3d.interact()
 
@@ -707,6 +713,8 @@ func _physics_process(delta: float) -> void:
 	# ============================================================
 	# LOCAL PLAYER
 	# ============================================================
+	
+	_update_spill_cleaning(delta)
 	
 	# === 1. Camera / Look ===
 
@@ -1738,6 +1746,7 @@ func _server_pickup_mop(
 	if not mop_node.server_claim():
 		return
 
+	server_holding_mop = true
 	_grant_mop.rpc()
 
 
@@ -1780,6 +1789,225 @@ func _grant_mop() -> void:
 
 	if outline != null:
 		outline.visible = false
+
+
+
+func _start_spill_cleaning() -> bool:
+	if held_mop == null:
+		return false
+
+	var spill: Spill = (
+		interact_raycast_3d.current_interactable as Spill
+	)
+
+	if spill == null:
+		return false
+
+	cleaning_spill = spill
+	cleaning_progress = 0.0
+
+	var spill_path: NodePath = spill.get_path()
+
+	if multiplayer.is_server():
+		_server_begin_spill_cleaning(
+			spill_path,
+			get_multiplayer_authority()
+		)
+	else:
+		_request_begin_spill_cleaning.rpc_id(1, spill_path)
+
+	return true
+
+
+func _update_spill_cleaning(delta: float) -> void:
+	if cleaning_spill == null:
+		return
+
+	if not is_instance_valid(cleaning_spill):
+		_stop_spill_cleaning()
+		return
+
+	if not Input.is_action_pressed("interact"):
+		_stop_spill_cleaning()
+		return
+
+	if held_mop == null:
+		_stop_spill_cleaning()
+		return
+
+	if interact_raycast_3d.current_interactable != cleaning_spill:
+		_stop_spill_cleaning()
+		return
+
+	if global_position.distance_to(
+		cleaning_spill.global_position
+	) > spill_cleaning_distance:
+		_stop_spill_cleaning()
+		return
+
+	cleaning_progress += delta
+
+	var progress_ratio: float = clampf(
+		cleaning_progress / spill_cleaning_duration,
+		0.0,
+		1.0
+	)
+
+	cleaning_spill.update_cleaning_visual(progress_ratio)
+
+	if cleaning_progress >= spill_cleaning_duration:
+		var spill_path: NodePath = cleaning_spill.get_path()
+
+		if multiplayer.is_server():
+			_server_finish_spill_cleaning(
+				spill_path,
+				get_multiplayer_authority()
+			)
+		else:
+			_request_finish_spill_cleaning.rpc_id(1, spill_path)
+
+		_stop_spill_cleaning()
+
+
+func _stop_spill_cleaning() -> void:
+	if is_instance_valid(cleaning_spill):
+		cleaning_spill.reset_cleaning_visual()
+
+	if cleaning_spill != null:
+		if multiplayer.is_server():
+			_server_cancel_spill_cleaning(
+				get_multiplayer_authority()
+			)
+		else:
+			_request_cancel_spill_cleaning.rpc_id(1)
+
+	cleaning_spill = null
+	cleaning_progress = 0.0
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_begin_spill_cleaning(
+	spill_path: NodePath
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	_server_begin_spill_cleaning(
+		spill_path,
+		multiplayer.get_remote_sender_id()
+	)
+
+
+func _server_begin_spill_cleaning(
+	spill_path: NodePath,
+	requesting_peer_id: int
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	if not server_holding_mop:
+		return
+
+	var spill: Spill = get_node_or_null(spill_path) as Spill
+
+	if not _server_can_clean_spill(spill):
+		return
+
+	server_cleaning_spill_path = spill_path
+	server_cleaning_started_usec = Time.get_ticks_usec()
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_finish_spill_cleaning(
+	spill_path: NodePath
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	_server_finish_spill_cleaning(
+		spill_path,
+		multiplayer.get_remote_sender_id()
+	)
+
+
+func _server_finish_spill_cleaning(
+	spill_path: NodePath,
+	requesting_peer_id: int
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	if spill_path != server_cleaning_spill_path:
+		return
+
+	if server_cleaning_started_usec <= 0:
+		return
+
+	var elapsed_seconds: float = (
+		float(Time.get_ticks_usec() - server_cleaning_started_usec)
+		/ 1000000.0
+	)
+
+	if elapsed_seconds < spill_cleaning_duration - 0.1:
+		return
+
+	var spill: Spill = get_node_or_null(spill_path) as Spill
+
+	if not _server_can_clean_spill(spill):
+		return
+
+	server_cleaning_spill_path = NodePath()
+	server_cleaning_started_usec = 0
+
+	spill.queue_free()
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _request_cancel_spill_cleaning() -> void:
+	if not multiplayer.is_server():
+		return
+
+	_server_cancel_spill_cleaning(
+		multiplayer.get_remote_sender_id()
+	)
+
+
+func _server_cancel_spill_cleaning(
+	requesting_peer_id: int
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if get_multiplayer_authority() != requesting_peer_id:
+		return
+
+	server_cleaning_spill_path = NodePath()
+	server_cleaning_started_usec = 0
+
+
+func _server_can_clean_spill(spill: Spill) -> bool:
+	if not server_holding_mop:
+		return false
+
+	if not is_instance_valid(spill):
+		return false
+
+	if not spill.is_in_group("active_spills"):
+		return false
+
+	if global_position.distance_to(
+		spill.global_position
+	) > spill_cleaning_distance:
+		return false
+
+	return true
+
 
 
 @rpc("any_peer", "call_local", "reliable")
