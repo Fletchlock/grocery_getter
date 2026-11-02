@@ -14,8 +14,12 @@ class_name Spill
 @onready var spill_mesh: MeshInstance3D = $SpillMesh
 
 var shopping_point_path: NodePath = NodePath()
+
 var cleaning_visual_active: bool = false
 var cleaning_visual_scale: Vector3 = Vector3.ONE
+var cleaning_visual_elapsed: float = 0.0
+
+var growth_tween: Tween = null
 
 
 func _ready() -> void:
@@ -23,13 +27,28 @@ func _ready() -> void:
 
 	spill_mesh.scale = Vector3.ONE * initial_scale
 
-	var tween: Tween = create_tween()
-	tween.tween_property(
+	growth_tween = create_tween()
+	growth_tween.tween_property(
 		spill_mesh,
 		"scale",
 		Vector3.ONE,
 		growth_duration
 	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+
+func _process(delta: float) -> void:
+	if not cleaning_visual_active:
+		return
+
+	cleaning_visual_elapsed += delta
+
+	var progress: float = clampf(
+		cleaning_visual_elapsed / cleaning_duration,
+		0.0,
+		1.0
+	)
+
+	update_cleaning_visual(progress)
 
 
 func get_interaction_prompt_for_player(
@@ -51,10 +70,6 @@ func get_interaction_prompt_position(
 
 
 func update_cleaning_visual(progress: float) -> void:
-	if not cleaning_visual_active:
-		cleaning_visual_active = true
-		cleaning_visual_scale = spill_mesh.scale
-
 	var amount: float = clampf(progress, 0.0, 1.0)
 
 	spill_mesh.scale = cleaning_visual_scale.lerp(
@@ -64,8 +79,27 @@ func update_cleaning_visual(progress: float) -> void:
 
 
 func reset_cleaning_visual() -> void:
+	cleaning_visual_active = false
+	cleaning_visual_elapsed = 0.0
+	spill_mesh.scale = cleaning_visual_scale
+
+
+@rpc("authority", "call_local", "reliable")
+func start_network_cleaning() -> void:
+	if cleaning_visual_active:
+		return
+
+	if growth_tween != null and growth_tween.is_running():
+		growth_tween.kill()
+
+	cleaning_visual_scale = spill_mesh.scale
+	cleaning_visual_elapsed = 0.0
+	cleaning_visual_active = true
+
+
+@rpc("authority", "call_local", "reliable")
+func stop_network_cleaning() -> void:
 	if not cleaning_visual_active:
 		return
 
-	spill_mesh.scale = cleaning_visual_scale
-	cleaning_visual_active = false
+	reset_cleaning_visual()
