@@ -3,6 +3,7 @@
 [ext_resource type="ArrayMesh" uid="uid://lupicwrypa6y" path="res://assets/models/events/mop_Cylinder_003.res" id="1_1ee57"]
 [ext_resource type="Script" uid="uid://baobtm40m61nm" path="res://scripts/objects/tools/mop.gd" id="1_7p7fi"]
 [ext_resource type="Material" uid="uid://d3iscxpv066o5" path="res://assets/materials/outline_standard_material_3d.tres" id="2_p4a5y"]
+[ext_resource type="Script" uid="uid://iui303igdap6" path="res://scripts/objects/tools/mop_return_area.gd" id="4_i7f3s"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_p4a5y"]
 size = Vector3(0.05, 1.3203721, 0.05)
@@ -21,11 +22,9 @@ script = ExtResource("1_7p7fi")
 outline_material = ExtResource("2_p4a5y")
 
 [node name="MopMesh" type="MeshInstance3D" parent="." unique_id=1244516268]
-transform = Transform3D(1, 0, 0, 0, 0.98955345, 0.14416641, 0, -0.14416641, 0.98955345, 0, 1.0501554, -0.22881195)
 mesh = ExtResource("1_1ee57")
 
 [node name="Area3D" type="Area3D" parent="." unique_id=1991752432]
-transform = Transform3D(1, 0, 0, 0, 0.98955345, 0.14416641, 0, -0.14416641, 0.98955345, 0, 1.0501554, -0.22881195)
 collision_layer = 257
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1836006646]
@@ -37,6 +36,8 @@ visible = false
 
 [node name="ReturnArea" type="Area3D" parent="." unique_id=193323904]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15181744, 0)
+collision_layer = 257
+script = ExtResource("4_i7f3s")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ReturnArea" unique_id=1352084707]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0007095337, 0.0048828125, 0)
