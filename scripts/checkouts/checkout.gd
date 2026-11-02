@@ -416,8 +416,9 @@ func _sync_grid_to_clients(grid: CartGrid) -> void:
 	var product_paths: Array[String] = grid._get_product_paths()
 	var positions: Array[Vector3] = grid.item_positions.duplicate()
 	var scales: Array[float] = grid.item_scales.duplicate()
+	var rotations: Array[float] = grid._get_item_rotations()
 
-	grid.sync_cart_state.rpc(product_paths, positions, scales)
+	grid.sync_cart_state.rpc(product_paths, positions, scales, rotations)
 
 
 func customer_finished_checkout(customer: ShopperAI) -> void:
