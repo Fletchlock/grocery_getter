@@ -89,6 +89,18 @@ func are_all_players_punched_out() -> bool:
 	return true
 
 
+func is_shift_complete() -> bool:
+	if current_hour < STORE_CLOSE_HOUR:
+		return false
+
+	if not get_tree().get_nodes_in_group("shopper_in_store").is_empty():
+		return false
+
+	for order: OrderData in OrderManager.get_orders():
+		if order.state == OrderData.OrderState.ACTIVE:
+			return false
+
+	return true
 
 
 func _try_advance_day() -> void:
