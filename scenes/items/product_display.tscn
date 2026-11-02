@@ -17,6 +17,8 @@ properties/0/replication_mode = 2
 [node name="ProductDisplay" type="Node3D" unique_id=1658817678]
 script = ExtResource("1_rkfui")
 outline_material = ExtResource("3_cpcfy")
+initially_locked = null
+unlock_rating = null
 
 [node name="Area3D" type="Area3D" parent="." unique_id=1400837386]
 collision_layer = 256
