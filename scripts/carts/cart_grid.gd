@@ -70,9 +70,13 @@ func _request_cart_state() -> void:
 func request_cart_state() -> void:
 	if not multiplayer.is_server():
 		return
+
 	var peer_id: int = multiplayer.get_remote_sender_id()
 	var paths: Array[String] = _get_product_paths()
-	sync_cart_state.rpc_id(peer_id, paths)
+	var positions: Array[Vector3] = item_positions.duplicate()
+	var scales: Array[float] = item_scales.duplicate()
+
+	sync_cart_state.rpc_id(peer_id, paths, positions, scales)
 
 
 # -------------------------------------------------------------------
@@ -585,9 +589,13 @@ func _get_product_paths() -> Array[String]:
 func _broadcast_cart_state(player: CharacterBody3D) -> void:
 	if not multiplayer.is_server():
 		return
+
 	var paths: Array[String] = _get_product_paths()
-	_apply_cart_state(paths)
-	sync_cart_state.rpc(paths)
+	var positions: Array[Vector3] = item_positions.duplicate()
+	var scales: Array[float] = item_scales.duplicate()
+
+	sync_cart_state.rpc(paths, positions, scales)
+
 	if player.get_multiplayer_authority() == multiplayer.get_unique_id():
 		cart_contents_changed.emit(self)
 	else:
@@ -595,8 +603,95 @@ func _broadcast_cart_state(player: CharacterBody3D) -> void:
 
 
 @rpc("authority", "call_remote", "reliable")
-func sync_cart_state(product_paths: Array[String]) -> void:
-	_apply_cart_state(product_paths)
+func sync_cart_state(
+		product_paths: Array[String],
+		positions: Array[Vector3],
+		scales: Array[float]
+	) -> void:
+	_apply_network_cart_state(product_paths, positions, scales)
+
+
+func _apply_network_cart_state(
+		product_paths: Array[String],
+		positions: Array[Vector3],
+		scales: Array[float]
+	) -> void:
+	if product_paths.size() != positions.size() or product_paths.size() != scales.size():
+		push_warning("CartGrid: Received mismatched network state arrays.")
+		return
+
+	var new_items: Array[ProductData] = []
+	var new_visuals: Array[MeshInstance3D] = []
+	var used_indices: Dictionary = {}
+
+	for index: int in range(product_paths.size()):
+		var path: String = product_paths[index]
+		var product: ProductData = load(path) as ProductData
+
+		if product == null:
+			push_warning("CartGrid: Failed to load product: " + path)
+			return
+
+		new_items.append(product)
+
+		var matching_visual: MeshInstance3D = null
+
+		for old_index: int in range(cart_items.size()):
+			if used_indices.has(old_index):
+				continue
+
+			if cart_items[old_index] == null:
+				continue
+
+			if cart_items[old_index].resource_path != path:
+				continue
+
+			if item_positions[old_index] != positions[index]:
+				continue
+
+			if not is_equal_approx(item_scales[old_index], scales[index]):
+				continue
+
+			if old_index >= item_visuals.size():
+				continue
+
+			matching_visual = item_visuals[old_index]
+			used_indices[old_index] = true
+			break
+
+		new_visuals.append(matching_visual)
+
+	_clear_take_item_outline()
+
+	for old_index: int in range(item_visuals.size()):
+		if used_indices.has(old_index):
+			continue
+
+		var old_visual: MeshInstance3D = item_visuals[old_index]
+		if is_instance_valid(old_visual):
+			old_visual.queue_free()
+
+	cart_items = new_items
+	item_positions = positions.duplicate()
+	item_scales = scales.duplicate()
+	item_visuals.clear()
+
+	for index: int in range(cart_items.size()):
+		var visual: MeshInstance3D = new_visuals[index]
+
+		if not is_instance_valid(visual):
+			visual = _create_product_visual(
+				cart_items[index],
+				item_positions[index],
+				index
+			)
+
+			if visual != null:
+				add_child(visual)
+
+		item_visuals.append(visual)
+
+	_invalidate_fit_cache()
 
 
 @rpc("authority", "call_remote", "reliable")
