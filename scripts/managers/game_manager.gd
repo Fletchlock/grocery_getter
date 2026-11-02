@@ -100,6 +100,7 @@ func start_multiplayer_game() -> void:
 			StoreManager.reset_store()
 			StockOrderManager.reset_stock_orders()
 			ReputationManager.reset_reputation()
+			ProductUnlockManager.reset_unlocks()
 			DayManager.load_save_data({
 				"current_day": 1
 			})

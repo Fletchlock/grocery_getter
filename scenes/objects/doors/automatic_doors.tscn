@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://ck5w4ev1udi2n" path="res://scripts/objects/doors/automatic_doors.gd" id="1_20qbh"]
 [ext_resource type="ArrayMesh" uid="uid://dk4bnrooxrl06" path="res://assets/models/buildings/store_small_door_L_Cube_008.res" id="1_lohbb"]
 [ext_resource type="ArrayMesh" uid="uid://dcp4rtf3a0uav" path="res://assets/models/buildings/store_small_door_R_Cube.res" id="2_20qbh"]
+[ext_resource type="Material" uid="uid://csrp3jkm6oqsx" path="res://assets/models/buildings/Material.001.tres" id="3_xula0"]
 [ext_resource type="AudioStream" uid="uid://dcmtthm8lwkti" path="res://assets/sounds/538978__tbirch55__door-open.wav" id="4_unydt"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_20qbh"]
@@ -82,6 +83,7 @@ script = ExtResource("1_20qbh")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DoorLeft" unique_id=1803222141]
 mesh = ExtResource("1_lohbb")
+surface_material_override/1 = ExtResource("3_xula0")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="DoorLeft/MeshInstance3D" unique_id=923465859]
 
@@ -92,6 +94,7 @@ shape = SubResource("ConvexPolygonShape3D_20qbh")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DoorRight" unique_id=1706716857]
 mesh = ExtResource("2_20qbh")
+surface_material_override/1 = ExtResource("3_xula0")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="DoorRight/MeshInstance3D" unique_id=1968312845]
 

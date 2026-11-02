@@ -78,18 +78,18 @@ func _ready() -> void:
 	_ensure_save_id()
 	_find_nodes()
 
-	quantity = clampi(quantity, 0, max_quantity)
-	
 	is_unlocked = not initially_locked
 
-	# Restore previously saved stock before initializing visuals.
-	
+	quantity = clampi(quantity, 0, max_quantity)
+
 	if not Engine.is_editor_hint():
-		_restore_stock_quantity()
+		if multiplayer.is_server():
+			_restore_stock_quantity()
 
-	if not is_unlocked:
-		quantity = 0
+		ProductUnlockManager.register_display(self)
 
+		if not is_unlocked:
+			quantity = 0
 
 	_ensure_unique_collision_shape()
 	_update_product_display()
@@ -98,9 +98,13 @@ func _ready() -> void:
 	_last_network_quantity = quantity
 	_cache_preview_state()
 
-	# Record the initial quantity for new displays.
 	if not Engine.is_editor_hint():
 		_save_stock_quantity()
+
+
+func _exit_tree() -> void:
+	if not Engine.is_editor_hint():
+		ProductUnlockManager.unregister_display(self)
 
 
 func _process(_delta: float) -> void:
