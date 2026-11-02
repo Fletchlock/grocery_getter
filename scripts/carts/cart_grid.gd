@@ -718,69 +718,6 @@ func notify_cart_changed() -> void:
 	cart_contents_changed.emit(self)
 
 
-func _apply_cart_state(product_paths: Array[String]) -> void:
-	if _matches_existing_prefix(product_paths):
-		_apply_incremental_cart_state(product_paths)
-	else:
-		_rebuild_from_paths(product_paths)
-
-
-func _matches_existing_prefix(product_paths: Array[String]) -> bool:
-	var shared: int = mini(product_paths.size(), cart_items.size())
-	for index: int in range(shared):
-		var product: ProductData = cart_items[index]
-		if product == null:
-			if not product_paths[index].is_empty():
-				return false
-		elif product.resource_path != product_paths[index]:
-			return false
-	return true
-
-
-func _apply_incremental_cart_state(product_paths: Array[String]) -> void:
-	while cart_items.size() > product_paths.size():
-		cart_items.pop_back()
-		if not item_positions.is_empty():
-			item_positions.pop_back()
-		if not item_scales.is_empty():
-			item_scales.pop_back()
-		if not item_visuals.is_empty():
-			var visual: MeshInstance3D = item_visuals.pop_back()
-			if is_instance_valid(visual):
-				visual.queue_free()
-
-	while cart_items.size() < product_paths.size():
-		var index: int = cart_items.size()
-		var path: String = product_paths[index]
-		var product: ProductData = load(path) as ProductData if not path.is_empty() else null
-		if product == null:
-			_rebuild_from_paths(product_paths)
-			return
-		var placement: Vector3 = _find_position_for_new_item(product)
-		if placement == Vector3.INF:
-			_rebuild_from_paths(product_paths)
-			return
-		cart_items.append(product)
-		item_positions.append(placement)
-		item_scales.append(_candidate_scale)
-		_create_and_add_visual(product, placement, item_visuals.size())
-	_invalidate_fit_cache()
-
-
-func _rebuild_from_paths(product_paths: Array[String]) -> void:
-	_clear_visuals()
-	cart_items.clear()
-	item_positions.clear()
-	item_scales.clear()
-	for path: String in product_paths:
-		if path.is_empty():
-			continue
-		var product: ProductData = load(path) as ProductData
-		if product != null:
-			cart_items.append(product)
-	_rebuild_grid()
-
-
 func _rebuild_grid() -> void:
 	_clear_visuals()
 	var products: Array[ProductData] = cart_items.duplicate()
