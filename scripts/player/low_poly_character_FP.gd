@@ -1749,8 +1749,15 @@ func _server_pickup_mop(
 	_grant_mop.rpc()
 
 
-@rpc("authority", "call_local", "reliable")
+@rpc("any_peer", "call_local", "reliable")
 func _grant_mop() -> void:
+	var sender_id: int = multiplayer.get_remote_sender_id()
+
+	# Only accept grants originating from the host.
+	if sender_id != 0 and sender_id != 1:
+		return
+
+	# Only the owning player creates the held visual.
 	if not is_multiplayer_authority():
 		return
 
@@ -1764,17 +1771,21 @@ func _grant_mop() -> void:
 
 	held_mop = mop_visual
 	held_item_holder.add_child(held_mop)
-	# Hide the bucket on the held copy only.
+
+	# The bucket belongs in the world, not in the player's hands.
 	var bucket_mesh: MeshInstance3D = (
 		held_mop.get_node_or_null("BucketMesh") as MeshInstance3D
 	)
 
 	if bucket_mesh != null:
 		bucket_mesh.hide()
+
 	held_mop.position = mop_hold_position
 	held_mop.rotation_degrees = mop_hold_rotation
 
-	var area: Area3D = held_mop.get_node_or_null("Area3D") as Area3D
+	var area: Area3D = (
+		held_mop.get_node_or_null("Area3D") as Area3D
+	)
 
 	if area != null:
 		area.monitoring = false
@@ -1788,13 +1799,13 @@ func _grant_mop() -> void:
 		if mop_collision_shape != null:
 			mop_collision_shape.set_deferred("disabled", true)
 
-	var outline: Node3D = held_mop.get_node_or_null(
-		"Area3D/MeshOutline"
-	) as Node3D
+	var outline: Node3D = (
+		held_mop.get_node_or_null("Area3D/MeshOutline") as Node3D
+	)
 
 	if outline != null:
 		outline.visible = false
-	
+
 	var return_area: Area3D = (
 		held_mop.get_node_or_null("ReturnArea") as Area3D
 	)
@@ -1883,8 +1894,14 @@ func _server_return_mop(
 	_clear_mop.rpc()
 
 
-@rpc("authority", "call_local", "reliable")
+@rpc("any_peer", "call_local", "reliable")
 func _clear_mop() -> void:
+	var sender_id: int = multiplayer.get_remote_sender_id()
+
+	# Only accept removal commands from the host.
+	if sender_id != 0 and sender_id != 1:
+		return
+
 	if not is_multiplayer_authority():
 		return
 

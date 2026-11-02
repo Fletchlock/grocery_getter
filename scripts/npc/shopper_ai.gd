@@ -6,7 +6,11 @@ class_name ShopperAI
 signal reached_enter_point
 signal checkout_completed(purchase_total: float)
 signal finished_shopping
-signal shopping_at_point(shopper: ShopperAI, shopping_point: Node3D)
+signal shopping_at_point(
+	shopper: ShopperAI,
+	shopping_point: Node3D,
+	product: ProductData
+)
 
 # Character refs
 @onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/npc_shopper_01
@@ -480,7 +484,11 @@ func _on_shopping_idle(delta: float) -> void:
 		purchased_items.append(purchased_product)
 
 		if is_multiplayer_authority() and is_instance_valid(current_shopping_point):
-			shopping_at_point.emit(self, current_shopping_point)
+			shopping_at_point.emit(
+				self,
+				current_shopping_point,
+				purchased_product
+			)
 
 		release_shopping_point()
 		current_shopping_index += 1

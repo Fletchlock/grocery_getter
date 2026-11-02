@@ -1,3 +1,4 @@
+
 extends Resource
 class_name ProductData
 
@@ -15,3 +16,6 @@ class_name ProductData
 @export var hand_position: Vector3 = Vector3.ZERO
 @export var hand_rotation: Vector3 = Vector3.ZERO
 @export var hand_scale: Vector3 = Vector3.ONE
+
+@export_group("Spill")
+@export var spill_color: Color = Color.WHITE

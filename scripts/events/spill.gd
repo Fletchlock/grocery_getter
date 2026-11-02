@@ -14,6 +14,7 @@ class_name Spill
 @onready var spill_mesh: MeshInstance3D = $SpillMesh
 
 var shopping_point_path: NodePath = NodePath()
+var spill_color: Color = Color.WHITE
 
 var cleaning_visual_active: bool = false
 var cleaning_visual_scale: Vector3 = Vector3.ONE
@@ -24,6 +25,26 @@ var growth_tween: Tween = null
 
 func _ready() -> void:
 	add_to_group("active_spills")
+
+	# Give this spill its own material instance.
+	var material: Material = spill_mesh.get_active_material(0)
+
+	if material is StandardMaterial3D:
+		var spill_material: StandardMaterial3D = (
+			material.duplicate() as StandardMaterial3D
+		)
+
+		# Preserve the existing material transparency.
+		var original_alpha: float = spill_material.albedo_color.a
+
+		spill_material.albedo_color = Color(
+			spill_color.r,
+			spill_color.g,
+			spill_color.b,
+			original_alpha
+		)
+
+		spill_mesh.material_override = spill_material
 
 	spill_mesh.scale = Vector3.ONE * initial_scale
 

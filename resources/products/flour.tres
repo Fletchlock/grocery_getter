@@ -10,4 +10,5 @@ display_name = "Flour"
 product_mesh = ExtResource("1_6jjfg")
 product_price = 5.49
 reorder_cost = 4.39
+spill_color = Color(0.94509804, 0.94509804, 0.9411765, 1)
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

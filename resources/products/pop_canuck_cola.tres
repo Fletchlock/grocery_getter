@@ -10,4 +10,5 @@ display_name = "Canuck Cola"
 product_mesh = ExtResource("1_m151y")
 product_price = 3.0
 reorder_cost = 2.4
+spill_color = Color(0.26384333, 0.16038409, 0.04622802, 1)
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

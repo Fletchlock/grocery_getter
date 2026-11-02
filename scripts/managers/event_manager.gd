@@ -2,9 +2,9 @@ extends Node
 
 
 @export_group("Spill Events")
-@export_range(0.0, 100.0, 1.0) var spill_chance: float = 100.0
+@export_range(0.0, 100.0, 1.0) var spill_chance: float = 10.0
 @export var spill_cooldown: float = 0.0
-@export var max_active_spills: int = 10
+@export var max_active_spills: int = 20
 
 const SPILL_SCENE: PackedScene = preload(
 	"res://scenes/events/spill.tscn"
@@ -52,13 +52,15 @@ func _spawn_event(data: Variant) -> Node:
 	spill.shopping_point_path = NodePath(
 		event_data["shopping_point_path"]
 	)
+	spill.spill_color = event_data["spill_color"]
 
 	return spill
 
 
 func on_shopper_at_point(
 	shopper: ShopperAI,
-	shopping_point: Node3D
+	shopping_point: Node3D,
+	product: ProductData
 ) -> void:
 	if not multiplayer.is_server():
 		return
@@ -86,7 +88,9 @@ func on_shopper_at_point(
 
 	if randf() * 100.0 >= spill_chance:
 		return
-
+	
+	if product == null:
+		return
 	# Calculate the shopper's facing direction.
 	var forward: Vector3 = Vector3(
 		sin(shopper.target_rotation),
@@ -129,7 +133,8 @@ func on_shopper_at_point(
 	var spawn_data: Dictionary = {
 		"position": local_position,
 		"rotation_y": randf_range(0.0, TAU),
-		"shopping_point_path": str(shopping_point.get_path())
+		"shopping_point_path": str(shopping_point.get_path()),
+		"spill_color": product.spill_color
 	}
 
 	var spill: Node = event_spawner.spawn(spawn_data)

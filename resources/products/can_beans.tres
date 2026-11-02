@@ -10,4 +10,5 @@ display_name = "Beans"
 product_mesh = ExtResource("1_kmfih")
 product_price = 2.0
 reorder_cost = 1.6
+spill_color = Color(0.73789555, 0.5142972, 0.1729896, 1)
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

@@ -12,4 +12,5 @@ product_code = "LRDL"
 product_mesh = ExtResource("1_atb1y")
 product_price = 1.08
 reorder_cost = 0.86
+spill_color = Color(0.59681594, 0.98398024, 0.18661654, 1)
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"
