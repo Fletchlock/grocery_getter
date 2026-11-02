@@ -413,16 +413,11 @@ func _sync_grid_to_clients(grid: CartGrid) -> void:
 	if not multiplayer.is_server():
 		return
 
-	var product_paths: Array[String] = []
+	var product_paths: Array[String] = grid._get_product_paths()
+	var positions: Array[Vector3] = grid.item_positions.duplicate()
+	var scales: Array[float] = grid.item_scales.duplicate()
 
-	for product: ProductData in grid.cart_items:
-		if product == null:
-			product_paths.append("")
-		else:
-			product_paths.append(product.resource_path)
-
-	grid.sync_cart_state.rpc(product_paths)
-
+	grid.sync_cart_state.rpc(product_paths, positions, scales)
 
 
 func customer_finished_checkout(customer: ShopperAI) -> void:

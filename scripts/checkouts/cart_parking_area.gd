@@ -74,11 +74,15 @@ func unload_cart(cart: RigidBody3D, peer_id: int) -> void:
 
 	# Synchronize both grids to all clients.
 	order_grid.sync_cart_state.rpc(
-		order_grid._get_product_paths()
+		order_grid._get_product_paths(),
+		order_grid.item_positions.duplicate(),
+		order_grid.item_scales.duplicate()
 	)
 
 	cart_grid.sync_cart_state.rpc(
-		cart_grid._get_product_paths()
+		cart_grid._get_product_paths(),
+		cart_grid.item_positions.duplicate(),
+		cart_grid.item_scales.duplicate()
 	)
 
 	print(
