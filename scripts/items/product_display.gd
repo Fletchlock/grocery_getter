@@ -29,6 +29,14 @@ extends Node3D
 @export_range(0, 400, 1) var quantity: int = 10
 
 
+@export_group("Product Unlock")
+@export var initially_locked: bool = false
+@export_range(0.0, 5.0, 0.1) var unlock_rating: float = 1.0
+
+var is_unlocked: bool = true
+var _last_preview_locked: bool = false
+
+
 var product_marker: Marker3D = null
 var product_grid: Node3D = null
 var mesh_outline: Node3D = null
@@ -50,16 +58,38 @@ var _last_quantity: int = -1
 var _last_network_quantity: int = -1
 
 
+func set_product_unlocked(unlocked: bool) -> void:
+	if is_unlocked == unlocked:
+		return
+
+	is_unlocked = unlocked
+
+	if not is_unlocked:
+		quantity = 0
+
+	_update_product_display()
+	_update_shelf_tag()
+
+	if not Engine.is_editor_hint():
+		_save_stock_quantity()
+
 
 func _ready() -> void:
 	_ensure_save_id()
 	_find_nodes()
 
 	quantity = clampi(quantity, 0, max_quantity)
+	
+	is_unlocked = not initially_locked
 
 	# Restore previously saved stock before initializing visuals.
+	
 	if not Engine.is_editor_hint():
 		_restore_stock_quantity()
+
+	if not is_unlocked:
+		quantity = 0
+
 
 	_ensure_unique_collision_shape()
 	_update_product_display()
@@ -81,6 +111,8 @@ func _process(_delta: float) -> void:
 
 	if Engine.is_editor_hint():
 		if _preview_needs_update():
+			is_unlocked = not initially_locked
+
 			_update_product_display()
 			_update_interaction_zone()
 			_update_shelf_tag()
@@ -101,6 +133,8 @@ func request_restock_from_box(
 	box_product_path: String,
 	box_quantity: int
 	) -> void:
+	if not is_unlocked:
+		return
 	if not multiplayer.is_server():
 		return
 
@@ -137,6 +171,8 @@ func _restock_from_box(
 	player: CharacterBody3D,
 	box_quantity: int
 	) -> void:
+	if not is_unlocked:
+		return
 	if player == null:
 		return
 
@@ -156,6 +192,8 @@ func _restock_from_box(
 		player.clear_held_restock_box.rpc_id(player_peer_id)
 
 func request_interact(player: CharacterBody3D) -> void:
+	if not is_unlocked:
+		return
 	if product_data == null:
 		return
 
@@ -215,6 +253,8 @@ func request_interact(player: CharacterBody3D) -> void:
 
 @rpc("any_peer", "call_remote", "reliable")
 func request_take_product(player_path: NodePath) -> void:
+	if not is_unlocked:
+		return
 	if not multiplayer.is_server():
 		return
 
@@ -236,6 +276,8 @@ func request_take_product(player_path: NodePath) -> void:
 
 
 func _take_product(player: CharacterBody3D) -> void:
+	if not is_unlocked:
+		return
 	if product_data == null:
 		return
 
@@ -264,6 +306,8 @@ func request_return_product(
 	player_path: NodePath,
 	product_path: String
 	) -> void:
+	if not is_unlocked:
+		return
 	if not multiplayer.is_server():
 		return
 
@@ -294,6 +338,8 @@ func request_return_product(
 
 
 func _return_product(player: CharacterBody3D) -> void:
+	if not is_unlocked:
+		return
 	if product_data == null:
 		return
 
@@ -369,6 +415,9 @@ func _preview_needs_update() -> bool:
 	if quantity != _last_quantity:
 		return true
 
+	if initially_locked != _last_preview_locked:
+		return true
+
 	return false
 
 
@@ -385,7 +434,7 @@ func _cache_preview_state() -> void:
 	_last_rotation_variation = rotation_variation
 	_last_variation_seed = variation_seed
 	_last_quantity = quantity
-
+	_last_preview_locked = initially_locked
 
 func _update_product_display() -> void:
 	if product_grid == null or product_marker == null:
@@ -411,8 +460,11 @@ func _update_product_display() -> void:
 
 	var layer_capacity: int = grid_columns * grid_rows
 	var display_capacity: int = layer_capacity * stack_height
-	var products_to_display: int = mini(quantity, display_capacity)
+	var products_to_display: int = 0
 
+	if is_unlocked:
+		products_to_display = mini(quantity, display_capacity)
+	
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = variation_seed
 
@@ -460,7 +512,8 @@ func _update_shelf_tag() -> void:
 
 	shelf_tag.update_display(
 		product_data,
-		quantity
+		quantity,
+		is_unlocked
 	)
 	
 
@@ -587,6 +640,8 @@ func _ensure_unique_collision_shape() -> void:
 func get_interaction_prompt_for_player(
 	player: CharacterBody3D
 ) -> String:
+	if not is_unlocked:
+		return ""
 	if player == null:
 		return ""
 
@@ -635,6 +690,8 @@ func get_interaction_prompt_for_player(
 
 # === AI Functions ===
 func ai_take_product() -> ProductData:
+	if not is_unlocked:
+		return
 	if not multiplayer.is_server():
 		return
 

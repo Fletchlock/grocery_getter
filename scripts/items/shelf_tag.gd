@@ -30,12 +30,19 @@ func _ready() -> void:
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
 
+
 func update_display(
-	product: ProductData,
-	stock_quantity: int,
-	unlocked: bool = true
-) -> void:
-	if product == null or not unlocked:
+		product: ProductData,
+		stock_quantity: int,
+		unlocked: bool = true
+	) -> void:
+	if not unlocked:
+		product_name_label.text = "Coming soon..."
+		product_price_label.text = ""
+		stock_status_label.text = ""
+		return
+
+	if product == null:
 		product_name_label.text = ""
 		product_price_label.text = ""
 		stock_status_label.text = ""
