@@ -53,4 +53,5 @@ product_code = "RRDL"
 product_mesh = SubResource("ArrayMesh_0pbgw")
 product_price = 1.08
 reorder_cost = 0.86
+spill_color = Color(0.9978829, 0.8838707, 0.37992945, 1)
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

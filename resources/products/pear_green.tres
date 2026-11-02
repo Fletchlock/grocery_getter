@@ -12,4 +12,5 @@ product_code = "UDUD"
 product_mesh = ExtResource("1_u37nd")
 product_price = 0.5
 reorder_cost = 0.4
+spill_color = Color(0.8715205, 0.8762487, 0.64688677, 1)
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

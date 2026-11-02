@@ -12,4 +12,5 @@ product_code = "LUUD"
 product_mesh = ExtResource("1_f3co8")
 product_price = 0.5
 reorder_cost = 0.4
+spill_color = Color(0.9490196, 0.34509805, 0.52156866, 1)
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

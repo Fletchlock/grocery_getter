@@ -10,4 +10,5 @@ display_name = "Bread"
 product_mesh = ExtResource("1_tboym")
 product_price = 3.5
 reorder_cost = 2.8
+spill_color = Color(0.824136, 0.673687, 0.21378186, 1)
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

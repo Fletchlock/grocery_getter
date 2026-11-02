@@ -10,4 +10,5 @@ display_name = "V&D Root Beer (can)"
 product_mesh = ExtResource("1_y2et8")
 product_price = 2.0
 reorder_cost = 1.6
+spill_color = Color(0.300818, 0.13112655, 0.053011566, 1)
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

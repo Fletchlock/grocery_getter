@@ -10,4 +10,5 @@ display_name = "Cereal"
 product_mesh = ExtResource("1_7w5fw")
 product_price = 4.99
 reorder_cost = 3.99
+spill_color = Color(0.9962428, 0.7181754, 0.5453103, 1)
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

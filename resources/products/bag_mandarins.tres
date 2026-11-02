@@ -12,4 +12,5 @@ product_code = "RURL"
 product_mesh = ExtResource("1_msyo7")
 product_price = 5.0
 reorder_cost = 4.0
+spill_color = Color(0.9836566, 0.6279622, 0.3747652, 1)
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"
