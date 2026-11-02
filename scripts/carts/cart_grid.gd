@@ -75,8 +75,9 @@ func request_cart_state() -> void:
 	var paths: Array[String] = _get_product_paths()
 	var positions: Array[Vector3] = item_positions.duplicate()
 	var scales: Array[float] = item_scales.duplicate()
+	var rotations: Array[float] = _get_item_rotations()
 
-	sync_cart_state.rpc_id(peer_id, paths, positions, scales)
+	sync_cart_state.rpc_id(peer_id, paths, positions, scales, rotations)
 
 
 # -------------------------------------------------------------------
@@ -586,6 +587,18 @@ func _get_product_paths() -> Array[String]:
 	return paths
 
 
+func _get_item_rotations() -> Array[float]:
+	var rotations: Array[float] = []
+
+	for visual: MeshInstance3D in item_visuals:
+		if is_instance_valid(visual):
+			rotations.append(visual.rotation.y)
+		else:
+			rotations.append(0.0)
+
+	return rotations
+
+
 func _broadcast_cart_state(player: CharacterBody3D) -> void:
 	if not multiplayer.is_server():
 		return
@@ -593,8 +606,9 @@ func _broadcast_cart_state(player: CharacterBody3D) -> void:
 	var paths: Array[String] = _get_product_paths()
 	var positions: Array[Vector3] = item_positions.duplicate()
 	var scales: Array[float] = item_scales.duplicate()
+	var rotations: Array[float] = _get_item_rotations()
 
-	sync_cart_state.rpc(paths, positions, scales)
+	sync_cart_state.rpc(paths, positions, scales, rotations)
 
 	if player.get_multiplayer_authority() == multiplayer.get_unique_id():
 		cart_contents_changed.emit(self)
@@ -606,17 +620,19 @@ func _broadcast_cart_state(player: CharacterBody3D) -> void:
 func sync_cart_state(
 		product_paths: Array[String],
 		positions: Array[Vector3],
-		scales: Array[float]
+		scales: Array[float],
+		rotations: Array[float]
 	) -> void:
-	_apply_network_cart_state(product_paths, positions, scales)
+	_apply_network_cart_state(product_paths, positions, scales, rotations)
 
 
 func _apply_network_cart_state(
-		product_paths: Array[String],
-		positions: Array[Vector3],
-		scales: Array[float]
-	) -> void:
-	if product_paths.size() != positions.size() or product_paths.size() != scales.size():
+	product_paths: Array[String],
+	positions: Array[Vector3],
+	scales: Array[float],
+	rotations: Array[float]
+) -> void:
+	if product_paths.size() != positions.size() or product_paths.size() != scales.size() or product_paths.size() != rotations.size():
 		push_warning("CartGrid: Received mismatched network state arrays.")
 		return
 
@@ -688,6 +704,9 @@ func _apply_network_cart_state(
 
 			if visual != null:
 				add_child(visual)
+
+		if is_instance_valid(visual):
+			visual.rotation.y = rotations[index]
 
 		item_visuals.append(visual)
 
