@@ -4,18 +4,13 @@
 [ext_resource type="Script" uid="uid://baobtm40m61nm" path="res://scripts/objects/tools/mop.gd" id="1_7p7fi"]
 [ext_resource type="Material" uid="uid://d3iscxpv066o5" path="res://assets/materials/outline_standard_material_3d.tres" id="2_p4a5y"]
 [ext_resource type="Script" uid="uid://iui303igdap6" path="res://scripts/objects/tools/mop_return_area.gd" id="4_i7f3s"]
+[ext_resource type="ArrayMesh" uid="uid://dlm3lpmsggi3i" path="res://assets/models/events/bucket_Cylinder_006.res" id="5_s1ifj"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_p4a5y"]
 size = Vector3(0.05, 1.3203721, 0.05)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
 size = Vector3(0.48854065, 0.30859375, 1)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_6aigx"]
-top_radius = 0.25
-bottom_radius = 0.21
-height = 0.3
-radial_segments = 18
 
 [node name="Mop" type="Node3D" unique_id=1045410097]
 script = ExtResource("1_7p7fi")
@@ -47,5 +42,4 @@ shape = SubResource("BoxShape3D_6aigx")
 visible = false
 
 [node name="BucketMesh" type="MeshInstance3D" parent="." unique_id=1707132390]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15181744, 0)
-mesh = SubResource("CylinderMesh_6aigx")
+mesh = ExtResource("5_s1ifj")
