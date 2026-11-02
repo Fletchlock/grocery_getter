@@ -585,8 +585,6 @@ rotation_variation = 5.0
 variation_seed = 46
 max_quantity = 60
 quantity = 34
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Bread/Area3D" parent_id_path=PackedInt32Array(1658817678, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.628378, 0.12579845, 0.32000002)
@@ -609,8 +607,6 @@ rotation_variation = 1.0
 variation_seed = 20
 max_quantity = 25
 quantity = 25
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Cereal/Area3D" parent_id_path=PackedInt32Array(452188552, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.56, 0.17, 0.24)
@@ -632,8 +628,6 @@ position_variation = 0.01
 variation_seed = 6564
 max_quantity = 60
 quantity = 42
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Corn Can/Area3D" parent_id_path=PackedInt32Array(153784913, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.114999995, 0.25)
@@ -657,8 +651,6 @@ rotation_variation = 45.0
 variation_seed = 56
 max_quantity = 36
 quantity = 36
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Tomatoes/Area3D" parent_id_path=PackedInt32Array(656946575, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3348766, 0.0337334, 0.3348766)
@@ -682,8 +674,6 @@ rotation_variation = 45.0
 variation_seed = 56
 max_quantity = 24
 quantity = 24
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Bag Mandarin/Area3D" parent_id_path=PackedInt32Array(193303494, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7289182, 0.20208839, 0.14578362)
@@ -706,8 +696,6 @@ position_variation = 0.01
 variation_seed = 51
 max_quantity = 63
 quantity = 63
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Eggs/Area3D" parent_id_path=PackedInt32Array(718564412, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32000002, 0.10500001, 0.36)
@@ -731,8 +719,6 @@ rotation_variation = 45.0
 variation_seed = 56
 max_quantity = 36
 quantity = 36
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Mandarins/Area3D" parent_id_path=PackedInt32Array(2012166865, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33474815, 0.034680232, 0.33474815)
@@ -756,8 +742,6 @@ rotation_variation = 1.0
 variation_seed = 26
 max_quantity = 30
 quantity = 15
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Flour/Area3D" parent_id_path=PackedInt32Array(885535414, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.575, 0.15, 0.26)
@@ -781,8 +765,6 @@ rotation_variation = 45.0
 variation_seed = 847
 max_quantity = 36
 quantity = 36
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Limes/Area3D" parent_id_path=PackedInt32Array(1253331758, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24027264, 0.023054529, 0.26271185)
@@ -805,8 +787,6 @@ rotation_variation = 1.0
 variation_seed = 245
 max_quantity = 42
 quantity = 38
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Sugar/Area3D" parent_id_path=PackedInt32Array(267980143, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.375, 0.099999994, 0.36)
@@ -830,8 +810,6 @@ rotation_variation = 45.0
 variation_seed = 224
 max_quantity = 36
 quantity = 36
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Lemons/Area3D" parent_id_path=PackedInt32Array(1919858001, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24027264, 0.023054529, 0.26271185)
@@ -855,8 +833,6 @@ position_variation = 0.01
 variation_seed = 325
 max_quantity = 60
 quantity = 41
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Peas Can/Area3D" parent_id_path=PackedInt32Array(1581059352, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.275, 0.114999995, 0.22)
@@ -880,8 +856,6 @@ position_variation = 0.015
 variation_seed = 489
 max_quantity = 60
 quantity = 29
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Beans Can/Area3D" parent_id_path=PackedInt32Array(105025190, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.275, 0.114999995, 0.22)
@@ -904,8 +878,6 @@ rotation_variation = 20.0
 variation_seed = 6161
 max_quantity = 36
 quantity = 36
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Pear Green/Area3D" parent_id_path=PackedInt32Array(1552644355, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.21394224, 0.05152878, 0.2109083)
@@ -928,8 +900,6 @@ rotation_variation = 20.0
 variation_seed = 5151
 max_quantity = 36
 quantity = 36
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Pear Brown/Area3D" parent_id_path=PackedInt32Array(2060857232, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.21394224, 0.05152878, 0.2109083)
@@ -951,8 +921,6 @@ rotation_variation = 20.0
 variation_seed = 4242
 max_quantity = 25
 quantity = 25
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Apple Gala/Area3D" parent_id_path=PackedInt32Array(1367205065, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.20790128, 0.047458213, 0.20790128)
@@ -973,9 +941,8 @@ position_variation = 0.05
 rotation_variation = 20.0
 variation_seed = 2424
 max_quantity = 25
-quantity = 25
+quantity = 0
 initially_locked = true
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Apple Red Del/Area3D" parent_id_path=PackedInt32Array(233144999, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.20790128, 0.047458213, 0.20790128)
@@ -997,8 +964,6 @@ rotation_variation = 20.0
 variation_seed = 9449
 max_quantity = 25
 quantity = 25
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Apple Granny/Area3D" parent_id_path=PackedInt32Array(461886373, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.20790128, 0.047458213, 0.20790128)
@@ -1021,8 +986,6 @@ rotation_variation = 20.0
 variation_seed = 1551
 max_quantity = 30
 quantity = 30
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Oranges/Area3D" parent_id_path=PackedInt32Array(640975976, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2162498, 0.040560484, 0.27031222)
@@ -1044,8 +1007,6 @@ rotation_variation = 45.0
 variation_seed = 6886
 max_quantity = 30
 quantity = 30
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Grapefruit/Area3D" parent_id_path=PackedInt32Array(2002736817, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.26785934, 0.047093473, 0.33482417)
@@ -1067,8 +1028,6 @@ rotation_variation = 45.0
 variation_seed = 626
 max_quantity = 35
 quantity = 22
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Pepper Red/Area3D" parent_id_path=PackedInt32Array(549814252, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24898842, 0.08002832, 0.3734826)
@@ -1090,8 +1049,6 @@ rotation_variation = 45.0
 variation_seed = 323
 max_quantity = 35
 quantity = 18
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Pepper Green/Area3D" parent_id_path=PackedInt32Array(525088530, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24898842, 0.07946387, 0.3734826)
@@ -1113,8 +1070,6 @@ rotation_variation = 45.0
 variation_seed = 929
 max_quantity = 35
 quantity = 19
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Pepper Yellow/Area3D" parent_id_path=PackedInt32Array(1498871279, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24898842, 0.07996883, 0.3734826)
@@ -1136,8 +1091,6 @@ rotation_variation = 45.0
 variation_seed = 911
 max_quantity = 35
 quantity = 23
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Pepper Orange/Area3D" parent_id_path=PackedInt32Array(663179368, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24898842, 0.079937726, 0.3734826)
@@ -1161,8 +1114,6 @@ rotation_variation = 25.0
 variation_seed = 999
 max_quantity = 36
 quantity = 22
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Watermelon/Area3D" parent_id_path=PackedInt32Array(2023423376, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7274877, 0.21921843, 0.23921847)
@@ -1179,8 +1130,6 @@ grid_columns = 10
 grid_rows = 11
 max_quantity = 110
 quantity = 66
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Canuck Cola/Area3D" parent_id_path=PackedInt32Array(2109163323, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37810928, 0.10547766, 0.42012143)
@@ -1203,8 +1152,6 @@ rotation_variation = 45.0
 variation_seed = 456
 max_quantity = 50
 quantity = 50
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Jalapeno/Area3D" parent_id_path=PackedInt32Array(621968759, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.28948513, 0.018596359, 0.25639024)
@@ -1227,8 +1174,6 @@ rotation_variation = 5.0
 variation_seed = 324
 max_quantity = 42
 quantity = 31
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Carrots/Area3D" parent_id_path=PackedInt32Array(456296455, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32734352, 0.015180275, 0.19013982)
@@ -1248,8 +1193,6 @@ grid_rows = 5
 product_gap = 0.03
 max_quantity = 25
 quantity = 18
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/V&D Can/Area3D" parent_id_path=PackedInt32Array(813833733, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.19739816, 0.05710657, 0.19739816)
@@ -1269,8 +1212,6 @@ grid_rows = 5
 product_gap = 0.03
 max_quantity = 25
 quantity = 18
-initially_locked = false
-unlock_rating = 1.0
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Fantasi 1litre/Area3D" parent_id_path=PackedInt32Array(24309262, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22568205, 0.13357249, 0.22568205)
@@ -1303,14 +1244,14 @@ metadata/_edit_lock_ = true
 transform = Transform3D(-1, 0, 8.742277e-08, 0, 1, 0, -8.742277e-08, 0, -1, 6, 0.13303673, 11.200169)
 metadata/_edit_lock_ = true
 
-[node name="Produce_2row" parent="NavigationRegion3D/Shelves/Produce_2row_col3" index="0" unique_id=1407307571]
+[node name="Produce_2row" parent="NavigationRegion3D/Shelves/Produce_2row_col3" index="0" unique_id=1888529961]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00029039383, 0.0017891526, -0.00022220612)
 metadata/_edit_lock_ = true
 
-[node name="StaticBody3D" parent="NavigationRegion3D/Shelves/Produce_2row_col3/Produce_2row" index="0" unique_id=386936364]
+[node name="StaticBody3D" parent="NavigationRegion3D/Shelves/Produce_2row_col3/Produce_2row" index="0" unique_id=1038494860]
 metadata/_edit_lock_ = true
 
-[node name="CollisionShape3D" parent="NavigationRegion3D/Shelves/Produce_2row_col3/Produce_2row/StaticBody3D" index="0" unique_id=1559208998]
+[node name="CollisionShape3D" parent="NavigationRegion3D/Shelves/Produce_2row_col3/Produce_2row/StaticBody3D" index="0" unique_id=2084934469]
 metadata/_edit_lock_ = true
 
 [node name="Produce_2row_col4" parent="NavigationRegion3D/Shelves" unique_id=1915163943 groups=["level_geo"] instance=ExtResource("17_tfknh")]
@@ -1321,7 +1262,7 @@ metadata/_edit_lock_ = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.13303673, 17.200169)
 metadata/_edit_lock_ = true
 
-[node name="Freezer_Left_5row" parent="NavigationRegion3D/Shelves/Freezer_Left_5row3" index="0" unique_id=1948384799]
+[node name="Freezer_Left_5row" parent="NavigationRegion3D/Shelves/Freezer_Left_5row3" index="0" unique_id=1793706665]
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Shelves/Freezer_Left_5row3/Freezer_Left_5row/StaticBody3D" parent_id_path=PackedInt32Array(2056952461, 125499396) index="0" unique_id=911486562]
@@ -1338,7 +1279,7 @@ metadata/_edit_lock_ = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.13303673, 14.200169)
 metadata/_edit_lock_ = true
 
-[node name="Freezer_Right_5row" parent="NavigationRegion3D/Shelves/Freezer_Right_5row3" index="0" unique_id=1148908231]
+[node name="Freezer_Right_5row" parent="NavigationRegion3D/Shelves/Freezer_Right_5row3" index="0" unique_id=1801589288]
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Shelves/Freezer_Right_5row3/Freezer_Right_5row/StaticBody3D" parent_id_path=PackedInt32Array(825118052, 83913552) index="0" unique_id=286493962]
@@ -1620,13 +1561,13 @@ transform = Transform3D(0.9326745, 0, -0.36071923, 0, 1, 0, 0.36071923, 0, 0.932
 [node name="StoreSmallGreybox" parent="." unique_id=253599967 instance=ExtResource("15_tcjw2")]
 transform = Transform3D(-1.0000001, 0, -8.7422784e-08, 0, 1, 0, 8.7422784e-08, 0, -1.0000001, -0.53600764, -1.5205572, -3.3310928)
 
-[node name="store_small" parent="StoreSmallGreybox" index="0" unique_id=1623328490 groups=["level_geo"]]
+[node name="store_small" parent="StoreSmallGreybox" index="0" unique_id=1339116503 groups=["level_geo"]]
 transform = Transform3D(1, 0, 1.0899726e-11, 0, 1, 0, -1.0899726e-11, 0, 1, 0.463, 0, -0.33)
 
-[node name="store_small_windows" parent="StoreSmallGreybox" index="1" unique_id=91259702 groups=["level_geo"]]
+[node name="store_small_windows" parent="StoreSmallGreybox" index="1" unique_id=1641133994 groups=["level_geo"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.463, 0, -0.33)
 
-[node name="CollisionShape3D" parent="StoreSmallGreybox/store_small_windows/StaticBody3D" parent_id_path=PackedInt32Array(253599967, 2128795924) index="0" unique_id=1518899647]
+[node name="CollisionShape3D" parent="StoreSmallGreybox/store_small_windows/StaticBody3D" parent_id_path=PackedInt32Array(253599967, 475812446) index="0" unique_id=659453278]
 shape = SubResource("ConcavePolygonShape3D_mcoed")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
