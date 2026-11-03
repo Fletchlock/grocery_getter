@@ -335,7 +335,8 @@ func get_equipment_hand(equipment: Node) -> Hand:
 func attach_equipment_visual(
 	equipment_scene: PackedScene,
 	attachment_target: Node3D,
-	visual_transform: Transform3D = Transform3D.IDENTITY
+	visual_transform: Transform3D = Transform3D.IDENTITY,
+	initial_properties: Dictionary = {}
 ) -> Node3D:
 	if equipment_scene == null:
 		return null
@@ -349,6 +350,13 @@ func attach_equipment_visual(
 
 	if equipment_visual == null:
 		return null
+
+	# Configure the scene before _ready() runs.
+	for property_name: Variant in initial_properties:
+		equipment_visual.set(
+			property_name,
+			initial_properties[property_name]
+		)
 
 	attachment_target.add_child(equipment_visual)
 	equipment_visual.transform = visual_transform
@@ -484,7 +492,12 @@ func update_restock_box_visual(
 	# Create the box using our generic attachment helper.
 	var box_visual: Node3D = attach_equipment_visual(
 		RESTOCK_BOX_SCENE,
-		restock_box_network_visual
+		restock_box_network_visual,
+		Transform3D.IDENTITY,
+		{
+			&"product_data": loaded_resource as ProductData,
+			&"quantity": quantity
+		}
 	)
 
 	if box_visual == null:
@@ -500,9 +513,7 @@ func update_restock_box_visual(
 		release_hand_ik(&"restock_box", Hand.BOTH)
 		return
 
-	# Initialize the product and quantity.
-	restock_box.product_data = loaded_resource as ProductData
-	restock_box.quantity = quantity
+	# Initialize the box scale
 	restock_box.scale = Vector3.ONE
 
 	# Prevent the visual copy from affecting physics.
