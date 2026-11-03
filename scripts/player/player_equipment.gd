@@ -463,37 +463,51 @@ func update_restock_box_visual(
 	product_path: String,
 	quantity: int
 ) -> void:
-	# Remove the previous box visual.
-	for child: Node in restock_box_network_visual.get_children():
-		child.queue_free()
+	# Remove any existing box visuals.
+	for box_child: Node in restock_box_network_visual.get_children():
+		if box_child is Node3D:
+			remove_equipment_visual(box_child as Node3D)
 
 	if not holding or product_path.is_empty():
 		restock_box_network_visual.visible = false
 		release_hand_ik(&"restock_box", Hand.BOTH)
 		return
 
+	# Load the product associated with the box.
 	var loaded_resource: Resource = load(product_path)
 
 	if not loaded_resource is ProductData:
 		restock_box_network_visual.visible = false
+		release_hand_ik(&"restock_box", Hand.BOTH)
 		return
 
-	# Create a visual copy of the restock box.
-	var visual_box: RestockBox = (
-		RESTOCK_BOX_SCENE.instantiate() as RestockBox
+	# Create the box using our generic attachment helper.
+	var box_visual: Node3D = attach_equipment_visual(
+		RESTOCK_BOX_SCENE,
+		restock_box_network_visual
 	)
 
-	if visual_box == null:
+	if box_visual == null:
 		restock_box_network_visual.visible = false
+		release_hand_ik(&"restock_box", Hand.BOTH)
 		return
 
-	visual_box.product_data = loaded_resource as ProductData
-	visual_box.quantity = quantity
-	visual_box.scale = Vector3(0.65, 0.65, 0.65)
+	var restock_box: RestockBox = box_visual as RestockBox
 
-	# Disable collision on the remote visual.
+	if restock_box == null:
+		remove_equipment_visual(box_visual)
+		restock_box_network_visual.visible = false
+		release_hand_ik(&"restock_box", Hand.BOTH)
+		return
+
+	# Initialize the product and quantity.
+	restock_box.product_data = loaded_resource as ProductData
+	restock_box.quantity = quantity
+	restock_box.scale = Vector3.ONE
+
+	# Prevent the visual copy from affecting physics.
 	var box_body: StaticBody3D = (
-		visual_box.get_node_or_null("StaticBody3D")
+		restock_box.get_node_or_null("StaticBody3D")
 		as StaticBody3D
 	)
 
@@ -501,12 +515,9 @@ func update_restock_box_visual(
 		box_body.collision_layer = 0
 		box_body.collision_mask = 0
 
-	# Attach the box to the existing TPP holder.
-	restock_box_network_visual.add_child(visual_box)
-	visual_box.transform = Transform3D.IDENTITY
 	restock_box_network_visual.visible = true
 
-	# Both hands hold the box.
+	# The restock box requires both hands.
 	claim_both_hand_ik(
 		&"restock_box",
 		held_box_hand_target_left,
