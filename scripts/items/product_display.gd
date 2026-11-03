@@ -82,9 +82,9 @@ func _ready() -> void:
 	_ensure_save_id()
 	_find_nodes()
 
-	quantity = clampi(quantity, 0, max_quantity)
-	
 	is_unlocked = not initially_locked
+	
+	quantity = clampi(quantity, 0, max_quantity)
 
 	# Restore previously saved stock before initializing visuals.
 	
@@ -106,6 +106,11 @@ func _ready() -> void:
 	# Record the initial quantity for new displays.
 	if not Engine.is_editor_hint():
 		_save_stock_quantity()
+
+
+func _exit_tree() -> void:
+	if not Engine.is_editor_hint():
+		ProductUnlockManager.unregister_display(self)
 
 
 func _process(_delta: float) -> void:
