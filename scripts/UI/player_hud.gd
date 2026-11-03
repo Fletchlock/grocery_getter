@@ -19,8 +19,8 @@ func _ready() -> void:
 	var popup := scale_menu_button.get_popup()
 	popup.clear()
 
-	for scale in Scales.SCALE_OPTIONS:
-		popup.add_check_item(scale["name"], scale["id"])
+	for scale_data in Scales.SCALE_OPTIONS:
+		popup.add_check_item(scale_data["name"], scale_data["id"])
 
 	popup.id_pressed.connect(_on_scale_selected)
 	_update_scale_checkmark()
@@ -70,7 +70,7 @@ func _on_scale_selected(id: int) -> void:
 	for scale_data in Scales.SCALE_OPTIONS:
 		if scale_data["id"] == id:
 			Scales.selected_scale_id = id
-			Scales.selected_scale = scale["ratios"]
+			Scales.selected_scale = scale_data["ratios"]
 			_update_scale_checkmark()
 			_play_scale_preview()
 			return
