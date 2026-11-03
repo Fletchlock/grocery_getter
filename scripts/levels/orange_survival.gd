@@ -471,7 +471,7 @@ func _sync_round_finished(winners: Array[int]) -> void:
 	round_finished = true
 	round_active = false
 	orange_rotating = false
-	_stop_orbiting_oranges()
+	#_stop_orbiting_oranges()
 	
 	if winners.is_empty():
 		print(
