@@ -2428,38 +2428,9 @@ func _update_network_held_item_visual() -> void:
 	if is_multiplayer_authority():
 		return
 
-	if not network_holding_item or network_held_item_path.is_empty():
-		held_item_network_visual.visible = false
-		
-		player_equipment.clear_hand_ik(
-			PlayerEquipment.Hand.RIGHT
-		)
-
-		return
-
-	var loaded_resource: Resource = load(network_held_item_path)
-
-	if loaded_resource == null:
-		return
-
-	if not loaded_resource is ProductData:
-		return
-
-	var product: ProductData = loaded_resource as ProductData
-
-	if product.product_mesh == null:
-		return
-
-	held_item_network_visual.mesh = product.product_mesh
-	held_item_network_visual.position = product.hand_position
-	held_item_network_visual.rotation = product.hand_rotation
-	held_item_network_visual.scale = product.hand_scale
-	held_item_network_visual.visible = true
-	
-	# PlayerEquipment call
-	player_equipment.set_hand_ik(
-		PlayerEquipment.Hand.RIGHT,
-		held_item_hand_target
+	player_equipment.update_product_visual(
+		network_holding_item,
+		network_held_item_path
 	)
 
 

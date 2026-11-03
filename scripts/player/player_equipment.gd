@@ -36,6 +36,12 @@ var standing_box_hand_target_right_position: Vector3
 @onready var left_hand_ik: TwoBoneIK3D = $"../Armature/Skeleton3D/LeftTwoBoneIK3D"
 @onready var right_hand_ik: TwoBoneIK3D = $"../Armature/Skeleton3D/RightTwoBoneIK3D"
 
+# === Product Visuals ===
+
+@onready var product_network_visual: MeshInstance3D = (
+	$"../Armature/HeldItemTarget/HeldItemNetworkVisual"
+)
+
 
 func _ready() -> void:
 	standing_item_target_position = held_item_target.position
@@ -211,3 +217,35 @@ func get_equipment_hand(equipment: Node) -> Hand:
 		return Hand.RIGHT
 
 	return Hand.NONE
+
+
+# === Product Visuals ===
+func update_product_visual(
+	holding: bool,
+	product_path: String
+) -> void:
+	if not holding or product_path.is_empty():
+		product_network_visual.visible = false
+		clear_hand_ik(Hand.RIGHT)
+		return
+
+	var resource: Resource = load(product_path)
+
+	if not resource is ProductData:
+		return
+
+	var product: ProductData = resource as ProductData
+
+	if product.product_mesh == null:
+		return
+
+	product_network_visual.mesh = product.product_mesh
+	product_network_visual.position = product.hand_position
+	product_network_visual.rotation = product.hand_rotation
+	product_network_visual.scale = product.hand_scale
+	product_network_visual.visible = true
+
+	set_hand_ik(
+		Hand.RIGHT,
+		held_item_hand_target
+	)
