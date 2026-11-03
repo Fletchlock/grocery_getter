@@ -29,7 +29,7 @@ func _ready() -> void:
 
 
 func setup(product_name: String) -> void:
-	notification_label.text = "NEW PRODUCT UNLOCKED!  %s" % product_name
+	notification_label.text = "NEW PRODUCT UNLOCKED!\n%s" % product_name
 
 
 func _set_background(texture: Texture2D) -> void:

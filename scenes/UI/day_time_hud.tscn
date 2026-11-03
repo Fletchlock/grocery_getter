@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://2wowol47x3tk" path="res://scenes/UI/online_order_active.tscn" id="3_glyqf"]
 [ext_resource type="PackedScene" uid="uid://c3gc8ev0p8236" path="res://scenes/UI/online_order_list.tscn" id="4_26j03"]
 [ext_resource type="PackedScene" uid="uid://c8nis4qdppl3y" path="res://scenes/UI/barcode_hud.tscn" id="5_8arff"]
+[ext_resource type="PackedScene" uid="uid://cyx4mm806qsb0" path="res://scenes/UI/product_unlock_notification.tscn" id="6_34by2"]
 [ext_resource type="Texture2D" uid="uid://dxgajygw4gxx1" path="res://assets/images/store_icon_2.png" id="6_lc70o"]
 [ext_resource type="Texture2D" uid="uid://ifkotnnto2y6" path="res://assets/images/order_notify_bg_dk_grey.png" id="6_xiw3s"]
 [ext_resource type="Texture2D" uid="uid://b1pmpfog6myug" path="res://assets/images/star_unfilled.png" id="7_lc70o"]
@@ -137,6 +138,9 @@ available_order_scene = ExtResource("2_8u6ci")
 active_order_scene = ExtResource("3_glyqf")
 online_order_list_scene = ExtResource("4_26j03")
 barcode_hud_scene = ExtResource("5_8arff")
+product_unlock_notification_scene = ExtResource("6_34by2")
+unlock_notification_interval = 2.5
+unlock_notification_duration = 4.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1127994647]
 libraries/ = SubResource("AnimationLibrary_26j03")
