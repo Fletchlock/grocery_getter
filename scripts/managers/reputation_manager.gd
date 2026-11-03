@@ -4,7 +4,7 @@ extends Node
 signal reputation_changed(new_rating: float)
 
 
-const DEFAULT_REPUTATION: float = 3.0
+const DEFAULT_REPUTATION: float = 0.0
 const MIN_REPUTATION: float = 0.0
 const MAX_REPUTATION: float = 5.0
 const EXPERIENCE_WEIGHT: float = 0.03

@@ -298,8 +298,16 @@ func collect_shopping_points() -> void:
 	shopping_points.clear()
 
 	for child: Node in shopping_points_node.get_children():
-		if child is Node3D:
-			shopping_points.append(child as Node3D)
+		if not child is Node3D:
+			continue
+
+		if not child.has_method("ai_take_product"):
+			continue
+
+		if not bool(child.get("is_unlocked")):
+			continue
+
+		shopping_points.append(child as Node3D)
 
 
 func start_shopping() -> void:
@@ -367,6 +375,9 @@ func try_replace_failed_shopping_point() -> bool:
 		return false
 
 	for candidate: Node3D in shopping_points:
+		if not bool(candidate.get("is_unlocked")):
+			continue
+			
 		if shopping_list.has(candidate):
 			continue
 

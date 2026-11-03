@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://81b4dqapogb3" path="res://scripts/levels/orbiting_orange.gd" id="1_t2upu"]
 [ext_resource type="ArrayMesh" uid="uid://bib44o7bqg1ht" path="res://assets/models/items/Orange_Cube_045.res" id="2_uxmaw"]
+[ext_resource type="AudioStream" uid="uid://c5ta74j2sxaws" path="res://assets/sounds/66382__ls__sprouts.wav" id="3_803oh"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_6aigx"]
 radius = 1.0
@@ -23,3 +24,12 @@ shape = SubResource("SphereShape3D_6aigx")
 debug_color = Color(0.77985317, 0.20562062, 1, 1)
 
 [node name="OrbitTrail" type="MeshInstance3D" parent="." unique_id=823835154]
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1227809639]
+stream = ExtResource("3_803oh")
+volume_db = -6.0
+unit_size = 5.0
+autoplay = true
+max_distance = 25.0
+bus = &"SFX"
+doppler_tracking = 1
