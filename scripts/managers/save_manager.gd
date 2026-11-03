@@ -106,7 +106,8 @@ func save_game() -> bool:
 		"store": StoreManager.get_save_data(),
 		"stock_orders": StockOrderManager.get_save_data(),
 		"day": DayManager.get_save_data(),
-		"reputation": ReputationManager.get_save_data()
+		"reputation": ReputationManager.get_save_data(),
+		"product_unlocks": ProductUnlockManager.get_save_data()
 	}
 
 	var file: FileAccess = FileAccess.open_encrypted(
@@ -195,6 +196,10 @@ func load_game() -> bool:
 	
 	ReputationManager.load_save_data(
 		save_data.get("reputation", {})
+	)
+
+	ProductUnlockManager.load_save_data(
+		save_data.get("product_unlocks", {})
 	)
 
 	StoreManager.sync_finances()
