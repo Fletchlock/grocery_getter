@@ -1,26 +1,26 @@
 [gd_resource type="AnimationNodeStateMachine" format=3 uid="uid://k24dl8h4178k"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4tmgi"]
-animation = &"character_anims/crouch_idle"
+animation = &"player_anims/crouch_idle"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_o6irr"]
-animation = &"character_anims/crouch_walk"
+animation = &"player_anims/crouch_walk"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_cxyl5"]
-animation = &"character_anims/crouch_walk"
+animation = &"player_anims/crouch_walk"
 play_mode = 1
 
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_uxeqb"]
 sync_mode = 2
 blend_point_0/node = SubResource("AnimationNodeAnimation_4tmgi")
 blend_point_0/pos = 0.0
-blend_point_0/name = &"character_anims_crouch_idle"
+blend_point_0/name = &"player_anims_crouch_idle"
 blend_point_1/node = SubResource("AnimationNodeAnimation_o6irr")
 blend_point_1/pos = 1.0
-blend_point_1/name = &"character_anims_crouch_walk"
+blend_point_1/name = &"player_anims_crouch_walk"
 blend_point_2/node = SubResource("AnimationNodeAnimation_cxyl5")
 blend_point_2/pos = -1.0
-blend_point_2/name = &"character_anims_crouch_walk 2"
+blend_point_2/name = &"player_anims_crouch_walk 2"
 
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_6vuci"]
 
@@ -33,7 +33,7 @@ nodes/TimeScale/position = Vector2(688, 240)
 node_connections = [&"output", 0, &"TimeScale", &"TimeScale", 0, &"BlendSpace1D"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_w60e8"]
-animation = &"character_anims/falling"
+animation = &"player_anims/falling"
 
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_ev8jc"]
 
@@ -46,44 +46,43 @@ nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_ev8jc")
 nodes/TimeScale/position = Vector2(672, 128)
 node_connections = [&"output", 0, &"TimeScale", &"TimeScale", 0, &"Animation"]
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6vuci"]
+animation = &"player_anims/default"
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_uxeqb"]
-animation = &"character_anims/default"
+animation = &"player_anims/idle"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_jxxpm"]
-animation = &"character_anims/idle"
+animation = &"player_anims/Walk"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_u2yoj"]
-animation = &"character_anims/run"
+animation = &"player_anims/run"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_e45vn"]
-animation = &"character_anims/run"
-play_mode = 1
+animation = &"player_anims/Walk"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6v20i"]
-animation = &"character_anims/Walk"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_xrlsb"]
-animation = &"character_anims/Walk"
+animation = &"player_anims/run"
 play_mode = 1
 
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_pttyk"]
 snap = 0.02
 sync_mode = 2
-blend_point_0/node = SubResource("AnimationNodeAnimation_jxxpm")
+blend_point_0/node = SubResource("AnimationNodeAnimation_uxeqb")
 blend_point_0/pos = 0.0
-blend_point_0/name = &"character_anims_idle"
-blend_point_1/node = SubResource("AnimationNodeAnimation_u2yoj")
-blend_point_1/pos = 1.0
-blend_point_1/name = &"character_anims_run"
-blend_point_2/node = SubResource("AnimationNodeAnimation_e45vn")
-blend_point_2/pos = -1.0
-blend_point_2/name = &"character_anims_run 2"
-blend_point_3/node = SubResource("AnimationNodeAnimation_6v20i")
-blend_point_3/pos = 0.58
-blend_point_3/name = &"character_anims_Walk"
-blend_point_4/node = SubResource("AnimationNodeAnimation_xrlsb")
-blend_point_4/pos = -0.58
-blend_point_4/name = &"character_anims_Walk 2"
+blend_point_0/name = &"player_anims_idle"
+blend_point_1/node = SubResource("AnimationNodeAnimation_jxxpm")
+blend_point_1/pos = 0.58
+blend_point_1/name = &"player_anims_Walk"
+blend_point_2/node = SubResource("AnimationNodeAnimation_u2yoj")
+blend_point_2/pos = 1.0
+blend_point_2/name = &"player_anims_run"
+blend_point_3/node = SubResource("AnimationNodeAnimation_e45vn")
+blend_point_3/pos = -0.58
+blend_point_3/name = &"player_anims_Walk 2"
+blend_point_4/node = SubResource("AnimationNodeAnimation_6v20i")
+blend_point_4/pos = -1.0
+blend_point_4/name = &"player_anims_run 2"
 
 [sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_6vuci"]
 filter_enabled = true
@@ -92,16 +91,17 @@ filters = ["Armature/Skeleton3D:hand.L", "Armature/Skeleton3D:hand.R"]
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_y4gsw"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_td4dg"]
-nodes/output/position = Vector2(976, 144)
+graph_offset = Vector2(-11.236377, 9.490893)
+nodes/output/position = Vector2(992, 112)
 nodes/BlendSpace1D/node = SubResource("AnimationNodeBlendSpace1D_pttyk")
 nodes/BlendSpace1D/position = Vector2(240, 96)
 nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_y4gsw")
 nodes/TimeScale/position = Vector2(528, 96)
 nodes/PushCartBlend/node = SubResource("AnimationNodeBlend2_6vuci")
-nodes/PushCartBlend/position = Vector2(720, 176)
-nodes/Animation/node = SubResource("AnimationNodeAnimation_uxeqb")
-nodes/Animation/position = Vector2(448, 336)
-node_connections = [&"output", 0, &"PushCartBlend", &"TimeScale", 0, &"BlendSpace1D", &"PushCartBlend", 0, &"TimeScale", &"PushCartBlend", 1, &"Animation"]
+nodes/PushCartBlend/position = Vector2(752, 160)
+"nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_6vuci")
+"nodes/Animation 2/position" = Vector2(432, 320)
+node_connections = [&"output", 0, &"PushCartBlend", &"TimeScale", 0, &"BlendSpace1D", &"PushCartBlend", 0, &"TimeScale", &"PushCartBlend", 1, &"Animation 2"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_05rbj"]
 advance_mode = 2
