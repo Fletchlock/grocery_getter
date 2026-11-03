@@ -16,7 +16,6 @@ var right_equipment: Node = null
 
 
 # === Hand Targets ===
-
 @export_group("Hand Target Settings")
 @export var crouch_hand_offset: float = -0.35
 @export var crouch_hand_lerp_speed: float = 10.0
@@ -32,18 +31,17 @@ var standing_box_hand_target_left_position: Vector3
 var standing_box_hand_target_right_position: Vector3
 
 # === Hand IK Management ===
-
 @onready var left_hand_ik: TwoBoneIK3D = $"../Armature/Skeleton3D/LeftTwoBoneIK3D"
 @onready var right_hand_ik: TwoBoneIK3D = $"../Armature/Skeleton3D/RightTwoBoneIK3D"
+var left_ik_owner: StringName = &""
+var right_ik_owner: StringName = &""
 
 # === Product Visuals ===
-
 @onready var product_network_visual: MeshInstance3D = (
 	$"../Armature/HeldItemTarget/HeldItemNetworkVisual"
 )
 
 # === Restock Scanner Visuals ===
-
 const RESTOCK_SCANNER_SCENE: PackedScene = preload(
 	"res://scenes/objects/terminals/restock_scanner.tscn"
 )
@@ -51,7 +49,6 @@ const RESTOCK_SCANNER_SCENE: PackedScene = preload(
 var scanner_network_visual: Node3D = null
 
 # === Restock Box Visuals ===
-
 const RESTOCK_BOX_SCENE: PackedScene = preload(
 	"res://scenes/items/restock_box.tscn"
 )
@@ -69,7 +66,6 @@ func _ready() -> void:
 
 
 # Hand Target Functions
-
 func update_hand_targets(delta: float, is_crouching: bool) -> void:
 	var offset: Vector3 = Vector3.ZERO
 
@@ -140,7 +136,6 @@ func clear_hand_ik(hand: Hand) -> void:
 
 
 # IK Functions
-
 func _assign_ik_target(
 	ik: TwoBoneIK3D,
 	target: Node3D
@@ -160,8 +155,99 @@ func _clear_ik_target(ik: TwoBoneIK3D) -> void:
 	ik.set_target_node(0, NodePath(""))
 
 
-# General Equip Functions.
+# === IK Ownership ===
+func can_claim_ik(
+	owner: StringName,
+	hand: Hand
+) -> bool:
+	if owner == &"":
+		return false
 
+	match hand:
+		Hand.LEFT:
+			return left_ik_owner == &"" or left_ik_owner == owner
+
+		Hand.RIGHT:
+			return right_ik_owner == &"" or right_ik_owner == owner
+
+		Hand.BOTH:
+			return (
+				(left_ik_owner == &"" or left_ik_owner == owner)
+				and
+				(right_ik_owner == &"" or right_ik_owner == owner)
+			)
+
+	return false
+
+
+func claim_hand_ik(
+	owner: StringName,
+	hand: Hand,
+	target: Node3D
+) -> bool:
+	if hand != Hand.LEFT and hand != Hand.RIGHT:
+		return false
+
+	if not is_instance_valid(target):
+		return false
+
+	if not can_claim_ik(owner, hand):
+		return false
+
+	match hand:
+		Hand.LEFT:
+			_assign_ik_target(left_hand_ik, target)
+			left_ik_owner = owner
+
+		Hand.RIGHT:
+			_assign_ik_target(right_hand_ik, target)
+			right_ik_owner = owner
+
+	return true
+
+
+func claim_both_hand_ik(
+	owner: StringName,
+	left_target: Node3D,
+	right_target: Node3D
+) -> bool:
+	if not is_instance_valid(left_target):
+		return false
+
+	if not is_instance_valid(right_target):
+		return false
+
+	if not can_claim_ik(owner, Hand.BOTH):
+		return false
+
+	_assign_ik_target(left_hand_ik, left_target)
+	_assign_ik_target(right_hand_ik, right_target)
+
+	left_ik_owner = owner
+	right_ik_owner = owner
+
+	return true
+
+
+func release_hand_ik(
+	owner: StringName,
+	hand: Hand
+) -> void:
+	if owner == &"":
+		return
+
+	if hand == Hand.LEFT or hand == Hand.BOTH:
+		if left_ik_owner == owner:
+			_clear_ik_target(left_hand_ik)
+			left_ik_owner = &""
+
+	if hand == Hand.RIGHT or hand == Hand.BOTH:
+		if right_ik_owner == owner:
+			_clear_ik_target(right_hand_ik)
+			right_ik_owner = &""
+
+
+# General Equip Functions.
 func can_equip(hand: Hand) -> bool:
 	match hand:
 		Hand.LEFT:
