@@ -19,11 +19,12 @@ const CANCELLED_ORDER_PENALTY: float = -1.0
 const INCORRECT_ITEM_PENALTY: float = -0.5
 
 @export_group("Order Generation")
-@export var available_products: Array[ProductData] = []
 @export var min_products: int = 2
 @export var max_products: int = 5
 @export var min_items: int = 1
 @export var max_items: int = 3
+
+var available_products: Array[ProductData] = []
 
 @export_group("Order Completion Time")
 @export var seconds_per_item: float = 15.0
@@ -106,6 +107,9 @@ func _initialize_orders() -> void:
 	order_spawn_timer = 0.0
 	recovery_timer = 0.0
 	order_director_running = true
+
+	# Build today's product selection from unlocked displays.
+	_collect_available_products()
 
 	set_next_order_timer()
 
@@ -233,6 +237,48 @@ func _process(delta: float) -> void:
 	if timer_sync_accumulator >= TIMER_SYNC_INTERVAL:
 		timer_sync_accumulator = 0.0
 		_sync_orders()
+
+
+func _collect_available_products() -> void:
+	available_products.clear()
+
+	var seen_products: Dictionary = {}
+
+	var displays: Array[Node] = get_tree().get_nodes_in_group(
+		"product_displays"
+	)
+
+	for node: Node in displays:
+		if not node.is_inside_tree():
+			continue
+
+		if not bool(node.get("is_unlocked")):
+			continue
+
+		var product: ProductData = node.get(
+			"product_data"
+		) as ProductData
+
+		if product == null:
+			continue
+
+		var product_path: String = product.resource_path
+
+		if product_path.is_empty():
+			continue
+
+		if seen_products.has(product_path):
+			continue
+
+		seen_products[product_path] = true
+		available_products.append(product)
+
+	print(
+		"ORDER DIRECTOR: Day ",
+		DayManager.current_day,
+		" | Available products: ",
+		available_products.size()
+	)
 
 
 func _update_order_director(delta: float) -> void:
