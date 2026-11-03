@@ -21,7 +21,7 @@ extends CharacterBody3D
 @onready var grocery_blue: MeshInstance3D = $Armature/Skeleton3D/GroceryBlue
 @onready var grocery_green: MeshInstance3D = $Armature/Skeleton3D/GroceryGreen
 @onready var crosshair: Control = $FirstPersonCameraPivot/FirstPersonCamera/UI/Crosshair
-
+@onready var player_equipment: PlayerEquipment = $PlayerEquipment
 
 # Audio
 @onready var footstep_player: AudioStreamPlayer3D = $FirstPersonCameraPivot/FirstPersonCamera/FootstepPlayer
