@@ -11,6 +11,7 @@
 [ext_resource type="AnimationNodeStateMachine" uid="uid://k24dl8h4178k" path="res://assets/animations/character_state_machine.tres" id="9_fldhp"]
 [ext_resource type="Script" uid="uid://bu6nohragxh0l" path="res://scripts/utilities/interact_raycast_3d.gd" id="10_78fgg"]
 [ext_resource type="AudioStream" uid="uid://bxk6rpou86l15" path="res://assets/sounds/footstep-on-stone-2.wav" id="11_5wda0"]
+[ext_resource type="Script" uid="uid://cyit4xe1ytomb" path="res://scripts/player/player_equipment.gd" id="12_k3qdh"]
 
 [sub_resource type="Animation" id="Animation_5wda0"]
 length = 0.001
@@ -435,6 +436,9 @@ max_zoom = 7.0
 look_distance = 4.0
 look_speed = 1.5
 look_angle = 70.0
+
+[node name="PlayerEquipment" type="Node" parent="." unique_id=1954454111]
+script = ExtResource("12_k3qdh")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2138151857]
 libraries/ = SubResource("AnimationLibrary_s7efu")
