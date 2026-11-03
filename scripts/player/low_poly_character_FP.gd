@@ -185,15 +185,6 @@ var server_holding_mop: bool = false
 var server_cleaning_spill_path: NodePath = NodePath()
 var server_cleaning_started_usec: int = 0
 
-@export_group("Crouch Held Item")
-@export var crouch_hand_offset: float = -0.35
-@export var crouch_hand_lerp_speed: float = 10.0
-
-var standing_item_target_position: Vector3
-var standing_hand_target_position: Vector3
-var standing_box_hand_target_left_position: Vector3
-var standing_box_hand_target_right_position: Vector3
-
 @onready var held_item_hand_target: Node3D = $Armature/HeldItemHandTarget
 @onready var held_item_target: Node3D = $Armature/HeldItemTarget
 @onready var held_item_network_visual: MeshInstance3D = $Armature/HeldItemTarget/HeldItemNetworkVisual
@@ -282,13 +273,7 @@ func _ready() -> void:
 	_network_rotation_y_last_received = network_rotation_y
 	_network_velocity_received_time = (Time.get_ticks_usec() / 1000000.0)
 	_network_position_initialized = false
-	
-	# Held item and target positions
-	standing_item_target_position = held_item_target.position
-	standing_hand_target_position = held_item_hand_target.position
-	standing_box_hand_target_left_position = held_box_hand_target_left.position
-	standing_box_hand_target_right_position = held_box_hand_target_right.position
-	
+
 	# --- FIXED MULTIPLAYER SYNCHRONIZER TIMING BUFFER ---
 	# We search through the entire character folder hierarchy dynamically, 
 	# completely preventing "null instance" layout crashes if paths change!
@@ -1473,50 +1458,11 @@ func update_crouch_collision() -> void:
 
 
 func _update_crouch_hand_targets(delta: float) -> void:
-	var offset: Vector3 = Vector3.ZERO
-
-	if network_is_crouching:
-		offset.y = crouch_hand_offset
-
-	var item_target_position: Vector3 = (
-		standing_item_target_position + offset
-	)
-
-	var hand_target_position: Vector3 = (
-		standing_hand_target_position + offset
+	player_equipment.update_hand_targets(
+		delta,
+		network_is_crouching
 	)
 	
-	var left_hand_target_position: Vector3 = (
-		standing_box_hand_target_left_position + offset
-	)
-	
-	var right_hand_target_position: Vector3 = (
-		standing_box_hand_target_right_position + offset
-	)	
-	
-	var weight: float = 1.0 - exp(
-		-crouch_hand_lerp_speed * delta
-	)
-
-	held_item_target.position = held_item_target.position.lerp(
-		item_target_position,
-		weight
-	)
-
-	held_item_hand_target.position = held_item_hand_target.position.lerp(
-		hand_target_position,
-		weight
-	)
-	
-	held_box_hand_target_left.position = held_box_hand_target_left.position.lerp(
-		left_hand_target_position,
-		weight
-	)
-	
-	held_box_hand_target_right.position = held_box_hand_target_right.position.lerp(
-		right_hand_target_position,
-		weight
-	)
 
 func find_nearest_player() -> Node3D:
 	var nearest_player: Node3D = null

@@ -15,6 +15,61 @@ var left_equipment: Node = null
 var right_equipment: Node = null
 
 
+# === Hand Targets ===
+
+@export_group("Hand Target Settings")
+@export var crouch_hand_offset: float = -0.35
+@export var crouch_hand_lerp_speed: float = 10.0
+
+@onready var held_item_target: Node3D = $"../Armature/HeldItemTarget"
+@onready var held_item_hand_target: Node3D = $"../Armature/HeldItemHandTarget"
+@onready var held_box_hand_target_left: Node3D = $"../Armature/HeldBoxHandTargetLeft"
+@onready var held_box_hand_target_right: Node3D = $"../Armature/HeldBoxHandTargetRight"
+
+var standing_item_target_position: Vector3
+var standing_hand_target_position: Vector3
+var standing_box_hand_target_left_position: Vector3
+var standing_box_hand_target_right_position: Vector3
+
+
+func _ready() -> void:
+	standing_item_target_position = held_item_target.position
+	standing_hand_target_position = held_item_hand_target.position
+	standing_box_hand_target_left_position = held_box_hand_target_left.position
+	standing_box_hand_target_right_position = held_box_hand_target_right.position
+
+
+func update_hand_targets(delta: float, is_crouching: bool) -> void:
+	var offset: Vector3 = Vector3.ZERO
+
+	if is_crouching:
+		offset.y = crouch_hand_offset
+
+	var weight: float = 1.0 - exp(
+		-crouch_hand_lerp_speed * delta
+	)
+
+	held_item_target.position = held_item_target.position.lerp(
+		standing_item_target_position + offset,
+		weight
+	)
+
+	held_item_hand_target.position = held_item_hand_target.position.lerp(
+		standing_hand_target_position + offset,
+		weight
+	)
+
+	held_box_hand_target_left.position = held_box_hand_target_left.position.lerp(
+		standing_box_hand_target_left_position + offset,
+		weight
+	)
+
+	held_box_hand_target_right.position = held_box_hand_target_right.position.lerp(
+		standing_box_hand_target_right_position + offset,
+		weight
+	)
+
+
 func can_equip(hand: Hand) -> bool:
 	match hand:
 		Hand.LEFT:
