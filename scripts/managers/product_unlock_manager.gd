@@ -154,9 +154,14 @@ func evaluate_unlocks(day: int) -> void:
 	)
 
 	for info: Dictionary in todays_unlocks:
-		product_unlocked.emit(
-			str(info["save_id"]),
-			str(info["product_name"])
+		var save_id: String = str(info["save_id"])
+		var product_name: String = str(info["product_name"])
+
+		product_unlocked.emit(save_id, product_name)
+
+		_receive_unlock_notification.rpc(
+			save_id,
+			product_name
 		)
 
 	unlock_state_changed.emit()
@@ -175,6 +180,12 @@ func _sync_unlock_state(
 	_apply_all_displays()
 	unlock_state_changed.emit()
 
+@rpc("authority", "call_remote", "reliable")
+func _receive_unlock_notification(
+	save_id: String,
+	product_name: String
+) -> void:
+	product_unlocked.emit(save_id, product_name)
 
 func _on_connected_to_server() -> void:
 	_request_unlock_state.rpc_id(1)

@@ -1113,7 +1113,7 @@ position_variation = 0.01
 rotation_variation = 25.0
 variation_seed = 999
 max_quantity = 36
-quantity = 22
+quantity = 0
 initially_locked = true
 unlock_rating = 2.0
 
@@ -1213,7 +1213,7 @@ product_data = ExtResource("38_6evkd")
 grid_rows = 5
 product_gap = 0.03
 max_quantity = 25
-quantity = 18
+quantity = 0
 initially_locked = true
 unlock_rating = 2.5
 
