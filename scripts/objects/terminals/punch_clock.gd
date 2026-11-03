@@ -78,6 +78,7 @@ func _server_try_punch_out(peer_id: int) -> void:
 	DayManager.set_player_punched_out(peer_id, true)
 
 
+
 func _get_punch_out_block_reason() -> String:
 	if DayManager.current_hour < DayManager.STORE_CLOSE_HOUR:
 		return "Store Is Still Open"
@@ -85,11 +86,11 @@ func _get_punch_out_block_reason() -> String:
 	if not get_tree().get_nodes_in_group("shopper_in_store").is_empty():
 		return "Shoppers Still In Store"
 
-	for order: OrderData in OrderManager.get_orders():
-		if order.state == OrderData.OrderState.ACTIVE:
-			return "Orders Still In Progress"
+	if not DayManager.is_shift_complete():
+		return "Orders Still In Progress"
 
 	return ""
+
 
 
 # --- Display ---

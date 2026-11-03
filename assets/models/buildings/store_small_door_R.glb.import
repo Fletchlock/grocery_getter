@@ -40,6 +40,13 @@ materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
 _subresources={
+"materials": {
+"Material.005": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://assets/models/buildings/Material.001.tres",
+"use_external/path": "uid://csrp3jkm6oqsx"
+}
+},
 "meshes": {
 "store_small_door_R_Cube": {
 "generate/lightmap_uv": 0,

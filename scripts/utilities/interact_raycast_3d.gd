@@ -104,10 +104,19 @@ func _process(_delta: float) -> void:
 
 
 func _show_scanner_prompt(
-	scanner: Node3D,
-	display: Node
-) -> void:
+		scanner: Node3D,
+		display: Node
+	) -> void:
 	if interaction_prompt == null:
+		return
+
+	if not is_instance_valid(display):
+		_hide_prompt()
+		return
+
+	if not bool(display.get("is_unlocked")):
+		scanner.cancel_order_selection()
+		_hide_prompt()
 		return
 
 	var product_data: ProductData = display.get(
@@ -144,13 +153,16 @@ func _show_scanner_prompt(
 			else:
 				var missing: int = scanner.get_missing_stock(display)
 
-				if missing > 0:
+
+				if missing >= scanner.MIN_ORDER_QUANTITY:
 					prompt_text = "[E] Place Order %d %s (Scroll +/-)" % [
 						missing,
 						product_data.display_name
 					]
 				else:
-					prompt_text = "%s - Fully Stocked" % product_data.display_name
+					prompt_text = "%s - Insufficient Space (Min 10)" % (
+						product_data.display_name
+					)
 	else:
 		prompt_text = scanner.get_stock_order_prompt(display)
 

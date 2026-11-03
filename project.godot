@@ -36,6 +36,7 @@ SaveManager="*uid://c85vxole6c8pw"
 MinigameManager="*uid://d4aenawdhuk1v"
 ReputationManager="*uid://bm2opfs15vjhp"
 EventManager="*uid://dylh2x3pep2ht"
+ProductUnlockManager="*uid://d18ekblagc078"
 
 [debug]
 

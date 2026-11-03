@@ -41,17 +41,45 @@ func _ready() -> void:
 	
 	get_tree().node_added.connect(_on_node_added)
 
+
+func is_product_available_for_order(product_path: String) -> bool:
+	for node: Node in get_tree().get_nodes_in_group(
+		"product_displays"
+	):
+		if not is_instance_valid(node):
+			continue
+
+		var product: ProductData = node.get("product_data") as ProductData
+
+		if product == null:
+			continue
+
+		if product.resource_path != product_path:
+			continue
+
+		if bool(node.get("is_unlocked")):
+			return true
+
+	return false
+
+
 func set_pending_quantity(
-	product_path: String,
-	quantity: int
-) -> void:
+		product_path: String,
+		quantity: int
+	) -> void:
 	if not multiplayer.is_server():
 		return
 
 	if product_path.is_empty():
 		return
-
+		
+	if not is_product_available_for_order(product_path):
+		return
+		
 	if quantity < 0 or quantity > 400:
+		return
+
+	if quantity > 0 and quantity < 10:
 		return
 
 	if not ResourceLoader.exists(product_path):

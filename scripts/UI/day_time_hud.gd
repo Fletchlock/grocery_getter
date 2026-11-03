@@ -27,9 +27,18 @@ const audio_order_accepted = preload("res://assets/sounds/836450__feraly__simple
 @export var online_order_list_scene: PackedScene
 @export var barcode_hud_scene: PackedScene
 
+@export_group("Product Unlock Notifications")
+@export var product_unlock_notification_scene: PackedScene
+@export var unlock_notification_interval: float = 1.0
+@export var unlock_notification_duration: float = 3.0
+@export var max_unlock_notifications: int = 3
+
 var shopper_stats: Node3D = null
 var available_notifications: Dictionary = {}
 var active_notifications: Dictionary = {}
+var unlock_notification_queue: Array[String] = []
+var active_unlock_notifications: int = 0
+var unlock_queue_running: bool = false
 var current_order_list: OnlineOrderList = null
 var active_order_cart: CartGrid = null
 var barcode_hud: Control = null
@@ -47,6 +56,7 @@ func _ready() -> void:
 	LobbyManager.lobby_player_updated.connect(_on_lobby_player_updated)
 	DayManager.clock_updated.connect(_on_clock_updated)
 	ReputationManager.reputation_changed.connect(_update_reputation_stars)
+	ProductUnlockManager.product_unlocked.connect(_on_product_unlocked)
 	_update_reputation_stars(ReputationManager.store_reputation)
 	
 	# Display the current clock immediately, in case the clock
@@ -62,7 +72,6 @@ func _ready() -> void:
 	call_deferred("_connect_order_carts")
 	
 	call_deferred("_position_player_hud")
-
 
 func _process(_delta: float) -> void:
 	if shopper_stats == null or not is_instance_valid(shopper_stats):
@@ -82,10 +91,21 @@ func _exit_tree() -> void:
 		OrderManager.orders_synced.disconnect(_update_order_notifications)
 	if ReputationManager.reputation_changed.is_connected(_update_reputation_stars):
 		ReputationManager.reputation_changed.disconnect(_update_reputation_stars)
+	if ProductUnlockManager.product_unlocked.is_connected(
+		_on_product_unlocked
+	):
+		ProductUnlockManager.product_unlocked.disconnect(
+			_on_product_unlocked
+		)
 
 func _on_lobby_player_updated(_peer_id: int) -> void:
 	_update_active_notifications()
 
+func _on_product_unlocked(
+		_save_id: String,
+		product_name: String
+	) -> void:
+	queue_product_unlock(product_name)
 
 func _on_clock_updated(
 	_day: int,
@@ -168,6 +188,121 @@ func _update_available_notifications() -> void:
 			continue
 
 		_remove_available_notification(order_id)
+
+
+func queue_product_unlock(product_name: String) -> void:
+	if product_name.is_empty():
+		return
+
+	unlock_notification_queue.append(product_name)
+
+	if not unlock_queue_running:
+		_process_unlock_queue()
+
+
+func _process_unlock_queue() -> void:
+	if unlock_queue_running:
+		return
+
+	unlock_queue_running = true
+
+	while not unlock_notification_queue.is_empty():
+		if active_unlock_notifications >= max_unlock_notifications:
+			await get_tree().process_frame
+			continue
+
+		var product_name: String = unlock_notification_queue.pop_front()
+
+		_show_product_unlock_notification(product_name)
+
+		await get_tree().create_timer(
+			unlock_notification_interval
+		).timeout
+
+	unlock_queue_running = false
+
+
+func _show_product_unlock_notification(product_name: String) -> void:
+	if product_unlock_notification_scene == null:
+		push_warning("Product unlock notification scene is not assigned.")
+		return
+
+	var slot: Control = Control.new()
+	slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	orders_container.add_child(slot)
+
+	var unlock_notification: ProductUnlockNotification = (
+		product_unlock_notification_scene.instantiate()
+		as ProductUnlockNotification
+	)
+
+	if unlock_notification == null:
+		slot.queue_free()
+		push_warning("Invalid product unlock notification scene.")
+		return
+
+	slot.add_child(unlock_notification)
+
+	unlock_notification.setup(product_name)
+	unlock_notification.set_anchors_and_offsets_preset(
+		Control.PRESET_TOP_RIGHT
+	)
+
+	slot.custom_minimum_size = unlock_notification.get_combined_minimum_size()
+
+	active_unlock_notifications += 1
+
+	unlock_notification.slide_in()
+
+	_remove_product_unlock_notification(slot, unlock_notification)
+
+
+func _remove_product_unlock_notification(
+		slot: Control,
+		unlock_notification: ProductUnlockNotification
+	) -> void:
+	await get_tree().create_timer(
+		unlock_notification_duration
+	).timeout
+
+	if not is_instance_valid(unlock_notification):
+		active_unlock_notifications = maxi(
+			0,
+			active_unlock_notifications - 1
+		)
+		return
+
+	unlock_notification.slide_out()
+	await unlock_notification.removal_finished
+
+	if not is_instance_valid(slot):
+		active_unlock_notifications = maxi(
+			0,
+			active_unlock_notifications - 1
+		)
+		return
+
+	var tween: Tween = create_tween()
+	tween.set_trans(Tween.TRANS_CUBIC)
+	tween.set_ease(Tween.EASE_IN_OUT)
+
+	tween.tween_property(
+		slot,
+		"custom_minimum_size:y",
+		0.0,
+		unlock_notification.collapse_duration
+	)
+
+	await tween.finished
+
+	if is_instance_valid(slot):
+		slot.queue_free()
+
+	active_unlock_notifications = maxi(
+		0,
+		active_unlock_notifications - 1
+	)
 
 
 func _update_available_countdowns() -> void:
@@ -672,3 +807,13 @@ func reset_player_hud_menu() -> void:
 	player_hud_menu_history.clear()
 	active_player_hud_submenu = null
 	$PlayerHud/VBoxContainer.show()
+
+
+# TEST FUNCTION
+
+func test_product_unlock_notifications() -> void:
+	queue_product_unlock("Bread")
+	queue_product_unlock("Cereal")
+	queue_product_unlock("Cola")
+	queue_product_unlock("Sugar")
+	queue_product_unlock("Peas")
