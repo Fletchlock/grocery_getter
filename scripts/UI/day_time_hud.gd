@@ -20,6 +20,7 @@ const audio_order_accepted = preload("res://assets/sounds/836450__feraly__simple
 	$TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer/Star4,
 	$TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer/Star5
 ]
+@onready var player_hud: Control = $PlayerHud
 
 @export var available_order_scene: PackedScene
 @export var active_order_scene: PackedScene
@@ -45,6 +46,11 @@ var barcode_player: Node = null
 var completed_barcode_code: String = ""
 var barcode_checkout: Node = null
 var saved_scan_combo: int = 0
+var player_hud_open := false
+var player_hud_tween: Tween
+var player_hud_player: Node = null
+var active_player_hud_submenu: Control = null
+var player_hud_menu_history: Array[Control] = []
 
 func _ready() -> void:
 	LobbyManager.lobby_player_updated.connect(_on_lobby_player_updated)
@@ -65,7 +71,8 @@ func _ready() -> void:
 	_update_order_notifications()
 	call_deferred("_connect_order_carts")
 	
-	
+	call_deferred("_position_player_hud")
+
 func _process(_delta: float) -> void:
 	if shopper_stats == null or not is_instance_valid(shopper_stats):
 		shopper_stats = get_tree().get_first_node_in_group("shopper_stats")
@@ -611,12 +618,13 @@ func show_barcode_hud(product_code: String) -> void:
 			return
 
 		barcode_hud = barcode_hud_scene.instantiate() as Control
-		barcode_hud.scan_combo = saved_scan_combo
 		if barcode_hud == null:
 			push_warning("Barcode HUD scene root must be a Control node.")
 			return
 
+		barcode_hud.scan_combo = saved_scan_combo
 		barcode_player = get_tree().get_first_node_in_group("local_player")
+
 		if is_instance_valid(barcode_player):
 			barcode_player.set_movement_locked(true)
 		else:
@@ -668,10 +676,138 @@ func set_barcode_checkout(checkout: Node) -> void:
 	barcode_checkout = checkout
 
 
+func _input(event: InputEvent) -> void:
+	if not event is InputEventKey:
+		return
+	if not event.pressed or event.echo:
+		return
+
+	if event.keycode == KEY_TAB:
+		toggle_player_hud()
+		get_viewport().set_input_as_handled()
+
+	elif event.keycode == KEY_ESCAPE and player_hud_open:
+		go_back_in_player_hud()
+		get_viewport().set_input_as_handled()
+
+
+func toggle_player_hud() -> void:
+	player_hud_open = not player_hud_open
+
+	if player_hud_open:
+		reset_player_hud_menu()
+
+	if not is_instance_valid(player_hud_player):
+		player_hud_player = get_tree().get_first_node_in_group("local_player")
+
+	if is_instance_valid(player_hud_player):
+		player_hud_player.set_movement_locked(player_hud_open)
+
+	Input.mouse_mode = (
+		Input.MOUSE_MODE_VISIBLE
+		if player_hud_open
+		else Input.MOUSE_MODE_CAPTURED
+	)
+
+	player_hud.visible = true
+
+	if player_hud_tween and player_hud_tween.is_running():
+		player_hud_tween.kill()
+
+	var target_x: float
+	if player_hud_open:
+		target_x = (size.x - player_hud.size.x) / 2.0
+	else:
+		target_x = size.x
+
+	player_hud_tween = create_tween()
+	player_hud_tween.set_trans(Tween.TRANS_CUBIC)
+	player_hud_tween.set_ease(Tween.EASE_OUT)
+	player_hud_tween.tween_property(
+		player_hud,
+		"position:x",
+		target_x,
+		0.3
+	)
+
+	if not player_hud_open:
+		player_hud_tween.tween_callback(func() -> void:
+			player_hud.visible = false
+		)
+
+
+func _position_player_hud() -> void:
+	player_hud.position = Vector2(
+		size.x,
+		(size.y - player_hud.size.y) / 2.0
+	)
+	player_hud.visible = false
+
+
 # Audio
 func play_ui_sounds(stream : AudioStream) -> void:
 	ui_audio_player.stream = stream
 	ui_audio_player.play()
+
+
+func _on_customize_pressed() -> void:
+	open_player_hud_submenu($PlayerHud/CustomizeMenu)
+
+
+func _on_scanner_scales_pressed() -> void:
+	open_player_hud_submenu(
+		$PlayerHud/ScannerScalesMenu
+	)
+
+
+func open_player_hud_submenu(submenu: Control) -> void:
+	if is_instance_valid(active_player_hud_submenu):
+		if active_player_hud_submenu == submenu:
+			return
+
+		player_hud_menu_history.append(active_player_hud_submenu)
+
+		# Keep the current menu visible when opening one nested inside it.
+		if not active_player_hud_submenu.is_ancestor_of(submenu):
+			active_player_hud_submenu.hide()
+	else:
+		$PlayerHud/VBoxContainer.hide()
+
+	active_player_hud_submenu = submenu
+	active_player_hud_submenu.show()
+
+
+func go_back_in_player_hud() -> void:
+	if is_instance_valid(active_player_hud_submenu):
+		active_player_hud_submenu.hide()
+
+	while not player_hud_menu_history.is_empty():
+		var previous_menu: Control = player_hud_menu_history.pop_back()
+		if is_instance_valid(previous_menu):
+			active_player_hud_submenu = previous_menu
+			active_player_hud_submenu.show()
+			return
+
+	active_player_hud_submenu = null
+
+	if $PlayerHud/VBoxContainer.visible:
+		toggle_player_hud()
+	else:
+		$PlayerHud/VBoxContainer.show()
+
+
+func reset_player_hud_menu() -> void:
+	if is_instance_valid(active_player_hud_submenu):
+		active_player_hud_submenu.hide()
+
+	for menu: Control in player_hud_menu_history:
+		if is_instance_valid(menu):
+			menu.hide()
+
+	player_hud_menu_history.clear()
+	active_player_hud_submenu = null
+	$PlayerHud/VBoxContainer.show()
+
 
 # TEST FUNCTION
 

@@ -10,8 +10,10 @@
 [ext_resource type="Texture2D" uid="uid://ifkotnnto2y6" path="res://assets/images/order_notify_bg_dk_grey.png" id="6_xiw3s"]
 [ext_resource type="Texture2D" uid="uid://b1pmpfog6myug" path="res://assets/images/star_unfilled.png" id="7_lc70o"]
 [ext_resource type="Texture2D" uid="uid://cbem724xdcnhn" path="res://assets/images/star_filled.png" id="8_newvj"]
+[ext_resource type="PackedScene" uid="uid://cjnto3v2tcbd3" path="res://scenes/UI/PlayerHud.tscn" id="9_newvj"]
 [ext_resource type="Texture2D" uid="uid://dcbfwxda8kuuw" path="res://assets/images/order_notify_bg_grey.png" id="10_2toow"]
 [ext_resource type="Texture2D" uid="uid://bej7ittej76m0" path="res://assets/images/order_notify_bg_red.png" id="10_xiw3s"]
+[ext_resource type="Script" uid="uid://cpm4qni4l4cqw" path="res://scripts/UI/player_hud.gd" id="13_q7g1v"]
 
 [sub_resource type="Animation" id="Animation_prtv8"]
 length = 0.001
@@ -368,9 +370,32 @@ offset_bottom = 40.0
 layout_mode = 1
 theme_override_styles/panel = SubResource("StyleBoxTexture_gfpo6")
 
+[node name="PlayerHud" parent="." unique_id=1122592883 instance=ExtResource("9_newvj")]
+layout_mode = 1
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 1964.0
+offset_top = 313.0
+offset_right = 2319.0
+offset_bottom = 832.0
+grow_horizontal = 1
+grow_vertical = 1
+script = ExtResource("13_q7g1v")
+
+[node name="ScaleSelect" parent="PlayerHud/ScannerScalesMenu/VBoxContainer" parent_id_path=PackedInt32Array(1122592883, 540936680) index="0" unique_id=509898520]
+item_count = 0
+
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1547641565]
 stream = SubResource("AudioStream_6aigx")
 max_polyphony = 6
 bus = &"UI"
 
+[connection signal="pressed" from="PlayerHud/VBoxContainer/Customize" to="." method="_on_customize_pressed"]
+[connection signal="pressed" from="PlayerHud/CustomizeMenu/VBoxContainer/ScannerScales" to="." method="_on_scanner_scales_pressed"]
+[connection signal="pressed" from="PlayerHud/CustomizeMenu/VBoxContainer/Back" to="." method="go_back_in_player_hud"]
+
 [editable path="BardcodeHud"]
+[editable path="PlayerHud"]
