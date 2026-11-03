@@ -2430,10 +2430,10 @@ func _update_network_held_item_visual() -> void:
 
 	if not network_holding_item or network_held_item_path.is_empty():
 		held_item_network_visual.visible = false
-
-		if right_hand_ik:
-			right_hand_ik.influence = 0.0
-			right_hand_ik.set_target_node(0, NodePath(""))
+		
+		player_equipment.clear_hand_ik(
+			PlayerEquipment.Hand.RIGHT
+		)
 
 		return
 
@@ -2455,10 +2455,12 @@ func _update_network_held_item_visual() -> void:
 	held_item_network_visual.rotation = product.hand_rotation
 	held_item_network_visual.scale = product.hand_scale
 	held_item_network_visual.visible = true
-
-	if right_hand_ik and held_item_target:
-		right_hand_ik.set_target_node(0, held_item_hand_target.get_path())
-		right_hand_ik.influence = 1.0
+	
+	# PlayerEquipment call
+	player_equipment.set_hand_ik(
+		PlayerEquipment.Hand.RIGHT,
+		held_item_hand_target
+	)
 
 
 func _clear_held_restock_box() -> void:
@@ -2494,13 +2496,11 @@ func _update_network_restock_box_visual() -> void:
 		or network_restock_box_product_path.is_empty()
 	):
 		held_restock_box_network_visual.visible = false
-		
-		if right_hand_ik and left_hand_ik:
-			right_hand_ik.influence = 0.0
-			right_hand_ik.set_target_node(0, NodePath(""))
-			left_hand_ik.influence = 0.0
-			left_hand_ik.set_target_node(0, NodePath(""))
-			
+
+		player_equipment.clear_hand_ik(
+			PlayerEquipment.Hand.BOTH
+		)
+
 		return
 
 	var loaded_resource: Resource = load(
@@ -2539,11 +2539,11 @@ func _update_network_restock_box_visual() -> void:
 	visual_box.transform = Transform3D.IDENTITY
 	held_restock_box_network_visual.visible = true
 	
-	if right_hand_ik and left_hand_ik and held_item_target:
-		right_hand_ik.set_target_node(0, held_box_hand_target_right.get_path())
-		right_hand_ik.influence = 1.0
-		left_hand_ik.set_target_node(0, held_box_hand_target_left.get_path())
-		left_hand_ik.influence = 1.0
+	# PlayerEquipment call
+	player_equipment.set_both_hand_ik(
+		held_box_hand_target_left,
+		held_box_hand_target_right
+	)
 
 
 func _update_network_restock_scanner_visual() -> void:
@@ -2556,9 +2556,9 @@ func _update_network_restock_scanner_visual() -> void:
 		held_restock_scanner_visual = null
 
 	if not network_holding_restock_scanner:
-		if right_hand_ik:
-			right_hand_ik.influence = 0.0
-			right_hand_ik.set_target_node(0, NodePath(""))
+		player_equipment.clear_hand_ik(
+			PlayerEquipment.Hand.RIGHT
+		)
 		return
 
 	# Create a visual copy of the scanner.
@@ -2597,9 +2597,11 @@ func _update_network_restock_scanner_visual() -> void:
 
 	held_restock_scanner_visual = scanner_visual
 	
-	if right_hand_ik and held_item_target:
-		right_hand_ik.set_target_node(0, held_item_hand_target.get_path())
-		right_hand_ik.influence = 1.0
+	# PlayerEquipment call
+	player_equipment.set_hand_ik(
+		PlayerEquipment.Hand.RIGHT,
+		held_item_hand_target
+	)
 
 
 @rpc("any_peer", "call_remote", "reliable")
