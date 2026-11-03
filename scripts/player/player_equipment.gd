@@ -42,6 +42,14 @@ var standing_box_hand_target_right_position: Vector3
 	$"../Armature/HeldItemTarget/HeldItemNetworkVisual"
 )
 
+# === Restock Scanner Visuals ===
+
+const RESTOCK_SCANNER_SCENE: PackedScene = preload(
+	"res://scenes/objects/terminals/restock_scanner.tscn"
+)
+
+var scanner_network_visual: Node3D = null
+
 
 func _ready() -> void:
 	standing_item_target_position = held_item_target.position
@@ -244,6 +252,61 @@ func update_product_visual(
 	product_network_visual.rotation = product.hand_rotation
 	product_network_visual.scale = product.hand_scale
 	product_network_visual.visible = true
+
+	set_hand_ik(
+		Hand.RIGHT,
+		held_item_hand_target
+	)
+
+
+# === Restock Scanner Visuals ===
+func update_scanner_visual(holding: bool) -> void:
+	# Remove the previous scanner visual.
+	if is_instance_valid(scanner_network_visual):
+		scanner_network_visual.queue_free()
+
+	scanner_network_visual = null
+
+	if not holding:
+		clear_hand_ik(Hand.RIGHT)
+		return
+
+	# Create a visual copy of the scanner.
+	var scanner_visual: Node3D = (
+		RESTOCK_SCANNER_SCENE.instantiate() as Node3D
+	)
+
+	if scanner_visual == null:
+		return
+
+	# Disable interaction and collision on the visual copy.
+	var area: Area3D = scanner_visual.get_node_or_null(
+		"Area3D"
+	) as Area3D
+
+	if area != null:
+		area.monitoring = false
+		area.monitorable = false
+
+		var collision_shape: CollisionShape3D = (
+			area.get_node_or_null("CollisionShape3D")
+			as CollisionShape3D
+		)
+
+		if collision_shape != null:
+			collision_shape.disabled = true
+
+	# Attach to the existing third-person item target.
+	held_item_target.add_child(scanner_visual)
+
+	scanner_visual.position = Vector3(0.0, -0.12, -0.02)
+	scanner_visual.rotation = Vector3(
+		deg_to_rad(-12.0),
+		0.0,
+		deg_to_rad(15.0)
+	)
+
+	scanner_network_visual = scanner_visual
 
 	set_hand_ik(
 		Hand.RIGHT,

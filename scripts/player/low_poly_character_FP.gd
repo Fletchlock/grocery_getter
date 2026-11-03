@@ -160,7 +160,6 @@ var held_restock_box_visual: Node3D = null
 # === Held Restock Scanner Variables ===
 @export var network_holding_restock_scanner: bool = false
 var held_restock_scanner: Node3D = null
-var held_restock_scanner_visual: Node3D = null
 var held_restock_scanner_holder: Node3D = null
 var last_restock_wheel_time_usec: int = 0
 var _network_holding_restock_scanner_last_received: bool = false
@@ -2521,57 +2520,8 @@ func _update_network_restock_scanner_visual() -> void:
 	if is_multiplayer_authority():
 		return
 
-	# Remove the previous scanner visual.
-	if held_restock_scanner_visual != null:
-		held_restock_scanner_visual.queue_free()
-		held_restock_scanner_visual = null
-
-	if not network_holding_restock_scanner:
-		player_equipment.clear_hand_ik(
-			PlayerEquipment.Hand.RIGHT
-		)
-		return
-
-	# Create a visual copy of the scanner.
-	var scanner_scene: PackedScene = preload(
-		"res://scenes/objects/terminals/restock_scanner.tscn"
-	)
-
-	var scanner_visual: Node3D = scanner_scene.instantiate() as Node3D
-
-	if scanner_visual == null:
-		return
-
-	# Disable interaction and collision on the visual copy.
-	var area: Area3D = scanner_visual.get_node_or_null(
-		"Area3D"
-	) as Area3D
-
-	if area != null:
-		area.monitoring = false
-		area.monitorable = false
-
-		var _collision_shape: CollisionShape3D = (
-			area.get_node_or_null("CollisionShape3D")
-			as CollisionShape3D
-		)
-
-		if _collision_shape != null:
-			_collision_shape.disabled = true
-
-	# Attach the scanner to the remote player's hand visual.
-	held_item_target.add_child(scanner_visual)
-
-	# Scanner-specific visual offset.
-	scanner_visual.position = Vector3(0.0, -0.12, -0.02)
-	scanner_visual.rotation = Vector3(deg_to_rad(-12.0), 0.0, deg_to_rad(15.0))
-
-	held_restock_scanner_visual = scanner_visual
-	
-	# PlayerEquipment call
-	player_equipment.set_hand_ik(
-		PlayerEquipment.Hand.RIGHT,
-		held_item_hand_target
+	player_equipment.update_scanner_visual(
+		network_holding_restock_scanner
 	)
 
 
@@ -2581,8 +2531,6 @@ func clear_held_item() -> void:
 		return
 
 	_clear_held_item()
-
-
 
 
 @rpc("any_peer", "call_remote", "reliable")
