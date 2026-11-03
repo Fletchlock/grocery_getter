@@ -155,33 +155,40 @@ func _clear_ik_target(ik: TwoBoneIK3D) -> void:
 	ik.set_target_node(0, NodePath(""))
 
 
+
 # === IK Ownership ===
 func can_claim_ik(
-	owner: StringName,
+	equipment_owner: StringName,
 	hand: Hand
 ) -> bool:
-	if owner == &"":
+	if equipment_owner == &"":
 		return false
 
 	match hand:
 		Hand.LEFT:
-			return left_ik_owner == &"" or left_ik_owner == owner
+			return (
+				left_ik_owner == &""
+				or left_ik_owner == equipment_owner
+			)
 
 		Hand.RIGHT:
-			return right_ik_owner == &"" or right_ik_owner == owner
+			return (
+				right_ik_owner == &""
+				or right_ik_owner == equipment_owner
+			)
 
 		Hand.BOTH:
 			return (
-				(left_ik_owner == &"" or left_ik_owner == owner)
+				(left_ik_owner == &"" or left_ik_owner == equipment_owner)
 				and
-				(right_ik_owner == &"" or right_ik_owner == owner)
+				(right_ik_owner == &"" or right_ik_owner == equipment_owner)
 			)
 
 	return false
 
 
 func claim_hand_ik(
-	owner: StringName,
+	equipment_owner: StringName,
 	hand: Hand,
 	target: Node3D
 ) -> bool:
@@ -191,23 +198,23 @@ func claim_hand_ik(
 	if not is_instance_valid(target):
 		return false
 
-	if not can_claim_ik(owner, hand):
+	if not can_claim_ik(equipment_owner, hand):
 		return false
 
 	match hand:
 		Hand.LEFT:
 			_assign_ik_target(left_hand_ik, target)
-			left_ik_owner = owner
+			left_ik_owner = equipment_owner
 
 		Hand.RIGHT:
 			_assign_ik_target(right_hand_ik, target)
-			right_ik_owner = owner
+			right_ik_owner = equipment_owner
 
 	return true
 
 
 func claim_both_hand_ik(
-	owner: StringName,
+	equipment_owner: StringName,
 	left_target: Node3D,
 	right_target: Node3D
 ) -> bool:
@@ -217,34 +224,35 @@ func claim_both_hand_ik(
 	if not is_instance_valid(right_target):
 		return false
 
-	if not can_claim_ik(owner, Hand.BOTH):
+	if not can_claim_ik(equipment_owner, Hand.BOTH):
 		return false
 
 	_assign_ik_target(left_hand_ik, left_target)
 	_assign_ik_target(right_hand_ik, right_target)
 
-	left_ik_owner = owner
-	right_ik_owner = owner
+	left_ik_owner = equipment_owner
+	right_ik_owner = equipment_owner
 
 	return true
 
 
 func release_hand_ik(
-	owner: StringName,
+	equipment_owner: StringName,
 	hand: Hand
 ) -> void:
-	if owner == &"":
+	if equipment_owner == &"":
 		return
 
 	if hand == Hand.LEFT or hand == Hand.BOTH:
-		if left_ik_owner == owner:
+		if left_ik_owner == equipment_owner:
 			_clear_ik_target(left_hand_ik)
 			left_ik_owner = &""
 
 	if hand == Hand.RIGHT or hand == Hand.BOTH:
-		if right_ik_owner == owner:
+		if right_ik_owner == equipment_owner:
 			_clear_ik_target(right_hand_ik)
 			right_ik_owner = &""
+
 
 
 # General Equip Functions.
@@ -330,7 +338,7 @@ func update_product_visual(
 ) -> void:
 	if not holding or product_path.is_empty():
 		product_network_visual.visible = false
-		clear_hand_ik(Hand.RIGHT)
+		release_hand_ik(&"product", Hand.RIGHT)
 		return
 
 	var resource: Resource = load(product_path)
@@ -349,7 +357,8 @@ func update_product_visual(
 	product_network_visual.scale = product.hand_scale
 	product_network_visual.visible = true
 
-	set_hand_ik(
+	claim_hand_ik(
+		&"product",
 		Hand.RIGHT,
 		held_item_hand_target
 	)
@@ -364,7 +373,7 @@ func update_scanner_visual(holding: bool) -> void:
 	scanner_network_visual = null
 
 	if not holding:
-		clear_hand_ik(Hand.RIGHT)
+		release_hand_ik(&"scanner", Hand.RIGHT)
 		return
 
 	# Create a visual copy of the scanner.
@@ -404,7 +413,8 @@ func update_scanner_visual(holding: bool) -> void:
 
 	scanner_network_visual = scanner_visual
 
-	set_hand_ik(
+	claim_hand_ik(
+		&"scanner",
 		Hand.RIGHT,
 		held_item_hand_target
 	)
@@ -422,7 +432,7 @@ func update_restock_box_visual(
 
 	if not holding or product_path.is_empty():
 		restock_box_network_visual.visible = false
-		clear_hand_ik(Hand.BOTH)
+		release_hand_ik(&"restock_box", Hand.BOTH)
 		return
 
 	var loaded_resource: Resource = load(product_path)
@@ -460,7 +470,8 @@ func update_restock_box_visual(
 	restock_box_network_visual.visible = true
 
 	# Both hands hold the box.
-	set_both_hand_ik(
+	claim_both_hand_ik(
+		&"restock_box",
 		held_box_hand_target_left,
 		held_box_hand_target_right
 	)
