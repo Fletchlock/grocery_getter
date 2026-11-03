@@ -187,7 +187,6 @@ var server_cleaning_started_usec: int = 0
 @onready var held_item_hand_target: Node3D = $Armature/HeldItemHandTarget
 @onready var held_item_target: Node3D = $Armature/HeldItemTarget
 @onready var held_item_network_visual: MeshInstance3D = $Armature/HeldItemTarget/HeldItemNetworkVisual
-@onready var held_restock_box_network_visual: Node3D = $Armature/HeldItemTarget/HeldRestockBoxNetworkVisual
 @onready var held_box_hand_target_right: Node3D = $Armature/HeldBoxHandTargetRight
 @onready var held_box_hand_target_left: Node3D = $Armature/HeldBoxHandTargetLeft
 
@@ -2457,62 +2456,10 @@ func _update_network_restock_box_visual() -> void:
 	if is_multiplayer_authority():
 		return
 
-	# Remove the previous box visual.
-	for child in held_restock_box_network_visual.get_children():
-		child.queue_free()
-
-	if (
-		not network_holding_restock_box
-		or network_restock_box_product_path.is_empty()
-	):
-		held_restock_box_network_visual.visible = false
-
-		player_equipment.clear_hand_ik(
-			PlayerEquipment.Hand.BOTH
-		)
-
-		return
-
-	var loaded_resource: Resource = load(
-		network_restock_box_product_path
-	)
-
-	if not loaded_resource is ProductData:
-		held_restock_box_network_visual.visible = false
-		return
-
-	# Create a visual copy of the restock box.
-	var box_scene: PackedScene = preload(
-		"res://scenes/items/restock_box.tscn"
-	)
-
-	var visual_box: RestockBox = box_scene.instantiate() as RestockBox
-
-	if visual_box == null:
-		held_restock_box_network_visual.visible = false
-		return
-
-	visual_box.product_data = loaded_resource as ProductData
-	visual_box.quantity = network_restock_box_quantity
-	visual_box.scale = Vector3(0.65, 0.65, 0.65)
-
-	# Prevent the remote visual from interfering with physics.
-	var box_body: StaticBody3D = visual_box.get_node_or_null(
-		"StaticBody3D"
-	) as StaticBody3D
-
-	if box_body != null:
-		box_body.collision_layer = 0
-		box_body.collision_mask = 0
-
-	held_restock_box_network_visual.add_child(visual_box)
-	visual_box.transform = Transform3D.IDENTITY
-	held_restock_box_network_visual.visible = true
-	
-	# PlayerEquipment call
-	player_equipment.set_both_hand_ik(
-		held_box_hand_target_left,
-		held_box_hand_target_right
+	player_equipment.update_restock_box_visual(
+		network_holding_restock_box,
+		network_restock_box_product_path,
+		network_restock_box_quantity
 	)
 
 

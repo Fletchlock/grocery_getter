@@ -50,6 +50,16 @@ const RESTOCK_SCANNER_SCENE: PackedScene = preload(
 
 var scanner_network_visual: Node3D = null
 
+# === Restock Box Visuals ===
+
+const RESTOCK_BOX_SCENE: PackedScene = preload(
+	"res://scenes/items/restock_box.tscn"
+)
+
+@onready var restock_box_network_visual: Node3D = (
+	$"../Armature/HeldItemTarget/HeldRestockBoxNetworkVisual"
+)
+
 
 func _ready() -> void:
 	standing_item_target_position = held_item_target.position
@@ -311,4 +321,60 @@ func update_scanner_visual(holding: bool) -> void:
 	set_hand_ik(
 		Hand.RIGHT,
 		held_item_hand_target
+	)
+
+
+# === Restock Box Visuals ===
+func update_restock_box_visual(
+	holding: bool,
+	product_path: String,
+	quantity: int
+) -> void:
+	# Remove the previous box visual.
+	for child: Node in restock_box_network_visual.get_children():
+		child.queue_free()
+
+	if not holding or product_path.is_empty():
+		restock_box_network_visual.visible = false
+		clear_hand_ik(Hand.BOTH)
+		return
+
+	var loaded_resource: Resource = load(product_path)
+
+	if not loaded_resource is ProductData:
+		restock_box_network_visual.visible = false
+		return
+
+	# Create a visual copy of the restock box.
+	var visual_box: RestockBox = (
+		RESTOCK_BOX_SCENE.instantiate() as RestockBox
+	)
+
+	if visual_box == null:
+		restock_box_network_visual.visible = false
+		return
+
+	visual_box.product_data = loaded_resource as ProductData
+	visual_box.quantity = quantity
+	visual_box.scale = Vector3(0.65, 0.65, 0.65)
+
+	# Disable collision on the remote visual.
+	var box_body: StaticBody3D = (
+		visual_box.get_node_or_null("StaticBody3D")
+		as StaticBody3D
+	)
+
+	if box_body != null:
+		box_body.collision_layer = 0
+		box_body.collision_mask = 0
+
+	# Attach the box to the existing TPP holder.
+	restock_box_network_visual.add_child(visual_box)
+	visual_box.transform = Transform3D.IDENTITY
+	restock_box_network_visual.visible = true
+
+	# Both hands hold the box.
+	set_both_hand_ik(
+		held_box_hand_target_left,
+		held_box_hand_target_right
 	)
