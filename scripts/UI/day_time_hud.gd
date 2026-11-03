@@ -50,6 +50,7 @@ func _ready() -> void:
 	LobbyManager.lobby_player_updated.connect(_on_lobby_player_updated)
 	DayManager.clock_updated.connect(_on_clock_updated)
 	ReputationManager.reputation_changed.connect(_update_reputation_stars)
+	ProductUnlockManager.product_unlocked.connect(_on_product_unlocked)
 	_update_reputation_stars(ReputationManager.store_reputation)
 	
 	# Display the current clock immediately, in case the clock
@@ -63,7 +64,6 @@ func _ready() -> void:
 	OrderManager.orders_synced.connect(_update_order_notifications)
 	_update_order_notifications()
 	call_deferred("_connect_order_carts")
-	call_deferred("test_product_unlock_notifications") # TEST CALL
 	
 	
 func _process(_delta: float) -> void:
@@ -84,10 +84,21 @@ func _exit_tree() -> void:
 		OrderManager.orders_synced.disconnect(_update_order_notifications)
 	if ReputationManager.reputation_changed.is_connected(_update_reputation_stars):
 		ReputationManager.reputation_changed.disconnect(_update_reputation_stars)
+	if ProductUnlockManager.product_unlocked.is_connected(
+		_on_product_unlocked
+	):
+		ProductUnlockManager.product_unlocked.disconnect(
+			_on_product_unlocked
+		)
 
 func _on_lobby_player_updated(_peer_id: int) -> void:
 	_update_active_notifications()
 
+func _on_product_unlocked(
+		_save_id: String,
+		product_name: String
+	) -> void:
+	queue_product_unlock(product_name)
 
 func _on_clock_updated(
 	_day: int,
@@ -248,7 +259,7 @@ func _remove_product_unlock_notification(
 		unlock_notification_duration
 	).timeout
 
-	if not is_instance_valid(notification):
+	if not is_instance_valid(unlock_notification):
 		active_unlock_notifications = maxi(
 			0,
 			active_unlock_notifications - 1

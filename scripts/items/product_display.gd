@@ -106,6 +106,7 @@ func _ready() -> void:
 	# Record the initial quantity for new displays.
 	if not Engine.is_editor_hint():
 		_save_stock_quantity()
+		ProductUnlockManager.register_display(self)
 
 
 func _exit_tree() -> void:
