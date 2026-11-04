@@ -1434,7 +1434,10 @@ func _update_remote_equipment_visuals() -> void:
 	):
 		_network_holding_item_last_received = network_holding_item
 		_network_held_item_path_last_received = network_held_item_path
-		_update_network_held_item_visual()
+		player_equipment.update_product_visual(
+			network_holding_item,
+			network_held_item_path
+		)
 	# Restock box
 	if (
 		network_holding_restock_box != _network_holding_restock_box_last_received
@@ -1444,7 +1447,11 @@ func _update_remote_equipment_visuals() -> void:
 		_network_holding_restock_box_last_received = network_holding_restock_box
 		_network_restock_box_product_path_last_received = network_restock_box_product_path
 		_network_restock_box_quantity_last_received = network_restock_box_quantity
-		_update_network_restock_box_visual()
+		player_equipment.update_restock_box_visual(
+			network_holding_restock_box,
+			network_restock_box_product_path,
+			network_restock_box_quantity
+		)
 	# Restock scanner
 	if (
 		network_holding_restock_scanner
@@ -1453,7 +1460,9 @@ func _update_remote_equipment_visuals() -> void:
 		_network_holding_restock_scanner_last_received = (
 			network_holding_restock_scanner
 		)
-		_update_network_restock_scanner_visual()
+		player_equipment.update_scanner_visual(
+			network_holding_restock_scanner
+		)
 
 
 func find_nearest_player() -> Node3D:
@@ -2342,16 +2351,6 @@ func _clear_held_item() -> void:
 	held_item_origin = ItemOrigin.NONE
 
 
-func _update_network_held_item_visual() -> void:
-	if is_multiplayer_authority():
-		return
-
-	player_equipment.update_product_visual(
-		network_holding_item,
-		network_held_item_path
-	)
-
-
 func _clear_held_restock_box() -> void:
 	player_equipment.remove_equipment_visual(held_restock_box)
 
@@ -2368,26 +2367,6 @@ func clear_held_restock_box() -> void:
 		return
 
 	_clear_held_restock_box()
-
-
-func _update_network_restock_box_visual() -> void:
-	if is_multiplayer_authority():
-		return
-
-	player_equipment.update_restock_box_visual(
-		network_holding_restock_box,
-		network_restock_box_product_path,
-		network_restock_box_quantity
-	)
-
-
-func _update_network_restock_scanner_visual() -> void:
-	if is_multiplayer_authority():
-		return
-
-	player_equipment.update_scanner_visual(
-		network_holding_restock_scanner
-	)
 
 
 @rpc("any_peer", "call_remote", "reliable")
