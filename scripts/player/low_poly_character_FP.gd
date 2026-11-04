@@ -620,35 +620,8 @@ func _physics_process(delta: float) -> void:
 
 		var hat = body_mesh.get_node("Hat")
 		hat.visible = network_hat_visible
-
-		if (
-			network_holding_item != _network_holding_item_last_received
-			or network_held_item_path != _network_held_item_path_last_received
-		):
-			_network_holding_item_last_received = network_holding_item
-			_network_held_item_path_last_received = network_held_item_path
-			_update_network_held_item_visual()
 		
-			# Network holding_restock_box visual
-		if (
-			network_holding_restock_box != _network_holding_restock_box_last_received
-			or network_restock_box_product_path != _network_restock_box_product_path_last_received
-			or network_restock_box_quantity != _network_restock_box_quantity_last_received
-		):
-			_network_holding_restock_box_last_received = network_holding_restock_box
-			_network_restock_box_product_path_last_received = network_restock_box_product_path
-			_network_restock_box_quantity_last_received = network_restock_box_quantity
-			_update_network_restock_box_visual()
-		
-				# Network holding restock scanner visual
-		if (
-			network_holding_restock_scanner
-			!= _network_holding_restock_scanner_last_received
-		):
-			_network_holding_restock_scanner_last_received = (
-				network_holding_restock_scanner
-			)
-			_update_network_restock_scanner_visual()
+		_update_remote_equipment_visuals()
 		
 		# Detect a new received network state...
 		if (
@@ -1451,6 +1424,36 @@ func update_crouch_collision() -> void:
 		capsule.radius = 0.4
 		capsule.height = 2.0
 		collision_shape.position.y = 1.0
+
+
+func _update_remote_equipment_visuals() -> void:
+	# Product
+	if (
+		network_holding_item != _network_holding_item_last_received
+		or network_held_item_path != _network_held_item_path_last_received
+	):
+		_network_holding_item_last_received = network_holding_item
+		_network_held_item_path_last_received = network_held_item_path
+		_update_network_held_item_visual()
+	# Restock box
+	if (
+		network_holding_restock_box != _network_holding_restock_box_last_received
+		or network_restock_box_product_path != _network_restock_box_product_path_last_received
+		or network_restock_box_quantity != _network_restock_box_quantity_last_received
+	):
+		_network_holding_restock_box_last_received = network_holding_restock_box
+		_network_restock_box_product_path_last_received = network_restock_box_product_path
+		_network_restock_box_quantity_last_received = network_restock_box_quantity
+		_update_network_restock_box_visual()
+	# Restock scanner
+	if (
+		network_holding_restock_scanner
+		!= _network_holding_restock_scanner_last_received
+	):
+		_network_holding_restock_scanner_last_received = (
+			network_holding_restock_scanner
+		)
+		_update_network_restock_scanner_visual()
 
 
 func find_nearest_player() -> Node3D:
