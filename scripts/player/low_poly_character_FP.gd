@@ -2282,33 +2282,26 @@ func _clear_restock_scanner() -> void:
 	if not is_multiplayer_authority():
 		return
 
-	if held_restock_scanner != null:
-		held_restock_scanner.queue_free()
-		held_restock_scanner = null
+	player_equipment.remove_equipment_visual(held_restock_scanner)
+	held_restock_scanner = null
 
 	network_holding_restock_scanner = false
 
+
 @rpc("any_peer", "call_local", "reliable")
 func _grant_restock_scanner() -> void:
-	# Only create the actual held scanner for its owning player.
 	if not is_multiplayer_authority():
 		return
 
 	if held_restock_scanner != null:
 		return
 
-	var scanner_scene: PackedScene = preload(
-		"res://scenes/objects/terminals/restock_scanner.tscn"
+	held_restock_scanner = player_equipment.create_local_scanner_visual(
+		held_item_holder
 	)
 
-	var scanner_visual: Node3D = scanner_scene.instantiate() as Node3D
-
-	if scanner_visual == null:
+	if held_restock_scanner == null:
 		return
-
-	held_restock_scanner = scanner_visual
-	held_item_holder.add_child(held_restock_scanner)
-	held_restock_scanner.transform = Transform3D.IDENTITY
 
 	network_holding_restock_scanner = true
 
