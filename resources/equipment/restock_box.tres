@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="EquipmentDefinition" format=3 uid="uid://dt7chfs5lm2v2"]
+
+[ext_resource type="Script" uid="uid://cylorgn2v7ed8" path="res://scripts/player/equipment_definition.gd" id="1_1qrem"]
+[ext_resource type="PackedScene" uid="uid://c88mc0n2e36gd" path="res://scenes/items/restock_box.tscn" id="2_cqkkd"]
+
+[resource]
+script = ExtResource("1_1qrem")
+equipment_id = &"restock_box"
+display_name = "Restock Box"
+visual_scene = ExtResource("2_cqkkd")
+required_hands = 2
+metadata/_custom_type_script = "uid://cylorgn2v7ed8"
