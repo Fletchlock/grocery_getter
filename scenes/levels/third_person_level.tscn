@@ -1275,11 +1275,6 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.07
 [node name="ShelfTag" parent="NavigationRegion3D/Items/Faerie Dust Can" index="5" unique_id=1652248112]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.083642006, -0.020699024, 0.55026764)
 
-[node name="RestockBox" parent="NavigationRegion3D/Items" unique_id=1485363462 instance=ExtResource("45_gxp05")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.21871501, -1.3205578, 7.029539)
-product_data = ExtResource("31_smqka")
-quantity = 2
-
 [node name="Events" type="Node3D" parent="NavigationRegion3D" unique_id=1317218212]
 
 [node name="Shelves" type="Node3D" parent="NavigationRegion3D" unique_id=489182429]
@@ -1821,6 +1816,11 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.5
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="Deliveries" unique_id=1604925430]
 _spawnable_scenes = PackedStringArray("uid://c88mc0n2e36gd")
 spawn_path = NodePath("..")
+
+[node name="RestockBox" parent="Deliveries" unique_id=1485363462 instance=ExtResource("45_gxp05")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.21871501, -1.3205578, 6.608181)
+product_data = ExtResource("31_smqka")
+quantity = 2
 
 [node name="StarDome" type="MeshInstance3D" parent="." unique_id=112496803]
 cast_shadow = 0

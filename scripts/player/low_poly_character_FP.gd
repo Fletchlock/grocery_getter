@@ -1577,10 +1577,6 @@ func _server_pickup_restock_box(
 		push_warning("Restock pickup: box not found: %s" % box_path)
 		return
 
-	if not box.is_in_group("restock_boxes"):
-		push_warning("Restock pickup: box is not registered.")
-		return
-
 	if box.product_data == null:
 		return
 
