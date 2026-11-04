@@ -490,17 +490,22 @@ func create_restock_box_visual(
 	box.product_data = product
 	box.quantity = quantity
 
-	# Remove world-only interaction before entering the tree.
-	var interaction_area: Area3D = (
-		box.get_node_or_null("Area3D") as Area3D
-	)
+	# Keep Area3D/MeshOutline for RestockBox._ready().
+	# Disable interaction without removing required nodes.
+	var interaction_area: Area3D = box.get_node("Area3D") as Area3D
+	interaction_area.monitoring = false
+	interaction_area.monitorable = false
+	interaction_area.collision_layer = 0
+	interaction_area.collision_mask = 0
 
-	if interaction_area != null:
-		box.remove_child(interaction_area)
-		interaction_area.free()
+	var collision_shape: CollisionShape3D = (
+		interaction_area.get_node("CollisionShape3D")
+		as CollisionShape3D
+	)
+	collision_shape.disabled = true
 
 	attachment_target.add_child(box)
-	box.transform = RESTOCK_BOX_DEFINITION.get_attachment_transform()
+	box.transform = Transform3D.IDENTITY
 
 	return box
 
