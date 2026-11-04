@@ -49,8 +49,8 @@ const RESTOCK_SCANNER_DEFINITION: EquipmentDefinition = preload(
 var scanner_network_visual: Node3D = null
 
 # === Restock Box Visuals ===
-const RESTOCK_BOX_SCENE: PackedScene = preload(
-	"res://scenes/items/restock_box.tscn"
+const RESTOCK_BOX_DEFINITION: EquipmentDefinition = preload(
+	"res://resources/equipment/restock_box.tres"
 )
 
 @onready var restock_box_network_visual: Node3D = (
@@ -479,14 +479,18 @@ func update_restock_box_visual(
 	product_path: String,
 	quantity: int
 ) -> void:
-	# Remove any existing box visuals.
+	var equipment_id: StringName = (
+		RESTOCK_BOX_DEFINITION.equipment_id
+	)
+
+	# Remove existing box visuals.
 	for box_child: Node in restock_box_network_visual.get_children():
 		if box_child is Node3D:
 			remove_equipment_visual(box_child as Node3D)
 
 	if not holding or product_path.is_empty():
 		restock_box_network_visual.visible = false
-		release_hand_ik(&"restock_box", Hand.BOTH)
+		release_hand_ik(equipment_id, Hand.BOTH)
 		return
 
 	# Load the product associated with the box.
@@ -494,14 +498,14 @@ func update_restock_box_visual(
 
 	if not loaded_resource is ProductData:
 		restock_box_network_visual.visible = false
-		release_hand_ik(&"restock_box", Hand.BOTH)
+		release_hand_ik(equipment_id, Hand.BOTH)
 		return
 
-	# Create the box using our generic attachment helper.
-	var box_visual: Node3D = attach_equipment_visual(
-		RESTOCK_BOX_SCENE,
+	# Create the visual using its equipment definition.
+	# Product information must be assigned before _ready().
+	var box_visual: Node3D = attach_defined_equipment_visual(
+		RESTOCK_BOX_DEFINITION,
 		restock_box_network_visual,
-		Transform3D.IDENTITY,
 		{
 			&"product_data": loaded_resource as ProductData,
 			&"quantity": quantity
@@ -510,7 +514,7 @@ func update_restock_box_visual(
 
 	if box_visual == null:
 		restock_box_network_visual.visible = false
-		release_hand_ik(&"restock_box", Hand.BOTH)
+		release_hand_ik(equipment_id, Hand.BOTH)
 		return
 
 	var restock_box: RestockBox = box_visual as RestockBox
@@ -518,13 +522,10 @@ func update_restock_box_visual(
 	if restock_box == null:
 		remove_equipment_visual(box_visual)
 		restock_box_network_visual.visible = false
-		release_hand_ik(&"restock_box", Hand.BOTH)
+		release_hand_ik(equipment_id, Hand.BOTH)
 		return
 
-	# Initialize the box scale
-	restock_box.scale = Vector3.ONE
-
-	# Prevent the visual copy from affecting physics.
+	# Disable physics collision on the remote visual.
 	var box_body: StaticBody3D = (
 		restock_box.get_node_or_null("StaticBody3D")
 		as StaticBody3D
@@ -536,9 +537,9 @@ func update_restock_box_visual(
 
 	restock_box_network_visual.visible = true
 
-	# The restock box requires both hands.
+	# Restock boxes require both hands.
 	claim_both_hand_ik(
-		&"restock_box",
+		equipment_id,
 		held_box_hand_target_left,
 		held_box_hand_target_right
 	)
