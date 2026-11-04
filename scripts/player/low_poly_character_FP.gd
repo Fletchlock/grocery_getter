@@ -155,7 +155,9 @@ var held_item_origin: ItemOrigin = ItemOrigin.NONE
 
 # === Held Restock Box Variables ===
 var held_restock_box: RestockBox = null
-var held_restock_box_visual: Node3D = null
+# Server-authoritative contents of the carried box.
+var server_restock_product_path: String = ""
+var server_restock_quantity: int = 0
 
 # === Held Restock Scanner Variables ===
 @export var network_holding_restock_scanner: bool = false
@@ -1566,45 +1568,38 @@ func _server_pickup_restock_box(
 	if get_multiplayer_authority() != requesting_peer_id:
 		return
 
-	if network_holding_restock_box:
+	if not server_restock_product_path.is_empty():
 		return
 
 	var box: RestockBox = get_node_or_null(box_path) as RestockBox
 
-	if not is_instance_valid(box):
+	if box == null:
+		push_warning("Restock pickup: box not found: %s" % box_path)
 		return
 
 	if not box.is_in_group("restock_boxes"):
-		return
-
-	if box.get_parent() == null:
-		return
-
-	if box.get_parent().name != "Deliveries":
-		return
-
-	if box.is_queued_for_deletion():
-		return
-
-	if box.get_meta("picked_up", false):
+		push_warning("Restock pickup: box is not registered.")
 		return
 
 	if box.product_data == null:
 		return
 
-	if box.quantity <= 0:
-		return
-
 	var product_path: String = box.product_data.resource_path
 	var box_quantity: int = box.quantity
 
-	box.set_meta("picked_up", true)
+	if product_path.is_empty():
+		push_warning("Restock pickup: product has no resource path.")
+		return
 
-	# Remove the original on the server.
-	# MultiplayerSpawner handles removal on clients.
+	# The server owns the box contents.
+	server_restock_product_path = product_path
+	server_restock_quantity = box_quantity
+
+	# The delivery MultiplayerSpawner removes the world box
+	# on connected peers when its server-side node is freed.
 	box.queue_free()
 
-	# Give the approved contents to the requesting player.
+	# Only the player who picked it up receives the held box.
 	if requesting_peer_id == multiplayer.get_unique_id():
 		_receive_restock_box(product_path, box_quantity)
 	else:
@@ -1612,7 +1607,7 @@ func _server_pickup_restock_box(
 			requesting_peer_id,
 			product_path,
 			box_quantity
-		)
+	)
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -1629,6 +1624,7 @@ func receive_restock_box(
 	_receive_restock_box(product_path, box_quantity)
 
 
+
 func _receive_restock_box(
 	product_path: String,
 	box_quantity: int
@@ -1641,44 +1637,16 @@ func _receive_restock_box(
 	if product == null:
 		return
 
-	var box_scene: PackedScene = preload(
-		"res://scenes/items/restock_box.tscn"
+	held_restock_box = player_equipment.create_restock_box_visual(
+		product,
+		box_quantity,
+		held_box_holder
 	)
 
-	var held_box: RestockBox = box_scene.instantiate() as RestockBox
-
-	if held_box == null:
+	if held_restock_box == null:
 		return
 
-	held_box.product_data = product
-	held_box.quantity = box_quantity
-
-	# Disable interaction before adding the held copy.
-	var interaction_area: Area3D = (
-		held_box.get_node_or_null("Area3D") as Area3D
-	)
-
-	if interaction_area != null:
-		interaction_area.monitoring = false
-		interaction_area.monitorable = false
-		interaction_area.collision_layer = 0
-		interaction_area.collision_mask = 0
-
-		var collision_shape: CollisionShape3D = (
-			interaction_area.get_node_or_null("CollisionShape3D")
-			as CollisionShape3D
-		)
-
-		if collision_shape != null:
-			collision_shape.disabled = true
-
-	held_box_holder.add_child(held_box)
-
-	held_box.transform = Transform3D.IDENTITY
-	held_box.scale = Vector3(0.8, 0.8, 0.8)
-
-	held_restock_box = held_box
-	held_restock_box_visual = held_box
+	held_restock_box.scale = Vector3(0.8, 0.8, 0.8)
 
 	network_holding_restock_box = true
 	network_restock_box_product_path = product_path
@@ -2484,11 +2452,9 @@ func _update_network_held_item_visual() -> void:
 
 
 func _clear_held_restock_box() -> void:
-	if held_restock_box != null:
-		held_restock_box.queue_free()
+	player_equipment.remove_equipment_visual(held_restock_box)
 
 	held_restock_box = null
-	held_restock_box_visual = null
 
 	network_holding_restock_box = false
 	network_restock_box_product_path = ""

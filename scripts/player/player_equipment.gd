@@ -474,87 +474,68 @@ func update_scanner_visual(holding: bool) -> void:
 
 
 # === Restock Box Visuals ===
+func create_restock_box_visual(
+	product: ProductData,
+	quantity: int,
+	attachment_target: Node3D
+) -> RestockBox:
+	var box: RestockBox = (
+		RESTOCK_BOX_DEFINITION.visual_scene.instantiate()
+		as RestockBox
+	)
+
+	if box == null:
+		return null
+
+	box.product_data = product
+	box.quantity = quantity
+
+	# Remove world-only interaction before entering the tree.
+	var interaction_area: Area3D = (
+		box.get_node_or_null("Area3D") as Area3D
+	)
+
+	if interaction_area != null:
+		box.remove_child(interaction_area)
+		interaction_area.free()
+
+	attachment_target.add_child(box)
+	box.transform = RESTOCK_BOX_DEFINITION.get_attachment_transform()
+
+	return box
+
+
 func update_restock_box_visual(
 	holding: bool,
 	product_path: String,
 	quantity: int
 ) -> void:
-	var equipment_id: StringName = (
-		RESTOCK_BOX_DEFINITION.equipment_id
-	)
+	var equipment_id: StringName = RESTOCK_BOX_DEFINITION.equipment_id
 
-	# Remove existing box visuals.
-	for box_child: Node in restock_box_network_visual.get_children():
-		if box_child is Node3D:
-			remove_equipment_visual(box_child as Node3D)
+	for child: Node in restock_box_network_visual.get_children():
+		child.queue_free()
 
 	if not holding or product_path.is_empty():
 		restock_box_network_visual.visible = false
 		release_hand_ik(equipment_id, Hand.BOTH)
 		return
 
-	# Load the product associated with the box.
-	var loaded_resource: Resource = load(product_path)
+	var product: ProductData = load(product_path) as ProductData
 
-	if not loaded_resource is ProductData:
-		restock_box_network_visual.visible = false
-		release_hand_ik(equipment_id, Hand.BOTH)
+	if product == null:
 		return
 
-	# Create the visual using its equipment definition.
-	# Product information must be assigned before _ready().
-	var box_visual: Node3D = attach_defined_equipment_visual(
-		RESTOCK_BOX_DEFINITION,
-		restock_box_network_visual,
-		{
-			&"product_data": loaded_resource as ProductData,
-			&"quantity": quantity
-		}
+	var box: RestockBox = create_restock_box_visual(
+		product,
+		quantity,
+		restock_box_network_visual
 	)
 
-	if box_visual == null:
-		restock_box_network_visual.visible = false
-		release_hand_ik(equipment_id, Hand.BOTH)
+	if box == null:
 		return
-
-	var restock_box: RestockBox = box_visual as RestockBox
-
-	if restock_box == null:
-		remove_equipment_visual(box_visual)
-		restock_box_network_visual.visible = false
-		release_hand_ik(equipment_id, Hand.BOTH)
-		return
-	# Remote held boxes must never be interactable.
-	var interaction_area: Area3D = (
-		restock_box.get_node_or_null("Area3D") as Area3D
-	)
-
-	if interaction_area != null:
-		interaction_area.monitoring = false
-		interaction_area.monitorable = false
-		interaction_area.collision_layer = 0
-		interaction_area.collision_mask = 0
-
-		var interaction_collision: CollisionShape3D = (
-			interaction_area.get_node_or_null("CollisionShape3D")
-			as CollisionShape3D
-		)
-
-		if interaction_collision != null:
-			interaction_collision.set_deferred("disabled", true)
-	# Disable physics collision on the remote visual.
-	var box_body: StaticBody3D = (
-		restock_box.get_node_or_null("StaticBody3D")
-		as StaticBody3D
-	)
-
-	if box_body != null:
-		box_body.collision_layer = 0
-		box_body.collision_mask = 0
 
 	restock_box_network_visual.visible = true
 
-	# Restock boxes require both hands.
 	claim_both_hand_ik(
 		equipment_id,
 		held_box_hand_target_left,
