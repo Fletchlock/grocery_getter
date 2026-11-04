@@ -1508,7 +1508,10 @@ func get_camera_forward() -> Vector3:
 
 
 func try_pickup_restock_box(box: RestockBox) -> void:
-	if box == null:
+	if not is_multiplayer_authority():
+		return
+
+	if not is_instance_valid(box):
 		return
 
 	if held_restock_box != null:
@@ -1517,77 +1520,24 @@ func try_pickup_restock_box(box: RestockBox) -> void:
 	if held_item != null:
 		return
 
+	if held_restock_scanner != null:
+		return
+
 	if attached_cart != null:
+		return
+
+	if box.product_data == null:
 		return
 
 	var box_path: NodePath = box.get_path()
 
-	# Create a separate copy for the player's hand.
-	var box_scene: PackedScene = preload(
-		"res://scenes/items/restock_box.tscn"
-	)
-
-	var held_box: RestockBox = box_scene.instantiate() as RestockBox
-
-	if held_box == null:
-		return
-
-	held_box.product_data = box.product_data
-	held_box.quantity = box.quantity
-
-	var box_body: StaticBody3D = held_box.get_node_or_null(
-		"StaticBody3D"
-	) as StaticBody3D
-
-	if box_body != null:
-		box_body.collision_layer = 0
-		box_body.collision_mask = 0
-
-	# A held box is a visual copy, not an interactable world box.
-	var held_box_area: Area3D = (
-		held_box.get_node_or_null("Area3D") as Area3D
-	)
-
-	if held_box_area != null:
-		held_box_area.monitoring = false
-		held_box_area.monitorable = false
-		held_box_area.collision_layer = 0
-		held_box_area.collision_mask = 0
-
-		var held_box_collision: CollisionShape3D = (
-			held_box_area.get_node_or_null("CollisionShape3D")
-			as CollisionShape3D
-		)
-
-		if held_box_collision != null:
-			held_box_collision.disabled = true
-
-	held_box_holder.add_child(held_box)
-	held_box.transform = Transform3D.IDENTITY
-	held_box.scale = Vector3(0.8, 0.8, 0.8)
-
-	held_restock_box = held_box
-	held_restock_box_visual = held_box
-
-	network_holding_restock_box = true
-	network_restock_box_product_path = (
-		box.product_data.resource_path
-		if box.product_data != null
-		else ""
-	)
-	network_restock_box_quantity = box.quantity
-
-	# Ask the server to remove the original world box.
 	if multiplayer.is_server():
 		_server_pickup_restock_box(
 			box_path,
 			get_multiplayer_authority()
 		)
 	else:
-		request_pickup_restock_box.rpc_id(
-			1,
-			box_path
-		)
+		request_pickup_restock_box.rpc_id(1, box_path)
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -1616,17 +1566,14 @@ func _server_pickup_restock_box(
 	if get_multiplayer_authority() != requesting_peer_id:
 		return
 
-	var box_node: Node = get_node_or_null(box_path)
-
-	if box_node == null:
+	if network_holding_restock_box:
 		return
 
-	if not box_node is RestockBox:
+	var box: RestockBox = get_node_or_null(box_path) as RestockBox
+
+	if not is_instance_valid(box):
 		return
 
-	var box: RestockBox = box_node as RestockBox
-
-	# Only real delivery boxes can be picked up.
 	if not box.is_in_group("restock_boxes"):
 		return
 
@@ -1642,9 +1589,100 @@ func _server_pickup_restock_box(
 	if box.get_meta("picked_up", false):
 		return
 
+	if box.product_data == null:
+		return
+
+	if box.quantity <= 0:
+		return
+
+	var product_path: String = box.product_data.resource_path
+	var box_quantity: int = box.quantity
+
 	box.set_meta("picked_up", true)
 
-	remove_world_restock_box.rpc(box_path)
+	# Remove the original on the server.
+	# MultiplayerSpawner handles removal on clients.
+	box.queue_free()
+
+	# Give the approved contents to the requesting player.
+	if requesting_peer_id == multiplayer.get_unique_id():
+		_receive_restock_box(product_path, box_quantity)
+	else:
+		receive_restock_box.rpc_id(
+			requesting_peer_id,
+			product_path,
+			box_quantity
+		)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func receive_restock_box(
+	product_path: String,
+	box_quantity: int
+) -> void:
+	if multiplayer.get_remote_sender_id() != 1:
+		return
+
+	if not is_multiplayer_authority():
+		return
+
+	_receive_restock_box(product_path, box_quantity)
+
+
+func _receive_restock_box(
+	product_path: String,
+	box_quantity: int
+) -> void:
+	if held_restock_box != null:
+		return
+
+	var product: ProductData = load(product_path) as ProductData
+
+	if product == null:
+		return
+
+	var box_scene: PackedScene = preload(
+		"res://scenes/items/restock_box.tscn"
+	)
+
+	var held_box: RestockBox = box_scene.instantiate() as RestockBox
+
+	if held_box == null:
+		return
+
+	held_box.product_data = product
+	held_box.quantity = box_quantity
+
+	# Disable interaction before adding the held copy.
+	var interaction_area: Area3D = (
+		held_box.get_node_or_null("Area3D") as Area3D
+	)
+
+	if interaction_area != null:
+		interaction_area.monitoring = false
+		interaction_area.monitorable = false
+		interaction_area.collision_layer = 0
+		interaction_area.collision_mask = 0
+
+		var collision_shape: CollisionShape3D = (
+			interaction_area.get_node_or_null("CollisionShape3D")
+			as CollisionShape3D
+		)
+
+		if collision_shape != null:
+			collision_shape.disabled = true
+
+	held_box_holder.add_child(held_box)
+
+	held_box.transform = Transform3D.IDENTITY
+	held_box.scale = Vector3(0.8, 0.8, 0.8)
+
+	held_restock_box = held_box
+	held_restock_box_visual = held_box
+
+	network_holding_restock_box = true
+	network_restock_box_product_path = product_path
+	network_restock_box_quantity = box_quantity
 
 
 # Mop pick up
@@ -2119,25 +2157,6 @@ func _server_can_clean_spill(spill: Spill) -> bool:
 		return false
 
 	return true
-
-
-
-@rpc("any_peer", "call_local", "reliable")
-func remove_world_restock_box(box_path: NodePath) -> void:
-	var sender_id: int = multiplayer.get_remote_sender_id()
-
-	if sender_id != 0 and sender_id != 1:
-		return
-
-	var box_node: Node = get_node_or_null(box_path)
-
-	if box_node == null:
-		return
-
-	if not box_node is RestockBox:
-		return
-
-	box_node.queue_free()
 
 
 func request_pickup_restock_scanner(scanner: Node3D) -> void:
