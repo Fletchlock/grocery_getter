@@ -1593,6 +1593,20 @@ func _server_pickup_restock_box(
 
 	# The delivery MultiplayerSpawner removes the world box
 	# on connected peers when its server-side node is freed.
+	var spawner: MultiplayerSpawner = (
+		box.get_parent().get_node_or_null("MultiplayerSpawner")
+		as MultiplayerSpawner
+		)
+
+	var is_spawned_box: bool = (
+		spawner != null
+		and box.get_scene_file_path().is_empty()
+	)
+
+	if not is_spawned_box:
+		remove_placed_restock_box.rpc(box_path)
+
+	box.remove_from_world.rpc()
 	box.queue_free()
 
 	# Only the player who picked it up receives the held box.
@@ -1604,6 +1618,14 @@ func _server_pickup_restock_box(
 			product_path,
 			box_quantity
 	)
+
+
+@rpc("authority", "call_remote", "reliable")
+func remove_placed_restock_box(box_path: NodePath) -> void:
+	var box: RestockBox = get_node_or_null(box_path) as RestockBox
+
+	if box != null:
+		box.queue_free()
 
 
 @rpc("any_peer", "call_remote", "reliable")
