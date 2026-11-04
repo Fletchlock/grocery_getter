@@ -524,7 +524,24 @@ func update_restock_box_visual(
 		restock_box_network_visual.visible = false
 		release_hand_ik(equipment_id, Hand.BOTH)
 		return
+	# Remote held boxes must never be interactable.
+	var interaction_area: Area3D = (
+		restock_box.get_node_or_null("Area3D") as Area3D
+	)
 
+	if interaction_area != null:
+		interaction_area.monitoring = false
+		interaction_area.monitorable = false
+		interaction_area.collision_layer = 0
+		interaction_area.collision_mask = 0
+
+		var interaction_collision: CollisionShape3D = (
+			interaction_area.get_node_or_null("CollisionShape3D")
+			as CollisionShape3D
+		)
+
+		if interaction_collision != null:
+			interaction_collision.set_deferred("disabled", true)
 	# Disable physics collision on the remote visual.
 	var box_body: StaticBody3D = (
 		restock_box.get_node_or_null("StaticBody3D")

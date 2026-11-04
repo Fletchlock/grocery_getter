@@ -1543,6 +1543,25 @@ func try_pickup_restock_box(box: RestockBox) -> void:
 		box_body.collision_layer = 0
 		box_body.collision_mask = 0
 
+	# A held box is a visual copy, not an interactable world box.
+	var held_box_area: Area3D = (
+		held_box.get_node_or_null("Area3D") as Area3D
+	)
+
+	if held_box_area != null:
+		held_box_area.monitoring = false
+		held_box_area.monitorable = false
+		held_box_area.collision_layer = 0
+		held_box_area.collision_mask = 0
+
+		var held_box_collision: CollisionShape3D = (
+			held_box_area.get_node_or_null("CollisionShape3D")
+			as CollisionShape3D
+		)
+
+		if held_box_collision != null:
+			held_box_collision.disabled = true
+
 	held_box_holder.add_child(held_box)
 	held_box.transform = Transform3D.IDENTITY
 	held_box.scale = Vector3(0.8, 0.8, 0.8)
@@ -1606,6 +1625,19 @@ func _server_pickup_restock_box(
 		return
 
 	var box: RestockBox = box_node as RestockBox
+
+	# Only real delivery boxes can be picked up.
+	if not box.is_in_group("restock_boxes"):
+		return
+
+	if box.get_parent() == null:
+		return
+
+	if box.get_parent().name != "Deliveries":
+		return
+
+	if box.is_queued_for_deletion():
+		return
 
 	if box.get_meta("picked_up", false):
 		return
