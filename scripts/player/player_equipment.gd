@@ -42,8 +42,8 @@ var right_ik_owner: StringName = &""
 )
 
 # === Restock Scanner Visuals ===
-const RESTOCK_SCANNER_SCENE: PackedScene = preload(
-	"res://scenes/objects/terminals/restock_scanner.tscn"
+const RESTOCK_SCANNER_DEFINITION: EquipmentDefinition = preload(
+	"res://resources/equipment/restock_scanner.tres"
 )
 
 var scanner_network_visual: Node3D = null
@@ -364,6 +364,25 @@ func attach_equipment_visual(
 	return equipment_visual
 
 
+func attach_defined_equipment_visual(
+	equipment_definition: EquipmentDefinition,
+	attachment_target: Node3D,
+	initial_properties: Dictionary = {}
+) -> Node3D:
+	if equipment_definition == null:
+		return null
+
+	if equipment_definition.visual_scene == null:
+		return null
+
+	return attach_equipment_visual(
+		equipment_definition.visual_scene,
+		attachment_target,
+		equipment_definition.get_attachment_transform(),
+		initial_properties
+	)
+
+
 func remove_equipment_visual(
 	equipment_visual: Node3D
 ) -> void:
@@ -408,36 +427,26 @@ func update_product_visual(
 
 # === Restock Scanner Visuals ===
 func update_scanner_visual(holding: bool) -> void:
-	# Remove the previous scanner visual.
 	remove_equipment_visual(scanner_network_visual)
 	scanner_network_visual = null
 
-	if not holding:
-		release_hand_ik(&"scanner", Hand.RIGHT)
-		return
-
-	# Scanner-specific attachment transform.
-	var scanner_transform: Transform3D = Transform3D(
-		Basis.from_euler(
-			Vector3(
-				deg_to_rad(-12.0),
-				0.0,
-				deg_to_rad(15.0)
-			)
-		),
-		Vector3(0.0, -0.12, -0.02)
+	var equipment_id: StringName = (
+		RESTOCK_SCANNER_DEFINITION.equipment_id
 	)
 
-	var scanner_visual: Node3D = attach_equipment_visual(
-		RESTOCK_SCANNER_SCENE,
-		held_item_target,
-		scanner_transform
+	if not holding:
+		release_hand_ik(equipment_id, Hand.RIGHT)
+		return
+
+	var scanner_visual: Node3D = attach_defined_equipment_visual(
+		RESTOCK_SCANNER_DEFINITION,
+		held_item_target
 	)
 
 	if scanner_visual == null:
 		return
 
-	# Disable interaction and collision on the visual copy.
+	# Disable interaction and collision on the remote visual.
 	var interaction_area: Area3D = (
 		scanner_visual.get_node_or_null("Area3D")
 		as Area3D
@@ -458,11 +467,10 @@ func update_scanner_visual(holding: bool) -> void:
 	scanner_network_visual = scanner_visual
 
 	claim_hand_ik(
-		&"scanner",
+		equipment_id,
 		Hand.RIGHT,
 		held_item_hand_target
 	)
-
 
 
 # === Restock Box Visuals ===

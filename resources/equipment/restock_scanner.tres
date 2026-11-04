@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EquipmentDefinition" format=3 uid="uid://cfcxb2nayv1p0"]
+
+[ext_resource type="Script" uid="uid://cylorgn2v7ed8" path="res://scripts/player/equipment_definition.gd" id="1_ipjoe"]
+[ext_resource type="PackedScene" uid="uid://dccshi4p6fj81" path="res://scenes/objects/terminals/restock_scanner.tscn" id="2_o2icw"]
+
+[resource]
+script = ExtResource("1_ipjoe")
+equipment_id = &"scanner"
+display_name = "Restock Scanner"
+visual_scene = ExtResource("2_o2icw")
+attachment_position = Vector3(0, -0.12, -0.02)
+attachment_rotation = Vector3(-12, 0, 15)
+metadata/_custom_type_script = "uid://cylorgn2v7ed8"
