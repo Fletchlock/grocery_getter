@@ -97,9 +97,6 @@ func _process(_delta: float) -> void:
 			"Area3D/MeshOutline"
 		) as Node3D
 
-		if current_outline_mesh:
-			current_outline_mesh.visible = true
-
 	_update_interaction_prompt(collider, interactable)
 
 
@@ -292,9 +289,9 @@ func _get_collision_shape(collider: Node3D) -> CollisionShape3D:
 
 
 func _update_interaction_prompt(
-	collider: Node3D,
-	interactable: Node3D
-) -> void:
+		collider: Node3D,
+		interactable: Node3D
+	) -> void:
 	if interaction_prompt == null:
 		return
 
@@ -312,6 +309,10 @@ func _update_interaction_prompt(
 
 	if prompt_text.is_empty():
 		_hide_prompt()
+
+		if current_outline_mesh:
+			current_outline_mesh.visible = false
+
 		return
 
 	var collision_shape: CollisionShape3D = _get_collision_shape(collider)
@@ -378,6 +379,8 @@ func _update_interaction_prompt(
 
 	interaction_prompt.global_position = prompt_position
 	interaction_prompt.visible = true
+	if current_outline_mesh:
+		current_outline_mesh.visible = true
 
 
 func _hide_prompt() -> void:
