@@ -167,10 +167,6 @@ var last_restock_wheel_time_usec: int = 0
 var _network_holding_restock_scanner_last_received: bool = false
 
 # === Held Mop Variables
-const MOP_SCENE: PackedScene = preload(
-	"res://scenes/objects/tools/mop.tscn"
-)
-
 @export_group("Held Mop")
 @export var mop_hold_position: Vector3 = Vector3(0.25, 0.00, 0.00)
 @export var mop_hold_rotation: Vector3 = Vector3(110.0, 0.0, -25.0)
@@ -1743,63 +1739,12 @@ func _grant_mop() -> void:
 	if held_mop != null:
 		return
 
-	var mop_visual: Node3D = MOP_SCENE.instantiate() as Node3D
-
-	if mop_visual == null:
-		return
-
-	held_mop = mop_visual
-	held_item_holder.add_child(held_mop)
-
-	# The bucket belongs in the world, not in the player's hands.
-	var bucket_mesh: MeshInstance3D = (
-		held_mop.get_node_or_null("BucketMesh") as MeshInstance3D
+	held_mop = player_equipment.create_local_mop_visual(
+		held_item_holder,
+		mop_hold_position,
+		mop_hold_rotation
 	)
 
-	if bucket_mesh != null:
-		bucket_mesh.hide()
-
-	held_mop.position = mop_hold_position
-	held_mop.rotation_degrees = mop_hold_rotation
-
-	var area: Area3D = (
-		held_mop.get_node_or_null("Area3D") as Area3D
-	)
-
-	if area != null:
-		area.monitoring = false
-		area.monitorable = false
-
-		var mop_collision_shape: CollisionShape3D = (
-			area.get_node_or_null("CollisionShape3D")
-			as CollisionShape3D
-		)
-
-		if mop_collision_shape != null:
-			mop_collision_shape.set_deferred("disabled", true)
-
-	var outline: Node3D = (
-		held_mop.get_node_or_null("Area3D/MeshOutline") as Node3D
-	)
-
-	if outline != null:
-		outline.visible = false
-
-	var return_area: Area3D = (
-		held_mop.get_node_or_null("ReturnArea") as Area3D
-	)
-
-	if return_area != null:
-		return_area.monitoring = false
-		return_area.monitorable = false
-
-		var return_shape: CollisionShape3D = (
-			return_area.get_node_or_null("CollisionShape3D")
-			as CollisionShape3D
-		)
-
-		if return_shape != null:
-			return_shape.set_deferred("disabled", true)
 
 func request_return_mop(mop: Mop) -> void:
 	if held_mop == null:
@@ -1884,9 +1829,8 @@ func _clear_mop() -> void:
 	if not is_multiplayer_authority():
 		return
 
-	if held_mop != null:
-		held_mop.queue_free()
-		held_mop = null
+	player_equipment.remove_equipment_visual(held_mop)
+	held_mop = null
 
 
 func _start_spill_cleaning() -> bool:
