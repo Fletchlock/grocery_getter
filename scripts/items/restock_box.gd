@@ -84,3 +84,8 @@ func request_interact(player: CharacterBody3D) -> void:
 		return
 
 	player.try_pickup_restock_box(self)
+
+
+@rpc("authority", "call_remote", "reliable")
+func remove_from_world() -> void:
+	queue_free()
