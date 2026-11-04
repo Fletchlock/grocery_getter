@@ -138,53 +138,40 @@ func _process(_delta: float) -> void:
 		_update_shelf_tag()
 		_save_stock_quantity()
 
+
 @rpc("any_peer", "call_remote", "reliable")
 func request_restock_from_box(
 	player_path: NodePath,
-	box_product_path: String,
-	box_quantity: int
-	) -> void:
-	if not is_unlocked:
-		return
+	_box_product_path: String,
+	_box_quantity: int
+) -> void:
 	if not multiplayer.is_server():
 		return
 
-	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
-	var player_node: Node = get_node_or_null(player_path)
+	var player: CharacterBody3D = (
+		get_node_or_null(player_path) as CharacterBody3D
+	)
 
-	if player_node == null:
-		return
-
-	if not player_node is CharacterBody3D:
-		return
-
-	var player: CharacterBody3D = player_node as CharacterBody3D
-
-	if player.get_multiplayer_authority() != requesting_peer_id:
-		return
-
-	if product_data == null:
-		return
-
-	if box_product_path != product_data.resource_path:
-		return
-
-	if box_quantity <= 0 or box_quantity > 400:
-		return
-
-	if quantity + box_quantity > max_quantity:
-		return
-
-	_restock_from_box(player, box_quantity)
-
-
-func _restock_from_box(
-	player: CharacterBody3D,
-	box_quantity: int
-	) -> void:
-	if not is_unlocked:
-		return
 	if player == null:
+		return
+
+	if player.get_multiplayer_authority() != multiplayer.get_remote_sender_id():
+		return
+
+	_restock_from_box(player)
+
+
+func _restock_from_box(player: CharacterBody3D) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if not is_unlocked or product_data == null:
+		return
+
+	var product_path: String = player.server_restock_product_path
+	var box_quantity: int = player.server_restock_quantity
+
+	if product_path != product_data.resource_path:
 		return
 
 	if box_quantity <= 0:
@@ -192,6 +179,10 @@ func _restock_from_box(
 
 	if quantity + box_quantity > max_quantity:
 		return
+
+	# Consume the server-held box before applying its contents.
+	player.server_restock_product_path = ""
+	player.server_restock_quantity = 0
 
 	quantity += box_quantity
 
@@ -201,6 +192,7 @@ func _restock_from_box(
 		player._clear_held_restock_box()
 	else:
 		player.clear_held_restock_box.rpc_id(player_peer_id)
+
 
 func request_interact(player: CharacterBody3D) -> void:
 	if not is_unlocked:
@@ -222,7 +214,7 @@ func request_interact(player: CharacterBody3D) -> void:
 			return
 
 		if multiplayer.is_server():
-			_restock_from_box(player, box.quantity)
+			_restock_from_box(player)
 		else:
 			request_restock_from_box.rpc_id(
 				1,
