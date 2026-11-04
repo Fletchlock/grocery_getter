@@ -450,6 +450,15 @@ func update_product_visual(
 
 
 # === Restock Scanner Visuals ===
+func create_local_scanner_visual(
+	attachment_target: Node3D
+) -> Node3D:
+	return attach_defined_equipment_visual(
+		RESTOCK_SCANNER_DEFINITION,
+		attachment_target
+	)
+
+
 func update_scanner_visual(holding: bool) -> void:
 	remove_equipment_visual(scanner_network_visual)
 	scanner_network_visual = null
@@ -535,10 +544,10 @@ func create_restock_box_visual(
 
 
 func update_restock_box_visual(
-	holding: bool,
-	product_path: String,
-	quantity: int
-) -> void:
+		holding: bool,
+		product_path: String,
+		quantity: int
+	) -> void:
 	var equipment_id: StringName = RESTOCK_BOX_DEFINITION.equipment_id
 
 	for child: Node in restock_box_network_visual.get_children():
