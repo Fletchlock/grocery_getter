@@ -579,3 +579,69 @@ func update_restock_box_visual(
 		held_box_hand_target_left,
 		held_box_hand_target_right
 	)
+
+
+# === Mop Visuals ===
+const MOP_SCENE: PackedScene = preload(
+	"res://scenes/objects/tools/mop.tscn"
+)
+
+
+func create_local_mop_visual(
+	attachment_target: Node3D,
+	hold_position: Vector3,
+	hold_rotation: Vector3
+) -> Node3D:
+	var mop_visual: Node3D = attach_equipment_visual(
+		MOP_SCENE,
+		attachment_target
+	)
+
+	if mop_visual == null:
+		return null
+
+	# The bucket remains in the world.
+	var bucket_mesh: MeshInstance3D = (
+		mop_visual.get_node_or_null("BucketMesh") as MeshInstance3D
+	)
+
+	if bucket_mesh != null:
+		bucket_mesh.hide()
+
+	mop_visual.position = hold_position
+	mop_visual.rotation_degrees = hold_rotation
+
+	# Disable interactions on the held copy.
+	_disable_mop_area(mop_visual, "Area3D")
+	_disable_mop_area(mop_visual, "ReturnArea")
+
+	var outline: Node3D = (
+		mop_visual.get_node_or_null("Area3D/MeshOutline") as Node3D
+	)
+
+	if outline != null:
+		outline.visible = false
+
+	return mop_visual
+
+
+func _disable_mop_area(
+	mop_visual: Node3D,
+	area_path: String
+) -> void:
+	var area: Area3D = (
+		mop_visual.get_node_or_null(area_path) as Area3D
+	)
+
+	if area == null:
+		return
+
+	area.monitoring = false
+	area.monitorable = false
+
+	var collision_shape: CollisionShape3D = (
+		area.get_node_or_null("CollisionShape3D") as CollisionShape3D
+	)
+
+	if collision_shape != null:
+		collision_shape.set_deferred("disabled", true)
