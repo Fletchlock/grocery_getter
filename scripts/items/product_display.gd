@@ -243,8 +243,11 @@ func request_interact(player: CharacterBody3D) -> void:
 			)
 
 		return
+	
+	# Only take a new product when hands are empty.
+	if player.is_holding_equipment():
+		return
 
-	# Empty hands means we are trying to take an item.
 	if quantity <= 0:
 		return
 
@@ -284,10 +287,15 @@ func _take_product(player: CharacterBody3D) -> void:
 	if product_data == null:
 		return
 
+	
 	if quantity <= 0:
 		return
 
+	if player.is_holding_equipment():
+		return
+
 	quantity -= 1
+
 
 	var product_path: String = product_data.resource_path
 
@@ -641,8 +649,8 @@ func _ensure_unique_collision_shape() -> void:
 
 
 func get_interaction_prompt_for_player(
-	player: CharacterBody3D
-) -> String:
+		player: CharacterBody3D
+	) -> String:
 	if not is_unlocked:
 		return ""
 	if player == null:
@@ -681,7 +689,10 @@ func get_interaction_prompt_for_player(
 
 		return "[E] Place " + product_data.display_name
 
-	# Player has empty hands.
+	# Only offer a new product when hands are empty.
+	if player.is_holding_equipment():
+		return ""
+
 	if quantity <= 0:
 		return ""
 

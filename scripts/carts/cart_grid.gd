@@ -382,6 +382,12 @@ func get_interaction_prompt_for_player(player: CharacterBody3D) -> String:
 		if player.held_item.display_name.is_empty():
 			return "[E] Place Item"
 		return "[E] Place " + player.held_item.display_name
+	
+	# Other held equipment prevents taking products.
+	if player.is_holding_equipment():
+		_clear_take_item_outline()
+		return ""
+
 	if cart_items.is_empty():
 		_clear_take_item_outline()
 		return ""
@@ -477,6 +483,10 @@ func request_interact(player: CharacterBody3D) -> void:
 		else:
 			request_add_item.rpc_id(1, player.get_path(), path)
 		return
+
+	if player.is_holding_equipment():
+		return
+
 	if has_items():
 		var index: int = _get_take_item_index(player)
 		if index < 0:
@@ -547,11 +557,17 @@ func request_take_item(player_path: NodePath, item_index: int) -> void:
 
 
 func _take_item_for_player(player: CharacterBody3D, item_index: int) -> void:
-	if player == null or player.held_item != null:
+	if player == null:
 		return
+
+	if player.is_holding_equipment():
+		return
+
 	var product: ProductData = take_item_at_index(item_index)
+
 	if product == null:
 		return
+
 	_give_product_to_player(player, product)
 	_broadcast_cart_state(player)
 
