@@ -611,7 +611,7 @@ func _process(delta: float) -> void:
 				blink_timer = randf_range(blink_min_time, blink_max_time)
 	
 	update_idle_look(delta)
-	_update_crouch_hand_targets(delta)
+	player_equipment.update_hand_targets(delta, network_is_crouching)
 	
 func _physics_process(delta: float) -> void:
 
@@ -1456,13 +1456,6 @@ func update_crouch_collision() -> void:
 		capsule.height = 2.0
 		collision_shape.position.y = 1.0
 
-
-func _update_crouch_hand_targets(delta: float) -> void:
-	player_equipment.update_hand_targets(
-		delta,
-		network_is_crouching
-	)
-	
 
 func find_nearest_player() -> Node3D:
 	var nearest_player: Node3D = null
@@ -2427,33 +2420,9 @@ func interact_with_item(item: Node3D) -> void:
 
 
 # Held item functions
-func _create_held_item_visual() -> void:
-	if held_item == null:
-		return
-
-	if held_item_holder == null:
-		return
-
-	if held_item_visual != null:
-		held_item_visual.queue_free()
-		held_item_visual = null
-
-	if held_item.product_mesh == null:
-		return
-
-	held_item_visual = MeshInstance3D.new()
-	held_item_visual.mesh = held_item.product_mesh
-	held_item_visual.position = held_item.hand_position
-	held_item_visual.rotation = held_item.hand_rotation
-	held_item_visual.scale = held_item.hand_scale
-
-	held_item_holder.add_child(held_item_visual)
-
-
 func _clear_held_item() -> void:
-	if held_item_visual != null:
-		held_item_visual.queue_free()
-		held_item_visual = null
+	player_equipment.remove_local_product_visual(held_item_visual)
+	held_item_visual = null
 
 	held_item = null
 	held_item_origin = ItemOrigin.NONE
@@ -2533,15 +2502,12 @@ func receive_product(
 	held_item = loaded_resource as ProductData
 	held_item_origin = origin
 
-	_create_held_item_visual()
+	player_equipment.remove_local_product_visual(held_item_visual)
 
-	print(
-		"PRODUCT PICKUP: ",
-		held_item.display_name,
-		" | Origin: ",
-		ItemOrigin.keys()[held_item_origin]
+	held_item_visual = player_equipment.create_local_product_visual(
+		held_item,
+		held_item_holder
 	)
-
 
 
 func play_footstep() -> void:
