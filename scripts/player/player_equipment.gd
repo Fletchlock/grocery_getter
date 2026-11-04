@@ -393,6 +393,30 @@ func remove_equipment_visual(
 
 
 # === Product Visuals ===
+func create_local_product_visual(
+	product: ProductData,
+	attachment_target: Node3D
+) -> MeshInstance3D:
+	if product == null or product.product_mesh == null:
+		return null
+
+	var visual: MeshInstance3D = MeshInstance3D.new()
+	visual.mesh = product.product_mesh
+	visual.position = product.hand_position
+	visual.rotation = product.hand_rotation
+	visual.scale = product.hand_scale
+
+	attachment_target.add_child(visual)
+
+	return visual
+
+
+func remove_local_product_visual(
+	visual: MeshInstance3D
+) -> void:
+	remove_equipment_visual(visual)
+
+
 func update_product_visual(
 	holding: bool,
 	product_path: String
