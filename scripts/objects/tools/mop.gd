@@ -46,7 +46,9 @@ func get_interaction_prompt_for_player(
 ) -> String:
 	if not is_available:
 		return ""
-
+	if _player.has_method("is_holding_equipment"):
+		if _player.is_holding_equipment():
+			return ""
 	return "[E] Pick Up Mop"
 
 

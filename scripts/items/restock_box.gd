@@ -68,7 +68,11 @@ func _update_label() -> void:
 	quantity_label.text = "QTY: %d" % quantity
 
 
-func get_interaction_prompt_for_player(_player: CharacterBody3D) -> String:
+func get_interaction_prompt_for_player(player: CharacterBody3D) -> String:
+	if player.has_method("is_holding_equipment"):
+		if player.is_holding_equipment():
+			return ""
+
 	return "Pick Up Restock Box"
 
 

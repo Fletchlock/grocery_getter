@@ -234,7 +234,9 @@ func get_stock_order_prompt(display: Node) -> String:
 func get_interaction_prompt_for_player(_player: CharacterBody3D) -> String:
 	if not is_available:
 		return ""
-
+	if _player.has_method("is_holding_equipment"):
+		if _player.is_holding_equipment():
+			return ""
 	return "[E] Pick Up Restock Scanner"
 
 

@@ -1502,6 +1502,16 @@ func get_camera_forward() -> Vector3:
 	return forward_dir
 
 
+# A shared equipment check function to limit redundant checks
+func is_holding_equipment() -> bool:
+	return (
+		held_item != null
+		or held_restock_box != null
+		or held_restock_scanner != null
+		or held_mop != null
+	)
+	
+
 func try_pickup_restock_box(box: RestockBox) -> void:
 	if not is_multiplayer_authority():
 		return
@@ -1509,13 +1519,7 @@ func try_pickup_restock_box(box: RestockBox) -> void:
 	if not is_instance_valid(box):
 		return
 
-	if held_restock_box != null:
-		return
-
-	if held_item != null:
-		return
-
-	if held_restock_scanner != null:
+	if is_holding_equipment():
 		return
 
 	if attached_cart != null:
@@ -1668,19 +1672,10 @@ func _receive_restock_box(
 func request_pickup_mop(mop: Node3D) -> void:
 	if mop == null:
 		return
-
-	if held_mop != null:
+		
+	if is_holding_equipment():
 		return
-
-	if held_item != null:
-		return
-
-	if held_restock_box != null:
-		return
-
-	if held_restock_scanner != null:
-		return
-
+	
 	if attached_cart != null:
 		return
 
@@ -1715,16 +1710,7 @@ func _server_pickup_mop(
 	if get_multiplayer_authority() != requesting_peer_id:
 		return
 
-	if held_mop != null:
-		return
-
-	if held_item != null:
-		return
-
-	if held_restock_box != null:
-		return
-
-	if held_restock_scanner != null:
+	if is_holding_equipment():
 		return
 
 	if attached_cart != null:
@@ -2142,13 +2128,7 @@ func request_pickup_restock_scanner(scanner: Node3D) -> void:
 	if scanner == null:
 		return
 
-	if held_restock_scanner != null:
-		return
-
-	if held_restock_box != null:
-		return
-
-	if held_item != null:
+	if is_holding_equipment():
 		return
 
 	if attached_cart != null:
@@ -2196,13 +2176,7 @@ func _server_pickup_restock_scanner(
 	if get_multiplayer_authority() != requesting_peer_id:
 		return
 
-	if held_restock_scanner != null:
-		return
-
-	if held_restock_box != null:
-		return
-
-	if held_item != null:
+	if is_holding_equipment():
 		return
 
 	if attached_cart != null:
