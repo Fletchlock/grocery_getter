@@ -1194,7 +1194,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.5,
 transform = Transform3D(1, 1.9544538e-08, 2.2127296e-09, -1.9544538e-08, 0.97468936, 0.22356346, 2.2127296e-09, -0.22356346, 0.97468936, 0.19179654, 0.0595766, 0.7866372)
 
 [node name="V&D Can" parent="NavigationRegion3D/Items" unique_id=813833733 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -5.169991, -0.32513154, 0.97072154)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -5.169991, -0.32513154, 0.82716346)
 save_id = "uid://c8l73wx7x8fo2"
 product_data = ExtResource("37_1uuvo")
 grid_rows = 5
@@ -1202,27 +1202,18 @@ product_gap = 0.03
 max_quantity = 25
 quantity = 18
 
-[node name="Area3D" parent="NavigationRegion3D/Items/V&D Can" index="0" unique_id=1400837386]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.054969102)
-
-[node name="CollisionShape3D" parent="NavigationRegion3D/Items/V&D Can/Area3D" index="0" unique_id=211993197]
+[node name="CollisionShape3D" parent="NavigationRegion3D/Items/V&D Can/Area3D" parent_id_path=PackedInt32Array(813833733, 1400837386) index="0" unique_id=211993197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.19739816, 0.05710657, 0.20476851)
 shape = SubResource("BoxShape3D_co3xl")
 
-[node name="MeshOutline" parent="NavigationRegion3D/Items/V&D Can/Area3D" index="1" unique_id=334576936]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0073703527)
-
 [node name="ProductMarker" parent="NavigationRegion3D/Items/V&D Can" index="1" unique_id=1793950634]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0073703527)
-
-[node name="ProductGrid" parent="NavigationRegion3D/Items/V&D Can" index="2" unique_id=704526395]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0073703527)
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/V&D Can" index="4" unique_id=2005891054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.2404871, 0, 0.83547354)
 
 [node name="ShelfTag" parent="NavigationRegion3D/Items/V&D Can" index="5" unique_id=1652248112]
-transform = Transform3D(1, 2.5436298e-09, 3.701217e-11, -2.5436298e-09, 0.9995766, 0.029095734, 3.701217e-11, -0.029095734, 0.9995766, 0.12888527, -0.018599868, 0.5273274)
+transform = Transform3D(1, 2.5436298e-09, 3.701217e-11, -2.5436298e-09, 0.9995766, 0.029095734, 3.701217e-11, -0.029095734, 0.9995766, 0.12900019, -0.018999994, 0.3802122)
 
 [node name="Fantasi 1litre" parent="NavigationRegion3D/Items" unique_id=24309262 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -6.3386555, 0.09913218, 0.97072154)
