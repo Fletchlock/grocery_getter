@@ -1,12 +1,10 @@
 [gd_scene format=3 uid="uid://cmmgsv7wgnpms"]
 
 [ext_resource type="PackedScene" uid="uid://4408hred1v6g" path="res://assets/models/shelves/Freezer_Left_5row.glb" id="1_mpjvy"]
-[ext_resource type="Material" uid="uid://gcl0wh5fpeug" path="res://assets/materials/glow_test.tres" id="2_gxt88"]
+[ext_resource type="ArrayMesh" uid="uid://cnovn43w6yw5e" path="res://assets/models/objects/bulb_tube_2m_Cylinder_004.res" id="2_gxt88"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_umdtr"]
 size = Vector3(1.1532593, 3, 3)
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_ng38b"]
 
 [node name="Freezer_Left_5row2" unique_id=2056952461 instance=ExtResource("1_mpjvy")]
 
@@ -16,14 +14,10 @@ size = Vector3(1.1532593, 3, 3)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.57662964, 1.5, -1.5)
 shape = SubResource("BoxShape3D_umdtr")
 
-[node name="EmissiveBulb01" type="CSGMesh3D" parent="." index="1" unique_id=1344563288]
-transform = Transform3D(0.052, 0, 0, 0, -5.7699033e-08, 0.052, 0, -1.32, -2.2729922e-09, 0.07742196, 2.2586455, -1.4896641)
-material_override = ExtResource("2_gxt88")
-cast_shadow = 0
-mesh = SubResource("CapsuleMesh_ng38b")
+[node name="EmissiveBulb1" type="MeshInstance3D" parent="." index="1" unique_id=1070124732]
+transform = Transform3D(2.9802322e-08, 0, 1, 0, 1, 0, -1, 0, 2.9802322e-08, 0.3157385, 2.2369623, -1.4872968)
+mesh = ExtResource("2_gxt88")
 
-[node name="EmissiveBulb02" type="CSGMesh3D" parent="." index="2" unique_id=1282208381]
-transform = Transform3D(0.052, 0, 0, 0, -5.7699033e-08, 0.052, 0, -1.32, -2.2729922e-09, 0.9763979, 2.2497497, -1.4794483)
-material_override = ExtResource("2_gxt88")
-cast_shadow = 0
-mesh = SubResource("CapsuleMesh_ng38b")
+[node name="EmissiveBulb2" type="MeshInstance3D" parent="." index="2" unique_id=1328248865]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.8506825, 2.238084, -1.4944091)
+mesh = ExtResource("2_gxt88")

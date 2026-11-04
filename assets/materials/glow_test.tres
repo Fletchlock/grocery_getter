@@ -1,6 +1,7 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://gcl0wh5fpeug"]
 
 [resource]
+roughness = 0.0
 emission_enabled = true
-emission = Color(0.55504787, 0.90456164, 0.8706651, 1)
-emission_energy_multiplier = 13.25
+emission = Color(0.6754965, 0.86080134, 0.9738373, 1)
+emission_energy_multiplier = 5.0

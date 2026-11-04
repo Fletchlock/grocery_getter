@@ -1321,12 +1321,6 @@ metadata/_edit_lock_ = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.57662964, 1.2012329, -1.5)
 shape = SubResource("BoxShape3D_4av8r")
 
-[node name="EmissiveBulb01" parent="NavigationRegion3D/Shelves/Freezer_Left_5row3" index="1" unique_id=1344563288]
-metadata/_edit_lock_ = true
-
-[node name="EmissiveBulb02" parent="NavigationRegion3D/Shelves/Freezer_Left_5row3" index="2" unique_id=1282208381]
-metadata/_edit_lock_ = true
-
 [node name="Freezer_Right_5row3" parent="NavigationRegion3D/Shelves" unique_id=825118052 groups=["level_geo"] instance=ExtResource("37_32gdb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.13303673, 14.200169)
 metadata/_edit_lock_ = true
@@ -1337,12 +1331,6 @@ metadata/_edit_lock_ = true
 [node name="CollisionShape3D" parent="NavigationRegion3D/Shelves/Freezer_Right_5row3/Freezer_Right_5row/StaticBody3D" parent_id_path=PackedInt32Array(825118052, 83913552) index="0" unique_id=286493962]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.57662964, 1.2005005, -1.5)
 shape = SubResource("BoxShape3D_smqka")
-
-[node name="EmissiveBulb01" parent="NavigationRegion3D/Shelves/Freezer_Right_5row3" index="1" unique_id=714209609]
-metadata/_edit_lock_ = true
-
-[node name="EmissiveBulb02" parent="NavigationRegion3D/Shelves/Freezer_Right_5row3" index="2" unique_id=1967165901]
-metadata/_edit_lock_ = true
 
 [node name="Small_Endcap_5row_col2" parent="NavigationRegion3D/Shelves" unique_id=1027813964 groups=["level_geo"] instance=ExtResource("20_j461n")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2, 0.13303673, 15.200169)
