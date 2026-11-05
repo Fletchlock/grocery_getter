@@ -243,7 +243,7 @@ shape = SubResource("BoxShape3D_6arrp")
 replication_config = SubResource("SceneReplicationConfig_i4yyv")
 
 [node name="LeftHandTarget" type="Node3D" parent="." unique_id=2067598042]
-transform = Transform3D(0.25783417, 0.022557624, -0.96592575, 0.9622502, 0.08418603, 0.258819, 0.08715582, -0.99619466, -4.2221956e-08, -0.5, 1.187, 0.5634892)
+transform = Transform3D(0.2578342, 0.022557626, -0.9659257, 0.9622502, 0.08418603, 0.25881904, 0.08715582, -0.99619466, -4.2221956e-08, -0.5, 1.187, 0.5634892)
 
 [node name="RightHandTarget" type="Node3D" parent="." unique_id=1644043477]
 transform = Transform3D(-0.25783414, -0.022557545, -0.96592563, 0.9622501, 0.08418606, -0.25881898, 0.08715578, -0.99619496, -4.2221952e-08, 0.5, 1.187, 0.5634892)

@@ -2487,6 +2487,7 @@ func apply_conveyor_knockback(impulse: Vector3) -> void:
 
 	knockback_velocity += impulse
 
+# Inspector Camera Functions for hand target use.
 func toggle_inspection_camera() -> void:
 	if not is_multiplayer_authority():
 		return
@@ -2494,9 +2495,51 @@ func toggle_inspection_camera() -> void:
 	inspection_camera_active = not inspection_camera_active
 
 	if inspection_camera_active:
+		# Show the local character.
+		if body_mesh:
+			body_mesh.visible = true
+
+		# Enable mop inspection if holding one.
+		_start_mop_inspection()
+
 		inspection_camera.make_current()
+
 	else:
+		# Restore normal mop visuals.
+		_stop_mop_inspection()
+
+		# Restore character visibility.
+		if body_mesh:
+			body_mesh.visible = not _first_person
+
+		# Restore the previous camera.
 		if _first_person:
 			_first_person_camera.make_current()
 		else:
 			_third_person_camera.make_current()
+
+
+func _start_mop_inspection() -> void:
+	if not is_instance_valid(held_mop):
+		return
+
+	# Hide the first-person mop.
+	held_mop.hide()
+
+	# Create the third-person mop visual.
+	player_equipment.update_mop_visual(true)
+
+	# The current update_mop_visual() already enables
+	# the cleaning pose for testing.
+
+
+func _stop_mop_inspection() -> void:
+	# Release the cleaning pose and wrist rotations.
+	player_equipment.set_mop_cleaning(false)
+
+	# Remove the temporary third-person mop.
+	player_equipment.update_mop_visual(false)
+
+	# Restore the first-person mop.
+	if is_instance_valid(held_mop):
+		held_mop.show()
