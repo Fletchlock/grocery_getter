@@ -43,3 +43,8 @@ visible = false
 
 [node name="BucketMesh" type="MeshInstance3D" parent="." unique_id=1707132390]
 mesh = ExtResource("5_s1ifj")
+
+[node name="RightHandGrip" type="Marker3D" parent="." unique_id=1976408852]
+
+[node name="LeftHandGrip" type="Marker3D" parent="." unique_id=323191993]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
