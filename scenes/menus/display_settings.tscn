@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bf4d2aguorsl"]
 
 [ext_resource type="Texture2D" uid="uid://ifkotnnto2y6" path="res://assets/images/order_notify_bg_dk_grey.png" id="1_unrw5"]
+[ext_resource type="Script" uid="uid://nrptlu4j0klq" path="res://scripts/menus/display_settings.gd" id="2_5u744"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5epva"]
 texture = ExtResource("1_unrw5")
@@ -12,6 +13,7 @@ texture_margin_bottom = 13.0
 [node name="DisplaySettings" type="PanelContainer" unique_id=1952363439]
 custom_minimum_size = Vector2(450, 0)
 theme_override_styles/panel = SubResource("StyleBoxTexture_5epva")
+script = ExtResource("2_5u744")
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=2131975303]
 layout_mode = 2
