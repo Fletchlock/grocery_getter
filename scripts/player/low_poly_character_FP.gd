@@ -622,6 +622,7 @@ func _process(delta: float) -> void:
 	
 	update_idle_look(delta)
 	player_equipment.update_hand_targets(delta, network_is_crouching)
+	player_equipment.update_mop_right_hand_target(delta)
 	
 func _physics_process(delta: float) -> void:
 
