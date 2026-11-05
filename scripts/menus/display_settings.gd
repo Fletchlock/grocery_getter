@@ -51,9 +51,7 @@ func _populate_resolutions() -> void:
 
 
 func _sync_current_settings() -> void:
-	var window: Window = get_window()
-
-	match window.mode:
+	match SettingsManager.display_mode:
 		Window.MODE_EXCLUSIVE_FULLSCREEN:
 			mode_option.select(DisplayMode.FULLSCREEN)
 
@@ -63,16 +61,23 @@ func _sync_current_settings() -> void:
 		Window.MODE_WINDOWED, Window.MODE_MAXIMIZED:
 			mode_option.select(DisplayMode.WINDOWED)
 
-	_update_resolution_availability()
+		_:
+			mode_option.select(DisplayMode.BORDERLESS)
 
-	var current_size: Vector2i = window.size
+	var saved_resolution: Vector2i = SettingsManager.resolution
+	var resolution_index: int = -1
 
 	for i: int in range(RESOLUTIONS.size()):
-		if RESOLUTIONS[i] == current_size:
-			resolution_option.select(i)
-			return
+		if RESOLUTIONS[i] == saved_resolution:
+			resolution_index = i
+			break
 
-	resolution_option.select(3)
+	if resolution_index >= 0:
+		resolution_option.select(resolution_index)
+	else:
+		resolution_option.select(-1)
+
+	_update_resolution_availability()
 
 
 func _on_mode_selected(_index: int) -> void:
@@ -80,42 +85,61 @@ func _on_mode_selected(_index: int) -> void:
 
 
 func _update_resolution_availability() -> void:
-	resolution_option.disabled = (
-		mode_option.get_selected_id() != DisplayMode.WINDOWED
+	var is_windowed: bool = (
+		mode_option.get_selected_id() == DisplayMode.WINDOWED
 	)
+
+	resolution_option.disabled = not is_windowed
+
+	if is_windowed:
+		# Restore the preferred windowed resolution.
+		var saved_resolution: Vector2i = SettingsManager.resolution
+
+		for i: int in range(RESOLUTIONS.size()):
+			if RESOLUTIONS[i] == saved_resolution:
+				resolution_option.select(i)
+				return
+
+	else:
+		# Display the actual fullscreen resolution.
+		var screen: int = get_window().current_screen
+		var screen_size: Vector2i = DisplayServer.screen_get_size(screen)
+
+		# Check whether the resolution is already listed.
+		for i: int in range(RESOLUTIONS.size()):
+			if RESOLUTIONS[i] == screen_size:
+				resolution_option.select(i)
+				return
+
+		# Add it if the monitor uses a resolution not in our list.
+		resolution_option.add_item(
+			"%d x %d" % [screen_size.x, screen_size.y]
+		)
+
+		resolution_option.select(resolution_option.item_count - 1)
 
 
 func _on_apply_pressed() -> void:
-	var window: Window = get_window()
 	var selected_mode: int = mode_option.get_selected_id()
 
 	match selected_mode:
 		DisplayMode.FULLSCREEN:
-			window.mode = Window.MODE_EXCLUSIVE_FULLSCREEN
-
-		DisplayMode.WINDOWED:
-			window.mode = Window.MODE_WINDOWED
-			window.borderless = false
-
-			var resolution: Vector2i = RESOLUTIONS[
-				resolution_option.selected
-			]
-
-			var screen: int = window.current_screen
-			var usable_rect: Rect2i = DisplayServer.screen_get_usable_rect(screen)
-
-			if resolution.x >= usable_rect.size.x or resolution.y >= usable_rect.size.y:
-				window.mode = Window.MODE_MAXIMIZED
-			else:
-				window.size = resolution
-				var centered_position: Vector2 = (
-					Vector2(usable_rect.position)
-					+ Vector2(usable_rect.size - window.size) / 2.0
-				)
-
-				window.position = Vector2i(centered_position.round())
+			SettingsManager.display_mode = Window.MODE_EXCLUSIVE_FULLSCREEN
 
 		DisplayMode.BORDERLESS:
-			window.mode = Window.MODE_FULLSCREEN
+			SettingsManager.display_mode = Window.MODE_FULLSCREEN
+
+		DisplayMode.WINDOWED:
+			SettingsManager.display_mode = Window.MODE_WINDOWED
+
+	if selected_mode == DisplayMode.WINDOWED:
+		if resolution_option.selected >= 0:
+			if resolution_option.selected < RESOLUTIONS.size():
+				SettingsManager.resolution = RESOLUTIONS[resolution_option.selected]
+
+	SettingsManager.apply_display_settings()
+	SettingsManager.save_settings()
 
 	_sync_current_settings()
+
+	print("DISPLAY SETTINGS SAVED")
