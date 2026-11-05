@@ -154,19 +154,26 @@ func set_hand_rotation_targets(
 	if not is_instance_valid(right_target):
 		return
 
-	left_hand_rotation.target_node = left_target.get_path()
-	right_hand_rotation.target_node = right_target.get_path()
+	left_hand_rotation.set("settings/0/reference_node", left_target.get_path())
+	right_hand_rotation.set("settings/0/reference_node", right_target.get_path())
 
 	left_hand_rotation.influence = 1.0
 	right_hand_rotation.influence = 1.0
-
+	
+	print(
+		"MOP ROTATION TEST",
+		"\nLeft reference: ", left_hand_rotation.get("settings/0/reference_node"),
+		"\nRight reference: ", right_hand_rotation.get("settings/0/reference_node"),
+		"\nLeft influence: ", left_hand_rotation.influence,
+		"\nRight influence: ", right_hand_rotation.influence
+	)
 
 func clear_hand_rotation_targets() -> void:
 	left_hand_rotation.influence = 0.0
 	right_hand_rotation.influence = 0.0
 
-	left_hand_rotation.target_node = NodePath("")
-	right_hand_rotation.target_node = NodePath("")
+	left_hand_rotation.set("settings/0/reference_node", NodePath(""))
+	right_hand_rotation.set("settings/0/reference_node", NodePath(""))
 	
 
 func clear_hand_ik(hand: Hand) -> void:
