@@ -14,6 +14,10 @@ class_name Spill
 @onready var spill_mesh: MeshInstance3D = $SpillMesh
 @onready var cleaning_bubbles: GPUParticles3D = $CleaningBubbles
 
+const CLEAN_SPARKLES_SCENE: PackedScene = preload(
+	"res://scenes/events/clean_sparkles.tscn"
+)
+
 var shopping_point_path: NodePath = NodePath()
 var spill_color: Color = Color.WHITE
 
@@ -107,6 +111,7 @@ func reset_cleaning_visual() -> void:
 	spill_mesh.scale = cleaning_visual_scale
 	cleaning_bubbles.emitting = false
 
+
 @rpc("authority", "call_local", "reliable")
 func start_network_cleaning() -> void:
 	if cleaning_visual_active:
@@ -121,9 +126,26 @@ func start_network_cleaning() -> void:
 	cleaning_bubbles.restart()
 	cleaning_bubbles.emitting = true
 
+
 @rpc("authority", "call_local", "reliable")
 func stop_network_cleaning() -> void:
 	if not cleaning_visual_active:
 		return
 
 	reset_cleaning_visual()
+
+
+# Sparkle particle emission
+@rpc("authority", "call_local", "reliable")
+func finish_network_cleaning() -> void:
+	play_clean_sparkles()
+	
+
+func play_clean_sparkles() -> void:
+	var sparkles: GPUParticles3D = (
+		CLEAN_SPARKLES_SCENE.instantiate() as GPUParticles3D
+	)
+
+	get_tree().current_scene.add_child(sparkles)
+
+	sparkles.global_position = global_position + Vector3.UP * 0.08
