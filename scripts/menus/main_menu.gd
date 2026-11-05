@@ -1,8 +1,17 @@
 
 extends Control
 
+# Options
+@onready var options_panel: PanelContainer = $OptionsPanel
+@onready var display_button: Button = $OptionsPanel/MarginContainer/VBoxContainer/DisplayButton
+@onready var graphics_button: Button = $OptionsPanel/MarginContainer/VBoxContainer/GraphicsButton
+@onready var controls_button: Button = $OptionsPanel/MarginContainer/VBoxContainer/ControlsButton
+@onready var audio_button: Button = $OptionsPanel/MarginContainer/VBoxContainer/AudioButton
+@onready var options_back_button: Button = $OptionsPanel/MarginContainer/VBoxContainer/BackButton
+
 @onready var continue_game_button: Button = $CenterContainer/VBoxContainer/ContinueGameButton
 
+# Save games
 @onready var save_slot_panel: PanelContainer = $SaveSlotPanel
 @onready var slot_title: Label = $SaveSlotPanel/MarginContainer/VBoxContainer/TitleLabel
 
@@ -25,8 +34,18 @@ var pending_overwrite_slot: int = -1
 
 
 func _ready() -> void:
+	# Options
+	options_panel.hide()
+
+	display_button.pressed.connect(_on_display_button_pressed)
+	graphics_button.pressed.connect(_on_graphics_button_pressed)
+	controls_button.pressed.connect(_on_controls_button_pressed)
+	audio_button.pressed.connect(_on_audio_button_pressed)
+	options_back_button.pressed.connect(_on_options_back_button_pressed)
+	
 	continue_game_button.disabled = not _any_save_exists()
 
+	#Save game slots
 	save_slot_panel.hide()
 	host_privacy_panel.hide()
 
@@ -84,9 +103,31 @@ func _on_join_button_pressed() -> void:
 	get_parent().get_parent().open_lobby_browser()
 
 
+# Options
 func _on_options_button_pressed() -> void:
-	print("Options Pressed")
+	save_slot_panel.hide()
+	host_privacy_panel.hide()
+	options_panel.show()
 
+
+func _on_options_back_button_pressed() -> void:
+	options_panel.hide()
+
+
+func _on_display_button_pressed() -> void:
+	print("Display Settings")
+
+
+func _on_graphics_button_pressed() -> void:
+	print("Graphics Settings")
+
+
+func _on_controls_button_pressed() -> void:
+	print("Controls Settings")
+
+
+func _on_audio_button_pressed() -> void:
+	print("Audio Settings")
 
 func _on_quit_button_pressed() -> void:
 	get_tree().quit()

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dlukamev28f1f"]
 
 [ext_resource type="PackedScene" uid="uid://db3jljsj54b6t" path="res://assets/models/shelves/Freezer_Right_5row.glb" id="1_sms5c"]
-[ext_resource type="ArrayMesh" uid="uid://cnovn43w6yw5e" path="res://assets/models/objects/bulb_tube_2m_Cylinder_004.res" id="2_8dtyf"]
+[ext_resource type="ArrayMesh" uid="uid://bwlfhyjkwrso3" path="res://assets/models/objects/bulb_tube_2m_Cylinder_004.res" id="2_8dtyf"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ap32a"]
 size = Vector3(1.1532593, 3, 3)
