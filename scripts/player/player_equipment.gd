@@ -662,6 +662,8 @@ func update_mop_visual(holding: bool) -> void:
 
 	if not holding:
 		set_mop_cleaning(false)
+		remove_equipment_visual(mop_network_visual)
+		mop_network_visual = null
 		release_hand_ik(equipment_id, Hand.RIGHT)
 		mop_is_cleaning = false
 		return
