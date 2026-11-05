@@ -2071,6 +2071,10 @@ func _server_finish_spill_cleaning(
 	server_cleaning_spill_path = NodePath()
 	server_cleaning_started_usec = 0
 
+	# Play the completion effect on every peer.
+	spill.finish_network_cleaning.rpc()
+
+	# Remove the spill after the completion event is sent.
 	spill.queue_free()
 
 
