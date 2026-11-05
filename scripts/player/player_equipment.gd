@@ -833,10 +833,6 @@ func set_mop_cleaning(cleaning: bool) -> void:
 					mop_pose_transition_duration
 				)
 				mop_pose_tween.tween_property(
-					right_hand_ik, "influence", 1.0,
-					mop_pose_transition_duration
-				)
-				mop_pose_tween.tween_property(
 					left_hand_rotation, "influence", 1.0,
 					mop_pose_transition_duration
 				)
@@ -847,10 +843,6 @@ func set_mop_cleaning(cleaning: bool) -> void:
 	else:
 		mop_pose_tween.tween_property(
 			left_hand_ik, "influence", 0.0,
-			mop_pose_transition_duration
-		)
-		mop_pose_tween.tween_property(
-			right_hand_ik, "influence", 0.0,
 			mop_pose_transition_duration
 		)
 		mop_pose_tween.tween_property(
