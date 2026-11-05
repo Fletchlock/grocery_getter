@@ -658,14 +658,16 @@ func create_local_mop_visual(
 
 
 func update_mop_visual(holding: bool) -> void:
-	remove_equipment_visual(mop_network_visual)
-	mop_network_visual = null
-
 	var equipment_id: StringName = MOP_DEFINITION.equipment_id
 
 	if not holding:
+		set_mop_cleaning(false)
 		release_hand_ik(equipment_id, Hand.RIGHT)
+		mop_is_cleaning = false
 		return
+	
+	remove_equipment_visual(mop_network_visual)
+	mop_network_visual = null
 
 	var mop_visual: Node3D = attach_defined_equipment_visual(
 		MOP_DEFINITION,
@@ -683,9 +685,6 @@ func update_mop_visual(holding: bool) -> void:
 		Hand.RIGHT,
 		held_item_hand_target
 	)
-	
-	#temp testing
-	set_mop_cleaning(true)
 
 
 func _prepare_mop_visual(mop_visual: Node3D) -> void:
