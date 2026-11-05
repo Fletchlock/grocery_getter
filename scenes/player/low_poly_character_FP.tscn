@@ -699,6 +699,8 @@ transform = Transform3D(0.99904877, 0, -0.043606695, 0, 1, 0, 0.043606695, 0, 0.
 [node name="HeldRestockBoxNetworkVisual" type="Node3D" parent="Armature/HeldItemTarget" unique_id=2061806185]
 transform = Transform3D(0.99904823, 0, 0.043619387, 0, 1, 0, -0.043619387, 0, 0.99904823, -0.326, -0.35, 0.014)
 
+[node name="MopCleaningTarget" type="Node3D" parent="Armature" unique_id=785246726]
+
 [node name="AnimationTree" type="AnimationTree" parent="." unique_id=1440592803]
 active = false
 tree_root = ExtResource("9_fldhp")
