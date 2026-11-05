@@ -24,6 +24,7 @@ var right_equipment: Node = null
 @onready var held_item_hand_target: Node3D = $"../Armature/HeldItemHandTarget"
 @onready var held_box_hand_target_left: Node3D = $"../Armature/HeldBoxHandTargetLeft"
 @onready var held_box_hand_target_right: Node3D = $"../Armature/HeldBoxHandTargetRight"
+@onready var mop_cleaning_target: Node3D = $"../Armature/MopCleaningTarget"
 
 var standing_item_target_position: Vector3
 var standing_hand_target_position: Vector3
@@ -57,6 +58,21 @@ const RESTOCK_BOX_DEFINITION: EquipmentDefinition = preload(
 	$"../Armature/HeldItemTarget/HeldRestockBoxNetworkVisual"
 )
 
+# === Mop Visuals ===
+const MOP_SCENE: PackedScene = preload(
+	"res://scenes/objects/tools/mop.tscn"
+)
+
+const MOP_DEFINITION: EquipmentDefinition = preload(
+	"res://resources/equipment/mop.tres"
+)
+
+@export_group("Mop Cleaning Pose")
+@export var mop_cleaning_position: Vector3 = Vector3(0.0, 0.7, -0.5)
+@export var mop_cleaning_rotation: Vector3 = Vector3(25.0, 0.0, 0.0)
+
+var mop_network_visual: Node3D = null
+var mop_is_cleaning: bool = false
 
 func _ready() -> void:
 	standing_item_target_position = held_item_target.position
@@ -581,19 +597,7 @@ func update_restock_box_visual(
 	)
 
 
-
 # === Mop Visuals ===
-const MOP_SCENE: PackedScene = preload(
-	"res://scenes/objects/tools/mop.tscn"
-)
-
-const MOP_DEFINITION: EquipmentDefinition = preload(
-	"res://resources/equipment/mop.tres"
-)
-
-var mop_network_visual: Node3D = null
-
-
 func create_local_mop_visual(
 		attachment_target: Node3D,
 		hold_position: Vector3,
@@ -641,6 +645,9 @@ func update_mop_visual(holding: bool) -> void:
 		Hand.RIGHT,
 		held_item_hand_target
 	)
+	
+	#temp testing
+	set_mop_cleaning(true)
 
 
 func _prepare_mop_visual(mop_visual: Node3D) -> void:
@@ -685,3 +692,50 @@ func _disable_mop_area(
 
 	if collision_shape != null:
 		collision_shape.set_deferred("disabled", true)
+
+
+# === Mop Cleaning Pose ===
+func set_mop_cleaning(cleaning: bool) -> void:
+	if mop_is_cleaning == cleaning:
+		return
+
+	mop_is_cleaning = cleaning
+
+	if not is_instance_valid(mop_network_visual):
+		return
+
+	var equipment_id: StringName = MOP_DEFINITION.equipment_id
+
+	if cleaning:
+		if not can_claim_ik(equipment_id, Hand.BOTH):
+			mop_is_cleaning = false
+			return
+
+		mop_network_visual.reparent(mop_cleaning_target, false)
+		mop_network_visual.position = mop_cleaning_position
+		mop_network_visual.rotation_degrees = mop_cleaning_rotation
+
+		var left_grip: Node3D = (
+			mop_network_visual.get_node_or_null("LeftHandGrip") as Node3D
+		)
+		var right_grip: Node3D = (
+			mop_network_visual.get_node_or_null("RightHandGrip") as Node3D
+		)
+
+		if left_grip != null and right_grip != null:
+			claim_both_hand_ik(
+				equipment_id,
+				left_grip,
+				right_grip
+			)
+	else:
+		mop_network_visual.reparent(held_item_target, false)
+		mop_network_visual.transform = MOP_DEFINITION.get_attachment_transform()
+
+		release_hand_ik(equipment_id, Hand.LEFT)
+
+		claim_hand_ik(
+			equipment_id,
+			Hand.RIGHT,
+			held_item_hand_target
+		)
