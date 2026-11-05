@@ -37,6 +37,7 @@ MinigameManager="*uid://d4aenawdhuk1v"
 ReputationManager="*uid://bm2opfs15vjhp"
 EventManager="*uid://dylh2x3pep2ht"
 ProductUnlockManager="*uid://d18ekblagc078"
+MusicManager="*uid://ddq00x3m3oo2w"
 
 [debug]
 
