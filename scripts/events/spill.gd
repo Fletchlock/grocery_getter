@@ -12,6 +12,7 @@ class_name Spill
 @export var prompt_height: float = 0.15
 
 @onready var spill_mesh: MeshInstance3D = $SpillMesh
+@onready var cleaning_bubbles: GPUParticles3D = $CleaningBubbles
 
 var shopping_point_path: NodePath = NodePath()
 var spill_color: Color = Color.WHITE
@@ -25,7 +26,8 @@ var growth_tween: Tween = null
 
 func _ready() -> void:
 	add_to_group("active_spills")
-
+	cleaning_bubbles.emitting = false
+	
 	# Give this spill its own material instance.
 	var material: Material = spill_mesh.get_active_material(0)
 
@@ -103,7 +105,7 @@ func reset_cleaning_visual() -> void:
 	cleaning_visual_active = false
 	cleaning_visual_elapsed = 0.0
 	spill_mesh.scale = cleaning_visual_scale
-
+	cleaning_bubbles.emitting = false
 
 @rpc("authority", "call_local", "reliable")
 func start_network_cleaning() -> void:
@@ -116,7 +118,8 @@ func start_network_cleaning() -> void:
 	cleaning_visual_scale = spill_mesh.scale
 	cleaning_visual_elapsed = 0.0
 	cleaning_visual_active = true
-
+	cleaning_bubbles.restart()
+	cleaning_bubbles.emitting = true
 
 @rpc("authority", "call_local", "reliable")
 func stop_network_cleaning() -> void:
