@@ -686,7 +686,7 @@ secondary_limit_angle = 1.2217305
 secondary_damp_threshold = 1.0
 
 [node name="HeldItemHandTarget" type="Node3D" parent="Armature" unique_id=459022950]
-transform = Transform3D(3.8096997e-09, 4.3545054e-08, -0.99999994, 0.9961947, -0.08715577, 0, -0.08715577, -0.9961947, -4.3711385e-08, 0.38135296, 1.0888306, -0.40041316)
+transform = Transform3D(3.8096997e-09, 4.3545054e-08, -0.99999994, 0.9961947, -0.08715577, 0, -0.08715577, -0.9961947, -4.3711385e-08, 0.4, 1.089, -0.4)
 
 [node name="HeldBoxHandTargetRight" type="Node3D" parent="Armature" unique_id=496920783]
 transform = Transform3D(3.8096997e-09, 4.3545054e-08, -0.99999994, 0.9961947, -0.08715577, 0, -0.08715577, -0.9961947, -4.3711385e-08, 0.36111778, 0.87728035, -0.47215617)
