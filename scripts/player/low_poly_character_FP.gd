@@ -5,6 +5,11 @@ extends CharacterBody3D
 @onready var _first_person_camera: Camera3D = $FirstPersonCameraPivot/FirstPersonCamera
 @onready var first_person_camera_pivot: Node3D = $FirstPersonCameraPivot
 @onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
+
+# Inspection Camera for setting hand targets etc.
+@onready var inspection_camera: Camera3D = $InspectionCameraPivot/InspectionCamera
+var inspection_camera_active: bool = false
+
 @onready var interact_raycast_3d: RayCast3D = $FirstPersonCameraPivot/FirstPersonCamera/InteractRaycast3D
 @onready var held_item_holder: Node3D = $FirstPersonCameraPivot/HeldItemHolder
 @onready var held_box_holder: Node3D = $FirstPersonCameraPivot/HeldBoxHolder
@@ -370,6 +375,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		_mouse_input_direction += (
 			event.screen_relative * mouse_sensitivity
 		)
+	
+	if event is InputEventKey:
+		if event.pressed and not event.echo and event.keycode == KEY_F9:
+			toggle_inspection_camera()
+			return
 
 
 func _transition_to_perspective(first_person: bool) -> void:
@@ -2476,3 +2486,17 @@ func apply_conveyor_knockback(impulse: Vector3) -> void:
 		return
 
 	knockback_velocity += impulse
+
+func toggle_inspection_camera() -> void:
+	if not is_multiplayer_authority():
+		return
+
+	inspection_camera_active = not inspection_camera_active
+
+	if inspection_camera_active:
+		inspection_camera.make_current()
+	else:
+		if _first_person:
+			_first_person_camera.make_current()
+		else:
+			_third_person_camera.make_current()
