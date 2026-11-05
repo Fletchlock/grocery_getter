@@ -86,6 +86,12 @@ var mop_is_cleaning: bool = false
 var mop_pose_tween: Tween = null
 var mop_right_hand_blend_target: Node3D = null
 
+@export_group("Mop Sweep")
+@export var mop_sweep_distance: float = 0.20
+@export var mop_sweep_half_duration: float = 0.50
+
+var mop_sweep_tween: Tween = null
+
 
 func _ready() -> void:
 	standing_item_target_position = held_item_target.position
@@ -771,7 +777,7 @@ func set_mop_cleaning(cleaning: bool) -> void:
 
 	if mop_pose_tween != null and mop_pose_tween.is_running():
 		mop_pose_tween.kill()
-
+	_stop_mop_sweep()
 	mop_is_cleaning = cleaning
 
 	# Preserve the current world transform when changing parents.
@@ -840,6 +846,9 @@ func set_mop_cleaning(cleaning: bool) -> void:
 					right_hand_rotation, "influence", 1.0,
 					mop_pose_transition_duration
 				)
+		mop_pose_tween.chain().tween_callback(
+			_start_mop_sweep
+		)
 	else:
 		mop_pose_tween.tween_property(
 			left_hand_ik, "influence", 0.0,
@@ -869,6 +878,54 @@ func _finish_mop_pose_transition() -> void:
 	clear_hand_rotation_targets()
 
 
+# Mop Sweep Animation (basic move mop back and forth)
+func _start_mop_sweep() -> void:
+	if not mop_is_cleaning:
+		return
+
+	if not is_instance_valid(mop_network_visual):
+		return
+
+	_stop_mop_sweep()
+
+	var center: Vector3 = mop_cleaning_position
+
+	var left_position: Vector3 = center + Vector3(
+		-mop_sweep_distance, 0.0, 0.0
+	)
+
+	var right_position: Vector3 = center + Vector3(
+		mop_sweep_distance, 0.0, 0.0
+	)
+
+	mop_sweep_tween = create_tween()
+	mop_sweep_tween.set_loops()
+	mop_sweep_tween.set_trans(Tween.TRANS_SINE)
+	mop_sweep_tween.set_ease(Tween.EASE_IN_OUT)
+
+	# Sweep left first.
+	mop_sweep_tween.tween_property(
+		mop_network_visual,
+		"position",
+		left_position,
+		mop_sweep_half_duration
+	)
+
+	# Then sweep right.
+	mop_sweep_tween.tween_property(
+		mop_network_visual,
+		"position",
+		right_position,
+		mop_sweep_half_duration
+	)
+
+
+func _stop_mop_sweep() -> void:
+	if mop_sweep_tween != null:
+		mop_sweep_tween.kill()
+		mop_sweep_tween = null
+
+
 func update_mop_right_hand_target(delta: float) -> void:
 	if not is_instance_valid(mop_network_visual):
 		return
@@ -886,11 +943,18 @@ func update_mop_right_hand_target(delta: float) -> void:
 	if not is_instance_valid(desired_target):
 		return
 
-	var weight: float = 1.0 - exp(-12.0 * delta)
+	# Smoothly transition between holding and cleaning.
+	if mop_pose_tween != null and mop_pose_tween.is_running():
+		var weight: float = 1.0 - exp(-12.0 * delta)
 
-	mop_right_hand_blend_target.global_transform = (
-		mop_right_hand_blend_target.global_transform.interpolate_with(
-			desired_target.global_transform,
-			weight
+		mop_right_hand_blend_target.global_transform = (
+			mop_right_hand_blend_target.global_transform.interpolate_with(
+				desired_target.global_transform,
+				weight
+			)
 		)
-	)
+	else:
+		# Follow the grip exactly during the sweeping motion.
+		mop_right_hand_blend_target.global_transform = (
+			desired_target.global_transform
+		)
