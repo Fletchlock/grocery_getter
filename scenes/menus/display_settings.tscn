@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://bf4d2aguorsl"]
+
+[ext_resource type="Texture2D" uid="uid://ifkotnnto2y6" path="res://assets/images/order_notify_bg_dk_grey.png" id="1_unrw5"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5epva"]
+texture = ExtResource("1_unrw5")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[node name="DisplaySettings" type="PanelContainer" unique_id=1952363439]
+custom_minimum_size = Vector2(450, 0)
+theme_override_styles/panel = SubResource("StyleBoxTexture_5epva")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=2131975303]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1865560636]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1590595060]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 30
+text = "Display Settings"
+horizontal_alignment = 1
+
+[node name="DisplayModeContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1873908647]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/DisplayModeContainer" unique_id=1055725871]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Display Mode"
+
+[node name="ModeOption" type="OptionButton" parent="MarginContainer/VBoxContainer/DisplayModeContainer" unique_id=1874583453]
+layout_mode = 2
+
+[node name="ResolutionContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=2086472285]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ResolutionContainer" unique_id=525059267]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Resolution"
+
+[node name="ResolutionOption" type="OptionButton" parent="MarginContainer/VBoxContainer/ResolutionContainer" unique_id=977160004]
+layout_mode = 2
+
+[node name="ApplyButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=2111704314]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Apply"
+
+[node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1362661456]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Back
+"
