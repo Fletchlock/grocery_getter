@@ -38,6 +38,7 @@ ReputationManager="*uid://bm2opfs15vjhp"
 EventManager="*uid://dylh2x3pep2ht"
 ProductUnlockManager="*uid://d18ekblagc078"
 MusicManager="*uid://ddq00x3m3oo2w"
+SettingsManager="*uid://b0p3e435rysrn"
 
 [debug]
 
