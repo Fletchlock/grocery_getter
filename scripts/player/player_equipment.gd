@@ -34,6 +34,12 @@ var standing_box_hand_target_right_position: Vector3
 # === Hand IK Management ===
 @onready var left_hand_ik: TwoBoneIK3D = $"../Armature/Skeleton3D/LeftTwoBoneIK3D"
 @onready var right_hand_ik: TwoBoneIK3D = $"../Armature/Skeleton3D/RightTwoBoneIK3D"
+@onready var left_hand_rotation: CopyTransformModifier3D = (
+	$"../Armature/Skeleton3D/LeftHandRotationModifier"
+)
+@onready var right_hand_rotation: CopyTransformModifier3D = (
+	$"../Armature/Skeleton3D/RightHandRotatioinModifier"
+)
 var left_ik_owner: StringName = &""
 var right_ik_owner: StringName = &""
 
@@ -68,8 +74,8 @@ const MOP_DEFINITION: EquipmentDefinition = preload(
 )
 
 @export_group("Mop Cleaning Pose")
-@export var mop_cleaning_position: Vector3 = Vector3(0.0, 0.7, -0.5)
-@export var mop_cleaning_rotation: Vector3 = Vector3(25.0, 0.0, 0.0)
+@export var mop_cleaning_position: Vector3 = Vector3(0.0, 0.90, -0.5)
+@export var mop_cleaning_rotation: Vector3 = Vector3(-20.0, 150.0, -10.0)
 
 var mop_network_visual: Node3D = null
 var mop_is_cleaning: bool = false
@@ -137,6 +143,31 @@ func set_both_hand_ik(
 	_assign_ik_target(left_hand_ik, left_target)
 	_assign_ik_target(right_hand_ik, right_target)
 
+
+func set_hand_rotation_targets(
+	left_target: Node3D,
+	right_target: Node3D
+) -> void:
+	if not is_instance_valid(left_target):
+		return
+
+	if not is_instance_valid(right_target):
+		return
+
+	left_hand_rotation.target_node = left_target.get_path()
+	right_hand_rotation.target_node = right_target.get_path()
+
+	left_hand_rotation.influence = 1.0
+	right_hand_rotation.influence = 1.0
+
+
+func clear_hand_rotation_targets() -> void:
+	left_hand_rotation.influence = 0.0
+	right_hand_rotation.influence = 0.0
+
+	left_hand_rotation.target_node = NodePath("")
+	right_hand_rotation.target_node = NodePath("")
+	
 
 func clear_hand_ik(hand: Hand) -> void:
 	match hand:
@@ -723,17 +754,21 @@ func set_mop_cleaning(cleaning: bool) -> void:
 		)
 
 		if left_grip != null and right_grip != null:
-			claim_both_hand_ik(
+			if claim_both_hand_ik(
 				equipment_id,
 				left_grip,
 				right_grip
-			)
+			):
+				set_hand_rotation_targets(
+					left_grip,
+					right_grip
+				)
 	else:
 		mop_network_visual.reparent(held_item_target, false)
 		mop_network_visual.transform = MOP_DEFINITION.get_attachment_transform()
-
+		
 		release_hand_ik(equipment_id, Hand.LEFT)
-
+		clear_hand_rotation_targets()
 		claim_hand_ik(
 			equipment_id,
 			Hand.RIGHT,
