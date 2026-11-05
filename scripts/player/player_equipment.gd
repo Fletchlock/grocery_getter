@@ -84,6 +84,7 @@ var mop_is_cleaning: bool = false
 @export var mop_pose_transition_duration: float = 0.30
 
 var mop_pose_tween: Tween = null
+var mop_right_hand_blend_target: Node3D = null
 
 
 func _ready() -> void:
@@ -91,7 +92,11 @@ func _ready() -> void:
 	standing_hand_target_position = held_item_hand_target.position
 	standing_box_hand_target_left_position = held_box_hand_target_left.position
 	standing_box_hand_target_right_position = held_box_hand_target_right.position
-
+	
+	mop_right_hand_blend_target = Node3D.new()
+	mop_right_hand_blend_target.name = "MopRightHandBlendTarget"
+	held_item_target.add_child(mop_right_hand_blend_target)
+	mop_right_hand_blend_target.global_transform = held_item_hand_target.global_transform
 
 # Hand Target Functions
 func update_hand_targets(delta: float, is_crouching: bool) -> void:
@@ -693,11 +698,18 @@ func update_mop_visual(holding: bool) -> void:
 	_prepare_mop_visual(mop_visual)
 	mop_network_visual = mop_visual
 
-	claim_hand_ik(
-		equipment_id,
-		Hand.RIGHT,
-		held_item_hand_target
+	var right_grip: Node3D = (
+		mop_network_visual.get_node_or_null("RightHandGrip") as Node3D
 	)
+	
+	mop_right_hand_blend_target.global_transform = held_item_hand_target.global_transform
+	
+	if right_grip != null:
+		claim_hand_ik(
+			equipment_id,
+			Hand.RIGHT,
+			mop_right_hand_blend_target
+		)
 
 
 func _prepare_mop_visual(mop_visual: Node3D) -> void:
@@ -801,11 +813,11 @@ func set_mop_cleaning(cleaning: bool) -> void:
 		)
 
 		if left_grip != null and right_grip != null:
-			if claim_both_hand_ik(
-				equipment_id,
-				left_grip,
-				right_grip
-			):
+			if claim_hand_ik(
+					equipment_id,
+					Hand.LEFT,
+					left_grip
+				):
 				set_hand_rotation_targets(left_grip, right_grip)
 
 				# Left hand reaches for the mop.
@@ -864,8 +876,29 @@ func _finish_mop_pose_transition() -> void:
 	release_hand_ik(equipment_id, Hand.LEFT)
 	clear_hand_rotation_targets()
 
-	claim_hand_ik(
-		equipment_id,
-		Hand.RIGHT,
-		held_item_hand_target
+
+func update_mop_right_hand_target(delta: float) -> void:
+	if not is_instance_valid(mop_network_visual):
+		return
+
+	if not is_instance_valid(mop_right_hand_blend_target):
+		return
+
+	var desired_target: Node3D = held_item_hand_target
+
+	if mop_is_cleaning:
+		desired_target = (
+			mop_network_visual.get_node_or_null("RightHandGrip") as Node3D
+		)
+
+	if not is_instance_valid(desired_target):
+		return
+
+	var weight: float = 1.0 - exp(-12.0 * delta)
+
+	mop_right_hand_blend_target.global_transform = (
+		mop_right_hand_blend_target.global_transform.interpolate_with(
+			desired_target.global_transform,
+			weight
+		)
 	)
