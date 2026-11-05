@@ -8,6 +8,9 @@ extends Control
 @onready var controls_button: Button = $OptionsPanel/MarginContainer/VBoxContainer/ControlsButton
 @onready var audio_button: Button = $OptionsPanel/MarginContainer/VBoxContainer/AudioButton
 @onready var options_back_button: Button = $OptionsPanel/MarginContainer/VBoxContainer/BackButton
+# Options Sub-Menus
+@onready var display_settings: PanelContainer = $DisplaySettings
+
 
 @onready var continue_game_button: Button = $CenterContainer/VBoxContainer/ContinueGameButton
 
@@ -42,6 +45,12 @@ func _ready() -> void:
 	controls_button.pressed.connect(_on_controls_button_pressed)
 	audio_button.pressed.connect(_on_audio_button_pressed)
 	options_back_button.pressed.connect(_on_options_back_button_pressed)
+	var display_back_button: Button = display_settings.get_node(
+		"MarginContainer/VBoxContainer/BackButton"
+	)
+
+	display_back_button.pressed.connect(_on_display_back_button_pressed)
+	display_settings.hide()
 	
 	continue_game_button.disabled = not _any_save_exists()
 
@@ -115,8 +124,14 @@ func _on_options_back_button_pressed() -> void:
 
 
 func _on_display_button_pressed() -> void:
-	print("Display Settings")
+	options_panel.hide()
+	display_settings.show()
 
+
+func _on_display_back_button_pressed() -> void:
+	display_settings.hide()
+	options_panel.show()
+	
 
 func _on_graphics_button_pressed() -> void:
 	print("Graphics Settings")
