@@ -45,6 +45,27 @@ shadow_mesh = SubResource("ArrayMesh_kefec")
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
 size = Vector3(0.64520264, 0.13134384, 0.46832275)
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_3v0cl"]
+emission_shape = 3
+emission_box_extents = Vector3(0.4, 0.015, 0.4)
+direction = Vector3(1, 1, 0)
+spread = 15.0
+initial_velocity_min = 0.14999999
+initial_velocity_max = 0.35
+gravity = Vector3(0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0pbgw"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0, 0.96862745, 0.99607843, 0.6862745)
+
+[sub_resource type="SphereMesh" id="SphereMesh_km81x"]
+material = SubResource("StandardMaterial3D_0pbgw")
+radius = 0.02
+height = 0.04
+radial_segments = 32
+rings = 16
+
 [node name="Spill" type="Node3D" unique_id=925140084]
 script = ExtResource("1_cv0sx")
 
@@ -57,3 +78,12 @@ collision_layer = 256
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1084317280]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0039367676, 0.06567192, 0.01889038)
 shape = SubResource("BoxShape3D_6aigx")
+
+[node name="CleaningBubbles" type="GPUParticles3D" parent="." unique_id=1013533689]
+amount = 12
+lifetime = 0.8
+visibility_aabb = AABB(-1, -0.2, -1, 2, 2, 2)
+process_material = SubResource("ParticleProcessMaterial_3v0cl")
+draw_pass_1 = SubResource("SphereMesh_km81x")
+
+[node name="CleanSparkles" type="GPUParticles3D" parent="." unique_id=624983084]
