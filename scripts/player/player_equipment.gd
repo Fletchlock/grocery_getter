@@ -80,6 +80,12 @@ const MOP_DEFINITION: EquipmentDefinition = preload(
 var mop_network_visual: Node3D = null
 var mop_is_cleaning: bool = false
 
+@export_group("Mop Pose Transition")
+@export var mop_pose_transition_duration: float = 0.30
+
+var mop_pose_tween: Tween = null
+
+
 func _ready() -> void:
 	standing_item_target_position = held_item_target.position
 	standing_hand_target_position = held_item_hand_target.position
@@ -661,11 +667,16 @@ func update_mop_visual(holding: bool) -> void:
 	var equipment_id: StringName = MOP_DEFINITION.equipment_id
 
 	if not holding:
-		set_mop_cleaning(false)
+		if mop_pose_tween != null and mop_pose_tween.is_running():
+			mop_pose_tween.kill()
+
+		mop_is_cleaning = false
+
+		release_hand_ik(equipment_id, Hand.BOTH)
+		clear_hand_rotation_targets()
+
 		remove_equipment_visual(mop_network_visual)
 		mop_network_visual = null
-		release_hand_ik(equipment_id, Hand.RIGHT)
-		mop_is_cleaning = false
 		return
 	
 	remove_equipment_visual(mop_network_visual)
@@ -738,22 +749,50 @@ func set_mop_cleaning(cleaning: bool) -> void:
 	if mop_is_cleaning == cleaning:
 		return
 
-	mop_is_cleaning = cleaning
-
 	if not is_instance_valid(mop_network_visual):
 		return
 
 	var equipment_id: StringName = MOP_DEFINITION.equipment_id
 
+	if cleaning and not can_claim_ik(equipment_id, Hand.BOTH):
+		return
+
+	if mop_pose_tween != null and mop_pose_tween.is_running():
+		mop_pose_tween.kill()
+
+	mop_is_cleaning = cleaning
+
+	# Preserve the current world transform when changing parents.
 	if cleaning:
-		if not can_claim_ik(equipment_id, Hand.BOTH):
-			mop_is_cleaning = false
-			return
+		mop_network_visual.reparent(mop_cleaning_target, true)
+	else:
+		mop_network_visual.reparent(held_item_target, true)
 
-		mop_network_visual.reparent(mop_cleaning_target, false)
-		mop_network_visual.position = mop_cleaning_position
-		mop_network_visual.rotation_degrees = mop_cleaning_rotation
+	var target_transform: Transform3D
 
+	if cleaning:
+		target_transform = Transform3D(
+			Basis.from_euler(
+				mop_cleaning_rotation * (PI / 180.0)
+			),
+			mop_cleaning_position
+		)
+	else:
+		target_transform = MOP_DEFINITION.get_attachment_transform()
+
+	mop_pose_tween = create_tween()
+	mop_pose_tween.set_parallel(true)
+	mop_pose_tween.set_trans(Tween.TRANS_SINE)
+	mop_pose_tween.set_ease(Tween.EASE_IN_OUT)
+
+	mop_pose_tween.tween_property(
+		mop_network_visual,
+		"transform",
+		target_transform,
+		mop_pose_transition_duration
+	)
+
+	if cleaning:
 		var left_grip: Node3D = (
 			mop_network_visual.get_node_or_null("LeftHandGrip") as Node3D
 		)
@@ -767,18 +806,66 @@ func set_mop_cleaning(cleaning: bool) -> void:
 				left_grip,
 				right_grip
 			):
-				set_hand_rotation_targets(
-					left_grip,
-					right_grip
+				set_hand_rotation_targets(left_grip, right_grip)
+
+				# Left hand reaches for the mop.
+				left_hand_ik.influence = 0.0
+				left_hand_rotation.influence = 0.0
+
+				# Right hand remains attached to the mop.
+				right_hand_ik.influence = 1.0
+				right_hand_rotation.influence = 1.0
+
+				mop_pose_tween.tween_property(
+					left_hand_ik, "influence", 1.0,
+					mop_pose_transition_duration
+				)
+				mop_pose_tween.tween_property(
+					right_hand_ik, "influence", 1.0,
+					mop_pose_transition_duration
+				)
+				mop_pose_tween.tween_property(
+					left_hand_rotation, "influence", 1.0,
+					mop_pose_transition_duration
+				)
+				mop_pose_tween.tween_property(
+					right_hand_rotation, "influence", 1.0,
+					mop_pose_transition_duration
 				)
 	else:
-		mop_network_visual.reparent(held_item_target, false)
-		mop_network_visual.transform = MOP_DEFINITION.get_attachment_transform()
-		
-		release_hand_ik(equipment_id, Hand.LEFT)
-		clear_hand_rotation_targets()
-		claim_hand_ik(
-			equipment_id,
-			Hand.RIGHT,
-			held_item_hand_target
+		mop_pose_tween.tween_property(
+			left_hand_ik, "influence", 0.0,
+			mop_pose_transition_duration
 		)
+		mop_pose_tween.tween_property(
+			right_hand_ik, "influence", 0.0,
+			mop_pose_transition_duration
+		)
+		mop_pose_tween.tween_property(
+			left_hand_rotation, "influence", 0.0,
+			mop_pose_transition_duration
+		)
+		mop_pose_tween.tween_property(
+			right_hand_rotation, "influence", 0.0,
+			mop_pose_transition_duration
+		)
+
+		mop_pose_tween.chain().tween_callback(
+			_finish_mop_pose_transition
+		)
+
+
+func _finish_mop_pose_transition() -> void:
+	if mop_is_cleaning:
+		return
+
+	var equipment_id: StringName = MOP_DEFINITION.equipment_id
+
+	release_hand_ik(equipment_id, Hand.LEFT)
+	clear_hand_rotation_targets()
+
+	claim_hand_ik(
+		equipment_id,
+		Hand.RIGHT,
+		held_item_hand_target
+	)
