@@ -581,17 +581,24 @@ func update_restock_box_visual(
 	)
 
 
+
 # === Mop Visuals ===
 const MOP_SCENE: PackedScene = preload(
 	"res://scenes/objects/tools/mop.tscn"
 )
 
+const MOP_DEFINITION: EquipmentDefinition = preload(
+	"res://resources/equipment/mop.tres"
+)
+
+var mop_network_visual: Node3D = null
+
 
 func create_local_mop_visual(
-	attachment_target: Node3D,
-	hold_position: Vector3,
-	hold_rotation: Vector3
-) -> Node3D:
+		attachment_target: Node3D,
+		hold_position: Vector3,
+		hold_rotation: Vector3
+	) -> Node3D:
 	var mop_visual: Node3D = attach_equipment_visual(
 		MOP_SCENE,
 		attachment_target
@@ -600,7 +607,44 @@ func create_local_mop_visual(
 	if mop_visual == null:
 		return null
 
-	# The bucket remains in the world.
+	_prepare_mop_visual(mop_visual)
+
+	mop_visual.position = hold_position
+	mop_visual.rotation_degrees = hold_rotation
+
+	return mop_visual
+
+
+func update_mop_visual(holding: bool) -> void:
+	remove_equipment_visual(mop_network_visual)
+	mop_network_visual = null
+
+	var equipment_id: StringName = MOP_DEFINITION.equipment_id
+
+	if not holding:
+		release_hand_ik(equipment_id, Hand.RIGHT)
+		return
+
+	var mop_visual: Node3D = attach_defined_equipment_visual(
+		MOP_DEFINITION,
+		held_item_target
+	)
+
+	if mop_visual == null:
+		return
+
+	_prepare_mop_visual(mop_visual)
+	mop_network_visual = mop_visual
+
+	claim_hand_ik(
+		equipment_id,
+		Hand.RIGHT,
+		held_item_hand_target
+	)
+
+
+func _prepare_mop_visual(mop_visual: Node3D) -> void:
+	# The bucket stays in the world.
 	var bucket_mesh: MeshInstance3D = (
 		mop_visual.get_node_or_null("BucketMesh") as MeshInstance3D
 	)
@@ -608,10 +652,6 @@ func create_local_mop_visual(
 	if bucket_mesh != null:
 		bucket_mesh.hide()
 
-	mop_visual.position = hold_position
-	mop_visual.rotation_degrees = hold_rotation
-
-	# Disable interactions on the held copy.
 	_disable_mop_area(mop_visual, "Area3D")
 	_disable_mop_area(mop_visual, "ReturnArea")
 
@@ -622,13 +662,11 @@ func create_local_mop_visual(
 	if outline != null:
 		outline.visible = false
 
-	return mop_visual
-
 
 func _disable_mop_area(
-	mop_visual: Node3D,
-	area_path: String
-) -> void:
+		mop_visual: Node3D,
+		area_path: String
+	) -> void:
 	var area: Area3D = (
 		mop_visual.get_node_or_null(area_path) as Area3D
 	)
@@ -638,6 +676,8 @@ func _disable_mop_area(
 
 	area.monitoring = false
 	area.monitorable = false
+	area.collision_layer = 0
+	area.collision_mask = 0
 
 	var collision_shape: CollisionShape3D = (
 		area.get_node_or_null("CollisionShape3D") as CollisionShape3D

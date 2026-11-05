@@ -170,7 +170,9 @@ var _network_holding_restock_scanner_last_received: bool = false
 @export_group("Held Mop")
 @export var mop_hold_position: Vector3 = Vector3(0.25, 0.00, 0.00)
 @export var mop_hold_rotation: Vector3 = Vector3(110.0, 0.0, -25.0)
+@export var network_holding_mop: bool = false
 
+var _network_holding_mop_last_received: bool = false
 var held_mop: Node3D = null
 
 @export_group("Spill Cleaning")
@@ -1463,7 +1465,13 @@ func _update_remote_equipment_visuals() -> void:
 		player_equipment.update_scanner_visual(
 			network_holding_restock_scanner
 		)
+	# Mop
+	if network_holding_mop != _network_holding_mop_last_received:
+		_network_holding_mop_last_received = network_holding_mop
 
+		player_equipment.update_mop_visual(
+			network_holding_mop
+		)
 
 func find_nearest_player() -> Node3D:
 	var nearest_player: Node3D = null
@@ -1756,6 +1764,7 @@ func _grant_mop() -> void:
 		mop_hold_position,
 		mop_hold_rotation
 	)
+	network_holding_mop = true
 
 
 func request_return_mop(mop: Mop) -> void:
@@ -1843,6 +1852,7 @@ func _clear_mop() -> void:
 
 	player_equipment.remove_equipment_visual(held_mop)
 	held_mop = null
+	network_holding_mop = false
 
 
 func _start_spill_cleaning() -> bool:

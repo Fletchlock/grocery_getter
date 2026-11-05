@@ -1206,7 +1206,13 @@ quantity = 18
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.19739816, 0.05710657, 0.20476851)
 shape = SubResource("BoxShape3D_co3xl")
 
+[node name="MeshOutline" parent="NavigationRegion3D/Items/V&D Can/Area3D" parent_id_path=PackedInt32Array(813833733, 1400837386) index="1" unique_id=334576936]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0073703527)
+
 [node name="ProductMarker" parent="NavigationRegion3D/Items/V&D Can" index="1" unique_id=1793950634]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0073703527)
+
+[node name="ProductGrid" parent="NavigationRegion3D/Items/V&D Can" index="2" unique_id=704526395]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0073703527)
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/V&D Can" index="4" unique_id=2005891054]

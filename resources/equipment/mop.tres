@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EquipmentDefinition" format=3 uid="uid://n3mqei2ibxnw"]
+
+[ext_resource type="Script" uid="uid://cylorgn2v7ed8" path="res://scripts/player/equipment_definition.gd" id="1_qh6v0"]
+[ext_resource type="PackedScene" uid="uid://daon7c0lu128h" path="res://scenes/objects/tools/mop.tscn" id="2_eurhh"]
+
+[resource]
+script = ExtResource("1_qh6v0")
+equipment_id = &"mop"
+display_name = "Mop"
+visual_scene = ExtResource("2_eurhh")
+metadata/_custom_type_script = "uid://cylorgn2v7ed8"
