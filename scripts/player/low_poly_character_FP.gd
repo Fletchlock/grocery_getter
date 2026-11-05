@@ -176,7 +176,9 @@ var _network_holding_restock_scanner_last_received: bool = false
 @export var mop_hold_position: Vector3 = Vector3(0.25, 0.00, 0.00)
 @export var mop_hold_rotation: Vector3 = Vector3(110.0, 0.0, -25.0)
 @export var network_holding_mop: bool = false
+@export var network_is_cleaning_spill: bool = false
 
+var _network_is_cleaning_spill_last_received: bool = false
 var _network_holding_mop_last_received: bool = false
 var held_mop: Node3D = null
 
@@ -1482,6 +1484,18 @@ func _update_remote_equipment_visuals() -> void:
 		player_equipment.update_mop_visual(
 			network_holding_mop
 		)
+	
+	# Mop cleaning pose
+	if (
+		network_is_cleaning_spill
+		!= _network_is_cleaning_spill_last_received
+	):
+		_network_is_cleaning_spill_last_received = network_is_cleaning_spill
+
+		player_equipment.set_mop_cleaning(
+			network_is_cleaning_spill
+		)
+		
 
 func find_nearest_player() -> Node3D:
 	var nearest_player: Node3D = null
@@ -1878,6 +1892,11 @@ func _start_spill_cleaning() -> bool:
 
 	cleaning_spill = spill
 	cleaning_progress = 0.0
+	
+	network_is_cleaning_spill = true
+
+	if not inspection_camera_active:
+		player_equipment.set_mop_cleaning(true)
 
 	var spill_path: NodePath = spill.get_path()
 
@@ -1950,7 +1969,12 @@ func _stop_spill_cleaning() -> void:
 
 	cleaning_spill = null
 	cleaning_progress = 0.0
+	
+	network_is_cleaning_spill = false
 
+	if not inspection_camera_active:
+		player_equipment.set_mop_cleaning(false)
+	
 
 @rpc("any_peer", "call_remote", "reliable")
 func _request_begin_spill_cleaning(
