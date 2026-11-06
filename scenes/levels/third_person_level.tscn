@@ -1195,7 +1195,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.5,
 transform = Transform3D(1, 1.9544538e-08, 2.2127296e-09, -1.9544538e-08, 0.97468936, 0.22356346, 2.2127296e-09, -0.22356346, 0.97468936, 0.19179654, 0.0595766, 0.7866372)
 
 [node name="V&D Can" parent="NavigationRegion3D/Items" unique_id=813833733 instance=ExtResource("16_om5ry")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -5.169991, -0.32513154, 0.82716346)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -5.169991, -0.32513154, 0.8989996)
 save_id = "uid://c8l73wx7x8fo2"
 product_data = ExtResource("37_1uuvo")
 grid_rows = 5
@@ -1220,7 +1220,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0073703527)
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.2404871, 0, 0.83547354)
 
 [node name="ShelfTag" parent="NavigationRegion3D/Items/V&D Can" index="5" unique_id=1652248112]
-transform = Transform3D(1, 2.5436298e-09, 3.701217e-11, -2.5436298e-09, 0.9995766, 0.029095734, 3.701217e-11, -0.029095734, 0.9995766, 0.12900019, -0.018999994, 0.3802122)
+transform = Transform3D(1, 2.5436298e-09, 3.701217e-11, -2.5436298e-09, 0.9995766, 0.029095734, 3.701217e-11, -0.029095734, 0.9995766, 0.12900019, -0.018999994, 0.4639052)
 
 [node name="Fantasi 1litre" parent="NavigationRegion3D/Items" unique_id=24309262 instance=ExtResource("16_om5ry")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -6.3386555, 0.09913218, 0.97072154)
