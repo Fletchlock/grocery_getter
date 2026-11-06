@@ -64,14 +64,8 @@ func set_product_unlocked(unlocked: bool) -> void:
 
 	is_unlocked = unlocked
 
-	if not is_unlocked:
-		quantity = 0
-
 	_update_product_display()
 	_update_shelf_tag()
-
-	if not Engine.is_editor_hint():
-		_save_stock_quantity()
 
 
 func is_available_for_restock_order() -> bool:
@@ -83,18 +77,14 @@ func _ready() -> void:
 	_find_nodes()
 
 	is_unlocked = not initially_locked
-	
+
 	quantity = clampi(quantity, 0, max_quantity)
 
-	# Restore previously saved stock before initializing visuals.
-	
 	if not Engine.is_editor_hint():
 		add_to_group("product_displays")
+
+		# Restore inventory before registering the display.
 		_restore_stock_quantity()
-
-	if not is_unlocked:
-		quantity = 0
-
 
 	_ensure_unique_collision_shape()
 	_update_product_display()
@@ -103,10 +93,12 @@ func _ready() -> void:
 	_last_network_quantity = quantity
 	_cache_preview_state()
 
-	# Record the initial quantity for new displays.
 	if not Engine.is_editor_hint():
-		_save_stock_quantity()
+		# Apply the saved unlock state.
 		ProductUnlockManager.register_display(self)
+
+		# Preserve the restored stock quantity.
+		_save_stock_quantity()
 
 
 func _exit_tree() -> void:
