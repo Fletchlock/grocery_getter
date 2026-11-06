@@ -2,7 +2,7 @@ extends Node
 
 
 @export_group("Spill Events")
-@export_range(0.0, 100.0, 1.0) var spill_chance: float = 100.0
+@export_range(0.0, 100.0, 1.0) var spill_chance: float = 10.0
 @export var spill_cooldown: float = 0.0
 @export var max_active_spills: int = 20
 
@@ -91,6 +91,13 @@ func on_shopper_at_point(
 	
 	if product == null:
 		return
+		
+	# A spill requires another product to be available.
+	if not shopping_point.has_method("ai_spill_product"):
+		return
+
+	if int(shopping_point.get("quantity")) <= 0:
+		return
 	# Calculate the shopper's facing direction.
 	var forward: Vector3 = Vector3(
 		sin(shopper.target_rotation),
@@ -141,6 +148,11 @@ func on_shopper_at_point(
 
 	if spill == null:
 		return
+
+	# The spill was successfully created.
+	# Remove one additional product from the display.
+	if not shopping_point.ai_spill_product():
+		push_warning("Spill created without available stock.")
 
 	spill_cooldown_remaining = spill_cooldown
 

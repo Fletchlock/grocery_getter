@@ -716,6 +716,21 @@ func ai_take_product() -> ProductData:
 	return product_data
 
 
+func ai_spill_product() -> bool:
+	if not multiplayer.is_server():
+		return false
+
+	if not is_unlocked or product_data == null:
+		return false
+
+	if quantity <= 0:
+		return false
+
+	quantity -= 1
+
+	return true
+
+
 func _ensure_save_id() -> void:
 	if not Engine.is_editor_hint():
 		return
