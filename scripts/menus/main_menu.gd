@@ -1,6 +1,15 @@
 
 extends Control
 
+
+# Menu navigation
+@onready var save_slot_back_button: Button = $SaveSlotPanel/MarginContainer/VBoxContainer/BackButton
+
+@onready var play_mode_panel: PanelContainer = $PlayModePanel
+@onready var single_player_button: Button = $PlayModePanel/VBoxContainer/HBoxContainer/SinglePlayButton
+@onready var multiplayer_button: Button = $PlayModePanel/VBoxContainer/HBoxContainer/MultiplayerButton
+@onready var play_mode_back_button: Button = $PlayModePanel/VBoxContainer/BackButton
+
 # Options
 @onready var options_panel: PanelContainer = $OptionsPanel
 @onready var display_button: Button = $OptionsPanel/MarginContainer/VBoxContainer/DisplayButton
@@ -61,12 +70,18 @@ func _ready() -> void:
 	audio_back_button.pressed.connect(_on_audio_back_button_pressed)
 	audio_settings.hide()
 	
-	continue_game_button.disabled = not _any_save_exists()
+	continue_game_button.visible = _any_save_exists()
 
 	#Save game slots
 	save_slot_panel.hide()
 	host_privacy_panel.hide()
+	
+	# Menu navigation
+	play_mode_panel.hide()
 
+	save_slot_back_button.pressed.connect(_on_save_slot_back_pressed)
+	play_mode_back_button.pressed.connect(_on_play_mode_back_pressed)
+	
 	friends_button.pressed.connect(_on_friends_button_pressed)
 	invite_button.pressed.connect(_on_invite_button_pressed)
 	privacy_back_button.pressed.connect(_on_privacy_back_button_pressed)
@@ -77,12 +92,43 @@ func _ready() -> void:
 	overwrite_confirmation.get_cancel_button().add_theme_font_size_override("font_size", 24)
 
 
+func _unhandled_key_input(event: InputEvent) -> void:
+	if not event is InputEventKey:
+		return
+
+	if not event.pressed or event.echo:
+		return
+
+	if event.keycode != KEY_ESCAPE:
+		return
+
+	if overwrite_confirmation.visible:
+		overwrite_confirmation.hide()
+	elif play_mode_panel.visible:
+		_on_play_mode_back_pressed()
+	elif save_slot_panel.visible:
+		_on_save_slot_back_pressed()
+	else:
+		return
+
+	get_viewport().set_input_as_handled()
+
+
 func _any_save_exists() -> bool:
 	for slot: int in range(1, SaveManager.MAX_SAVE_SLOTS + 1):
 		if SaveManager.slot_has_save(slot):
 			return true
 
 	return false
+
+
+func _on_save_slot_back_pressed() -> void:
+	save_slot_panel.hide()
+
+
+func _on_play_mode_back_pressed() -> void:
+	play_mode_panel.hide()
+	save_slot_panel.show()
 
 
 func _on_play_button_pressed() -> void:
@@ -296,7 +342,7 @@ func _select_save_slot(slot: int) -> void:
 		return
 
 	print("SELECTED SAVE SLOT: ", slot)
-	_show_host_privacy()
+	_show_play_mode()
 
 
 func _on_overwrite_confirmation_confirmed() -> void:
@@ -313,12 +359,17 @@ func _on_overwrite_confirmation_confirmed() -> void:
 
 	print("NEW GAME: Overwrite approved for Slot ", slot)
 
-	_show_host_privacy()
+	_show_play_mode()
 
 
 func _show_host_privacy() -> void:
 	save_slot_panel.hide()
 	host_privacy_panel.show()
+
+
+func _show_play_mode() -> void:
+	save_slot_panel.hide()
+	play_mode_panel.show()
 
 
 func _on_friends_button_pressed() -> void:
