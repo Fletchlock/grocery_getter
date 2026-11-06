@@ -92,11 +92,19 @@ func _on_play_button_pressed() -> void:
 
 	GameManager.set_game_state(GameManager.GameState.PLAYING)
 
-	LevelManager.load_level(GameManager.STORE_LEVEL_PATH)
+	var level_loaded: bool = LevelManager.load_level(
+		GameManager.STORE_LEVEL_PATH
+	)
+
+	if not level_loaded:
+		push_error("MainMenu: Failed to load single-player level.")
+		return
 
 	await get_tree().process_frame
 
 	DayManager.start_day()
+
+	print("MainMenu: Single-player day started.")
 
 
 func _on_host_button_pressed() -> void:

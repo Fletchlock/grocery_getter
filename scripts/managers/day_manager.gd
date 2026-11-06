@@ -194,6 +194,10 @@ func _process(delta: float) -> void:
 		_advance_game_minute()
 		
 func start_day() -> void:
+	print("DAY MANAGER: start_day called.")
+	print("DAY MANAGER: Is server: ", multiplayer.is_server())
+	print("DAY MANAGER: Peer ID: ", multiplayer.get_unique_id())
+	
 	if not multiplayer.is_server():
 		return
 		
