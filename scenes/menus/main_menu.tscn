@@ -3,37 +3,18 @@
 [ext_resource type="Script" uid="uid://drv7wprqfvxnv" path="res://scripts/menus/main_menu.gd" id="1_xqga4"]
 [ext_resource type="Texture2D" uid="uid://dijd7y50urwue" path="res://assets/images/StoreScreenshot.png" id="2_ovrgc"]
 [ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="3_1hnlc"]
-[ext_resource type="Texture2D" uid="uid://b3ch0sgodv70f" path="res://assets/images/order_notify_bg_blue.png" id="3_2o76q"]
 [ext_resource type="PackedScene" uid="uid://bf4d2aguorsl" path="res://scenes/menus/display_settings.tscn" id="4_6bivr"]
 [ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="4_50h1w"]
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="5_euy4r"]
 [ext_resource type="PackedScene" uid="uid://c7ejyu52cb72l" path="res://scenes/menus/audio_settings.tscn" id="5_imvie"]
+[ext_resource type="Texture2D" uid="uid://blae7m4aomsr3" path="res://assets/images/menu_button_normal_grey.png" id="6_3w8rc"]
+[ext_resource type="Texture2D" uid="uid://byiqbpxrirkiv" path="res://assets/images/menu_button_pressed_grey.png" id="7_uxao6"]
+[ext_resource type="Texture2D" uid="uid://cwboh5tm5ts47" path="res://assets/images/menu_button_hover_grey.png" id="8_vr0hv"]
 [ext_resource type="Texture2D" uid="uid://b60241ltqjs1y" path="res://assets/images/menu_button_normal_yellow.png" id="9_bre17"]
 [ext_resource type="Texture2D" uid="uid://shwtjhqdkrjv" path="res://assets/images/menu_button_pressed_yellow.png" id="10_88kup"]
 [ext_resource type="Texture2D" uid="uid://64lrd4be5n5g" path="res://assets/images/menu_button_hover_yellow.png" id="11_bh4e2"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bre17"]
-texture = ExtResource("3_1hnlc")
-texture_margin_left = 13.0
-texture_margin_top = 13.0
-texture_margin_right = 13.0
-texture_margin_bottom = 13.0
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_88kup"]
-texture = ExtResource("4_50h1w")
-texture_margin_left = 13.0
-texture_margin_top = 13.0
-texture_margin_right = 13.0
-texture_margin_bottom = 13.0
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bh4e2"]
-texture = ExtResource("5_euy4r")
-texture_margin_left = 13.0
-texture_margin_top = 13.0
-texture_margin_right = 13.0
-texture_margin_bottom = 13.0
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ng0o5"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_imvie"]
 texture = ExtResource("3_1hnlc")
 texture_margin_left = 13.0
 texture_margin_top = 13.0
@@ -54,47 +35,40 @@ texture_margin_top = 13.0
 texture_margin_right = 13.0
 texture_margin_bottom = 13.0
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_imvie"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ng0o5"]
 texture = ExtResource("3_1hnlc")
 texture_margin_left = 13.0
 texture_margin_top = 13.0
 texture_margin_right = 13.0
 texture_margin_bottom = 13.0
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6aigx"]
-texture = ExtResource("3_2o76q")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uxao6"]
+texture = ExtResource("4_50h1w")
+texture_margin_left = 50.0
+texture_margin_top = 50.0
+texture_margin_right = 50.0
+texture_margin_bottom = 50.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vr0hv"]
+texture = ExtResource("6_3w8rc")
 texture_margin_left = 13.0
 texture_margin_top = 13.0
 texture_margin_right = 13.0
 texture_margin_bottom = 13.0
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_km81x"]
-texture = ExtResource("4_50h1w")
-texture_margin_left = 15.0
-texture_margin_top = 15.0
-texture_margin_right = 15.0
-texture_margin_bottom = 15.0
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a3hrp"]
+texture = ExtResource("7_uxao6")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3w8rc"]
-texture = ExtResource("9_bre17")
-texture_margin_left = 20.0
-texture_margin_top = 20.0
-texture_margin_right = 20.0
-texture_margin_bottom = 20.0
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7ajv0"]
-texture = ExtResource("10_88kup")
-texture_margin_left = 20.0
-texture_margin_top = 20.0
-texture_margin_right = 20.0
-texture_margin_bottom = 20.0
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hd853"]
-texture = ExtResource("11_bh4e2")
-texture_margin_left = 20.0
-texture_margin_top = 20.0
-texture_margin_right = 20.0
-texture_margin_bottom = 20.0
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_25m6f"]
+texture = ExtResource("8_vr0hv")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0pbgw"]
 texture = ExtResource("3_1hnlc")
@@ -116,6 +90,55 @@ texture_margin_left = 13.0
 texture_margin_top = 13.0
 texture_margin_right = 13.0
 texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_km81x"]
+texture = ExtResource("4_50h1w")
+texture_margin_left = 15.0
+texture_margin_top = 15.0
+texture_margin_right = 15.0
+texture_margin_bottom = 15.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bh4e2"]
+texture = ExtResource("9_bre17")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3w8rc"]
+texture = ExtResource("10_88kup")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nkawv"]
+texture = ExtResource("11_bh4e2")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w32d4"]
+texture = ExtResource("9_bre17")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_287l7"]
+texture = ExtResource("10_88kup")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8hoqd"]
+texture = ExtResource("11_bh4e2")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
 
 [node name="MainMenu" type="Control" unique_id=2052771825]
 layout_mode = 3
@@ -160,7 +183,7 @@ offset_top = 25.0
 offset_right = 323.0
 offset_bottom = 149.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(0.04918272, 0.59938145, 0.9803706, 1)
+theme_override_colors/font_color = Color(0.91871494, 0.49735475, 0.21556771, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.47058824)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/shadow_offset_x = 5
@@ -184,37 +207,25 @@ grow_vertical = 2
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Single Player" type="Label" parent="CenterContainer/VBoxContainer" unique_id=307960645]
+[node name="MainMenuLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=307960645]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95739573, 0.38559994, 0, 1)
+theme_override_colors/font_color = Color(0.91871494, 0.49735475, 0.21556771, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.47058824)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 51
-text = "Single Player"
+text = "MAIN MENU"
 horizontal_alignment = 1
 
-[node name="PlayButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1031511336]
+[node name="ContinueGameButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=2032042663]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
-theme_override_styles/normal = SubResource("StyleBoxTexture_bre17")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_88kup")
-theme_override_styles/hover = SubResource("StyleBoxTexture_bh4e2")
-text = "Play"
-
-[node name="Multiplayer" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1496286046]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.95739573, 0.38559994, 0, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.47058824)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 51
-text = "Multiplayer"
-horizontal_alignment = 1
+theme_override_styles/normal = SubResource("StyleBoxTexture_imvie")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
+text = "Continue"
 
 [node name="NewGameButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1826968477]
 layout_mode = 2
@@ -224,21 +235,13 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
 text = "New Game"
 
-[node name="ContinueGameButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=2032042663]
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
-theme_override_styles/normal = SubResource("StyleBoxTexture_imvie")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
-theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
-text = "Continue Game"
-
 [node name="JoinButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1494536901]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
-text = "Join"
+text = "Join Game"
 
 [node name="OptionsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=697564445]
 layout_mode = 2
@@ -258,28 +261,32 @@ text = "Quit"
 
 [node name="SaveSlotPanel" type="PanelContainer" parent="." unique_id=302008865]
 visible = false
-custom_minimum_size = Vector2(400, 400)
+custom_minimum_size = Vector2(450, 0)
 layout_mode = 1
-anchors_preset = 4
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 500.0
-offset_top = -229.0
-offset_right = 900.0
-offset_bottom = 229.0
+offset_left = -225.0
+offset_top = -277.0
+offset_right = 225.0
+offset_bottom = 277.0
+grow_horizontal = 2
 grow_vertical = 2
 offset_transform_position = Vector2(400, 0)
+theme_override_styles/panel = SubResource("StyleBoxTexture_uxao6")
 
 [node name="MarginContainer" type="MarginContainer" parent="SaveSlotPanel" unique_id=2094303952]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SaveSlotPanel/MarginContainer" unique_id=1491095201]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 20
 
 [node name="TitleLabel" type="Label" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=403438168]
 layout_mode = 2
@@ -288,100 +295,155 @@ text = "SELECT SAVE SLOT"
 horizontal_alignment = 1
 
 [node name="Slot1" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1119223391]
-custom_minimum_size = Vector2(300, 70)
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
 theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
 text = "Empty Slot"
 
 [node name="Slot2" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1384660263]
-custom_minimum_size = Vector2(0, 70)
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
 theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
 text = "Empty Slot"
 
 [node name="Slot3" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1545810333]
-custom_minimum_size = Vector2(0, 70)
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
 theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
 text = "Empty Slot"
 
 [node name="Slot4" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=785639116]
-custom_minimum_size = Vector2(0, 70)
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
 theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
 text = "Empty Slot"
 
 [node name="Slot5" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1221099945]
-custom_minimum_size = Vector2(0, 70)
+custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
 theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
 text = "Empty Slot"
+
+[node name="BackButton" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=468529290]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
+theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
+text = "Back"
 
 [node name="HostPrivacyPanel" type="PanelContainer" parent="." unique_id=1690010175]
 visible = false
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 1
-anchors_preset = 4
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 500.0
+offset_left = -200.0
 offset_top = -110.0
-offset_right = 900.0
+offset_right = 200.0
 offset_bottom = 110.0
+grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_uxao6")
 
 [node name="MarginContainer" type="MarginContainer" parent="HostPrivacyPanel" unique_id=1193332645]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HostPrivacyPanel/MarginContainer" unique_id=1578980748]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 20
 
 [node name="TitleLabel" type="Label" parent="HostPrivacyPanel/MarginContainer/VBoxContainer" unique_id=422371782]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 30
 text = "HOST GAME - PRIVACY"
 horizontal_alignment = 1
 
 [node name="FriendsButton" type="Button" parent="HostPrivacyPanel/MarginContainer/VBoxContainer" unique_id=1123925986]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
 text = "Friends Can Join."
 
 [node name="InviteButton" type="Button" parent="HostPrivacyPanel/MarginContainer/VBoxContainer" unique_id=697846792]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
 text = "Invite Only."
 
 [node name="BackButton" type="Button" parent="HostPrivacyPanel/MarginContainer/VBoxContainer" unique_id=1312620948]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
+theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
 text = "Back"
 
 [node name="OptionsPanel" type="PanelContainer" parent="." unique_id=1170516206]
 visible = false
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 1
-anchors_preset = 4
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 500.0
-offset_top = -110.0
-offset_right = 900.0
-offset_bottom = 110.0
+offset_left = -200.0
+offset_top = -246.0
+offset_right = 200.0
+offset_bottom = 246.0
+grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_6aigx")
+theme_override_styles/panel = SubResource("StyleBoxTexture_uxao6")
 
 [node name="MarginContainer" type="MarginContainer" parent="OptionsPanel" unique_id=237406729]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="OptionsPanel/MarginContainer" unique_id=2045651284]
 layout_mode = 2
@@ -395,52 +457,81 @@ horizontal_alignment = 1
 
 [node name="DisplayButton" type="Button" parent="OptionsPanel/MarginContainer/VBoxContainer" unique_id=2016209642]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
 theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
 text = "Display"
 
 [node name="GraphicsButton" type="Button" parent="OptionsPanel/MarginContainer/VBoxContainer" unique_id=285458392]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
 theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
 text = "Graphics"
 
 [node name="ControlsButton" type="Button" parent="OptionsPanel/MarginContainer/VBoxContainer" unique_id=1537280391]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
 theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
 text = "Controls"
 
 [node name="AudioButton" type="Button" parent="OptionsPanel/MarginContainer/VBoxContainer" unique_id=682541455]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
 theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
 text = "Audio"
 
 [node name="BackButton" type="Button" parent="OptionsPanel/MarginContainer/VBoxContainer" unique_id=1396733177]
 layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
+theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
 text = "Back"
 
 [node name="DisplaySettings" parent="." unique_id=1952363439 instance=ExtResource("4_6bivr")]
 visible = false
 layout_mode = 1
-anchors_preset = 4
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 500.0
+offset_left = -225.0
 offset_top = -209.0
-offset_right = 900.0
+offset_right = 225.0
 offset_bottom = 209.0
+grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_6aigx")
 
 [node name="AudioSettings" parent="." unique_id=731522200 instance=ExtResource("5_imvie")]
 visible = false
 layout_mode = 1
-anchors_preset = 4
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
+anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 500.0
-offset_top = -209.0
-offset_right = 950.0
-offset_bottom = 209.0
+offset_left = -225.0
+offset_top = -168.0
+offset_right = 225.0
+offset_bottom = 168.0
+grow_horizontal = 2
 grow_vertical = 2
 
 [node name="OverwriteConfirmation" type="ConfirmationDialog" parent="." unique_id=1564607822]
@@ -484,18 +575,18 @@ theme_override_constants/separation = 40
 layout_mode = 2
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 40
-theme_override_styles/normal = SubResource("StyleBoxTexture_3w8rc")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_7ajv0")
-theme_override_styles/hover = SubResource("StyleBoxTexture_hd853")
+theme_override_styles/normal = SubResource("StyleBoxTexture_bh4e2")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_3w8rc")
+theme_override_styles/hover = SubResource("StyleBoxTexture_nkawv")
 text = "Single Player"
 
 [node name="MultiplayerButton" type="Button" parent="PlayModePanel/VBoxContainer/HBoxContainer" unique_id=863222104]
 layout_mode = 2
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 40
-theme_override_styles/normal = SubResource("StyleBoxTexture_3w8rc")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_7ajv0")
-theme_override_styles/hover = SubResource("StyleBoxTexture_hd853")
+theme_override_styles/normal = SubResource("StyleBoxTexture_w32d4")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_287l7")
+theme_override_styles/hover = SubResource("StyleBoxTexture_8hoqd")
 text = "Multiplayer"
 
 [node name="BackButton" type="Button" parent="PlayModePanel/VBoxContainer" unique_id=1601395634]
@@ -507,9 +598,8 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
 theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
 text = "Back"
 
-[connection signal="pressed" from="CenterContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/NewGameButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/ContinueGameButton" to="." method="_on_continue_game_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/NewGameButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

@@ -1,10 +1,10 @@
 extends Control
 
+@onready var lobby_list: VBoxContainer = $PanelContainer/VBoxContainer/ScrollContainer/LobbyList
+@onready var status_label: Label = $PanelContainer/VBoxContainer/StatusLabel
+@onready var refresh_button: Button = $PanelContainer/VBoxContainer/ButtonRow/RefreshButton
+@onready var back_button: Button = $PanelContainer/VBoxContainer/ButtonRow/BackButton
 
-@onready var lobby_list: VBoxContainer = $VBoxContainer/ScrollContainer/LobbyList
-@onready var status_label: Label = $VBoxContainer/StatusLabel
-@onready var refresh_button: Button = $VBoxContainer/ButtonRow/RefreshButton
-@onready var back_button: Button = $VBoxContainer/ButtonRow/BackButton
 
 
 func _ready() -> void:
