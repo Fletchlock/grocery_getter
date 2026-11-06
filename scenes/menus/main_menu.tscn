@@ -8,6 +8,9 @@
 [ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="4_50h1w"]
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="5_euy4r"]
 [ext_resource type="PackedScene" uid="uid://c7ejyu52cb72l" path="res://scenes/menus/audio_settings.tscn" id="5_imvie"]
+[ext_resource type="Texture2D" uid="uid://b60241ltqjs1y" path="res://assets/images/menu_button_normal_yellow.png" id="9_bre17"]
+[ext_resource type="Texture2D" uid="uid://shwtjhqdkrjv" path="res://assets/images/menu_button_pressed_yellow.png" id="10_88kup"]
+[ext_resource type="Texture2D" uid="uid://64lrd4be5n5g" path="res://assets/images/menu_button_hover_yellow.png" id="11_bh4e2"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bre17"]
 texture = ExtResource("3_1hnlc")
@@ -60,6 +63,55 @@ texture_margin_bottom = 13.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6aigx"]
 texture = ExtResource("3_2o76q")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_km81x"]
+texture = ExtResource("4_50h1w")
+texture_margin_left = 15.0
+texture_margin_top = 15.0
+texture_margin_right = 15.0
+texture_margin_bottom = 15.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3w8rc"]
+texture = ExtResource("9_bre17")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7ajv0"]
+texture = ExtResource("10_88kup")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hd853"]
+texture = ExtResource("11_bh4e2")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0pbgw"]
+texture = ExtResource("3_1hnlc")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cybf0"]
+texture = ExtResource("4_50h1w")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_olvoh"]
+texture = ExtResource("5_euy4r")
 texture_margin_left = 13.0
 texture_margin_top = 13.0
 texture_margin_right = 13.0
@@ -397,6 +449,63 @@ size = Vector2i(450, 100)
 max_size = Vector2i(1000, 800)
 ok_button_text = "Overwrite"
 dialog_autowrap = true
+
+[node name="PlayModePanel" type="PanelContainer" parent="." unique_id=770686865]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_km81x")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PlayModePanel" unique_id=719824108]
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="TitleLabel" type="Label" parent="PlayModePanel/VBoxContainer" unique_id=1701793449]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "CHOOSE THE SESSION TYPE"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PlayModePanel/VBoxContainer" unique_id=1266336029]
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="SinglePlayButton" type="Button" parent="PlayModePanel/VBoxContainer/HBoxContainer" unique_id=206785605]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxTexture_3w8rc")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_7ajv0")
+theme_override_styles/hover = SubResource("StyleBoxTexture_hd853")
+text = "Single Player"
+
+[node name="MultiplayerButton" type="Button" parent="PlayModePanel/VBoxContainer/HBoxContainer" unique_id=863222104]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxTexture_3w8rc")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_7ajv0")
+theme_override_styles/hover = SubResource("StyleBoxTexture_hd853")
+text = "Multiplayer"
+
+[node name="BackButton" type="Button" parent="PlayModePanel/VBoxContainer" unique_id=1601395634]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
+theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
+text = "Back"
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/NewGameButton" to="." method="_on_host_button_pressed"]
