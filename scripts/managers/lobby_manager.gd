@@ -98,8 +98,9 @@ func add_player(peer_id: int) -> void:
 		"character": "red",
 		"ready": false
 	}
-
-	if peer_id == multiplayer.get_unique_id():
+	
+	# Check for single player
+	if peer_id == multiplayer.get_unique_id() and not NetworkManager.is_single_player:
 		players[peer_id]["steam_id"] = Steam.getSteamID()
 
 	print("LobbyManager: Player added: ", peer_id)

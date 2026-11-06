@@ -86,9 +86,17 @@ func _any_save_exists() -> bool:
 
 
 func _on_play_button_pressed() -> void:
+	print("MainMenu: Starting single player.")
+
+	NetworkManager.start_single_player()
+
 	GameManager.set_game_state(GameManager.GameState.PLAYING)
-	queue_free()
-	LevelManager.load_level("res://scenes/levels/third_person_level.tscn")
+
+	LevelManager.load_level(GameManager.STORE_LEVEL_PATH)
+
+	await get_tree().process_frame
+
+	DayManager.start_day()
 
 
 func _on_host_button_pressed() -> void:

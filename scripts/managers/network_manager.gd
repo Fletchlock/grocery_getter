@@ -13,6 +13,29 @@ var peer: SteamMultiplayerPeer
 var current_lobby_id: int = 0
 
 
+# ==== Single PLayer Mode ====
+var is_single_player: bool = false
+
+
+func start_single_player() -> void:
+	print("NetworkManager: Starting single-player session.")
+
+	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+	peer = null
+	current_lobby_id = 0
+	is_single_player = true
+
+	LobbyManager.clear_players()
+
+	var local_peer_id: int = multiplayer.get_unique_id()
+
+	LobbyManager.add_player(local_peer_id)
+	LobbyManager.set_player_name(local_peer_id, "Player", 0)
+	LobbyManager.set_ready(local_peer_id, true)
+
+	print("NetworkManager: Offline player registered: ", local_peer_id)
+
+
 func _ready() -> void:
 	Steam.initRelayNetworkAccess()
 
