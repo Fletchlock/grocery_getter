@@ -1,6 +1,37 @@
 [gd_scene format=3 uid="uid://c1l8faixcpdt5"]
 
 [ext_resource type="Script" uid="uid://dgxc7x4cogp7n" path="res://scripts/menus/lobby_browser.gd" id="1_3w3ne"]
+[ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="2_km3i3"]
+[ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="3_v8ffg"]
+[ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="4_6jkf3"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uxao6"]
+texture = ExtResource("2_km3i3")
+texture_margin_left = 50.0
+texture_margin_top = 50.0
+texture_margin_right = 50.0
+texture_margin_bottom = 50.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0pbgw"]
+texture = ExtResource("3_v8ffg")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cybf0"]
+texture = ExtResource("2_km3i3")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_olvoh"]
+texture = ExtResource("4_6jkf3")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
 
 [node name="LobbyBrowser" type="Control" unique_id=1243747293]
 layout_mode = 3
@@ -11,47 +42,55 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_3w3ne")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1982712171]
-custom_minimum_size = Vector2(900, 0)
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=164662817]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -64.0
-offset_top = -13.5
-offset_right = 64.0
-offset_bottom = 13.5
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_uxao6")
 
-[node name="Label" type="Label" parent="VBoxContainer" unique_id=1699724925]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=1982712171]
+custom_minimum_size = Vector2(900, 0)
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer" unique_id=1699724925]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "Available Games"
 
-[node name="StatusLabel" type="Label" parent="VBoxContainer" unique_id=2114575507]
+[node name="StatusLabel" type="Label" parent="PanelContainer/VBoxContainer" unique_id=2114575507]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 30
 text = "Searching for games..."
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=58139041]
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer" unique_id=58139041]
 custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
 
-[node name="LobbyList" type="VBoxContainer" parent="VBoxContainer/ScrollContainer" unique_id=1138032912]
+[node name="LobbyList" type="VBoxContainer" parent="PanelContainer/VBoxContainer/ScrollContainer" unique_id=1138032912]
 layout_mode = 2
 
-[node name="ButtonRow" type="HBoxContainer" parent="VBoxContainer" unique_id=830080866]
+[node name="ButtonRow" type="HBoxContainer" parent="PanelContainer/VBoxContainer" unique_id=830080866]
 layout_mode = 2
+theme_override_constants/separation = 20
 
-[node name="RefreshButton" type="Button" parent="VBoxContainer/ButtonRow" unique_id=437392330]
+[node name="RefreshButton" type="Button" parent="PanelContainer/VBoxContainer/ButtonRow" unique_id=437392330]
 layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
+theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
 text = "Refresh"
 
-[node name="BackButton" type="Button" parent="VBoxContainer/ButtonRow" unique_id=127770484]
+[node name="BackButton" type="Button" parent="PanelContainer/VBoxContainer/ButtonRow" unique_id=127770484]
 layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
+theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
 text = "Back"

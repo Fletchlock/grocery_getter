@@ -1,18 +1,41 @@
 [gd_scene format=3 uid="uid://c7ejyu52cb72l"]
 
-[ext_resource type="Texture2D" uid="uid://ifkotnnto2y6" path="res://assets/images/order_notify_bg_dk_grey.png" id="1_cebfg"]
+[ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="1_7tjcx"]
 [ext_resource type="Script" uid="uid://j5mscr3elx7w" path="res://scripts/menus/audio_settings.gd" id="2_cebfg"]
+[ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="3_to6uk"]
+[ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="4_ykg3t"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5epva"]
-texture = ExtResource("1_cebfg")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uxao6"]
+texture = ExtResource("1_7tjcx")
+texture_margin_left = 50.0
+texture_margin_top = 50.0
+texture_margin_right = 50.0
+texture_margin_bottom = 50.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7tjcx"]
+texture = ExtResource("3_to6uk")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_to6uk"]
+texture = ExtResource("1_7tjcx")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ykg3t"]
+texture = ExtResource("4_ykg3t")
 texture_margin_left = 13.0
 texture_margin_top = 13.0
 texture_margin_right = 13.0
 texture_margin_bottom = 13.0
 
 [node name="AudioSettings" type="PanelContainer" unique_id=1952363439]
-custom_minimum_size = Vector2(450, 0)
-theme_override_styles/panel = SubResource("StyleBoxTexture_5epva")
+custom_minimum_size = Vector2(500, 0)
+theme_override_styles/panel = SubResource("StyleBoxTexture_uxao6")
 script = ExtResource("2_cebfg")
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=2131975303]
@@ -24,7 +47,8 @@ theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1865560636]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 20
+alignment = 1
 
 [node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1590595060]
 layout_mode = 2
@@ -59,11 +83,12 @@ layout_mode = 2
 
 [node name="MasterContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=2066684491]
 layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/MasterContainer" unique_id=1277246403]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 30
 text = "Master Volume"
 
 [node name="MasterSlider" type="HSlider" parent="MarginContainer/VBoxContainer/MasterContainer" unique_id=1139606239]
@@ -80,7 +105,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/MusicContainer" unique_id=1571092807]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 30
 text = "Music Volume"
 
 [node name="MusicSlider" type="HSlider" parent="MarginContainer/VBoxContainer/MusicContainer" unique_id=1161011477]
@@ -97,7 +122,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/SFXContainer" unique_id=2132539216]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 30
 text = "SFX Volume    "
 
 [node name="SFXSlider" type="HSlider" parent="MarginContainer/VBoxContainer/SFXContainer" unique_id=89457270]
@@ -110,6 +135,10 @@ step = 0.01
 
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1362661456]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_7tjcx")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_to6uk")
+theme_override_styles/hover = SubResource("StyleBoxTexture_ykg3t")
 text = "Back
 "
