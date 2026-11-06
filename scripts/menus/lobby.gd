@@ -110,7 +110,7 @@ func _on_play_button_pressed() -> void:
 		print("Cannot start: not all players are ready.")
 		return
 
-	GameManager.start_multiplayer_game()
+	GameManager.start_game()
 
 func _on_ready_button_pressed() -> void:
 	var my_peer_id: int = multiplayer.get_unique_id()

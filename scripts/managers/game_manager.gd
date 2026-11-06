@@ -80,7 +80,7 @@ func _on_lobby_joined(_lobby_id: int) -> void:
 	set_game_state(GameState.LOBBY)
 
 
-func start_multiplayer_game() -> void:
+func start_game() -> void:
 	if not multiplayer.is_server():
 		return
 	
@@ -89,7 +89,7 @@ func start_multiplayer_game() -> void:
 	# Tell order manager to initialize orders.
 	# Now handled in on_day_started in the order manager OrderManager.initialize_orders()
 	
-	print("GameManager: Starting multiplayer game.")
+	print("GameManager: Starting game.")
 
 	# Prepare the selected game before loading the store scene.
 	match game_start_mode:
@@ -119,8 +119,9 @@ func start_multiplayer_game() -> void:
 				push_error("GameManager: Failed to load saved game.")
 				return
 
-	# Tell all clients to start the game.
-	start_multiplayer_game_rpc.rpc()
+	# Notify connected clients when hosting multiplayer.
+	if not NetworkManager.is_single_player:
+		start_multiplayer_game_rpc.rpc()
 
 	# Start the game locally for the host.
 	set_game_state(GameState.PLAYING)
