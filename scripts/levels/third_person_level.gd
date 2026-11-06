@@ -1,5 +1,9 @@
 extends Node3D
 
+@onready var music_sources: Array[AudioStreamPlayer3D] = [
+	$Speaker1,
+	$Speaker2,
+]
 
 
 func _ready() -> void:
@@ -30,3 +34,8 @@ func _ready() -> void:
 		# before the level finished loading.
 		for peer_id in multiplayer.get_peers():
 			SpawnManager.spawn_player(peer_id)
+
+	MusicManager.player.stop()
+
+	for source in music_sources:
+		source.play()

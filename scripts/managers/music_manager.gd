@@ -9,7 +9,6 @@ var loop: AudioStream = preload("res://assets/music/DjangoLoop.wav")
 func _ready() -> void:
 	player.finished.connect(_on_music_finished)
 	player.stream = intro
-	player.play()
 
 
 func play_music(track: AudioStream) -> void:
