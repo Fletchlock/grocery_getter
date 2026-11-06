@@ -10,7 +10,7 @@ extends Control
 @onready var options_back_button: Button = $OptionsPanel/MarginContainer/VBoxContainer/BackButton
 # Options Sub-Menus
 @onready var display_settings: PanelContainer = $DisplaySettings
-
+@onready var audio_settings: Control = $AudioSettings
 
 @onready var continue_game_button: Button = $CenterContainer/VBoxContainer/ContinueGameButton
 
@@ -37,6 +37,10 @@ var pending_overwrite_slot: int = -1
 
 
 func _ready() -> void:
+	# Menu music
+	MusicManager.player.stream = MusicManager.intro
+	MusicManager.player.play()
+	
 	# Options
 	options_panel.hide()
 
@@ -48,9 +52,14 @@ func _ready() -> void:
 	var display_back_button: Button = display_settings.get_node(
 		"MarginContainer/VBoxContainer/BackButton"
 	)
+	var audio_back_button: Button = audio_settings.get_node(
+		"MarginContainer/VBoxContainer/BackButton"
+	)
 
 	display_back_button.pressed.connect(_on_display_back_button_pressed)
 	display_settings.hide()
+	audio_back_button.pressed.connect(_on_audio_back_button_pressed)
+	audio_settings.hide()
 	
 	continue_game_button.disabled = not _any_save_exists()
 
@@ -131,7 +140,17 @@ func _on_display_button_pressed() -> void:
 func _on_display_back_button_pressed() -> void:
 	display_settings.hide()
 	options_panel.show()
-	
+
+
+func _on_audio_button_pressed() -> void:
+	options_panel.hide()
+	audio_settings.show()
+
+
+func _on_audio_back_button_pressed() -> void:
+	audio_settings.hide()
+	options_panel.show()
+
 
 func _on_graphics_button_pressed() -> void:
 	print("Graphics Settings")
@@ -140,9 +159,6 @@ func _on_graphics_button_pressed() -> void:
 func _on_controls_button_pressed() -> void:
 	print("Controls Settings")
 
-
-func _on_audio_button_pressed() -> void:
-	print("Audio Settings")
 
 func _on_quit_button_pressed() -> void:
 	get_tree().quit()
