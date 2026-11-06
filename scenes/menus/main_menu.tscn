@@ -2,9 +2,61 @@
 
 [ext_resource type="Script" uid="uid://drv7wprqfvxnv" path="res://scripts/menus/main_menu.gd" id="1_xqga4"]
 [ext_resource type="Texture2D" uid="uid://dijd7y50urwue" path="res://assets/images/StoreScreenshot.png" id="2_ovrgc"]
+[ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="3_1hnlc"]
 [ext_resource type="Texture2D" uid="uid://b3ch0sgodv70f" path="res://assets/images/order_notify_bg_blue.png" id="3_2o76q"]
 [ext_resource type="PackedScene" uid="uid://bf4d2aguorsl" path="res://scenes/menus/display_settings.tscn" id="4_6bivr"]
+[ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="4_50h1w"]
+[ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="5_euy4r"]
 [ext_resource type="PackedScene" uid="uid://c7ejyu52cb72l" path="res://scenes/menus/audio_settings.tscn" id="5_imvie"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bre17"]
+texture = ExtResource("3_1hnlc")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_88kup"]
+texture = ExtResource("4_50h1w")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bh4e2"]
+texture = ExtResource("5_euy4r")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ng0o5"]
+texture = ExtResource("3_1hnlc")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8r73w"]
+texture = ExtResource("4_50h1w")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1hnlc"]
+texture = ExtResource("5_euy4r")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_imvie"]
+texture = ExtResource("3_1hnlc")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6aigx"]
 texture = ExtResource("3_2o76q")
@@ -29,7 +81,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.24703652, 0.34010118, 0.4676472, 1)
+color = Color(0.0015758128, 0.1037861, 0.2419095, 1)
 
 [node name="ImageContainer" type="CenterContainer" parent="." unique_id=428769415]
 layout_mode = 1
@@ -94,7 +146,10 @@ horizontal_alignment = 1
 
 [node name="PlayButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1031511336]
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxTexture_bre17")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_88kup")
+theme_override_styles/hover = SubResource("StyleBoxTexture_bh4e2")
 text = "Play"
 
 [node name="Multiplayer" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1496286046]
@@ -111,27 +166,42 @@ horizontal_alignment = 1
 
 [node name="NewGameButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1826968477]
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
 text = "New Game"
 
 [node name="ContinueGameButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=2032042663]
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxTexture_imvie")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
 text = "Continue Game"
 
 [node name="JoinButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1494536901]
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
 text = "Join"
 
 [node name="OptionsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=697564445]
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
 text = "Options"
 
 [node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=313277346]
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
 text = "Quit"
 
 [node name="SaveSlotPanel" type="PanelContainer" parent="." unique_id=302008865]
