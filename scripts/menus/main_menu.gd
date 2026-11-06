@@ -52,7 +52,9 @@ func _ready() -> void:
 	
 	# Options
 	options_panel.hide()
-
+	
+	single_player_button.pressed.connect(_on_single_player_button_pressed)
+	multiplayer_button.pressed.connect(_on_multiplayer_button_pressed)
 	display_button.pressed.connect(_on_display_button_pressed)
 	graphics_button.pressed.connect(_on_graphics_button_pressed)
 	controls_button.pressed.connect(_on_controls_button_pressed)
@@ -131,32 +133,25 @@ func _on_play_mode_back_pressed() -> void:
 	save_slot_panel.show()
 
 
-func _on_play_button_pressed() -> void:
-	print("MainMenu: Starting single player.")
-
-	NetworkManager.start_single_player()
-
-	GameManager.set_game_state(GameManager.GameState.PLAYING)
-
-	var level_loaded: bool = LevelManager.load_level(
-		GameManager.STORE_LEVEL_PATH
-	)
-
-	if not level_loaded:
-		push_error("MainMenu: Failed to load single-player level.")
-		return
-
-	DayManager.start_day()
-
-	print("MainMenu: Single-player day started.")
-
-
 func _on_host_button_pressed() -> void:
 	GameManager.game_start_mode = GameManager.GameStartMode.NEW_GAME
 
 	slot_title.text = "SELECT SLOT FOR NEW GAME"
 	save_slot_panel.show()
 	_refresh_save_slots()
+
+
+func _on_single_player_button_pressed() -> void:
+	print("MainMenu: Starting single player.")
+	print("MainMenu: Selected save slot: ", SaveManager.selected_slot)
+
+	NetworkManager.start_single_player()
+	GameManager.start_game()
+
+
+func _on_multiplayer_button_pressed() -> void:
+	play_mode_panel.hide()
+	_show_host_privacy()
 
 
 func _on_continue_game_button_pressed() -> void:
@@ -384,4 +379,4 @@ func _on_invite_button_pressed() -> void:
 
 func _on_privacy_back_button_pressed() -> void:
 	host_privacy_panel.hide()
-	save_slot_panel.show()
+	play_mode_panel.show()

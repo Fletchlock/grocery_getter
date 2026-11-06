@@ -60,7 +60,9 @@ func host_lobby(_lobby_type: Steam.LobbyType = LOBBY_TYPE) -> void:
 	if current_lobby_id != 0 or multiplayer.multiplayer_peer != null:
 		print("NetworkManager: Cleaning up previous lobby before hosting.")
 		await disconnect_from_lobby()
-
+	
+	is_single_player = false
+	
 	print("NetworkManager: Creating PUBLIC Steam lobby.")
 	Steam.createLobby(LOBBY_TYPE, MAX_MEMBERS)
 
@@ -288,7 +290,9 @@ func _on_connection_failed() -> void:
 
 func disconnect_from_lobby() -> void:
 	print("NetworkManager: Disconnecting from lobby")
-
+	
+	is_single_player = false
+	
 	if multiplayer.multiplayer_peer != null:
 		print(
 			"NetworkManager: Peer status before close: ",
