@@ -100,8 +100,6 @@ func _on_play_button_pressed() -> void:
 		push_error("MainMenu: Failed to load single-player level.")
 		return
 
-	await get_tree().process_frame
-
 	DayManager.start_day()
 
 	print("MainMenu: Single-player day started.")
