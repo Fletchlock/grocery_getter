@@ -26,7 +26,9 @@ func _ready() -> void:
 		$NavigationRegion3D/MultiplayerEventSpawner
 	)
 	
-	if multiplayer.is_server() and NetworkManager.peer != null:
+	# Changed to support single player
+	#if multiplayer.is_server() and NetworkManager.peer != null:
+	if multiplayer.is_server():
 		# Spawn the host.
 		SpawnManager.spawn_player(multiplayer.get_unique_id())
 
