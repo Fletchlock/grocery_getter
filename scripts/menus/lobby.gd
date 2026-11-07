@@ -28,6 +28,7 @@ extends Control
 
 
 func _ready() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	LobbyManager.lobby_player_added.connect(_on_player_changed)
 	LobbyManager.lobby_player_removed.connect(_on_player_changed)
 	LobbyManager.lobby_player_updated.connect(_on_player_changed)
