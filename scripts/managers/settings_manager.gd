@@ -77,7 +77,7 @@ func load_settings() -> void:
 	master_volume = float(config.get_value(
 		"audio",
 		"master_volume",
-		DEFAULT_MUSIC_VOLUME
+		DEFAULT_MASTER_VOLUME
 	))
 	music_volume = float(config.get_value(
 		"audio",
@@ -90,7 +90,7 @@ func load_settings() -> void:
 		DEFAULT_SFX_VOLUME
 	))
 
-	master_volume = clampf(music_volume, 0.0, 1.0)
+	master_volume = clampf(master_volume, 0.0, 1.0)
 	music_volume = clampf(music_volume, 0.0, 1.0)
 	sfx_volume = clampf(sfx_volume, 0.0, 1.0)
 
@@ -100,7 +100,7 @@ func save_settings() -> void:
 
 	config.set_value("display", "mode", display_mode)
 	config.set_value("display", "resolution", resolution)
-	config.set_value("audio", "master_volume", music_volume)
+	config.set_value("audio", "master_volume", master_volume)
 	config.set_value("audio", "music_volume", music_volume)
 	config.set_value("audio", "sfx_volume", sfx_volume)
 
