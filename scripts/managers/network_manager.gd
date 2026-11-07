@@ -11,6 +11,7 @@ const MAX_MEMBERS: int = 4
 
 var peer: SteamMultiplayerPeer
 var current_lobby_id: int = 0
+var pending_late_join: bool = false
 
 
 # ==== Single PLayer Mode ====
@@ -144,11 +145,11 @@ func _on_lobby_joined(
 
 	print("NetworkManager: Host session state: ", session_state)
 
-	if session_state == "playing":
-		print("NetworkManager: Preparing store for late join.")
+	pending_late_join = (session_state == "playing")
 
+	if pending_late_join:
+		print("NetworkManager: Late join detected.")
 		GameManager.begin_late_join()
-		LevelManager.load_level(GameManager.STORE_LEVEL_PATH)
 
 	print("NetworkManager: Lobby owner Steam ID: ", host_steam_id)
 	print("NetworkManager: My Steam ID: ", Steam.getSteamID())
@@ -277,11 +278,27 @@ func _on_connected_to_server() -> void:
 	var my_name: String = Steam.getFriendPersonaName(my_steam_id)
 
 	LobbyManager.add_player(my_peer_id)
+
 	LobbyManager.request_set_player_name.rpc_id(
 		1,
 		my_name,
 		my_steam_id
 	)
+
+	if pending_late_join:
+		print("NetworkManager: Loading store for late join.")
+
+		pending_late_join = false
+
+		var level_loaded: bool = LevelManager.load_level(
+			GameManager.STORE_LEVEL_PATH
+		)
+
+		if not level_loaded:
+			push_error("NetworkManager: Failed to load late-join store.")
+			return
+
+		print("NetworkManager: Late-join store loaded.")
 
 
 func _on_connection_failed() -> void:
@@ -292,6 +309,7 @@ func disconnect_from_lobby() -> void:
 	print("NetworkManager: Disconnecting from lobby")
 	
 	is_single_player = false
+	pending_late_join = false
 	
 	if multiplayer.multiplayer_peer != null:
 		print(
