@@ -1,6 +1,30 @@
 [gd_scene format=3 uid="uid://dos1p858qorg5"]
 
 [ext_resource type="Script" uid="uid://dks1w8knv7c7t" path="res://scripts/menus/pause_menu.gd" id="1_fwndu"]
+[ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="2_2wrho"]
+[ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="3_gh0u6"]
+[ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="4_eyfc8"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ojtfd"]
+texture = ExtResource("2_2wrho")
+texture_margin_left = 15.0
+texture_margin_top = 15.0
+texture_margin_right = 15.0
+texture_margin_bottom = 15.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_rebfk"]
+texture = ExtResource("3_gh0u6")
+texture_margin_left = 15.0
+texture_margin_top = 15.0
+texture_margin_right = 15.0
+texture_margin_bottom = 15.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1yayi"]
+texture = ExtResource("4_eyfc8")
+texture_margin_left = 15.0
+texture_margin_top = 15.0
+texture_margin_right = 15.0
+texture_margin_bottom = 15.0
 
 [node name="PauseMenu" type="Control" unique_id=619131598]
 process_mode = 3
@@ -31,21 +55,33 @@ theme_override_constants/separation = 20
 [node name="ResumeButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1340069196]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxTexture_ojtfd")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_rebfk")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1yayi")
 text = "Resume"
 
 [node name="OptionsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1271620811]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxTexture_ojtfd")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_rebfk")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1yayi")
 text = "Options"
 
 [node name="MainMenuButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1731877095]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxTexture_ojtfd")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_rebfk")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1yayi")
 text = "Main Menu"
 
 [node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1865207654]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxTexture_ojtfd")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_rebfk")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1yayi")
 text = "Quit"
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]

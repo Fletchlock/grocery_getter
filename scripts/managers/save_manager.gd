@@ -279,3 +279,21 @@ func migrate_legacy_save() -> bool:
 
 func _get_encryption_key() -> PackedByteArray:
 	return SAVE_ENCRYPTION_KEY_HEX.hex_decode()
+
+
+func delete_slot(slot: int) -> bool:
+	var path: String = get_slot_path(slot)
+
+	if path.is_empty() or not FileAccess.file_exists(path):
+		return false
+
+	var error: Error = DirAccess.remove_absolute(
+		ProjectSettings.globalize_path(path)
+	)
+
+	if error != OK:
+		push_error("Failed to delete save slot %d: %s" % [slot, error_string(error)])
+		return false
+
+	print("SAVE DELETED: Slot ", slot)
+	return true

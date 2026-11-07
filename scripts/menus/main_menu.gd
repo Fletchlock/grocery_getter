@@ -30,13 +30,26 @@ var blur_tween: Tween = null
 @onready var save_slot_panel: PanelContainer = $SaveSlotPanel
 @onready var slot_title: Label = $SaveSlotPanel/MarginContainer/VBoxContainer/TitleLabel
 
+# Save Slots
 @onready var slot_buttons: Array[Button] = [
-	$SaveSlotPanel/MarginContainer/VBoxContainer/Slot1,
-	$SaveSlotPanel/MarginContainer/VBoxContainer/Slot2,
-	$SaveSlotPanel/MarginContainer/VBoxContainer/Slot3,
-	$SaveSlotPanel/MarginContainer/VBoxContainer/Slot4,
-	$SaveSlotPanel/MarginContainer/VBoxContainer/Slot5
+	$SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow1/Slot1,
+	$SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow2/Slot2,
+	$SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow3/Slot3,
+	$SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow4/Slot4,
+	$SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow5/Slot5
 ]
+
+@onready var delete_buttons: Array[Button] = [
+	$SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow1/Delete1,
+	$SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow2/Delete2,
+	$SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow3/Delete3,
+	$SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow4/Delete4,
+	$SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow5/Delete5
+]
+
+@onready var delete_confirmation: ConfirmationDialog = $DeleteConfirmation
+
+var pending_delete_slot: int = -1
 
 @onready var overwrite_confirmation: ConfirmationDialog = $OverwriteConfirmation
 
@@ -118,6 +131,13 @@ func _ready() -> void:
 
 	menu_blur.show()
 	menu_blur.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	
+	for i: int in range(delete_buttons.size()):
+		var slot: int = i + 1
+		delete_buttons[i].pressed.connect(_on_delete_slot_pressed.bind(slot))
+
+	delete_confirmation.confirmed.connect(_on_delete_confirmation_confirmed)
+	delete_confirmation.canceled.connect(_on_delete_confirmation_canceled)
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey:
@@ -303,6 +323,7 @@ func _refresh_save_slots() -> void:
 		var slot: int = i + 1
 		var button: Button = slot_buttons[i]
 		var info: Dictionary = SaveManager.get_slot_info(slot)
+		delete_buttons[i].disabled = not SaveManager.slot_has_save(slot)
 
 		if info.is_empty():
 			button.text = "SLOT %d\nEmpty Slot" % slot
@@ -434,6 +455,39 @@ func _on_overwrite_confirmation_confirmed() -> void:
 	print("NEW GAME: Overwrite approved for Slot ", slot)
 
 	_show_play_mode()
+
+
+func _on_delete_slot_pressed(slot: int) -> void:
+	if not SaveManager.slot_has_save(slot):
+		return
+
+	pending_delete_slot = slot
+
+	delete_confirmation.dialog_text = (
+		"Are you sure you want to permanently delete Slot %d?\n\n"
+		+ "This cannot be undone."
+	) % slot
+
+	delete_confirmation.popup_centered()
+
+
+func _on_delete_confirmation_confirmed() -> void:
+	var slot: int = pending_delete_slot
+	pending_delete_slot = -1
+
+	if slot < 1:
+		return
+
+	if not SaveManager.delete_slot(slot):
+		push_warning("Could not delete save slot %d." % slot)
+		return
+
+	_refresh_save_slots()
+	continue_game_button.visible = _any_save_exists()
+
+
+func _on_delete_confirmation_canceled() -> void:
+	pending_delete_slot = -1
 
 
 func _show_host_privacy() -> void:
