@@ -9,6 +9,9 @@ extends Control
 @onready var single_player_button: Button = $PlayModePanel/VBoxContainer/HBoxContainer/SinglePlayButton
 @onready var multiplayer_button: Button = $PlayModePanel/VBoxContainer/HBoxContainer/MultiplayerButton
 @onready var play_mode_back_button: Button = $PlayModePanel/VBoxContainer/BackButton
+@onready var menu_blur: ColorRect = $MenuBackBuffer/MenuBlur
+
+var blur_tween: Tween = null
 
 # Options
 @onready var options_panel: PanelContainer = $OptionsPanel
@@ -92,7 +95,28 @@ func _ready() -> void:
 	overwrite_confirmation.get_label().add_theme_font_size_override("font_size", 24)
 	overwrite_confirmation.get_ok_button().add_theme_font_size_override("font_size", 24)
 	overwrite_confirmation.get_cancel_button().add_theme_font_size_override("font_size", 24)
+	
+	var submenu_panels: Array[Control] = [
+		save_slot_panel,
+		play_mode_panel,
+		host_privacy_panel,
+		options_panel,
+		display_settings,
+		audio_settings
+	]
 
+	for panel: Control in submenu_panels:
+		panel.visibility_changed.connect(_on_submenu_visibility_changed)
+
+	menu_blur.modulate.a = 1.0
+
+	var shader_material: ShaderMaterial = menu_blur.material as ShaderMaterial
+
+	if shader_material != null:
+		shader_material.set_shader_parameter("blur_amount", 0.0)
+		shader_material.set_shader_parameter("darkness", 0.0)
+
+	menu_blur.show()
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey:
@@ -114,6 +138,54 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		return
 
 	get_viewport().set_input_as_handled()
+
+
+func _update_menu_blur() -> void:
+	var should_blur: bool = (
+		save_slot_panel.visible
+		or play_mode_panel.visible
+		or host_privacy_panel.visible
+		or options_panel.visible
+		or display_settings.visible
+		or audio_settings.visible
+	)
+
+	if blur_tween != null:
+		blur_tween.kill()
+
+	var shader_material: ShaderMaterial = menu_blur.material as ShaderMaterial
+
+	if shader_material == null:
+		return
+
+	# Keep the overlay visible so the shader can animate.
+	menu_blur.show()
+	menu_blur.modulate.a = 1.0
+
+	blur_tween = create_tween()
+	blur_tween.set_parallel(true)
+	blur_tween.set_trans(Tween.TRANS_SINE)
+	blur_tween.set_ease(Tween.EASE_IN_OUT)
+
+	blur_tween.tween_method(
+		func(value: float) -> void:
+			shader_material.set_shader_parameter("blur_amount", value),
+		float(shader_material.get_shader_parameter("blur_amount")),
+		2.5 if should_blur else 0.0,
+		0.4
+	)
+
+	blur_tween.tween_method(
+		func(value: float) -> void:
+			shader_material.set_shader_parameter("darkness", value),
+		float(shader_material.get_shader_parameter("darkness")),
+		0.25 if should_blur else 0.0,
+		0.4
+	)
+
+
+func _on_submenu_visibility_changed() -> void:
+	_update_menu_blur()
 
 
 func _any_save_exists() -> bool:
