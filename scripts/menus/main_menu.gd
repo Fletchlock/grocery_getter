@@ -2,6 +2,9 @@
 extends Control
 
 
+# The focus button for gamepad, keyboard and mouse.
+@onready var new_game_button: Button = $CenterContainer/VBoxContainer/NewGameButton
+
 # Menu navigation
 @onready var save_slot_back_button: Button = $SaveSlotPanel/MarginContainer/VBoxContainer/BackButton
 
@@ -65,6 +68,9 @@ func _ready() -> void:
 	# Menu music
 	MusicManager.player.stream = MusicManager.intro
 	MusicManager.player.play()
+	
+	# Focus on this button
+	new_game_button.grab_focus.call_deferred()
 	
 	# Options
 	options_panel.hide()

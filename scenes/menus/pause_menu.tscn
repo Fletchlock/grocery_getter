@@ -58,6 +58,7 @@ theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxTexture_ojtfd")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_rebfk")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1yayi")
+theme_override_styles/focus = SubResource("StyleBoxTexture_1yayi")
 text = "Resume"
 
 [node name="OptionsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1271620811]
@@ -66,6 +67,7 @@ theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxTexture_ojtfd")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_rebfk")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1yayi")
+theme_override_styles/focus = SubResource("StyleBoxTexture_1yayi")
 text = "Options"
 
 [node name="MainMenuButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1731877095]
@@ -74,6 +76,7 @@ theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxTexture_ojtfd")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_rebfk")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1yayi")
+theme_override_styles/focus = SubResource("StyleBoxTexture_1yayi")
 text = "Main Menu"
 
 [node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1865207654]
@@ -82,6 +85,7 @@ theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxTexture_ojtfd")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_rebfk")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1yayi")
+theme_override_styles/focus = SubResource("StyleBoxTexture_1yayi")
 text = "Quit"
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]

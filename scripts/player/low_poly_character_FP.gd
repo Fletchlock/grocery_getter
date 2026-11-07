@@ -140,7 +140,15 @@ var _smoothed_sprint_blend: float = 0.0
 var _smoothed_crouch_blend: float = 0.0
 var camera_fade_tween: Tween = null
 var movement_locked: bool = false
+
+func can_process_gameplay_input() -> bool:
+	return (
+		is_multiplayer_authority()
+		and GameManager.current_state == GameManager.GameState.PLAYING
+	)
+
 var block_movement_until_keys_released := false
+
 
 # Conveyor Belt Testing
 var conveyor_velocity: Vector3 = Vector3.ZERO
@@ -331,7 +339,7 @@ func _refresh_character_selection() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not is_multiplayer_authority():
+	if not can_process_gameplay_input():
 		return
 	
 	if handle_restock_scanner_input(event):
@@ -686,12 +694,19 @@ func _physics_process(delta: float) -> void:
 	
 	# === 1. Camera / Look ===
 
-	var gamepad_look: Vector2 = Input.get_vector(
-		"look_left",
-		"look_right",
-		"look_up",
-		"look_down"
-	)
+	var gamepad_look: Vector2 = Vector2.ZERO
+
+	if can_process_gameplay_input():
+		gamepad_look = Input.get_vector(
+			"look_left",
+			"look_right",
+			"look_up",
+			"look_down"
+		)
+	else:
+		_camera_input_direction = Vector2.ZERO
+		_mouse_input_direction = Vector2.ZERO
+		_smoothed_mouse_velocity = Vector2.ZERO
 
 	# First person camera pivot move when crouching
 	var target_camera_y: float = 1.308 if is_crouching else 1.708
@@ -802,21 +817,17 @@ func _physics_process(delta: float) -> void:
 	# Camera Zoom for TPP
 	
 		
-	if Input.is_action_pressed("zoom_in"):
-		_target_zoom -= (
-			gamepad_zoom_speed * delta
-		)
+	if can_process_gameplay_input() and Input.is_action_pressed("zoom_in"):
+		_target_zoom -= gamepad_zoom_speed * delta
 
-	elif Input.is_action_pressed("zoom_out"):
-		_target_zoom += (
-			gamepad_zoom_speed * delta
-		)
+	elif can_process_gameplay_input() and Input.is_action_pressed("zoom_out"):
+		_target_zoom += gamepad_zoom_speed * delta
 
-	_target_zoom = clamp(
-		_target_zoom,
-		min_zoom,
-		max_zoom
-	)
+		_target_zoom = clamp(
+			_target_zoom,
+			min_zoom,
+			max_zoom
+		)
 
 	_spring_arm.spring_length = lerp(
 		_spring_arm.spring_length,
@@ -829,7 +840,7 @@ func _physics_process(delta: float) -> void:
 
 	var raw_input: Vector2 = Vector2.ZERO
 
-	if not movement_locked:
+	if can_process_gameplay_input() and not movement_locked:
 		raw_input = Input.get_vector(
 			"left",
 			"right",
@@ -905,7 +916,7 @@ func _physics_process(delta: float) -> void:
 		else air_acceleration
 	)
 
-	if movement_locked:
+	if movement_locked or not can_process_gameplay_input():
 		velocity.x = 0.0
 		velocity.z = 0.0
 	else:
@@ -965,7 +976,8 @@ func _physics_process(delta: float) -> void:
 	# === 5. Variable Height Jump ===
 
 	var is_starting_jump: bool = (
-		Input.is_action_just_pressed("jump")
+		can_process_gameplay_input()
+		and Input.is_action_just_pressed("jump")
 		and not is_crouching
 		and not movement_locked
 		and is_on_floor()
@@ -976,7 +988,8 @@ func _physics_process(delta: float) -> void:
 
 	# Releasing Jump early cuts the upward velocity.
 	if (
-		Input.is_action_just_released("jump")
+		can_process_gameplay_input()
+		and Input.is_action_just_released("jump")
 		and velocity.y > 0.0
 	):
 		velocity.y *= jump_release_multiplier
@@ -1007,7 +1020,7 @@ func _physics_process(delta: float) -> void:
 
 	# === 7. Hat Toggle ===
 
-	if Input.is_action_just_pressed("toggle_hat"):
+	if can_process_gameplay_input() and Input.is_action_just_pressed("toggle_hat"):
 
 		network_hat_visible = (
 			not network_hat_visible

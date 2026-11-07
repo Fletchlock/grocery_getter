@@ -1,5 +1,17 @@
 extends Control
 
+
+@onready var resume_button: Button = $CenterContainer/VBoxContainer/ResumeButton
+
+
+func _ready() -> void:
+	$CenterContainer/VBoxContainer/ResumeButton.grab_focus.call_deferred()
+
+
+func focus_default_button() -> void:
+	resume_button.grab_focus.call_deferred()
+	
+	
 func _on_resume_button_pressed() -> void:
 	GameManager.set_game_state(GameManager.GameState.PLAYING)
 	get_tree().paused = false

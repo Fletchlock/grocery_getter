@@ -266,6 +266,7 @@ theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxTexture_imvie")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
+theme_override_styles/focus = SubResource("StyleBoxTexture_1hnlc")
 text = "Continue"
 
 [node name="NewGameButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1826968477]
@@ -274,6 +275,7 @@ theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
+theme_override_styles/focus = SubResource("StyleBoxTexture_1hnlc")
 text = "New Game"
 
 [node name="JoinButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1494536901]
@@ -282,6 +284,7 @@ theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
+theme_override_styles/focus = SubResource("StyleBoxTexture_1hnlc")
 text = "Join Game"
 
 [node name="OptionsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=697564445]
@@ -290,6 +293,7 @@ theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
+theme_override_styles/focus = SubResource("StyleBoxTexture_1hnlc")
 text = "Options"
 
 [node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=313277346]
@@ -298,6 +302,7 @@ theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
+theme_override_styles/focus = SubResource("StyleBoxTexture_1hnlc")
 text = "Quit"
 
 [node name="MenuBackBuffer" type="BackBufferCopy" parent="." unique_id=979814826]
@@ -319,6 +324,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="SaveSlotPanel" type="PanelContainer" parent="." unique_id=302008865]
+visible = false
 custom_minimum_size = Vector2(450, 0)
 layout_mode = 1
 anchors_preset = 8
