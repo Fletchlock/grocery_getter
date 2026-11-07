@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="5_euy4r"]
 [ext_resource type="PackedScene" uid="uid://c7ejyu52cb72l" path="res://scenes/menus/audio_settings.tscn" id="5_imvie"]
 [ext_resource type="Texture2D" uid="uid://blae7m4aomsr3" path="res://assets/images/menu_button_normal_grey.png" id="6_3w8rc"]
+[ext_resource type="Shader" uid="uid://dy3eh2xtgjtsn" path="res://scenes/menus/main_menu.gdshader" id="6_uxao6"]
 [ext_resource type="Texture2D" uid="uid://byiqbpxrirkiv" path="res://assets/images/menu_button_pressed_grey.png" id="7_uxao6"]
 [ext_resource type="Texture2D" uid="uid://cwboh5tm5ts47" path="res://assets/images/menu_button_hover_grey.png" id="8_vr0hv"]
 [ext_resource type="Texture2D" uid="uid://b60241ltqjs1y" path="res://assets/images/menu_button_normal_yellow.png" id="9_bre17"]
@@ -41,6 +42,11 @@ texture_margin_left = 13.0
 texture_margin_top = 13.0
 texture_margin_right = 13.0
 texture_margin_bottom = 13.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_km81x"]
+shader = ExtResource("6_uxao6")
+shader_parameter/blur_amount = 2.5
+shader_parameter/darkness = 0.25
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uxao6"]
 texture = ExtResource("4_50h1w")
@@ -258,6 +264,25 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
 text = "Quit"
+
+[node name="MenuBackBuffer" type="BackBufferCopy" parent="." unique_id=979814826]
+position = Vector2(0, 1)
+copy_mode = 2
+
+[node name="MenuBlur" type="ColorRect" parent="MenuBackBuffer" unique_id=1347323946]
+visible = false
+material = SubResource("ShaderMaterial_km81x")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -1.0
+offset_right = 1720.0
+offset_bottom = 879.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="SaveSlotPanel" type="PanelContainer" parent="." unique_id=302008865]
 visible = false
