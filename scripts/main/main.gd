@@ -91,11 +91,17 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("quit"):
-		if GameManager.current_state == GameManager.GameState.PLAYING:
-			_open_pause_menu()
-		elif GameManager.current_state == GameManager.GameState.PAUSED:
-			_close_pause_menu()
+	if not event.is_action_pressed("quit") and not event.is_action_pressed("ui_cancel"):
+		return
+
+	if event.is_echo():
+		return
+
+	if GameManager.current_state == GameManager.GameState.PLAYING:
+		_open_pause_menu()
+
+	elif GameManager.current_state == GameManager.GameState.PAUSED:
+		_close_pause_menu()
 
 
 func _open_pause_menu() -> void:
