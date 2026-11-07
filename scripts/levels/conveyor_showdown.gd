@@ -724,19 +724,22 @@ func _show_race_results() -> void:
 	results_ui.show()
 
 	var local_peer_id: int = multiplayer.get_unique_id()
-
+	var placement: int = finish_order.find(local_peer_id)
+	
 	if finish_order.is_empty():
 		results_title.text = "NO WINNERS!"
-	elif finish_order[0] == local_peer_id:
-		results_title.text = "1st PLACE!"
-	elif finish_order[1] == local_peer_id:
-		results_title.text = "2nd PLACE!"
-	elif finish_order[2] == local_peer_id:
-		results_title.text = "3rd PLACE!"
-	elif finish_order[3] == local_peer_id:
-		results_title.text = "4th PLACE!"
 	else:
-		results_title.text = "ELIMINATED!"
+		match placement:
+			0:
+				results_title.text = "1st PLACE!"
+			1:
+				results_title.text = "2nd PLACE!"
+			2:
+				results_title.text = "3rd PLACE!"
+			3:
+				results_title.text = "4th PLACE!"
+			_:
+				results_title.text = "ELIMINATED!"
 
 	var result_text: String = "FINAL RESULTS\n\n"
 
