@@ -117,6 +117,7 @@ func _ready() -> void:
 		shader_material.set_shader_parameter("darkness", 0.0)
 
 	menu_blur.show()
+	menu_blur.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey:
@@ -148,6 +149,12 @@ func _update_menu_blur() -> void:
 		or options_panel.visible
 		or display_settings.visible
 		or audio_settings.visible
+	)
+	
+	menu_blur.mouse_filter = (
+		Control.MOUSE_FILTER_STOP
+		if should_blur
+		else Control.MOUSE_FILTER_IGNORE
 	)
 
 	if blur_tween != null:
