@@ -10,9 +10,12 @@
 [ext_resource type="Texture2D" uid="uid://blae7m4aomsr3" path="res://assets/images/menu_button_normal_grey.png" id="6_3w8rc"]
 [ext_resource type="Shader" uid="uid://dy3eh2xtgjtsn" path="res://scenes/menus/main_menu.gdshader" id="6_uxao6"]
 [ext_resource type="Texture2D" uid="uid://byiqbpxrirkiv" path="res://assets/images/menu_button_pressed_grey.png" id="7_uxao6"]
-[ext_resource type="Texture2D" uid="uid://cwboh5tm5ts47" path="res://assets/images/menu_button_hover_grey.png" id="8_vr0hv"]
+[ext_resource type="Texture2D" uid="uid://t2dedkvcii" path="res://assets/images/menu_button_disabled_grey.png" id="9_a3hrp"]
 [ext_resource type="Texture2D" uid="uid://b60241ltqjs1y" path="res://assets/images/menu_button_normal_yellow.png" id="9_bre17"]
+[ext_resource type="Texture2D" uid="uid://dbtw4audil258" path="res://assets/images/menu_button_normal_red.png" id="9_vr0hv"]
 [ext_resource type="Texture2D" uid="uid://shwtjhqdkrjv" path="res://assets/images/menu_button_pressed_yellow.png" id="10_88kup"]
+[ext_resource type="Texture2D" uid="uid://m13fo55dyq7n" path="res://assets/images/menu_button_pressed_red.png" id="10_a3hrp"]
+[ext_resource type="Texture2D" uid="uid://bi2qa748k4nhk" path="res://assets/images/menu_button_hover_red.png" id="11_25m6f"]
 [ext_resource type="Texture2D" uid="uid://64lrd4be5n5g" path="res://assets/images/menu_button_hover_yellow.png" id="11_bh4e2"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_imvie"]
@@ -69,8 +72,40 @@ texture_margin_top = 13.0
 texture_margin_right = 13.0
 texture_margin_bottom = 13.0
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_nkawv"]
+load_path = "res://godot/imported/menu_button_hover_grey.png-2dd3956b7ffd316e76613cbf0ef449e6.ctex"
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_25m6f"]
-texture = ExtResource("8_vr0hv")
+texture = SubResource("CompressedTexture2D_nkawv")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n8vdk"]
+texture = ExtResource("9_a3hrp")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+modulate_color = Color(0.039215688, 0.039215688, 0.039215688, 0.11764706)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_555wk"]
+texture = ExtResource("9_vr0hv")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_awvna"]
+texture = ExtResource("10_a3hrp")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jygr6"]
+texture = ExtResource("11_25m6f")
 texture_margin_left = 13.0
 texture_margin_top = 13.0
 texture_margin_right = 13.0
@@ -284,7 +319,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="SaveSlotPanel" type="PanelContainer" parent="." unique_id=302008865]
-visible = false
 custom_minimum_size = Vector2(450, 0)
 layout_mode = 1
 anchors_preset = 8
@@ -318,7 +352,10 @@ theme_override_font_sizes/font_size = 26
 text = "SELECT SAVE SLOT"
 horizontal_alignment = 1
 
-[node name="Slot1" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1119223391]
+[node name="SlotRow1" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=518124570]
+layout_mode = 2
+
+[node name="Slot1" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow1" unique_id=1119223391]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -327,9 +364,27 @@ theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
 theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
 text = "Empty Slot"
 
-[node name="Slot2" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1384660263]
+[node name="Delete1" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow1" unique_id=1589114656]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_555wk")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_awvna")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
+text = "X"
+
+[node name="SlotRow2" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=884814772]
+layout_mode = 2
+
+[node name="Slot2" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow2" unique_id=1384660263]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -338,9 +393,27 @@ theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
 theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
 text = "Empty Slot"
 
-[node name="Slot3" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1545810333]
+[node name="Delete2" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow2" unique_id=1118510618]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_555wk")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_awvna")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
+text = "X"
+
+[node name="SlotRow3" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=452178594]
+layout_mode = 2
+
+[node name="Slot3" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow3" unique_id=1545810333]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -349,9 +422,27 @@ theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
 theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
 text = "Empty Slot"
 
-[node name="Slot4" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=785639116]
+[node name="Delete3" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow3" unique_id=1494559335]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_555wk")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_awvna")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
+text = "X"
+
+[node name="SlotRow4" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1044825571]
+layout_mode = 2
+
+[node name="Slot4" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow4" unique_id=785639116]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -360,9 +451,27 @@ theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
 theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
 text = "Empty Slot"
 
-[node name="Slot5" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1221099945]
+[node name="Delete4" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow4" unique_id=810047884]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_555wk")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_awvna")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
+text = "X"
+
+[node name="SlotRow5" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1762366847]
+layout_mode = 2
+
+[node name="Slot5" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow5" unique_id=1221099945]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -371,7 +480,22 @@ theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
 theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
 text = "Empty Slot"
+
+[node name="Delete5" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow5" unique_id=1631512325]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_555wk")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_awvna")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
+text = "X"
 
 [node name="BackButton" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=468529290]
 layout_mode = 2
@@ -565,6 +689,13 @@ max_size = Vector2i(1000, 800)
 ok_button_text = "Overwrite"
 dialog_autowrap = true
 
+[node name="DeleteConfirmation" type="ConfirmationDialog" parent="." unique_id=392967977]
+title = "Delete Save Game?"
+size = Vector2i(450, 100)
+max_size = Vector2i(1000, 800)
+ok_button_text = "Delete"
+dialog_autowrap = true
+
 [node name="PlayModePanel" type="PanelContainer" parent="." unique_id=770686865]
 visible = false
 layout_mode = 1
@@ -627,9 +758,9 @@ text = "Back"
 [connection signal="pressed" from="CenterContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
-[connection signal="pressed" from="SaveSlotPanel/MarginContainer/VBoxContainer/Slot1" to="." method="_on_slot_1_pressed"]
-[connection signal="pressed" from="SaveSlotPanel/MarginContainer/VBoxContainer/Slot2" to="." method="_on_slot_2_pressed"]
-[connection signal="pressed" from="SaveSlotPanel/MarginContainer/VBoxContainer/Slot3" to="." method="_on_slot_3_pressed"]
-[connection signal="pressed" from="SaveSlotPanel/MarginContainer/VBoxContainer/Slot4" to="." method="_on_slot_4_pressed"]
-[connection signal="pressed" from="SaveSlotPanel/MarginContainer/VBoxContainer/Slot5" to="." method="_on_slot_5_pressed"]
+[connection signal="pressed" from="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow1/Slot1" to="." method="_on_slot_1_pressed"]
+[connection signal="pressed" from="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow2/Slot2" to="." method="_on_slot_2_pressed"]
+[connection signal="pressed" from="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow3/Slot3" to="." method="_on_slot_3_pressed"]
+[connection signal="pressed" from="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow4/Slot4" to="." method="_on_slot_4_pressed"]
+[connection signal="pressed" from="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow5/Slot5" to="." method="_on_slot_5_pressed"]
 [connection signal="confirmed" from="OverwriteConfirmation" to="." method="_on_overwrite_confirmation_confirmed"]
