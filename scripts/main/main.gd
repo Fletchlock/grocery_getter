@@ -182,9 +182,10 @@ func open_lobby_browser() -> void:
 
 func close_lobby_browser() -> void:
 	if is_instance_valid(lobby_browser):
+		lobby_browser.hide()
 		lobby_browser.queue_free()
 		lobby_browser = null
 
 	if is_instance_valid(main_menu):
 		main_menu.show()
-		main_menu.focus_join_button()
+		main_menu.return_from_lobby_browser()
