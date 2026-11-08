@@ -46,13 +46,13 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _refresh_lobbies() -> void:
-	back_button.grab_focus()
-
 	for child: Node in lobby_list.get_children():
 		child.queue_free()
 
 	status_label.text = "Searching for games..."
 	refresh_button.disabled = true
+
+	back_button.grab_focus.call_deferred()
 
 	NetworkManager.search_lobbies()
 
@@ -62,23 +62,13 @@ func _on_lobby_search_finished(lobbies: Array[Dictionary]) -> void:
 
 	if lobbies.is_empty():
 		status_label.text = "No available games found."
-		refresh_button.grab_focus.call_deferred()
-		return
+	else:
+		status_label.text = "%d game(s) found" % lobbies.size()
 
-	status_label.text = "%d game(s) found" % lobbies.size()
+		for session: Dictionary in lobbies:
+			_add_lobby_row(session)
 
-	for session: Dictionary in lobbies:
-		_add_lobby_row(session)
-
-	for row: Node in lobby_list.get_children():
-		for child: Node in row.get_children():
-			if child is Button:
-				var button: Button = child as Button
-
-				if not button.disabled:
-					button.grab_focus.call_deferred()
-					return
-
+	_setup_lobby_navigation()
 	refresh_button.grab_focus.call_deferred()
 
 
@@ -125,6 +115,51 @@ func _add_lobby_row(session: Dictionary) -> void:
 
 	row.add_child(join_button)
 	join_button.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+
+
+func _setup_lobby_navigation() -> void:
+	var join_buttons: Array[Button] = []
+
+	for row: Node in lobby_list.get_children():
+		for child: Node in row.get_children():
+			if child is Button:
+				var button: Button = child as Button
+
+				if not button.disabled:
+					join_buttons.append(button)
+
+	# Reset navigation.
+	refresh_button.focus_neighbor_top = NodePath("")
+	refresh_button.focus_neighbor_bottom = NodePath("")
+	back_button.focus_neighbor_top = NodePath("")
+	back_button.focus_neighbor_bottom = NodePath("")
+
+	# Refresh and Back are next to each other.
+	refresh_button.focus_neighbor_right = refresh_button.get_path_to(back_button)
+	back_button.focus_neighbor_left = back_button.get_path_to(refresh_button)
+
+	if join_buttons.is_empty():
+		return
+
+	# Refresh -> last available Join button.
+	var last_button: Button = join_buttons.back()
+
+	refresh_button.focus_neighbor_top = refresh_button.get_path_to(last_button)
+
+	# Connect the Join buttons vertically.
+	for i: int in range(join_buttons.size()):
+		var button: Button = join_buttons[i]
+
+		if i > 0:
+			button.focus_neighbor_top = button.get_path_to(join_buttons[i - 1])
+
+		if i < join_buttons.size() - 1:
+			button.focus_neighbor_bottom = button.get_path_to(join_buttons[i + 1])
+		else:
+			button.focus_neighbor_bottom = button.get_path_to(refresh_button)
+
+	# Back can also navigate upward to the list.
+	back_button.focus_neighbor_top = back_button.get_path_to(last_button)
 
 
 func _on_join_pressed(lobby_id: int) -> void:
