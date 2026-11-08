@@ -13,6 +13,9 @@ func _ready() -> void:
 	refresh_button.pressed.connect(_on_refresh_pressed)
 	back_button.pressed.connect(_on_back_pressed)
 
+	refresh_button.focus_mode = Control.FOCUS_ALL
+	back_button.focus_mode = Control.FOCUS_ALL
+
 	_refresh_lobbies()
 
 
@@ -21,7 +24,20 @@ func _exit_tree() -> void:
 		NetworkManager.lobby_search_finished.disconnect(_on_lobby_search_finished)
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if not event.is_action_pressed("ui_cancel"):
+		return
+
+	if event.is_echo():
+		return
+
+	get_viewport().set_input_as_handled()
+	_on_back_pressed()
+
+
 func _refresh_lobbies() -> void:
+	back_button.grab_focus()
+
 	for child: Node in lobby_list.get_children():
 		child.queue_free()
 
@@ -36,12 +52,24 @@ func _on_lobby_search_finished(lobbies: Array[Dictionary]) -> void:
 
 	if lobbies.is_empty():
 		status_label.text = "No available games found."
+		refresh_button.grab_focus.call_deferred()
 		return
 
 	status_label.text = "%d game(s) found" % lobbies.size()
 
 	for session: Dictionary in lobbies:
 		_add_lobby_row(session)
+
+	for row: Node in lobby_list.get_children():
+		for child: Node in row.get_children():
+			if child is Button:
+				var button: Button = child as Button
+
+				if not button.disabled:
+					button.grab_focus.call_deferred()
+					return
+
+	refresh_button.grab_focus.call_deferred()
 
 
 func _add_lobby_row(session: Dictionary) -> void:
@@ -71,12 +99,15 @@ func _add_lobby_row(session: Dictionary) -> void:
 
 	var join_button: Button = Button.new()
 	join_button.custom_minimum_size.x = 110.0
+	join_button.focus_mode = Control.FOCUS_ALL
 
 	var lobby_id: int = int(session["lobby_id"])
 	var is_full: bool = int(session["players"]) >= int(session["max_players"])
 
 	join_button.text = "Full" if is_full else "Join"
 	join_button.disabled = is_full
+	if is_full:
+		join_button.focus_mode = Control.FOCUS_NONE
 	join_button.pressed.connect(_on_join_pressed.bind(lobby_id))
 
 	row.add_child(join_button)

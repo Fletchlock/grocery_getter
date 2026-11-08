@@ -186,3 +186,4 @@ func close_lobby_browser() -> void:
 
 	if is_instance_valid(main_menu):
 		main_menu.show()
+		main_menu.focus_join_button()
