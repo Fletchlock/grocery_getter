@@ -4,6 +4,9 @@
 [ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="2_km3i3"]
 [ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="3_v8ffg"]
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="4_6jkf3"]
+[ext_resource type="Texture2D" uid="uid://blae7m4aomsr3" path="res://assets/images/menu_button_normal_grey.png" id="5_ydbif"]
+[ext_resource type="Texture2D" uid="uid://byiqbpxrirkiv" path="res://assets/images/menu_button_pressed_grey.png" id="6_ldnla"]
+[ext_resource type="Texture2D" uid="uid://cwboh5tm5ts47" path="res://assets/images/menu_button_hover_grey.png" id="7_qjrkl"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uxao6"]
 texture = ExtResource("2_km3i3")
@@ -28,6 +31,34 @@ texture_margin_bottom = 13.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_olvoh"]
 texture = ExtResource("4_6jkf3")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_km3i3"]
+texture = ExtResource("5_ydbif")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_v8ffg"]
+texture = ExtResource("6_ldnla")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6jkf3"]
+texture = ExtResource("7_qjrkl")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ydbif"]
+texture = ExtResource("7_qjrkl")
 texture_margin_left = 13.0
 texture_margin_top = 13.0
 texture_margin_right = 13.0
@@ -84,6 +115,7 @@ theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
 theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
+theme_override_styles/focus = SubResource("StyleBoxTexture_olvoh")
 text = "Refresh"
 
 [node name="BackButton" type="Button" parent="PanelContainer/VBoxContainer/ButtonRow" unique_id=127770484]
@@ -93,4 +125,15 @@ theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
 theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
+theme_override_styles/focus = SubResource("StyleBoxTexture_olvoh")
 text = "Back"
+
+[node name="JoinButtonTemplate" type="Button" parent="PanelContainer" unique_id=1491961006]
+custom_minimum_size = Vector2(140, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxTexture_km3i3")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_v8ffg")
+theme_override_styles/hover = SubResource("StyleBoxTexture_6jkf3")
+theme_override_styles/focus = SubResource("StyleBoxTexture_ydbif")
+text = "Join"
