@@ -306,12 +306,11 @@ func _on_join_button_pressed() -> void:
 
 
 func focus_join_button() -> void:
-	_set_privacy_focus_isolated(false)
-	_set_play_mode_focus_isolated(false)
-	_set_save_slot_focus_isolated(false)
+	print("MAIN MENU: focus_join_button called")
 
 	main_join_button.focus_mode = Control.FOCUS_ALL
 	main_join_button.grab_focus.call_deferred()
+	
 
 # Options
 func _on_options_button_pressed() -> void:

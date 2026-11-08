@@ -181,6 +181,8 @@ func open_lobby_browser() -> void:
 
 
 func close_lobby_browser() -> void:
+	print("MAIN: Closing lobby browser")
+
 	if is_instance_valid(lobby_browser):
 		lobby_browser.hide()
 		lobby_browser.queue_free()
@@ -188,8 +190,7 @@ func close_lobby_browser() -> void:
 
 	if is_instance_valid(main_menu):
 		main_menu.show()
-
-		await get_tree().process_frame
-
-		if is_instance_valid(main_menu):
-			main_menu.focus_join_button()
+		print("MAIN: Calling focus_join_button")
+		main_menu.focus_join_button()
+	else:
+		print("MAIN: Main menu instance is invalid")
