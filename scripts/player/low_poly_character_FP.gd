@@ -559,8 +559,14 @@ func sync_ik_start(cart_node_path: NodePath) -> void:
 			right_hand_ik.influence = 1.0
 			
 			# Set rotation targets to the same nodes and turn them on
-			left_hand_rot.target_node = left_target.get_path()
-			right_hand_rot.target_node = right_target.get_path()
+			left_hand_rot.set_reference_node(
+				0,
+				left_hand_rot.get_path_to(left_target)
+			)
+			right_hand_rot.set_reference_node(
+				0,
+				right_hand_rot.get_path_to(right_target)
+			)
 			left_hand_rot.influence = 1.0
 			right_hand_rot.influence = 1.0
 
@@ -582,8 +588,8 @@ func sync_ik_stop() -> void:
 		if left_hand_rot and right_hand_rot:
 			left_hand_rot.influence = 0.0
 			right_hand_rot.influence = 0.0
-			left_hand_rot.target_node = NodePath("")
-			right_hand_rot.target_node = NodePath("")
+			left_hand_rot.set_reference_node(0, NodePath(""))
+			right_hand_rot.set_reference_node(0, NodePath(""))
 
 
 # Helper function to find the cart linked to this player
