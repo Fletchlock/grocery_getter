@@ -657,6 +657,14 @@ func _set_privacy_focus_isolated(isolated: bool) -> void:
 		privacy_previous_focus_modes.clear()
 
 
+func focus_host_privacy_button() -> void:
+	if not host_privacy_panel.visible:
+		return
+
+	_set_privacy_focus_isolated(true)
+	friends_button.grab_focus.call_deferred()
+
+
 func _on_friends_button_pressed() -> void:
 	print("HOST: Creating PUBLIC lobby (development mode).")
 	_host_game()
