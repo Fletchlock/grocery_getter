@@ -56,12 +56,27 @@ func _ready() -> void:
 	_update_ready_button()
 	lobby_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	lobby_camera.make_current()
+	_setup_lobby_focus()
+	ready_button.grab_focus.call_deferred()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not event.is_action_pressed("ui_cancel"):
+		return
+
+	if event.is_echo():
+		return
+
+	get_viewport().set_input_as_handled()
+	_on_main_menu_button_pressed()
+
 
 func _on_player_changed(_peer_id: int) -> void:
 	_refresh_player_list()
 	_update_character_displays()
 	_update_ready_button()
-	
+
+
 func _update_play_button() -> void:
 	if multiplayer.multiplayer_peer == null:
 		return
@@ -70,6 +85,11 @@ func _update_play_button() -> void:
 		return
 
 	play_button.disabled = not LobbyManager.all_players_ready()
+
+	_setup_lobby_focus()
+
+	if play_button.disabled and play_button.has_focus():
+		ready_button.grab_focus.call_deferred()
 
 
 func _refresh_player_list() -> void:
@@ -103,6 +123,69 @@ func _refresh_player_list() -> void:
 			avatar.hide()
 		
 		player_index += 1
+
+
+func _get_primary_action_button() -> Button:
+	if play_button.visible and not play_button.disabled:
+		return play_button
+
+	return ready_button
+
+
+func _focus_primary_action() -> void:
+	_get_primary_action_button().grab_focus.call_deferred()
+
+
+func _focus_first_character() -> void:
+	for button: Button in [red_button, green_button, blue_button]:
+		if not button.disabled:
+			button.grab_focus.call_deferred()
+			return
+
+	_focus_primary_action()
+
+
+func _setup_lobby_focus() -> void:
+	var buttons: Array[Button] = [
+		play_button,
+		ready_button,
+		invite_friends_button,
+		main_menu_button,
+		red_button,
+		green_button,
+		blue_button
+	]
+
+	for button: Button in buttons:
+		button.focus_mode = (
+			Control.FOCUS_NONE if button.disabled
+			else Control.FOCUS_ALL
+		)
+
+	# Clear any existing manual focus neighbours.
+	for button: Button in buttons:
+		button.focus_neighbor_top = NodePath("")
+		button.focus_neighbor_bottom = NodePath("")
+		button.focus_neighbor_left = NodePath("")
+		button.focus_neighbor_right = NodePath("")
+
+	# Character selection: horizontal movement only.
+	red_button.focus_neighbor_right = red_button.get_path_to(green_button)
+	green_button.focus_neighbor_left = green_button.get_path_to(red_button)
+	green_button.focus_neighbor_right = green_button.get_path_to(blue_button)
+	blue_button.focus_neighbor_left = blue_button.get_path_to(green_button)
+
+	# Character selection returns to the primary action.
+	for button: Button in [red_button, green_button, blue_button]:
+		button.focus_neighbor_bottom = button.get_path_to(_get_primary_action_button())
+
+	# Up from Ready or Play enters character selection at Alex.
+	if play_button.visible and not play_button.disabled:
+		ready_button.focus_neighbor_top = ready_button.get_path_to(play_button)
+	else:
+		ready_button.focus_neighbor_top = ready_button.get_path_to(red_button)
+
+	play_button.focus_neighbor_top = play_button.get_path_to(red_button)
 		
 		
 func _on_play_button_pressed() -> void:
@@ -204,6 +287,7 @@ func _update_ready_button() -> void:
 	red_button.disabled = selection_locked
 	green_button.disabled = selection_locked
 	blue_button.disabled = selection_locked
+	_setup_lobby_focus()
 
 
 func _update_invite_button() -> void:

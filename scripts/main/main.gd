@@ -53,6 +53,7 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 			$UI.add_child(main_menu)
 
 		main_menu.show()
+		main_menu.focus_host_privacy_button()
 
 	if (
 		new_state == GameManager.GameState.LOBBY
