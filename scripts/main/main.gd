@@ -96,16 +96,18 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not event.is_action_pressed("quit") and not event.is_action_pressed("ui_cancel"):
-		return
-
 	if event.is_echo():
 		return
 
 	if GameManager.current_state == GameManager.GameState.PLAYING:
-		_open_pause_menu()
+		if event.is_action_pressed("quit"):
+			_open_pause_menu()
+			get_viewport().set_input_as_handled()
 
 	elif GameManager.current_state == GameManager.GameState.PAUSED:
+		if not event.is_action_pressed("quit") and not event.is_action_pressed("ui_cancel"):
+			return
+
 		var pause_menu: Control = get_node_or_null("UI/PauseMenu") as Control
 
 		if pause_menu == null:
@@ -115,6 +117,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 
 		_close_pause_menu()
+		get_viewport().set_input_as_handled()
 
 
 func _open_pause_menu() -> void:
