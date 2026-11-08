@@ -95,10 +95,10 @@ shape = SubResource("BoxShape3D_15jub")
 replication_config = SubResource("SceneReplicationConfig_2ap80")
 
 [node name="LeftHandTarget" type="Node3D" parent="." unique_id=449325245]
-transform = Transform3D(0.25783426, 0.022557631, -0.9659256, 0.9622502, 0.08418603, 0.25881907, 0.08715582, -0.99619466, -4.222195e-08, -0.28, 1.018, 0.12718932)
+transform = Transform3D(-0.3078411, -0.02693258, -0.9510563, 0.9474375, 0.08289009, -0.30901694, 0.08715579, -0.99619466, -4.157199e-08, -0.25, 1.02, 0.17)
 
 [node name="RightHandTarget" type="Node3D" parent="." unique_id=1096158907]
-transform = Transform3D(-0.25783414, -0.022557538, -0.9659256, 0.96225005, 0.08418603, -0.25881898, 0.08715578, -0.9961946, -4.222195e-08, 0.28, 1.02, 0.12718932)
+transform = Transform3D(-0.373181, -0.03264908, 0.9271836, -0.9236556, -0.08080945, -0.37460637, 0.08715578, -0.9961946, 4.0528487e-08, 0.25, 1.02, 0.17)
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=96710179]
 transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0.03910306, -0.6527447)
