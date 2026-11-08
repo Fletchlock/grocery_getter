@@ -52,8 +52,8 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 			main_menu = menu_scene.instantiate() as Control
 			$UI.add_child(main_menu)
 
-		main_menu.show()
-		main_menu.focus_host_privacy_button()
+			main_menu.show()
+			main_menu.focus_host_privacy_button()
 
 	if (
 		new_state == GameManager.GameState.LOBBY
@@ -181,16 +181,19 @@ func open_lobby_browser() -> void:
 
 
 func close_lobby_browser() -> void:
-	print("MAIN: Closing lobby browser")
-
 	if is_instance_valid(lobby_browser):
 		lobby_browser.hide()
 		lobby_browser.queue_free()
 		lobby_browser = null
 
-	if is_instance_valid(main_menu):
-		main_menu.show()
-		print("MAIN: Calling focus_join_button")
-		main_menu.focus_join_button()
-	else:
-		print("MAIN: Main menu instance is invalid")
+	if not is_instance_valid(main_menu):
+		return
+
+	main_menu.show()
+
+	await get_tree().process_frame
+
+	if not is_instance_valid(main_menu):
+		return
+
+	main_menu.focus_join_button()
