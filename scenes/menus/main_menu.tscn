@@ -524,7 +524,6 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_olvoh")
 text = "Back"
 
 [node name="HostPrivacyPanel" type="PanelContainer" parent="." unique_id=1690010175]
-visible = false
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 1
 anchors_preset = 8
@@ -565,6 +564,7 @@ theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
 theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
+theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
 text = "Friends Can Join."
 
 [node name="InviteButton" type="Button" parent="HostPrivacyPanel/MarginContainer/VBoxContainer" unique_id=697846792]
@@ -575,6 +575,7 @@ theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
 theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
+theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
 text = "Invite Only."
 
 [node name="BackButton" type="Button" parent="HostPrivacyPanel/MarginContainer/VBoxContainer" unique_id=1312620948]
@@ -584,6 +585,7 @@ theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
 theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
+theme_override_styles/focus = SubResource("StyleBoxTexture_olvoh")
 text = "Back"
 
 [node name="OptionsMenu" parent="." unique_id=1858167000 instance=ExtResource("13_25m6f")]

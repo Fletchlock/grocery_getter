@@ -5,6 +5,7 @@ extends Control
 # The focus button for gamepad, keyboard and mouse.
 @onready var new_game_button: Button = $CenterContainer/VBoxContainer/NewGameButton
 @onready var main_continue_button: Button = $CenterContainer/VBoxContainer/ContinueGameButton
+@onready var main_join_button: Button = $CenterContainer/VBoxContainer/JoinButton
 
 # Menu navigation
 @onready var save_slot_back_button: Button = $SaveSlotPanel/MarginContainer/VBoxContainer/BackButton
@@ -23,6 +24,7 @@ const OPTIONS_MENU: PackedScene = preload("res://scenes/menus/options_menu.tscn"
 var options_menu: Control = null
 var previous_focus_modes: Dictionary = {}
 var save_slot_previous_focus_modes: Dictionary = {}
+var privacy_previous_focus_modes: Dictionary = {}
 
 @onready var main_options_button: Button = $CenterContainer/VBoxContainer/OptionsButton
 
@@ -125,7 +127,16 @@ func _ready() -> void:
 	delete_confirmation.confirmed.connect(_on_delete_confirmation_confirmed)
 	delete_confirmation.canceled.connect(_on_delete_confirmation_canceled)
 
-func _unhandled_key_input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
+	if not host_privacy_panel.visible:
+		return
+
+	if not event.is_action_pressed("ui_cancel") or event.is_echo():
+		return
+
+	get_viewport().set_input_as_handled()
+	_on_privacy_back_button_pressed()
+	
 	if not event is InputEventKey:
 		return
 
@@ -137,6 +148,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 	if overwrite_confirmation.visible:
 		overwrite_confirmation.hide()
+	elif host_privacy_panel.visible:
+		_on_privacy_back_button_pressed()
 	elif play_mode_panel.visible:
 		_on_play_mode_back_pressed()
 	elif save_slot_panel.visible:
@@ -295,6 +308,10 @@ func _on_join_button_pressed() -> void:
 	print("MAIN: Opening lobby browser.")
 
 	get_parent().get_parent().open_lobby_browser()
+
+
+func focus_join_button() -> void:
+	main_join_button.grab_focus.call_deferred()
 
 
 # Options
@@ -570,7 +587,14 @@ func _on_delete_confirmation_canceled() -> void:
 
 func _show_host_privacy() -> void:
 	save_slot_panel.hide()
+	play_mode_panel.hide()
+
+	_set_save_slot_focus_isolated(false)
+
 	host_privacy_panel.show()
+	_set_privacy_focus_isolated(true)
+
+	friends_button.grab_focus.call_deferred()
 
 
 func _show_play_mode() -> void:
@@ -582,6 +606,31 @@ func _show_play_mode() -> void:
 
 func _focus_play_mode_button() -> void:
 	single_player_button.grab_focus.call_deferred()
+
+
+func _set_privacy_focus_isolated(isolated: bool) -> void:
+	var buttons: Array[Node] = find_children("*", "BaseButton", true, false)
+
+	for node: Node in buttons:
+		var button: BaseButton = node as BaseButton
+
+		if button == null:
+			continue
+
+		if host_privacy_panel.is_ancestor_of(button):
+			continue
+
+		if isolated:
+			if not privacy_previous_focus_modes.has(button):
+				privacy_previous_focus_modes[button] = button.focus_mode
+
+			button.focus_mode = Control.FOCUS_NONE
+
+		elif privacy_previous_focus_modes.has(button):
+			button.focus_mode = privacy_previous_focus_modes[button]
+
+	if not isolated:
+		privacy_previous_focus_modes.clear()
 
 
 func _on_friends_button_pressed() -> void:
@@ -596,4 +645,7 @@ func _on_invite_button_pressed() -> void:
 
 func _on_privacy_back_button_pressed() -> void:
 	host_privacy_panel.hide()
+	_set_privacy_focus_isolated(false)
+
 	play_mode_panel.show()
+	multiplayer_button.grab_focus.call_deferred()
