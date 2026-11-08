@@ -370,6 +370,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
 theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
+theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
 text = "Empty Slot"
 
 [node name="Delete1" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow1" unique_id=1589114656]
@@ -384,6 +385,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_555wk")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_awvna")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
+theme_override_styles/focus = SubResource("StyleBoxTexture_jygr6")
 text = "X"
 
 [node name="SlotRow2" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=884814772]
@@ -399,6 +401,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
 theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
+theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
 text = "Empty Slot"
 
 [node name="Delete2" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow2" unique_id=1118510618]
@@ -413,6 +416,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_555wk")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_awvna")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
+theme_override_styles/focus = SubResource("StyleBoxTexture_jygr6")
 text = "X"
 
 [node name="SlotRow3" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=452178594]
@@ -428,6 +432,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
 theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
+theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
 text = "Empty Slot"
 
 [node name="Delete3" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow3" unique_id=1494559335]
@@ -442,6 +447,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_555wk")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_awvna")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
+theme_override_styles/focus = SubResource("StyleBoxTexture_jygr6")
 text = "X"
 
 [node name="SlotRow4" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1044825571]
@@ -457,6 +463,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
 theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
+theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
 text = "Empty Slot"
 
 [node name="Delete4" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow4" unique_id=810047884]
@@ -471,6 +478,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_555wk")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_awvna")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
+theme_override_styles/focus = SubResource("StyleBoxTexture_jygr6")
 text = "X"
 
 [node name="SlotRow5" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1762366847]
@@ -479,6 +487,7 @@ layout_mode = 2
 [node name="Slot5" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow5" unique_id=1221099945]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+focus_neighbor_bottom = NodePath("../../BackButton")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
 theme_override_font_sizes/font_size = 20
@@ -486,6 +495,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
 theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
+theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
 text = "Empty Slot"
 
 [node name="Delete5" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow5" unique_id=1631512325]
@@ -500,6 +510,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_555wk")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_awvna")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
+theme_override_styles/focus = SubResource("StyleBoxTexture_jygr6")
 text = "X"
 
 [node name="BackButton" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=468529290]
@@ -509,6 +520,7 @@ theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
 theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
+theme_override_styles/focus = SubResource("StyleBoxTexture_olvoh")
 text = "Back"
 
 [node name="HostPrivacyPanel" type="PanelContainer" parent="." unique_id=1690010175]

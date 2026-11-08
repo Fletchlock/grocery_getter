@@ -4,6 +4,7 @@ extends Control
 
 # The focus button for gamepad, keyboard and mouse.
 @onready var new_game_button: Button = $CenterContainer/VBoxContainer/NewGameButton
+@onready var main_continue_button: Button = $CenterContainer/VBoxContainer/ContinueGameButton
 
 # Menu navigation
 @onready var save_slot_back_button: Button = $SaveSlotPanel/MarginContainer/VBoxContainer/BackButton
@@ -21,6 +22,7 @@ const OPTIONS_MENU: PackedScene = preload("res://scenes/menus/options_menu.tscn"
 
 var options_menu: Control = null
 var previous_focus_modes: Dictionary = {}
+var save_slot_previous_focus_modes: Dictionary = {}
 
 @onready var main_options_button: Button = $CenterContainer/VBoxContainer/OptionsButton
 
@@ -230,10 +232,22 @@ func _any_save_exists() -> bool:
 func _on_save_slot_back_pressed() -> void:
 	save_slot_panel.hide()
 
+	_set_save_slot_focus_isolated(false)
+
+	if GameManager.game_start_mode == GameManager.GameStartMode.CONTINUE_GAME:
+		if continue_game_button.visible and not continue_game_button.disabled:
+			continue_game_button.grab_focus.call_deferred()
+		else:
+			new_game_button.grab_focus.call_deferred()
+	else:
+		new_game_button.grab_focus.call_deferred()
+
 
 func _on_play_mode_back_pressed() -> void:
 	play_mode_panel.hide()
 	save_slot_panel.show()
+	_set_save_slot_focus_isolated(true)
+	_focus_first_save_slot()
 
 
 func _on_host_button_pressed() -> void:
@@ -242,6 +256,8 @@ func _on_host_button_pressed() -> void:
 	slot_title.text = "SELECT SLOT FOR NEW GAME"
 	save_slot_panel.show()
 	_refresh_save_slots()
+	_set_save_slot_focus_isolated(true)
+	_focus_first_save_slot()
 
 
 func _on_single_player_button_pressed() -> void:
@@ -263,6 +279,8 @@ func _on_continue_game_button_pressed() -> void:
 	slot_title.text = "SELECT SLOT TO LOAD"
 	save_slot_panel.show()
 	_refresh_save_slots()
+	_set_save_slot_focus_isolated(true)
+	_focus_first_save_slot()
 
 
 func _host_game() -> void:
@@ -311,12 +329,25 @@ func _on_quit_button_pressed() -> void:
 	get_tree().quit()
 
 
+func _focus_first_save_slot() -> void:
+	for button: Button in slot_buttons:
+		if not button.disabled:
+			button.grab_focus.call_deferred()
+			return
+
+	save_slot_back_button.grab_focus.call_deferred()
+
+
 func _refresh_save_slots() -> void:
 	for i: int in range(slot_buttons.size()):
 		var slot: int = i + 1
 		var button: Button = slot_buttons[i]
 		var info: Dictionary = SaveManager.get_slot_info(slot)
 		delete_buttons[i].disabled = not SaveManager.slot_has_save(slot)
+		delete_buttons[i].focus_mode = (
+			Control.FOCUS_NONE if delete_buttons[i].disabled
+			else Control.FOCUS_ALL
+		)
 
 		if info.is_empty():
 			button.text = "SLOT %d\nEmpty Slot" % slot
@@ -324,9 +355,14 @@ func _refresh_save_slots() -> void:
 				GameManager.game_start_mode
 				== GameManager.GameStartMode.CONTINUE_GAME
 			)
+			button.focus_mode = (
+				Control.FOCUS_NONE if button.disabled
+				else Control.FOCUS_ALL
+			)
 			continue
 
 		button.disabled = false
+		button.focus_mode = Control.FOCUS_ALL
 
 		var created_at: String = _format_save_date(str(info.get("created_at", "")))
 		var day: int = int(info.get("day", 1))
@@ -433,6 +469,39 @@ func _select_save_slot(slot: int) -> void:
 	_show_play_mode()
 
 
+func _set_save_slot_focus_isolated(isolated: bool) -> void:
+	var buttons: Array[Node] = find_children("*", "BaseButton", true, false)
+
+	for node: Node in buttons:
+		var button: BaseButton = node as BaseButton
+
+		if button == null:
+			continue
+
+		# Keep Save Slot buttons focusable.
+		if save_slot_panel.is_ancestor_of(button):
+			continue
+
+		# Keep confirmation dialog buttons focusable.
+		if delete_confirmation.is_ancestor_of(button):
+			continue
+
+		if overwrite_confirmation.is_ancestor_of(button):
+			continue
+
+		if isolated:
+			if not save_slot_previous_focus_modes.has(button):
+				save_slot_previous_focus_modes[button] = button.focus_mode
+
+			button.focus_mode = Control.FOCUS_NONE
+
+		elif save_slot_previous_focus_modes.has(button):
+			button.focus_mode = save_slot_previous_focus_modes[button]
+
+	if not isolated:
+		save_slot_previous_focus_modes.clear()
+
+
 func _on_overwrite_confirmation_confirmed() -> void:
 	if pending_overwrite_slot < 1:
 		return
@@ -462,6 +531,7 @@ func _on_delete_slot_pressed(slot: int) -> void:
 	) % slot
 
 	delete_confirmation.popup_centered()
+	delete_confirmation.get_cancel_button().grab_focus.call_deferred()
 
 
 func _on_delete_confirmation_confirmed() -> void:
@@ -473,14 +543,29 @@ func _on_delete_confirmation_confirmed() -> void:
 
 	if not SaveManager.delete_slot(slot):
 		push_warning("Could not delete save slot %d." % slot)
+		slot_buttons[slot - 1].grab_focus.call_deferred()
 		return
 
 	_refresh_save_slots()
 	continue_game_button.visible = _any_save_exists()
 
+	if not slot_buttons[slot - 1].disabled:
+		slot_buttons[slot - 1].grab_focus.call_deferred()
+	else:
+		_focus_first_save_slot()
+
 
 func _on_delete_confirmation_canceled() -> void:
+	var slot: int = pending_delete_slot
 	pending_delete_slot = -1
+
+	if slot < 1:
+		return
+
+	if not delete_buttons[slot - 1].disabled:
+		delete_buttons[slot - 1].grab_focus.call_deferred()
+	else:
+		_focus_first_save_slot()
 
 
 func _show_host_privacy() -> void:
@@ -490,7 +575,13 @@ func _show_host_privacy() -> void:
 
 func _show_play_mode() -> void:
 	save_slot_panel.hide()
+	_set_save_slot_focus_isolated(false)
 	play_mode_panel.show()
+	_focus_play_mode_button()
+
+
+func _focus_play_mode_button() -> void:
+	single_player_button.grab_focus.call_deferred()
 
 
 func _on_friends_button_pressed() -> void:
