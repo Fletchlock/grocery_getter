@@ -4,6 +4,8 @@
 [ext_resource type="PackedScene" uid="uid://u71xogfk53i" path="res://scenes/objects/carts/cart.tscn" id="2_cbhut"]
 [ext_resource type="Script" uid="uid://h3uh444aun6j" path="res://scripts/player/lobby_character_display.gd" id="3_g7oat"]
 [ext_resource type="PackedScene" uid="uid://cvpqemsd1xgdg" path="res://scenes/menus/lobby_character.tscn" id="4_cbhut"]
+[ext_resource type="ArrayMesh" uid="uid://dufcsyuujb534" path="res://assets/models/characters/alien_character_Cube_035.res" id="5_mb6ek"]
+[ext_resource type="ArrayMesh" uid="uid://dalnre8766asc" path="res://assets/models/characters/alien_character_hat_Cube_036.res" id="6_22xsj"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cbhut"]
 sky_top_color = Color(0.18223205, 0.53926927, 0.85265213, 1)
@@ -221,6 +223,13 @@ script = ExtResource("3_g7oat")
 
 [node name="LobbyCharacter" parent="SubViewportContainer/SubViewport/Player1" unique_id=1612602312 instance=ExtResource("4_cbhut")]
 
+[node name="GroceryBlue" parent="SubViewportContainer/SubViewport/Player1/LobbyCharacter/Armature/Skeleton3D" parent_id_path=PackedInt32Array(1612602312, 593121485) index="1" unique_id=1419311906]
+mesh = ExtResource("5_mb6ek")
+blend_shapes/Blink = 0.0
+
+[node name="Hat" parent="SubViewportContainer/SubViewport/Player1/LobbyCharacter/Armature/Skeleton3D/GroceryBlue" index="0" unique_id=799742904]
+mesh = ExtResource("6_22xsj")
+
 [node name="PlayerNameLabel" type="Label3D" parent="SubViewportContainer/SubViewport/Player1" unique_id=1620203797]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.5, 0)
 text = "Player 1"
@@ -230,6 +239,13 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -1, 
 script = ExtResource("3_g7oat")
 
 [node name="LobbyCharacter" parent="SubViewportContainer/SubViewport/Player2" unique_id=1242521985 instance=ExtResource("4_cbhut")]
+
+[node name="GroceryBlue" parent="SubViewportContainer/SubViewport/Player2/LobbyCharacter/Armature/Skeleton3D" parent_id_path=PackedInt32Array(1242521985, 593121485) index="1" unique_id=1419311906]
+mesh = ExtResource("5_mb6ek")
+blend_shapes/Blink = 0.0
+
+[node name="Hat" parent="SubViewportContainer/SubViewport/Player2/LobbyCharacter/Armature/Skeleton3D/GroceryBlue" index="0" unique_id=799742904]
+mesh = ExtResource("6_22xsj")
 
 [node name="PlayerNameLabel" type="Label3D" parent="SubViewportContainer/SubViewport/Player2" unique_id=1346797050]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.5, 0)
@@ -241,6 +257,13 @@ script = ExtResource("3_g7oat")
 
 [node name="LobbyCharacter" parent="SubViewportContainer/SubViewport/Player3" unique_id=817015640 instance=ExtResource("4_cbhut")]
 
+[node name="GroceryBlue" parent="SubViewportContainer/SubViewport/Player3/LobbyCharacter/Armature/Skeleton3D" parent_id_path=PackedInt32Array(817015640, 593121485) index="1" unique_id=1419311906]
+mesh = ExtResource("5_mb6ek")
+blend_shapes/Blink = 0.0
+
+[node name="Hat" parent="SubViewportContainer/SubViewport/Player3/LobbyCharacter/Armature/Skeleton3D/GroceryBlue" index="0" unique_id=799742904]
+mesh = ExtResource("6_22xsj")
+
 [node name="PlayerNameLabel" type="Label3D" parent="SubViewportContainer/SubViewport/Player3" unique_id=180855959]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.5, 0)
 text = "Player 3"
@@ -250,6 +273,13 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 3, 0
 script = ExtResource("3_g7oat")
 
 [node name="LobbyCharacter" parent="SubViewportContainer/SubViewport/Player4" unique_id=145185328 instance=ExtResource("4_cbhut")]
+
+[node name="GroceryBlue" parent="SubViewportContainer/SubViewport/Player4/LobbyCharacter/Armature/Skeleton3D" parent_id_path=PackedInt32Array(145185328, 593121485) index="1" unique_id=1419311906]
+mesh = ExtResource("5_mb6ek")
+blend_shapes/Blink = 0.0
+
+[node name="Hat" parent="SubViewportContainer/SubViewport/Player4/LobbyCharacter/Armature/Skeleton3D/GroceryBlue" index="0" unique_id=799742904]
+mesh = ExtResource("6_22xsj")
 
 [node name="PlayerNameLabel" type="Label3D" parent="SubViewportContainer/SubViewport/Player4" unique_id=2045366705]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.5, 0)
