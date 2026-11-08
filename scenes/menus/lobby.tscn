@@ -6,6 +6,10 @@
 [ext_resource type="PackedScene" uid="uid://cvpqemsd1xgdg" path="res://scenes/menus/lobby_character.tscn" id="4_cbhut"]
 [ext_resource type="ArrayMesh" uid="uid://r2s70fshqswd" path="res://assets/models/characters/alien_character_Cube_035.res" id="5_mb6ek"]
 [ext_resource type="ArrayMesh" uid="uid://c81ei1hc8p5vd" path="res://assets/models/characters/alien_character_hat_Cube_036.res" id="6_22xsj"]
+[ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="7_fv84f"]
+[ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="8_717b7"]
+[ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="9_djew5"]
+[ext_resource type="Texture2D" uid="uid://t2dedkvcii" path="res://assets/images/menu_button_disabled_grey.png" id="10_717b7"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cbhut"]
 sky_top_color = Color(0.18223205, 0.53926927, 0.85265213, 1)
@@ -40,6 +44,34 @@ exposure_multiplier = 1.25
 dof_blur_far_distance = 53.37
 
 [sub_resource type="BoxMesh" id="BoxMesh_6aigx"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vr0hv"]
+texture = ExtResource("7_fv84f")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a3hrp"]
+texture = ExtResource("8_717b7")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_25m6f"]
+texture = ExtResource("9_djew5")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_fv84f"]
+texture = ExtResource("10_717b7")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
 
 [node name="Lobby" type="Control" unique_id=1938277096]
 layout_mode = 3
@@ -389,72 +421,63 @@ offset_transform_enabled = true
 offset_transform_position = Vector2(-45, 0)
 expand_mode = 1
 
-[node name="PlayButton" type="Button" parent="CanvasLayer" unique_id=1380952413]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer" unique_id=644580359]
+anchors_preset = 9
 anchor_bottom = 1.0
-offset_left = -420.0
-offset_top = -80.0
-offset_right = -315.0
-offset_bottom = -30.0
-grow_horizontal = 0
-grow_vertical = 0
-size_flags_horizontal = 4
+offset_right = 229.0
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 30
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer" unique_id=286718706]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 2
+
+[node name="PlayButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer" unique_id=1380952413]
+layout_mode = 2
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_fv84f")
+theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
 text = "Play"
 
-[node name="ReadyButton" type="Button" parent="CanvasLayer" unique_id=2025713875]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -41.0
-offset_top = -73.0
-offset_right = 41.0
-offset_bottom = -30.0
-grow_horizontal = 2
-grow_vertical = 0
-size_flags_horizontal = 4
+[node name="ReadyButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer" unique_id=2025713875]
+layout_mode = 2
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
+theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
 text = "Ready
 "
 
-[node name="MainMenuButton" type="Button" parent="CanvasLayer" unique_id=1792943070]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 380.0
-offset_top = -80.0
-offset_right = 551.0
-offset_bottom = -30.0
-grow_vertical = 0
-size_flags_horizontal = 4
+[node name="InviteFriendsButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer" unique_id=1424807495]
+layout_mode = 2
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
+theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
+text = "Invite Friends"
+
+[node name="MainMenuButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer" unique_id=1792943070]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
+theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
 text = "Main Menu
 "
-
-[node name="InviteFriendsButton" type="Button" parent="CanvasLayer" unique_id=1424807495]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -94.5
-offset_top = -180.0
-offset_right = 110.5
-offset_bottom = -130.0
-grow_horizontal = 2
-grow_vertical = 0
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_font_sizes/font_size = 30
-text = "Invite Friends"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=576286034]
 layout_mode = 1
@@ -462,9 +485,10 @@ anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -127.0
+offset_left = -176.0
 offset_top = 30.0
-offset_right = 127.0
+offset_right = 176.0
+offset_bottom = -67.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -472,32 +496,45 @@ grow_vertical = 2
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 40
 text = "Select Character"
 
 [node name="CharacterSelection" type="HBoxContainer" parent="VBoxContainer" unique_id=1060449813]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
+theme_override_constants/separation = 40
 
 [node name="RedButton" type="Button" parent="VBoxContainer/CharacterSelection" unique_id=188494757]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
-text = " Red "
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
+theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
+text = "Alex"
 
 [node name="GreenButton" type="Button" parent="VBoxContainer/CharacterSelection" unique_id=1246164382]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
-text = " Green "
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
+theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
+text = "Ruth"
 
 [node name="BlueButton" type="Button" parent="VBoxContainer/CharacterSelection" unique_id=1001545074]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
-text = " Blue "
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
+theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
+text = "Paul"
 
-[connection signal="pressed" from="CanvasLayer/PlayButton" to="." method="_on_play_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/ReadyButton" to="." method="_on_ready_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/ReadyButton" to="." method="_on_ready_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/CharacterSelection/RedButton" to="." method="_on_red_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/CharacterSelection/GreenButton" to="." method="_on_green_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/CharacterSelection/BlueButton" to="." method="_on_blue_button_pressed"]

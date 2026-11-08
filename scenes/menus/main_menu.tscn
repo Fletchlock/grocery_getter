@@ -524,6 +524,7 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_olvoh")
 text = "Back"
 
 [node name="HostPrivacyPanel" type="PanelContainer" parent="." unique_id=1690010175]
+visible = false
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 1
 anchors_preset = 8
@@ -643,6 +644,7 @@ theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxTexture_bh4e2")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_3w8rc")
 theme_override_styles/hover = SubResource("StyleBoxTexture_nkawv")
+theme_override_styles/focus = SubResource("StyleBoxTexture_nkawv")
 text = "Single Player"
 
 [node name="MultiplayerButton" type="Button" parent="PlayModePanel/VBoxContainer/HBoxContainer" unique_id=863222104]
@@ -652,6 +654,7 @@ theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxTexture_w32d4")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_287l7")
 theme_override_styles/hover = SubResource("StyleBoxTexture_8hoqd")
+theme_override_styles/focus = SubResource("StyleBoxTexture_nkawv")
 text = "Multiplayer"
 
 [node name="BackButton" type="Button" parent="PlayModePanel/VBoxContainer" unique_id=1601395634]
@@ -661,6 +664,7 @@ theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
 theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
+theme_override_styles/focus = SubResource("StyleBoxTexture_olvoh")
 text = "Back"
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/ContinueGameButton" to="." method="_on_continue_game_button_pressed"]

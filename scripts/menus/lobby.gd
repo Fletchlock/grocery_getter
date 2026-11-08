@@ -1,13 +1,15 @@
 extends Control
 
 @onready var player_list: VBoxContainer = $CanvasLayer/PlayerList
-@onready var play_button: Button = $CanvasLayer/PlayButton
-@onready var ready_button: Button = $CanvasLayer/ReadyButton
-@onready var main_menu_button: Button = $CanvasLayer/MainMenuButton
+
+@onready var play_button: Button = $CanvasLayer/MarginContainer/VBoxContainer/PlayButton
+@onready var ready_button: Button = $CanvasLayer/MarginContainer/VBoxContainer/ReadyButton
+@onready var main_menu_button: Button = $CanvasLayer/MarginContainer/VBoxContainer/MainMenuButton
+@onready var invite_friends_button: Button = $CanvasLayer/MarginContainer/VBoxContainer/InviteFriendsButton
+
 @onready var red_button: Button = $VBoxContainer/CharacterSelection/RedButton
 @onready var green_button: Button = $VBoxContainer/CharacterSelection/GreenButton
 @onready var blue_button: Button = $VBoxContainer/CharacterSelection/BlueButton
-@onready var invite_friends_button: Button = $CanvasLayer/InviteFriendsButton
 
 @onready var lobby_viewport: SubViewport = $SubViewportContainer/SubViewport
 @onready var lobby_camera: Camera3D = $SubViewportContainer/SubViewport/Camera3D
