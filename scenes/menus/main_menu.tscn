@@ -3,10 +3,8 @@
 [ext_resource type="Script" uid="uid://drv7wprqfvxnv" path="res://scripts/menus/main_menu.gd" id="1_xqga4"]
 [ext_resource type="Texture2D" uid="uid://dijd7y50urwue" path="res://assets/images/StoreScreenshot.png" id="2_ovrgc"]
 [ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="3_1hnlc"]
-[ext_resource type="PackedScene" uid="uid://bf4d2aguorsl" path="res://scenes/menus/display_settings.tscn" id="4_6bivr"]
 [ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="4_50h1w"]
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="5_euy4r"]
-[ext_resource type="PackedScene" uid="uid://c7ejyu52cb72l" path="res://scenes/menus/audio_settings.tscn" id="5_imvie"]
 [ext_resource type="Texture2D" uid="uid://blae7m4aomsr3" path="res://assets/images/menu_button_normal_grey.png" id="6_3w8rc"]
 [ext_resource type="Shader" uid="uid://dy3eh2xtgjtsn" path="res://scenes/menus/main_menu.gdshader" id="6_uxao6"]
 [ext_resource type="Texture2D" uid="uid://byiqbpxrirkiv" path="res://assets/images/menu_button_pressed_grey.png" id="7_uxao6"]
@@ -17,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://m13fo55dyq7n" path="res://assets/images/menu_button_pressed_red.png" id="10_a3hrp"]
 [ext_resource type="Texture2D" uid="uid://bi2qa748k4nhk" path="res://assets/images/menu_button_hover_red.png" id="11_25m6f"]
 [ext_resource type="Texture2D" uid="uid://64lrd4be5n5g" path="res://assets/images/menu_button_hover_yellow.png" id="11_bh4e2"]
+[ext_resource type="PackedScene" uid="uid://i3br0pparhov" path="res://scenes/menus/options_menu.tscn" id="13_25m6f"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_imvie"]
 texture = ExtResource("3_1hnlc")
@@ -575,118 +574,9 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
 theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
 text = "Back"
 
-[node name="OptionsPanel" type="PanelContainer" parent="." unique_id=1170516206]
-visible = false
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -246.0
-offset_right = 200.0
-offset_bottom = 246.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_uxao6")
-
-[node name="MarginContainer" type="MarginContainer" parent="OptionsPanel" unique_id=237406729]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="VBoxContainer" type="VBoxContainer" parent="OptionsPanel/MarginContainer" unique_id=2045651284]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="TitleLabel" type="Label" parent="OptionsPanel/MarginContainer/VBoxContainer" unique_id=1972081531]
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-text = "Options"
-horizontal_alignment = 1
-
-[node name="DisplayButton" type="Button" parent="OptionsPanel/MarginContainer/VBoxContainer" unique_id=2016209642]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
-theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
-theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
-text = "Display"
-
-[node name="GraphicsButton" type="Button" parent="OptionsPanel/MarginContainer/VBoxContainer" unique_id=285458392]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
-theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
-theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
-text = "Graphics"
-
-[node name="ControlsButton" type="Button" parent="OptionsPanel/MarginContainer/VBoxContainer" unique_id=1537280391]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
-theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
-theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
-text = "Controls"
-
-[node name="AudioButton" type="Button" parent="OptionsPanel/MarginContainer/VBoxContainer" unique_id=682541455]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
-theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
-theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
-text = "Audio"
-
-[node name="BackButton" type="Button" parent="OptionsPanel/MarginContainer/VBoxContainer" unique_id=1396733177]
-layout_mode = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
-theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
-text = "Back"
-
-[node name="DisplaySettings" parent="." unique_id=1952363439 instance=ExtResource("4_6bivr")]
+[node name="OptionsMenu" parent="." unique_id=1858167000 instance=ExtResource("13_25m6f")]
 visible = false
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -225.0
-offset_top = -209.0
-offset_right = 225.0
-offset_bottom = 209.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="AudioSettings" parent="." unique_id=731522200 instance=ExtResource("5_imvie")]
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -225.0
-offset_top = -168.0
-offset_right = 225.0
-offset_bottom = 168.0
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="OverwriteConfirmation" type="ConfirmationDialog" parent="." unique_id=1564607822]
 title = "Overwrite Save Game?"
