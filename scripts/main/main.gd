@@ -188,4 +188,8 @@ func close_lobby_browser() -> void:
 
 	if is_instance_valid(main_menu):
 		main_menu.show()
-		main_menu.return_from_lobby_browser()
+
+		await get_tree().process_frame
+
+		if is_instance_valid(main_menu):
+			main_menu.focus_join_button()
