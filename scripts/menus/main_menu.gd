@@ -17,16 +17,14 @@ extends Control
 var blur_tween: Tween = null
 
 # Options
-@onready var options_panel: PanelContainer = $OptionsPanel
-@onready var display_button: Button = $OptionsPanel/MarginContainer/VBoxContainer/DisplayButton
-@onready var graphics_button: Button = $OptionsPanel/MarginContainer/VBoxContainer/GraphicsButton
-@onready var controls_button: Button = $OptionsPanel/MarginContainer/VBoxContainer/ControlsButton
-@onready var audio_button: Button = $OptionsPanel/MarginContainer/VBoxContainer/AudioButton
-@onready var options_back_button: Button = $OptionsPanel/MarginContainer/VBoxContainer/BackButton
-# Options Sub-Menus
-@onready var display_settings: PanelContainer = $DisplaySettings
-@onready var audio_settings: Control = $AudioSettings
+const OPTIONS_MENU: PackedScene = preload("res://scenes/menus/options_menu.tscn")
 
+var options_menu: Control = null
+var previous_focus_modes: Dictionary = {}
+
+@onready var main_options_button: Button = $CenterContainer/VBoxContainer/OptionsButton
+
+# Continue game
 @onready var continue_game_button: Button = $CenterContainer/VBoxContainer/ContinueGameButton
 
 # Save games
@@ -73,26 +71,9 @@ func _ready() -> void:
 	new_game_button.grab_focus.call_deferred()
 	
 	# Options
-	options_panel.hide()
 	
 	single_player_button.pressed.connect(_on_single_player_button_pressed)
 	multiplayer_button.pressed.connect(_on_multiplayer_button_pressed)
-	display_button.pressed.connect(_on_display_button_pressed)
-	graphics_button.pressed.connect(_on_graphics_button_pressed)
-	controls_button.pressed.connect(_on_controls_button_pressed)
-	audio_button.pressed.connect(_on_audio_button_pressed)
-	options_back_button.pressed.connect(_on_options_back_button_pressed)
-	var display_back_button: Button = display_settings.get_node(
-		"MarginContainer/VBoxContainer/BackButton"
-	)
-	var audio_back_button: Button = audio_settings.get_node(
-		"MarginContainer/VBoxContainer/BackButton"
-	)
-
-	display_back_button.pressed.connect(_on_display_back_button_pressed)
-	display_settings.hide()
-	audio_back_button.pressed.connect(_on_audio_back_button_pressed)
-	audio_settings.hide()
 	
 	continue_game_button.visible = _any_save_exists()
 
@@ -118,10 +99,7 @@ func _ready() -> void:
 	var submenu_panels: Array[Control] = [
 		save_slot_panel,
 		play_mode_panel,
-		host_privacy_panel,
-		options_panel,
-		display_settings,
-		audio_settings
+		host_privacy_panel
 	]
 
 	for panel: Control in submenu_panels:
@@ -167,14 +145,34 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 
+func _set_main_menu_focus_enabled(enabled: bool) -> void:
+	var buttons: Array[Node] = find_children("*", "BaseButton", true, false)
+
+	for node: Node in buttons:
+		var button: BaseButton = node as BaseButton
+
+		if button == null:
+			continue
+
+		if is_instance_valid(options_menu) and options_menu.is_ancestor_of(button):
+			continue
+
+		if not enabled:
+			previous_focus_modes[button] = button.focus_mode
+			button.focus_mode = Control.FOCUS_NONE
+		elif previous_focus_modes.has(button):
+			button.focus_mode = previous_focus_modes[button]
+
+	if enabled:
+		previous_focus_modes.clear()
+
+
 func _update_menu_blur() -> void:
 	var should_blur: bool = (
 		save_slot_panel.visible
 		or play_mode_panel.visible
 		or host_privacy_panel.visible
-		or options_panel.visible
-		or display_settings.visible
-		or audio_settings.visible
+		or is_instance_valid(options_menu)
 	)
 	
 	menu_blur.mouse_filter = (
@@ -283,41 +281,30 @@ func _on_join_button_pressed() -> void:
 
 # Options
 func _on_options_button_pressed() -> void:
+	if is_instance_valid(options_menu):
+		return
+
 	save_slot_panel.hide()
 	host_privacy_panel.hide()
-	options_panel.show()
+
+	options_menu = OPTIONS_MENU.instantiate() as Control
+	add_child(options_menu)
+
+	options_menu.back_requested.connect(_on_options_menu_back_requested)
+	options_menu.visibility_changed.connect(_on_submenu_visibility_changed)
+
+	_set_main_menu_focus_enabled(false)
+	_update_menu_blur()
 
 
-func _on_options_back_button_pressed() -> void:
-	options_panel.hide()
+func _on_options_menu_back_requested() -> void:
+	if is_instance_valid(options_menu):
+		options_menu.queue_free()
+		options_menu = null
 
-
-func _on_display_button_pressed() -> void:
-	options_panel.hide()
-	display_settings.show()
-
-
-func _on_display_back_button_pressed() -> void:
-	display_settings.hide()
-	options_panel.show()
-
-
-func _on_audio_button_pressed() -> void:
-	options_panel.hide()
-	audio_settings.show()
-
-
-func _on_audio_back_button_pressed() -> void:
-	audio_settings.hide()
-	options_panel.show()
-
-
-func _on_graphics_button_pressed() -> void:
-	print("Graphics Settings")
-
-
-func _on_controls_button_pressed() -> void:
-	print("Controls Settings")
+	_set_main_menu_focus_enabled(true)
+	main_options_button.grab_focus.call_deferred()
+	_update_menu_blur()
 
 
 func _on_quit_button_pressed() -> void:
