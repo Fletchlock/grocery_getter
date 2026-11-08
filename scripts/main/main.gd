@@ -101,6 +101,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		_open_pause_menu()
 
 	elif GameManager.current_state == GameManager.GameState.PAUSED:
+		var pause_menu: Control = get_node_or_null("UI/PauseMenu") as Control
+
+		if pause_menu == null:
+			return
+
+		if is_instance_valid(pause_menu.options_menu):
+			return
+
 		_close_pause_menu()
 
 
