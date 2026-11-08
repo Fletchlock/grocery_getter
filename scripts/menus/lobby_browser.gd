@@ -4,12 +4,22 @@ extends Control
 @onready var status_label: Label = $PanelContainer/VBoxContainer/StatusLabel
 @onready var refresh_button: Button = $PanelContainer/VBoxContainer/ButtonRow/RefreshButton
 @onready var back_button: Button = $PanelContainer/VBoxContainer/ButtonRow/BackButton
+@onready var join_button_template: Button = $PanelContainer/JoinButtonTemplate
 
+@export_group("Lobby List Styling")
+@export var lobby_font_size: int = 26
+@export var join_font_size: int = 26
+@export var row_separation: int = 20
+@export var join_button_width: float = 140.0
+@export var join_button_height: float = 50.0
 
 
 func _ready() -> void:
 	NetworkManager.lobby_search_finished.connect(_on_lobby_search_finished)
-
+	
+	join_button_template.hide()
+	join_button_template.focus_mode = Control.FOCUS_NONE
+	
 	refresh_button.pressed.connect(_on_refresh_pressed)
 	back_button.pressed.connect(_on_back_pressed)
 
@@ -74,13 +84,14 @@ func _on_lobby_search_finished(lobbies: Array[Dictionary]) -> void:
 
 func _add_lobby_row(session: Dictionary) -> void:
 	var row: HBoxContainer = HBoxContainer.new()
-	row.add_theme_constant_override("separation", 16)
+	row.add_theme_constant_override("separation", row_separation)
 	lobby_list.add_child(row)
 
 	var host_label: Label = Label.new()
 	host_label.custom_minimum_size.x = 260.0
 	host_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	host_label.text = str(session["host_name"])
+	host_label.add_theme_font_size_override("font_size", lobby_font_size)
 	row.add_child(host_label)
 
 	var players_label: Label = Label.new()
@@ -89,16 +100,18 @@ func _add_lobby_row(session: Dictionary) -> void:
 		int(session["players"]),
 		int(session["max_players"])
 	]
+	players_label.add_theme_font_size_override("font_size", lobby_font_size)
 	row.add_child(players_label)
 
 	var status: String = str(session["status"])
 	var status_label_row: Label = Label.new()
 	status_label_row.custom_minimum_size.x = 130.0
 	status_label_row.text = "Playing" if status == "playing" else "In Lobby"
+	status_label_row.add_theme_font_size_override("font_size", lobby_font_size)
 	row.add_child(status_label_row)
 
-	var join_button: Button = Button.new()
-	join_button.custom_minimum_size.x = 110.0
+	var join_button: Button = join_button_template.duplicate() as Button
+	join_button.show()
 	join_button.focus_mode = Control.FOCUS_ALL
 
 	var lobby_id: int = int(session["lobby_id"])
@@ -111,6 +124,7 @@ func _add_lobby_row(session: Dictionary) -> void:
 	join_button.pressed.connect(_on_join_pressed.bind(lobby_id))
 
 	row.add_child(join_button)
+	join_button.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 
 
 func _on_join_pressed(lobby_id: int) -> void:
