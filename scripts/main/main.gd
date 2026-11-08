@@ -25,59 +25,62 @@ func _ready() -> void:
 	GameManager.set_game_state(GameManager.GameState.MAIN_MENU)
 
 
+
 func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 	print("MAIN: Game state changed to: ", new_state)
 
 	if new_state == GameManager.GameState.MAIN_MENU:
 		print("MAIN: Returning to main menu.")
-		
-		var pause_menu = get_node_or_null("UI/PauseMenu")
-		if pause_menu:
-			pause_menu.free()
-			
-		
+
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		
+
+		var pause_menu: Node = get_node_or_null("UI/PauseMenu")
+		if pause_menu != null:
+			pause_menu.free()
+
 		if is_instance_valid(lobby):
-			lobby.queue_free()
+			lobby.free()
 			lobby = null
 
-		if not is_instance_valid(main_menu):
-			var menu_scene := load(MAIN_MENU) as PackedScene
+		if is_instance_valid(lobby_browser):
+			lobby_browser.free()
+			lobby_browser = null
 
-			if menu_scene == null:
-				push_error("Could not load main menu")
-				return
+		if is_instance_valid(main_menu):
+			main_menu.free()
+			main_menu = null
 
-			main_menu = menu_scene.instantiate() as Control
-			$UI.add_child(main_menu)
+		var menu_scene: PackedScene = load(MAIN_MENU) as PackedScene
 
-			main_menu.show()
-			main_menu.focus_host_privacy_button()
+		if menu_scene == null:
+			push_error("Could not load main menu")
+			return
 
-	if (
+		main_menu = menu_scene.instantiate() as Control
+		$UI.add_child(main_menu)
+
+	elif (
 		new_state == GameManager.GameState.LOBBY
 		or new_state == GameManager.GameState.LATE_JOIN_WAITING
 	):
 		print("MAIN: Opening lobby")
-		
+
 		if is_instance_valid(lobby_browser):
 			lobby_browser.queue_free()
 			lobby_browser = null
-			
-		# Close pause and or tablet menu when GameState changes to LOBBY
-		var pause_menu = get_node_or_null("UI/PauseMenu")
-		if pause_menu:
+
+		var pause_menu: Node = get_node_or_null("UI/PauseMenu")
+		if pause_menu != null:
 			pause_menu.free()
-		
+
 		if is_instance_valid(main_menu):
 			print("MAIN: Hiding main menu")
 			main_menu.hide()
-		
+
 		if not is_instance_valid(lobby):
 			open_lobby()
 
-	if new_state == GameManager.GameState.PLAYING:
+	elif new_state == GameManager.GameState.PLAYING:
 		if is_instance_valid(main_menu):
 			print("MAIN: Removing main menu")
 			main_menu.queue_free()
@@ -89,6 +92,7 @@ func _on_game_state_changed(new_state: GameManager.GameState) -> void:
 			lobby = null
 
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
 
 
 func _unhandled_input(event: InputEvent) -> void:
