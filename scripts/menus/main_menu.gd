@@ -306,10 +306,11 @@ func _on_join_button_pressed() -> void:
 
 
 func focus_join_button() -> void:
-	print("MAIN MENU: focus_join_button called")
-
 	main_join_button.focus_mode = Control.FOCUS_ALL
-	main_join_button.grab_focus.call_deferred()
+	main_join_button.grab_focus()
+
+	print("JOIN FOCUS: ", main_join_button.has_focus())
+	print("FOCUS OWNER: ", get_viewport().gui_get_focus_owner())
 	
 
 # Options
