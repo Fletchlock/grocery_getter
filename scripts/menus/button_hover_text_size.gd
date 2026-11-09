@@ -15,6 +15,13 @@ func _ready() -> void:
 
 
 func _on_mouse_entered() -> void:
+	if (
+		Input.mouse_mode == Input.MOUSE_MODE_VISIBLE
+		and focus_mode != Control.FOCUS_NONE
+		and not disabled
+	):
+		grab_focus()
+
 	_update_font_size()
 	UiSoundManager.play_hover()
 
@@ -31,9 +38,18 @@ func _on_pressed() -> void:
 
 
 func _update_font_size() -> void:
-	var highlighted: bool = is_hovered() or has_focus()
+	var highlighted: bool = (
+		(is_hovered() and Input.mouse_mode == Input.MOUSE_MODE_VISIBLE)
+		or has_focus()
+	)
 
 	if highlighted:
-		add_theme_font_size_override("font_size", highlighted_font_size)
+		add_theme_font_size_override(
+			"font_size",
+			highlighted_font_size
+		)
 	else:
-		add_theme_font_size_override("font_size", normal_font_size)
+		add_theme_font_size_override(
+			"font_size",
+			normal_font_size
+		)

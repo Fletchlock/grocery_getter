@@ -40,6 +40,7 @@ ProductUnlockManager="*uid://d18ekblagc078"
 MusicManager="*uid://ddq00x3m3oo2w"
 SettingsManager="*uid://b0p3e435rysrn"
 UiSoundManager="*uid://k6t5f7c66tef"
+MenuInputManager="*uid://c6xa750k5qbc0"
 
 [debug]
 
