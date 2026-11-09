@@ -73,8 +73,6 @@ func _on_main_menu_button_pressed() -> void:
 
 	await GameManager.return_to_main_menu()
 
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-
 	queue_free()
 
 

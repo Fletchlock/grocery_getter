@@ -414,7 +414,6 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_jygr6")
 text = "X"
 script = ExtResource("6_a3hrp")
 normal_font_size = 20
-hover_font_size = 24
 highlighted_font_size = 24
 
 [node name="SlotRow2" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=884814772]
@@ -449,7 +448,6 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_jygr6")
 text = "X"
 script = ExtResource("6_a3hrp")
 normal_font_size = 20
-hover_font_size = 24
 highlighted_font_size = 24
 
 [node name="SlotRow3" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=452178594]
@@ -484,7 +482,6 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_jygr6")
 text = "X"
 script = ExtResource("6_a3hrp")
 normal_font_size = 20
-hover_font_size = 24
 highlighted_font_size = 24
 
 [node name="SlotRow4" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1044825571]
@@ -519,7 +516,6 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_jygr6")
 text = "X"
 script = ExtResource("6_a3hrp")
 normal_font_size = 20
-hover_font_size = 24
 highlighted_font_size = 24
 
 [node name="SlotRow5" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1762366847]
@@ -555,7 +551,6 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_jygr6")
 text = "X"
 script = ExtResource("6_a3hrp")
 normal_font_size = 20
-hover_font_size = 24
 highlighted_font_size = 24
 
 [node name="BackButton" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=468529290]
@@ -570,7 +565,6 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_yayen")
 text = "Back"
 script = ExtResource("6_a3hrp")
 normal_font_size = 30
-hover_font_size = 34
 highlighted_font_size = 34
 
 [node name="HostPrivacyPanel" type="PanelContainer" parent="." unique_id=1690010175]
@@ -700,7 +694,6 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_nkawv")
 text = "Single Player"
 script = ExtResource("6_a3hrp")
 normal_font_size = 40
-hover_font_size = 44
 highlighted_font_size = 44
 
 [node name="MultiplayerButton" type="Button" parent="PlayModePanel/VBoxContainer/HBoxContainer" unique_id=863222104]
@@ -716,7 +709,6 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_nkawv")
 text = "Multiplayer"
 script = ExtResource("6_a3hrp")
 normal_font_size = 40
-hover_font_size = 44
 highlighted_font_size = 44
 
 [node name="BackButton" type="Button" parent="PlayModePanel/VBoxContainer" unique_id=1601395634]
@@ -731,7 +723,6 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_yayen")
 text = "Back"
 script = ExtResource("6_a3hrp")
 normal_font_size = 30
-hover_font_size = 34
 highlighted_font_size = 34
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/ContinueGameButton" to="." method="_on_continue_game_button_pressed"]
