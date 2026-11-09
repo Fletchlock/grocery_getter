@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="4_1biva"]
 [ext_resource type="Texture2D" uid="uid://shwtjhqdkrjv" path="res://assets/images/menu_button_pressed_yellow.png" id="4_w5rgp"]
 [ext_resource type="Texture2D" uid="uid://64lrd4be5n5g" path="res://assets/images/menu_button_hover_yellow.png" id="5_23qtx"]
+[ext_resource type="Script" uid="uid://bimg6esvjfivg" path="res://scripts/menus/button_hover_text_size.gd" id="6_w5rgp"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uxao6"]
 texture = ExtResource("1_5u744")
@@ -104,20 +105,32 @@ text = "Resolution"
 layout_mode = 2
 
 [node name="ApplyButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=2111704314]
+custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_xekdv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_4ub7t")
 theme_override_styles/hover = SubResource("StyleBoxTexture_7jpr4")
+theme_override_styles/focus = SubResource("StyleBoxTexture_7jpr4")
 text = "Apply"
+script = ExtResource("6_w5rgp")
+normal_font_size = 30
+hover_font_size = 34
+highlighted_font_size = 34
 
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1362661456]
+custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
 theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
+theme_override_styles/focus = SubResource("StyleBoxTexture_olvoh")
 text = "Back
 "
+script = ExtResource("6_w5rgp")
+normal_font_size = 30
+hover_font_size = 34
+highlighted_font_size = 34

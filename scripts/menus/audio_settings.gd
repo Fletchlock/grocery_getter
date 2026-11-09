@@ -16,15 +16,26 @@ func _ready() -> void:
 
 
 func _on_master_slider_value_changed(value: float) -> void:
+	UiSoundManager.play_slider()
 	SettingsManager.set_master_volume(value)
 	SettingsManager.save_settings()
 
 
 func _on_music_slider_value_changed(value: float) -> void:
+	UiSoundManager.play_slider()
 	SettingsManager.set_music_volume(value)
 	SettingsManager.save_settings()
 
 
 func _on_sfx_slider_value_changed(value: float) -> void:
+	UiSoundManager.play_slider()
 	SettingsManager.set_sfx_volume(value)
 	SettingsManager.save_settings()
+
+
+func _on_slider_mouse_entered() -> void:
+	UiSoundManager.play_hover()
+
+
+func _on_slider_focus_entered() -> void:
+	UiSoundManager.play_hover()

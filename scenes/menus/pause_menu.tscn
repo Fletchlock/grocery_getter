@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="2_2wrho"]
 [ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="3_gh0u6"]
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="4_eyfc8"]
+[ext_resource type="Script" uid="uid://bimg6esvjfivg" path="res://scripts/menus/button_hover_text_size.gd" id="5_gh0u6"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ojtfd"]
 texture = ExtResource("2_2wrho")
@@ -53,6 +54,7 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="ResumeButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1340069196]
+custom_minimum_size = Vector2(300, 100)
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxTexture_ojtfd")
@@ -60,8 +62,13 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_rebfk")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1yayi")
 theme_override_styles/focus = SubResource("StyleBoxTexture_1yayi")
 text = "Resume"
+script = ExtResource("5_gh0u6")
+normal_font_size = 40
+hover_font_size = 44
+highlighted_font_size = 44
 
 [node name="OptionsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1271620811]
+custom_minimum_size = Vector2(300, 100)
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxTexture_ojtfd")
@@ -69,8 +76,13 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_rebfk")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1yayi")
 theme_override_styles/focus = SubResource("StyleBoxTexture_1yayi")
 text = "Options"
+script = ExtResource("5_gh0u6")
+normal_font_size = 40
+hover_font_size = 44
+highlighted_font_size = 44
 
 [node name="MainMenuButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1731877095]
+custom_minimum_size = Vector2(300, 100)
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxTexture_ojtfd")
@@ -78,8 +90,13 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_rebfk")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1yayi")
 theme_override_styles/focus = SubResource("StyleBoxTexture_1yayi")
 text = "Main Menu"
+script = ExtResource("5_gh0u6")
+normal_font_size = 40
+hover_font_size = 44
+highlighted_font_size = 44
 
 [node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1865207654]
+custom_minimum_size = Vector2(300, 100)
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxTexture_ojtfd")
@@ -87,6 +104,10 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_rebfk")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1yayi")
 theme_override_styles/focus = SubResource("StyleBoxTexture_1yayi")
 text = "Quit"
+script = ExtResource("5_gh0u6")
+normal_font_size = 40
+hover_font_size = 44
+highlighted_font_size = 44
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
