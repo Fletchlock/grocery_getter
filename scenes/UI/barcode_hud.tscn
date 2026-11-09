@@ -45,6 +45,8 @@ vertical_alignment = 1
 
 [node name="CorrectSound" type="AudioStreamPlayer" parent="." unique_id=452648096]
 volume_db = -12.0
+bus = &"UI"
 
 [node name="ErrorSound" type="AudioStreamPlayer" parent="." unique_id=1752663887]
 volume_db = -12.0
+bus = &"UI"
