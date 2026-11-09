@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://j5mscr3elx7w" path="res://scripts/menus/audio_settings.gd" id="2_cebfg"]
 [ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="3_to6uk"]
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="4_ykg3t"]
+[ext_resource type="Script" uid="uid://bimg6esvjfivg" path="res://scripts/menus/button_hover_text_size.gd" id="5_to6uk"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uxao6"]
 texture = ExtResource("1_7tjcx")
@@ -86,59 +87,74 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/MasterContainer" unique_id=1277246403]
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Master Volume"
 
 [node name="MasterSlider" type="HSlider" parent="MarginContainer/VBoxContainer/MasterContainer" unique_id=1139606239]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 10
 size_flags_vertical = 4
 offset_transform_enabled = true
 max_value = 1.0
-step = 0.01
+step = 0.05
 
 [node name="MusicContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1799101920]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/MusicContainer" unique_id=1571092807]
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Music Volume"
 
 [node name="MusicSlider" type="HSlider" parent="MarginContainer/VBoxContainer/MusicContainer" unique_id=1161011477]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 10
 size_flags_vertical = 4
 offset_transform_enabled = true
 max_value = 1.0
-step = 0.01
+step = 0.05
 
 [node name="SFXContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1975262690]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/SFXContainer" unique_id=2132539216]
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "SFX Volume    "
 
 [node name="SFXSlider" type="HSlider" parent="MarginContainer/VBoxContainer/SFXContainer" unique_id=89457270]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 10
 size_flags_vertical = 4
 offset_transform_enabled = true
 max_value = 1.0
-step = 0.01
+step = 0.05
 
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1362661456]
+custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_7tjcx")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_to6uk")
 theme_override_styles/hover = SubResource("StyleBoxTexture_ykg3t")
+theme_override_styles/focus = SubResource("StyleBoxTexture_ykg3t")
 text = "Back
 "
+script = ExtResource("5_to6uk")
+normal_font_size = 30
+highlighted_font_size = 34
+
+[connection signal="focus_entered" from="MarginContainer/VBoxContainer/MasterContainer/MasterSlider" to="." method="_on_slider_focus_entered"]
+[connection signal="mouse_entered" from="MarginContainer/VBoxContainer/MasterContainer/MasterSlider" to="." method="_on_slider_mouse_entered"]
+[connection signal="focus_entered" from="MarginContainer/VBoxContainer/MusicContainer/MusicSlider" to="." method="_on_slider_focus_entered"]
+[connection signal="mouse_entered" from="MarginContainer/VBoxContainer/MusicContainer/MusicSlider" to="." method="_on_slider_mouse_entered"]
+[connection signal="focus_entered" from="MarginContainer/VBoxContainer/SFXContainer/SFXSlider" to="." method="_on_slider_focus_entered"]
+[connection signal="mouse_entered" from="MarginContainer/VBoxContainer/SFXContainer/SFXSlider" to="." method="_on_slider_mouse_entered"]

@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="4_50h1w"]
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="5_euy4r"]
 [ext_resource type="Texture2D" uid="uid://blae7m4aomsr3" path="res://assets/images/menu_button_normal_grey.png" id="6_3w8rc"]
+[ext_resource type="Script" uid="uid://bimg6esvjfivg" path="res://scripts/menus/button_hover_text_size.gd" id="6_a3hrp"]
 [ext_resource type="Shader" uid="uid://dy3eh2xtgjtsn" path="res://scenes/menus/main_menu.gdshader" id="6_uxao6"]
 [ext_resource type="Texture2D" uid="uid://byiqbpxrirkiv" path="res://assets/images/menu_button_pressed_grey.png" id="7_uxao6"]
 [ext_resource type="Texture2D" uid="uid://t2dedkvcii" path="res://assets/images/menu_button_disabled_grey.png" id="9_a3hrp"]
@@ -17,7 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://64lrd4be5n5g" path="res://assets/images/menu_button_hover_yellow.png" id="11_bh4e2"]
 [ext_resource type="PackedScene" uid="uid://i3br0pparhov" path="res://scenes/menus/options_menu.tscn" id="13_25m6f"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_imvie"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ng0o5"]
 texture = ExtResource("3_1hnlc")
 texture_margin_left = 13.0
 texture_margin_top = 13.0
@@ -33,13 +34,6 @@ texture_margin_bottom = 13.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1hnlc"]
 texture = ExtResource("5_euy4r")
-texture_margin_left = 13.0
-texture_margin_top = 13.0
-texture_margin_right = 13.0
-texture_margin_bottom = 13.0
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ng0o5"]
-texture = ExtResource("3_1hnlc")
 texture_margin_left = 13.0
 texture_margin_top = 13.0
 texture_margin_right = 13.0
@@ -105,6 +99,27 @@ texture_margin_bottom = 13.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jygr6"]
 texture = ExtResource("11_25m6f")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pqks5"]
+texture = ExtResource("3_1hnlc")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ygobi"]
+texture = ExtResource("4_50h1w")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_yayen"]
+texture = ExtResource("5_euy4r")
 texture_margin_left = 13.0
 texture_margin_top = 13.0
 texture_margin_right = 13.0
@@ -260,15 +275,18 @@ text = "MAIN MENU"
 horizontal_alignment = 1
 
 [node name="ContinueGameButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=2032042663]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
-theme_override_styles/normal = SubResource("StyleBoxTexture_imvie")
+theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
 theme_override_styles/focus = SubResource("StyleBoxTexture_1hnlc")
 text = "Continue"
+script = ExtResource("6_a3hrp")
 
 [node name="NewGameButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1826968477]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
@@ -276,8 +294,10 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
 theme_override_styles/focus = SubResource("StyleBoxTexture_1hnlc")
 text = "New Game"
+script = ExtResource("6_a3hrp")
 
 [node name="JoinButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1494536901]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
@@ -285,8 +305,10 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
 theme_override_styles/focus = SubResource("StyleBoxTexture_1hnlc")
 text = "Join Game"
+script = ExtResource("6_a3hrp")
 
 [node name="OptionsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=697564445]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
@@ -294,8 +316,10 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
 theme_override_styles/focus = SubResource("StyleBoxTexture_1hnlc")
 text = "Options"
+script = ExtResource("6_a3hrp")
 
 [node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=313277346]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
@@ -303,6 +327,7 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
 theme_override_styles/focus = SubResource("StyleBoxTexture_1hnlc")
 text = "Quit"
+script = ExtResource("6_a3hrp")
 
 [node name="MenuBackBuffer" type="BackBufferCopy" parent="." unique_id=979814826]
 position = Vector2(0, 1)
@@ -361,7 +386,7 @@ horizontal_alignment = 1
 layout_mode = 2
 
 [node name="Slot1" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow1" unique_id=1119223391]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(400, 60)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
@@ -374,7 +399,7 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
 text = "Empty Slot"
 
 [node name="Delete1" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow1" unique_id=1589114656]
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
@@ -387,12 +412,16 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
 theme_override_styles/focus = SubResource("StyleBoxTexture_jygr6")
 text = "X"
+script = ExtResource("6_a3hrp")
+normal_font_size = 20
+hover_font_size = 24
+highlighted_font_size = 24
 
 [node name="SlotRow2" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=884814772]
 layout_mode = 2
 
 [node name="Slot2" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow2" unique_id=1384660263]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(400, 60)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
@@ -405,7 +434,7 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
 text = "Empty Slot"
 
 [node name="Delete2" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow2" unique_id=1118510618]
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
@@ -418,12 +447,16 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
 theme_override_styles/focus = SubResource("StyleBoxTexture_jygr6")
 text = "X"
+script = ExtResource("6_a3hrp")
+normal_font_size = 20
+hover_font_size = 24
+highlighted_font_size = 24
 
 [node name="SlotRow3" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=452178594]
 layout_mode = 2
 
 [node name="Slot3" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow3" unique_id=1545810333]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(400, 60)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
@@ -436,7 +469,7 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
 text = "Empty Slot"
 
 [node name="Delete3" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow3" unique_id=1494559335]
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
@@ -449,12 +482,16 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
 theme_override_styles/focus = SubResource("StyleBoxTexture_jygr6")
 text = "X"
+script = ExtResource("6_a3hrp")
+normal_font_size = 20
+hover_font_size = 24
+highlighted_font_size = 24
 
 [node name="SlotRow4" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1044825571]
 layout_mode = 2
 
 [node name="Slot4" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow4" unique_id=785639116]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(400, 60)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
@@ -467,7 +504,7 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
 text = "Empty Slot"
 
 [node name="Delete4" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow4" unique_id=810047884]
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
@@ -480,12 +517,16 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
 theme_override_styles/focus = SubResource("StyleBoxTexture_jygr6")
 text = "X"
+script = ExtResource("6_a3hrp")
+normal_font_size = 20
+hover_font_size = 24
+highlighted_font_size = 24
 
 [node name="SlotRow5" type="HBoxContainer" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=1762366847]
 layout_mode = 2
 
 [node name="Slot5" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow5" unique_id=1221099945]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(400, 60)
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../../BackButton")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -499,7 +540,7 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
 text = "Empty Slot"
 
 [node name="Delete5" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer/SlotRow5" unique_id=1631512325]
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
@@ -512,16 +553,25 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_jygr6")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_n8vdk")
 theme_override_styles/focus = SubResource("StyleBoxTexture_jygr6")
 text = "X"
+script = ExtResource("6_a3hrp")
+normal_font_size = 20
+hover_font_size = 24
+highlighted_font_size = 24
 
 [node name="BackButton" type="Button" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=468529290]
+custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
-theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
-theme_override_styles/focus = SubResource("StyleBoxTexture_olvoh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pqks5")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ygobi")
+theme_override_styles/hover = SubResource("StyleBoxTexture_yayen")
+theme_override_styles/focus = SubResource("StyleBoxTexture_yayen")
 text = "Back"
+script = ExtResource("6_a3hrp")
+normal_font_size = 30
+hover_font_size = 34
+highlighted_font_size = 34
 
 [node name="HostPrivacyPanel" type="PanelContainer" parent="." unique_id=1690010175]
 visible = false
@@ -638,7 +688,9 @@ layout_mode = 2
 theme_override_constants/separation = 40
 
 [node name="SinglePlayButton" type="Button" parent="PlayModePanel/VBoxContainer/HBoxContainer" unique_id=206785605]
+custom_minimum_size = Vector2(320, 110)
 layout_mode = 2
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxTexture_bh4e2")
@@ -646,9 +698,15 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_3w8rc")
 theme_override_styles/hover = SubResource("StyleBoxTexture_nkawv")
 theme_override_styles/focus = SubResource("StyleBoxTexture_nkawv")
 text = "Single Player"
+script = ExtResource("6_a3hrp")
+normal_font_size = 40
+hover_font_size = 44
+highlighted_font_size = 44
 
 [node name="MultiplayerButton" type="Button" parent="PlayModePanel/VBoxContainer/HBoxContainer" unique_id=863222104]
+custom_minimum_size = Vector2(320, 110)
 layout_mode = 2
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxTexture_w32d4")
@@ -656,16 +714,25 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_287l7")
 theme_override_styles/hover = SubResource("StyleBoxTexture_8hoqd")
 theme_override_styles/focus = SubResource("StyleBoxTexture_nkawv")
 text = "Multiplayer"
+script = ExtResource("6_a3hrp")
+normal_font_size = 40
+hover_font_size = 44
+highlighted_font_size = 44
 
 [node name="BackButton" type="Button" parent="PlayModePanel/VBoxContainer" unique_id=1601395634]
+custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
-theme_override_styles/hover = SubResource("StyleBoxTexture_olvoh")
-theme_override_styles/focus = SubResource("StyleBoxTexture_olvoh")
+theme_override_styles/normal = SubResource("StyleBoxTexture_pqks5")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ygobi")
+theme_override_styles/hover = SubResource("StyleBoxTexture_yayen")
+theme_override_styles/focus = SubResource("StyleBoxTexture_yayen")
 text = "Back"
+script = ExtResource("6_a3hrp")
+normal_font_size = 30
+hover_font_size = 34
+highlighted_font_size = 34
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/ContinueGameButton" to="." method="_on_continue_game_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/NewGameButton" to="." method="_on_host_button_pressed"]
