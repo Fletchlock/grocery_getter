@@ -43,6 +43,10 @@ var mesh_outline: Node3D = null
 var collision_shape: CollisionShape3D = null
 var shelf_tag: ShelfTag = null
 
+# MultiMeshInstance variables
+var product_multimesh: MultiMeshInstance3D = null
+var outline_multimesh: MultiMeshInstance3D = null
+
 var _last_marker_position: Vector3 = Vector3.INF
 var _last_product_data: ProductData = null
 var _last_grid_columns: int = -1
@@ -439,6 +443,7 @@ func _cache_preview_state() -> void:
 	_last_quantity = quantity
 	_last_preview_locked = initially_locked
 
+
 func _update_product_display() -> void:
 	if product_grid == null or product_marker == null:
 		return
@@ -467,7 +472,34 @@ func _update_product_display() -> void:
 
 	if is_unlocked:
 		products_to_display = mini(quantity, display_capacity)
-	
+
+	var product_mesh_data: MultiMesh = MultiMesh.new()
+	product_mesh_data.transform_format = MultiMesh.TRANSFORM_3D
+	product_mesh_data.mesh = mesh
+	product_mesh_data.instance_count = products_to_display
+
+	product_multimesh = MultiMeshInstance3D.new()
+	product_multimesh.multimesh = product_mesh_data
+	product_multimesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	product_multimesh.set_meta("generated_product", true)
+	product_grid.add_child(product_multimesh)
+
+	var outline_mesh_data: MultiMesh = null
+
+	if mesh_outline != null and outline_material != null:
+		outline_mesh_data = MultiMesh.new()
+		outline_mesh_data.transform_format = MultiMesh.TRANSFORM_3D
+		outline_mesh_data.mesh = mesh
+		outline_mesh_data.instance_count = products_to_display
+
+		outline_multimesh = MultiMeshInstance3D.new()
+		outline_multimesh.multimesh = outline_mesh_data
+		outline_multimesh.material_override = outline_material
+		outline_multimesh.visible = mesh_outline.visible
+		outline_multimesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		outline_multimesh.set_meta("generated_product_outline", true)
+		mesh_outline.add_child(outline_multimesh)
+
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = variation_seed
 
@@ -498,15 +530,25 @@ func _update_product_display() -> void:
 
 		var product_position: Vector3 = base_position + variation_position
 
-		_create_product(
-			product_position,
-			variation_rotation
+		var product_transform: Transform3D = Transform3D(
+			Basis.from_euler(variation_rotation),
+			product_position
 		)
 
-		_create_outline(
-			product_position,
-			variation_rotation
+		product_mesh_data.set_instance_transform(
+			product_index,
+			product_transform
 		)
+
+		if outline_mesh_data != null:
+			var outline_transform: Transform3D = product_transform.scaled_local(
+				Vector3(1.03, 1.03, 1.03)
+			)
+
+			outline_mesh_data.set_instance_transform(
+				product_index,
+				outline_transform
+			)
 
 
 func _update_shelf_tag() -> void:
@@ -519,47 +561,6 @@ func _update_shelf_tag() -> void:
 		is_unlocked
 	)
 	
-
-func _create_product(
-	product_position: Vector3,
-	product_rotation: Vector3
-) -> void:
-	var product_instance: MeshInstance3D = MeshInstance3D.new()
-
-	product_instance.mesh = _get_product_mesh()
-	product_instance.position = product_position
-	product_instance.rotation = product_rotation
-	product_instance.set_meta("generated_product", true)
-
-	product_grid.add_child(product_instance)
-
-
-func _create_outline(
-	product_position: Vector3,
-	product_rotation: Vector3
-) -> void:
-	if mesh_outline == null:
-		return
-
-	if outline_material == null:
-		return
-
-	var product_mesh: Mesh = _get_product_mesh()
-
-	if product_mesh == null:
-		return
-
-	var outline_instance: MeshInstance3D = MeshInstance3D.new()
-
-	outline_instance.mesh = product_mesh
-	outline_instance.position = product_position
-	outline_instance.rotation = product_rotation
-	outline_instance.scale = Vector3(1.03, 1.03, 1.03)
-	outline_instance.material_override = outline_material
-	outline_instance.set_meta("generated_product_outline", true)
-
-	mesh_outline.add_child(outline_instance)
-
 
 func _update_interaction_zone() -> void:
 	if collision_shape == null or product_marker == null:
@@ -621,6 +622,9 @@ func _clear_product_display() -> void:
 		for child: Node in mesh_outline.get_children():
 			if child.has_meta("generated_product_outline"):
 				child.free()
+
+	product_multimesh = null
+	outline_multimesh = null
 
 
 func _ensure_unique_collision_shape() -> void:
