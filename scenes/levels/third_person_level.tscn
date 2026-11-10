@@ -1323,12 +1323,6 @@ metadata/_edit_lock_ = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.57662964, 1.2012329, -1.5)
 shape = SubResource("BoxShape3D_4av8r")
 
-[node name="EmissiveBulb1" parent="NavigationRegion3D/Shelves/Freezer_Left_5row3" index="1" unique_id=1070124732]
-visible = false
-
-[node name="EmissiveBulb2" parent="NavigationRegion3D/Shelves/Freezer_Left_5row3" index="2" unique_id=1328248865]
-visible = false
-
 [node name="Freezer_Right_5row3" parent="NavigationRegion3D/Shelves" unique_id=825118052 groups=["level_geo"] instance=ExtResource("37_32gdb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.13303673, 14.200169)
 metadata/_edit_lock_ = true
@@ -1339,12 +1333,6 @@ metadata/_edit_lock_ = true
 [node name="CollisionShape3D" parent="NavigationRegion3D/Shelves/Freezer_Right_5row3/Freezer_Right_5row/StaticBody3D" parent_id_path=PackedInt32Array(825118052, 83913552) index="0" unique_id=286493962]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.57662964, 1.2005005, -1.5)
 shape = SubResource("BoxShape3D_smqka")
-
-[node name="EmissiveBulb1" parent="NavigationRegion3D/Shelves/Freezer_Right_5row3" index="1" unique_id=734517120]
-visible = false
-
-[node name="EmissiveBulb2" parent="NavigationRegion3D/Shelves/Freezer_Right_5row3" index="2" unique_id=1435528430]
-visible = false
 
 [node name="Small_Endcap_5row_col2" parent="NavigationRegion3D/Shelves" unique_id=1027813964 groups=["level_geo"] instance=ExtResource("20_j461n")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2, 0.13303673, 15.200169)
@@ -1635,83 +1623,84 @@ shape = SubResource("ConcavePolygonShape3D_mcoed")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="MainLight" parent="StoreSmallGreybox" index="2" unique_id=1812318711]
-transform = Transform3D(0.9999999, 0, 3.5527137e-14, 0, 1, 0, -3.5527137e-14, 0, 0.9999999, 0.48678732, 3.9135385, 3)
+transform = Transform3D(0.9999999, 0, 5.684342e-14, 0, 1, 0, -5.684342e-14, 0, 0.9999999, 0.48676193, 4.2362843, 2.9995942)
 light_color = Color(0.93702465, 0.93223053, 0.9295794, 1)
-light_energy = 0.5
+light_energy = 0.7
+shadow_enabled = false
 shadow_bias = 0.05
-shadow_opacity = 0.7
 omni_range = 4.5
 
 [node name="MainLight2" parent="StoreSmallGreybox" index="3" unique_id=916032151]
-transform = Transform3D(0.9999999, 0, 4.2632564e-14, 0, 1, 0, -4.2632564e-14, 0, 0.9999999, -4.3895473, 3.8714814, 3)
+transform = Transform3D(0.9999999, 0, 4.973799e-14, 0, 1, 0, -4.973799e-14, 0, 0.9999999, -4.3895726, 3.8714814, 2.9995937)
 visible = false
 light_color = Color(0.93702465, 0.93223053, 0.9295794, 1)
-light_energy = 0.5
+light_energy = 0.7
+shadow_enabled = false
 shadow_bias = 0.05
-shadow_opacity = 0.7
 omni_range = 4.5
 
 [node name="MainLight3" parent="StoreSmallGreybox" index="4" unique_id=96631742]
-transform = Transform3D(0.9999999, 0, 3.5527137e-14, 0, 1, 0, -3.5527137e-14, 0, 0.9999999, 4.7131906, 4.0834136, 3)
+transform = Transform3D(0.9999999, 0, 4.2632564e-14, 0, 1, 0, -4.2632564e-14, 0, 0.9999999, 4.7131653, 4.0834136, 2.9995937)
 visible = false
 light_color = Color(0.93702465, 0.93223053, 0.9295794, 1)
-light_energy = 0.5
+light_energy = 0.7
+shadow_enabled = false
 shadow_bias = 0.05
-shadow_opacity = 0.7
 omni_range = 4.5
 
 [node name="MainLight4" parent="StoreSmallGreybox" index="5" unique_id=1819866197]
-transform = Transform3D(0.9999999, 0, 8.526513e-14, 0, 1, 0, -8.526513e-14, 0, 0.9999999, 0.48378897, 3.9283981, 7.246982)
+transform = Transform3D(0.9999999, 0, 1.0658141e-13, 0, 1, 0, -1.0658141e-13, 0, 0.9999999, 0.48376358, 4.130922, 7.588989)
 light_color = Color(0.93702465, 0.93223053, 0.9295794, 1)
-light_energy = 0.5
+light_energy = 0.7
+shadow_enabled = false
 shadow_bias = 0.05
-shadow_opacity = 0.7
 omni_range = 4.5
 
 [node name="MainLight5" parent="StoreSmallGreybox" index="6" unique_id=1864357828]
-transform = Transform3D(0.9999999, 0, 7.81597e-14, 0, 1, 0, -7.81597e-14, 0, 0.9999999, -4.385816, 3.927619, 5.789102)
+transform = Transform3D(0.9999999, 0, 1.0658141e-13, 0, 1, 0, -1.0658141e-13, 0, 0.9999999, -4.6021147, 4.2335, 5.9423766)
 light_color = Color(0.93702465, 0.93223053, 0.9295794, 1)
-light_energy = 0.5
+light_energy = 0.7
+shadow_enabled = false
 shadow_bias = 0.05
-shadow_opacity = 0.7
 omni_range = 4.5
 
 [node name="MainLight6" parent="StoreSmallGreybox" index="7" unique_id=1580914037]
-transform = Transform3D(0.9999999, 0, 1.2079227e-13, 0, 1, 0, -1.2079227e-13, 0, 0.9999999, 4.091392, 3.8754826, 4.57672)
+transform = Transform3D(0.9999999, 0, 1.563194e-13, 0, 1, 0, -1.563194e-13, 0, 0.9999999, 4.2257953, 4.256521, 4.1408424)
 light_color = Color(0.93702465, 0.93223053, 0.9295794, 1)
-light_energy = 0.5
+light_energy = 0.7
+shadow_enabled = false
 shadow_bias = 0.05
-shadow_opacity = 0.7
 omni_range = 4.5
 
 [node name="MainLight7" parent="StoreSmallGreybox" index="8" unique_id=1231384081]
-transform = Transform3D(0.9999999, 0, 8.526513e-14, 0, 1, 0, -8.526513e-14, 0, 0.9999999, 0.877301, 3.9430542, -1.5689915)
+transform = Transform3D(0.9999999, 0, 1.0658141e-13, 0, 1, 0, -1.0658141e-13, 0, 0.9999999, 0.87727594, 4.2806463, -1.5693976)
 light_color = Color(0.93702465, 0.93223053, 0.9295794, 1)
-light_energy = 0.5
+light_energy = 0.7
+shadow_enabled = false
 shadow_bias = 0.05
-shadow_opacity = 0.7
 omni_range = 4.5
 
 [node name="MainLight8" parent="StoreSmallGreybox" index="9" unique_id=215316163]
-transform = Transform3D(0.9999999, 0, 9.2370556e-14, 0, 1, 0, -9.2370556e-14, 0, 0.9999999, -3.69666, 4.052866, -0.53566337)
+transform = Transform3D(0.9999999, 0, 1.1368684e-13, 0, 1, 0, -1.1368684e-13, 0, 0.9999999, -3.6966853, 4.3865156, -0.7859404)
 light_color = Color(0.93702465, 0.93223053, 0.9295794, 1)
-light_energy = 0.5
+light_energy = 0.7
+shadow_enabled = false
 shadow_bias = 0.05
-shadow_opacity = 0.7
 omni_range = 4.5
 
 [node name="MainLight9" parent="StoreSmallGreybox" index="10" unique_id=947133882]
-transform = Transform3D(0.9999999, 0, 7.1054274e-14, 0, 1, 0, -7.1054274e-14, 0, 0.9999999, 4.5222554, 3.9109154, 0.009981871)
+transform = Transform3D(0.9999999, 0, 9.947598e-14, 0, 1, 0, -9.947598e-14, 0, 0.9999999, 4.647713, 4.265364, -0.4943626)
 light_color = Color(0.93702465, 0.93223053, 0.9295794, 1)
-light_energy = 0.5
+light_energy = 0.7
+shadow_enabled = false
 shadow_bias = 0.05
-shadow_opacity = 0.7
 omni_range = 4.5
 
 [node name="StockLight" parent="StoreSmallGreybox" index="11" unique_id=399607954]
 transform = Transform3D(0.9999999, 0, 2.842171e-14, 0, 1, 0, -2.842171e-14, 0, 0.9999999, -2.7588592, 4.1393137, -7.557756)
 light_color = Color(0.8257594, 0.7947964, 0.7879371, 1)
 light_energy = 0.5
+shadow_enabled = false
 shadow_bias = 0.05
 shadow_opacity = 0.7
 omni_range = 6.0
@@ -1720,6 +1709,7 @@ omni_range = 6.0
 transform = Transform3D(0.9999999, 0, 4.2632564e-14, 0, 1, 0, -4.2632564e-14, 0, 0.9999999, 3.1674457, 3.9284282, -7.315959)
 light_color = Color(0.8257594, 0.7947964, 0.7879371, 1)
 light_energy = 0.5
+shadow_enabled = false
 shadow_bias = 0.05
 shadow_opacity = 0.7
 omni_range = 6.0
