@@ -46,6 +46,7 @@ var shelf_tag: ShelfTag = null
 # MultiMeshInstance variables
 var product_multimesh: MultiMeshInstance3D = null
 var outline_multimesh: MultiMeshInstance3D = null
+var _multimesh_layout_key: Array = []
 
 var _last_marker_position: Vector3 = Vector3.INF
 var _last_product_data: ProductData = null
@@ -448,8 +449,6 @@ func _update_product_display() -> void:
 	if product_grid == null or product_marker == null:
 		return
 
-	_clear_product_display()
-
 	product_grid.position = product_marker.position
 
 	if mesh_outline:
@@ -458,30 +457,76 @@ func _update_product_display() -> void:
 	var mesh: Mesh = _get_product_mesh()
 
 	if mesh == null:
+		_clear_product_display()
 		return
-
-	var product_size: Vector3 = mesh.get_aabb().size
-
-	var horizontal_spacing: float = product_size.x + product_gap
-	var depth_spacing: float = product_size.z + product_gap
-	var stack_spacing: float = product_size.y
 
 	var layer_capacity: int = grid_columns * grid_rows
 	var display_capacity: int = layer_capacity * stack_height
-	var products_to_display: int = 0
+	var instance_capacity: int = mini(max_quantity, display_capacity)
+
+	var layout_key: Array = [
+		mesh,
+		instance_capacity,
+		grid_columns,
+		grid_rows,
+		stack_height,
+		product_gap,
+		position_variation,
+		rotation_variation,
+		variation_seed,
+		outline_material,
+		mesh_outline
+	]
+
+	var needs_rebuild: bool = (
+		product_multimesh == null
+		or not is_instance_valid(product_multimesh)
+		or product_multimesh.multimesh == null
+		or _multimesh_layout_key != layout_key
+	)
+
+	if not needs_rebuild and mesh_outline != null and outline_material != null:
+		needs_rebuild = (
+			outline_multimesh == null
+			or not is_instance_valid(outline_multimesh)
+			or outline_multimesh.multimesh == null
+		)
+
+	if needs_rebuild:
+		_rebuild_product_multimeshes(
+			mesh,
+			instance_capacity
+		)
+		_multimesh_layout_key = layout_key
+
+	var visible_count: int = 0
 
 	if is_unlocked:
-		products_to_display = mini(quantity, display_capacity)
+		visible_count = mini(quantity, instance_capacity)
+
+	if product_multimesh != null:
+		product_multimesh.multimesh.visible_instance_count = visible_count
+
+	if outline_multimesh != null:
+		outline_multimesh.multimesh.visible_instance_count = visible_count
+
+
+func _rebuild_product_multimeshes(
+	mesh: Mesh,
+	instance_capacity: int
+) -> void:
+	_clear_product_display()
 
 	var product_mesh_data: MultiMesh = MultiMesh.new()
 	product_mesh_data.transform_format = MultiMesh.TRANSFORM_3D
 	product_mesh_data.mesh = mesh
-	product_mesh_data.instance_count = products_to_display
+	product_mesh_data.instance_count = instance_capacity
 
 	product_multimesh = MultiMeshInstance3D.new()
 	product_multimesh.multimesh = product_mesh_data
 	product_multimesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	product_multimesh.set_meta("generated_product", true)
+
 	product_grid.add_child(product_multimesh)
 
 	var outline_mesh_data: MultiMesh = null
@@ -490,20 +535,28 @@ func _update_product_display() -> void:
 		outline_mesh_data = MultiMesh.new()
 		outline_mesh_data.transform_format = MultiMesh.TRANSFORM_3D
 		outline_mesh_data.mesh = mesh
-		outline_mesh_data.instance_count = products_to_display
+		outline_mesh_data.instance_count = instance_capacity
 
 		outline_multimesh = MultiMeshInstance3D.new()
 		outline_multimesh.multimesh = outline_mesh_data
 		outline_multimesh.material_override = outline_material
-		outline_multimesh.visible = mesh_outline.visible
 		outline_multimesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		outline_multimesh.set_meta("generated_product_outline", true)
+
 		mesh_outline.add_child(outline_multimesh)
+
+	var product_size: Vector3 = mesh.get_aabb().size
+
+	var horizontal_spacing: float = product_size.x + product_gap
+	var depth_spacing: float = product_size.z + product_gap
+	var stack_spacing: float = product_size.y
+
+	var layer_capacity: int = grid_columns * grid_rows
 
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = variation_seed
 
-	for product_index: int in products_to_display:
+	for product_index: int in instance_capacity:
 		var stack_layer: int = floori(float(product_index) / float(layer_capacity))
 		var layer_index: int = product_index % layer_capacity
 
@@ -625,6 +678,7 @@ func _clear_product_display() -> void:
 
 	product_multimesh = null
 	outline_multimesh = null
+	_multimesh_layout_key.clear()
 
 
 func _ensure_unique_collision_shape() -> void:
