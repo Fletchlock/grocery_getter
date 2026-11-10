@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://dbe6d5ctp5ja8"]
+
+[ext_resource type="ArrayMesh" uid="uid://dcxgfhkgiidff" path="res://assets/models/objects/delivery_truck_Cube_037.res" id="1_es2cn"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
+size = Vector3(3.0062904, 1.1561091, 5.943165)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fu584"]
+size = Vector3(3.007206, 3.9889948, 2.4289675)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_e3mcj"]
+size = Vector3(0.122368336, 2.8949442, 5.9579353)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_es2cn"]
+size = Vector3(0.1265223, 2.8890848, 5.9579353)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3rncn"]
+size = Vector3(2.8851967, 0.069084644, 5.9919376)
+
+[node name="DeliveryTruck" type="Node3D" unique_id=366024847]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=768222125]
+mesh = ExtResource("1_es2cn")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=694344448]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1429240574]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0036678314, 0.56999075, 1.9547977)
+shape = SubResource("BoxShape3D_6aigx")
+debug_color = Color(0.78431374, 0.019607844, 0.84705883, 0.827451)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="StaticBody3D" unique_id=1205475759]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.005094528, 2.001196, -1.8888373)
+shape = SubResource("BoxShape3D_fu584")
+debug_color = Color(0.78431374, 0.019607844, 0.84705883, 0.827451)
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="StaticBody3D" unique_id=1911720015]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4467309, 2.5947282, 2.0009403)
+shape = SubResource("BoxShape3D_e3mcj")
+debug_color = Color(0.78431374, 0.019607844, 0.84705883, 0.827451)
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="StaticBody3D" unique_id=451731145]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4437097, 2.5917985, 2.0009403)
+shape = SubResource("BoxShape3D_es2cn")
+debug_color = Color(0.78431374, 0.019607844, 0.84705883, 0.827451)
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="StaticBody3D" unique_id=338797541]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0029315948, 4.0635433, 2.0014791)
+shape = SubResource("BoxShape3D_3rncn")
+debug_color = Color(0.78431374, 0.019607844, 0.84705883, 0.827451)

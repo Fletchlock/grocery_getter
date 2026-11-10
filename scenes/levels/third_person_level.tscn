@@ -81,11 +81,11 @@
 [ext_resource type="Script" uid="uid://vmv423la1xue" path="res://scenes/levels/star_dome.gd" id="66_wvni4"]
 [ext_resource type="Shader" uid="uid://dsrig0n2kkd8s" path="res://scenes/levels/moon.gdshader" id="67_e8twm"]
 [ext_resource type="PackedScene" uid="uid://v5ls3uv2nsxv" path="res://scenes/objects/doors/automatic_doors.tscn" id="67_k2133"]
-[ext_resource type="PackedScene" uid="uid://cugj074ksna12" path="res://assets/models/objects/delivery_truck.glb" id="68_keq6l"]
 [ext_resource type="Script" uid="uid://drmkxk54e4h7x" path="res://scenes/levels/moon_controller.gd" id="68_mcoed"]
 [ext_resource type="Texture2D" uid="uid://cs2u1305eo2vf" path="res://assets/models/checkouts/checkout_sm_left_ItemGradient.png" id="69_a11xa"]
 [ext_resource type="PackedScene" uid="uid://7yrtf2ppw2p8" path="res://scenes/VFX/rain_effect.tscn" id="72_riim1"]
 [ext_resource type="AudioStream" uid="uid://clgo0hauugyh6" path="res://assets/music/DjangoLoop.wav" id="84_pvbuq"]
+[ext_resource type="PackedScene" uid="uid://dbe6d5ctp5ja8" path="res://scenes/objects/delivery_truck.tscn" id="86_keq6l"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ta2qt"]
 sky_top_color = Color(0.2596472, 0.5435158, 0.9217843, 1)
@@ -327,9 +327,6 @@ size = Vector3(0.9972639, 0.8808441, 0.93130636)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_t08rh"]
 size = Vector3(0.32159424, 0.064086914, 0.78445435)
-
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_keq6l"]
-points = PackedVector3Array(-1.5134531, 0.065584056, -1.7852961, -1.4685638, 0.59999996, -2.894097, -1.5, 4.0842066, 4.784676, 1.4445618, 4.0099845, -1.4556383, 1.4994621, 0.59999996, -2.894097, -1.5142342, 0.06455315, 3.5967708, -1.5, 4.0842066, -1.1555264, 1.420562, 4.1, 4.8153057, 0.9301453, 0.3152, 4.8088493, 1.4476997, 0.028608907, -1.8345858, -1.423421, 1.8961848, -3.1, 1.3027565, 3.1259198, -2.650941, -1.5, 0.81137764, 4.784676, 1.5199943, 0.097736195, 3.5525362, 1.4363747, 0.7869, 4.85931, -1.3513, 3.0941415, -2.5425072, 1.4546256, 1.8961848, -3.1, 1.420562, 4.1, -1.1717945, -0.899247, 0.3152, 4.8088493, -1.5, 0.9323905, -2.9745755, -1.5, 3.9628022, -1.3978131, 1.5186185, 0.09955238, -1.6202296, 1.5, 0.9558659, -2.8954742, 1.5, 1.1937242, -1.5889512, -1.5, 3.7203848, -1.6408595, -1.5129855, 0.1886462, 3.8381703)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_mcoed"]
 data = PackedVector3Array(1.1000065, 0.8000002, 10.099018, 3.100006, 3.5000002, 10.099018, 3.100006, 0.8000002, 10.099018, 1.1000065, 0.8000002, 10.099018, 1.1000065, 3.5000002, 10.099018, 3.100006, 3.5000002, 10.099018, -0.9999936, 0.8000002, 10.099018, 1.0000062, 3.5000002, 10.099018, 1.0000062, 0.8000002, 10.099018, -0.9999936, 0.8000002, 10.099018, -0.9999936, 3.5000002, 10.099018, 1.0000062, 3.5000002, 10.099018, -3.0999937, 0.8000002, 10.099018, -1.0999938, 3.5000002, 10.099018, -1.0999938, 0.8000002, 10.099018, -3.0999937, 0.8000002, 10.099018, -3.0999937, 3.5000002, 10.099018, -1.0999938, 3.5000002, 10.099018, -5.1999936, 0.8000002, 10.099018, -3.199994, 3.5000002, 10.099018, -3.199994, 0.8000002, 10.099018, -5.1999936, 0.8000002, 10.099018, -5.1999936, 3.5000002, 10.099018, -3.199994, 3.5000002, 10.099018, 5.3000064, 0.8000002, 10.099018, 6.900006, 3.5000002, 10.099018, 6.900006, 0.8000002, 10.099018, 5.3000064, 0.8000002, 10.099018, 5.3000064, 3.5000002, 10.099018, 6.900006, 3.5000002, 10.099018, -6.899998, 0.8000002, 10.099018, -5.2999988, 3.5000002, 10.099018, -5.2999988, 0.8000002, 10.099018, -6.899998, 0.8000002, 10.099018, -6.899998, 3.5000002, 10.099018, -5.2999988, 3.5000002, 10.099018, 3.2000003, 2.6000001, 10.099018, 5.2, 3.5000002, 10.099018, 5.2, 2.6000001, 10.099018, 3.2000003, 2.6000001, 10.099018, 3.2000003, 3.5000002, 10.099018, 5.2, 3.5000002, 10.099018)
@@ -1595,14 +1592,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.405, 1.5, 20.50104)
 [node name="MultiplayerEventSpawner" type="MultiplayerSpawner" parent="NavigationRegion3D" unique_id=701805818]
 spawn_path = NodePath("../Events")
 
-[node name="delivery_truck2" parent="NavigationRegion3D" unique_id=868433084 instance=ExtResource("68_keq6l")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.97809315, 0.06903684, 30.122833)
-
-[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/delivery_truck2" unique_id=827687348]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/delivery_truck2/StaticBody3D" unique_id=914616512]
-shape = SubResource("ConvexPolygonShape3D_keq6l")
-
 [node name="DesertGround" parent="." unique_id=2134704437 groups=["level_geo"] instance=ExtResource("15_17biw")]
 transform = Transform3D(0.93267465, 0, -0.36071923, 0, 1, 0, 0.36071923, 0, 0.93267465, 0, -1.51, -11.964)
 
@@ -1895,6 +1884,9 @@ max_db = -24.0
 max_distance = 18.0
 bus = &"Music"
 
+[node name="DeliveryTruck" parent="." unique_id=366024847 instance=ExtResource("86_keq6l")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.3435404, -1.3788818, 11.1467085)
+
 [connection signal="body_entered" from="IndoorAudioArea" to="DirectionalLight3D" method="_on_indoor_audio_area_body_entered"]
 [connection signal="body_exited" from="IndoorAudioArea" to="DirectionalLight3D" method="_on_indoor_audio_area_body_exited"]
 
@@ -1948,7 +1940,6 @@ bus = &"Music"
 [editable path="NavigationRegion3D/Shelves/Small_Shelf_5row_col13"]
 [editable path="NavigationRegion3D/Checkout"]
 [editable path="NavigationRegion3D/OnlineOrderCheckout"]
-[editable path="NavigationRegion3D/delivery_truck2"]
 [editable path="StoreSmallGreybox"]
 [editable path="StoreSmallGreybox/AutomaticDoors"]
 [editable path="checkout_sm_left3"]
