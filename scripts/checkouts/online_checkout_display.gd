@@ -48,11 +48,11 @@ func _ready() -> void:
 	add_child(results_timer)
 	results_timer.timeout.connect(_on_results_timer_timeout)
 
+	# Refresh only after the complete order list has synchronized.
 	OrderManager.orders_synced.connect(_refresh_display)
-	OrderManager.order_generated.connect(_on_order_changed)
-	OrderManager.order_updated.connect(_on_order_changed)
+
 	order_grid.checkout_owner_changed.connect(_refresh_display)
-	
+
 	_show_order_status()
 
 
@@ -63,10 +63,6 @@ func _setup_screen_material() -> void:
 	screen_material.cull_mode = BaseMaterial3D.CULL_DISABLED
 
 	checkout_screen.material_override = screen_material
-
-
-func _on_order_changed(_order: OrderData) -> void:
-	_refresh_display()
 
 
 func _refresh_display() -> void:
