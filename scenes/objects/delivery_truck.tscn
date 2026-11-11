@@ -66,19 +66,19 @@ debug_color = Color(0.78431374, 0.019607844, 0.84705883, 0.827451)
 
 [node name="delivery_truck_door_baked" parent="." unique_id=78835206 instance=ExtResource("2_fu584")]
 
-[node name="DoorPanel_1" parent="delivery_truck_door_baked" index="0" unique_id=85845051]
+[node name="DoorPanel_1" parent="delivery_truck_door_baked" index="0" unique_id=638426997]
 transform = Transform3D(-1, 7.9861677e-19, 8.742278e-08, 7.9861584e-19, 1, -1.0919045e-17, -8.742278e-08, -1.0919045e-17, -1, -1.7523766e-05, 1.4334127, 4.985921)
 
-[node name="DoorPanel_2" parent="delivery_truck_door_baked" index="1" unique_id=2068284613]
+[node name="DoorPanel_2" parent="delivery_truck_door_baked" index="1" unique_id=432477475]
 transform = Transform3D(-1, -8.78966e-18, 8.742278e-08, -8.78965e-18, 1, 1.1029234e-16, -8.742278e-08, 1.1029234e-16, -1, -1.7523766e-05, 2.0110078, 4.985921)
 
-[node name="DoorPanel_3" parent="delivery_truck_door_baked" index="2" unique_id=69616263]
+[node name="DoorPanel_3" parent="delivery_truck_door_baked" index="2" unique_id=1923708413]
 transform = Transform3D(-1, -1.9526163e-14, 8.742278e-08, -1.9526163e-14, 1, 4.8076108e-17, -8.742278e-08, 4.80744e-17, -1, -1.7523766e-05, 2.5886033, 4.985921)
 
-[node name="DoorPanel_4" parent="delivery_truck_door_baked" index="3" unique_id=363324334]
+[node name="DoorPanel_4" parent="delivery_truck_door_baked" index="3" unique_id=1614643869]
 transform = Transform3D(-1, 1.2918775e-08, -1.5099508e-07, 1.3382127e-08, 0.9999953, -0.0030690604, 1.5095473e-07, -0.0030690606, -0.99999523, -1.7518802e-05, 3.1661234, 4.985046)
 
-[node name="DoorPanel_5" parent="delivery_truck_door_baked" index="4" unique_id=950241238]
+[node name="DoorPanel_5" parent="delivery_truck_door_baked" index="4" unique_id=1506636649]
 transform = Transform3D(-0.9999999, -6.2441416e-08, -1.2912331e-07, 1.35395615e-08, 0.85514504, -0.5183884, 1.4278811e-07, -0.5183884, -0.85514504, -1.7180848e-05, 3.692861, 4.8392134)
 
 [node name="OpenDoorArea" type="Area3D" parent="." unique_id=2079075276]

@@ -486,3 +486,27 @@ func reset_stock_orders() -> void:
 	last_delivery_day = -1
 
 	_sync_pending_orders.rpc(pending_orders, pending_order_paths)
+
+
+
+func add_unlock_starter_stock(product_path: String) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if product_path.is_empty():
+		return
+
+	if not ResourceLoader.exists(product_path):
+		push_warning("Starter stock: Product resource not found: " + product_path)
+		return
+
+	var product: ProductData = load(product_path) as ProductData
+
+	if product == null:
+		return
+
+	confirmed_orders[product_path] = (
+		int(confirmed_orders.get(product_path, 0)) + 10
+	)
+
+	print("STARTER STOCK QUEUED: ", product.display_name, " x10")
