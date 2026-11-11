@@ -2,6 +2,9 @@
 extends Node3D
 class_name Checkout
 
+const CHECKOUT_OUTLINE_MATERIAL: Material = preload(
+	"res://assets/materials/outline_standard_material_3d.tres"
+)
 
 @onready var checkout_point: Marker3D = $CheckoutPoint
 @onready var waiting_points: Array[Marker3D] = [
@@ -12,8 +15,10 @@ class_name Checkout
 
 @onready var checkout_grid: CheckoutGrid = $CheckoutGrid
 @onready var bag_grid: CartGrid = $BagGrid
+@onready var checkout_camera: Camera3D = $CheckoutCamera
 @onready var bag_point: Marker3D = $BagPoint
 @onready var bag_mesh: MeshInstance3D = $BagGrid/BagMesh
+@onready var checkout_instructions: CanvasLayer = $CheckoutInstructions
 
 # AI Checkout Scanner
 @onready var scan_area: Area3D = $ScanArea
@@ -30,6 +35,9 @@ var checkout_customer: ShopperAI = null
 var waiting_customers: Array[ShopperAI] = []
 var unscanned_items: Array[ProductData] = []
 
+# Checkout hover outlines
+var bag_outline: MeshInstance3D = null
+
 # Desk Bell
 @onready var desk_bell: AudioStreamPlayer3D = $DeskBellPlayer
 const BELL_WAIT_MINUTES: int = 10
@@ -40,6 +48,11 @@ var checkout_active: bool = false
 func _ready() -> void:
 	add_to_group("checkout")
 	bag_mesh.hide()
+
+	checkout_grid.outline_material = CHECKOUT_OUTLINE_MATERIAL
+	bag_grid.outline_material = CHECKOUT_OUTLINE_MATERIAL
+
+	_create_bag_outline()
 
 	var material: StandardMaterial3D = StandardMaterial3D.new()
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -55,10 +68,18 @@ func _process(_delta: float) -> void:
 
 
 func get_interaction_prompt(player: CharacterBody3D) -> String:
-	if not player.network_holding_item:
+
+	if player == null:
 		return ""
 
 	if player.held_item == null:
+
+		if player.is_holding_equipment():
+			return ""
+
+		return "[E] Use Checkout"
+
+	if not player.network_holding_item:
 		return ""
 
 	if player.held_item_origin != player.ItemOrigin.CHECKOUT_GRID:
@@ -69,19 +90,28 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 	if product == null:
 		return ""
 
-	return "[E] Scan " + product.display_name
+	return ""
 
 
 func interact(player: CharacterBody3D) -> void:
-	if player == null or player.held_item == null:
+	if player == null:
 		return
-	
+
+	if player.held_item == null:
+		if not player.is_holding_equipment():
+			player.enter_checkout_mode(self)
+		return
+
 	if player.held_item_origin != player.ItemOrigin.CHECKOUT_GRID:
 		return
-	
+
 	var product: ProductData = player.held_item as ProductData
 
 	if product == null:
+		return
+
+	# Don't allow an already-scanned product to be scanned again.
+	if player.checkout_scanned_product_path == product.resource_path:
 		return
 
 	if product.product_category == "produce":
@@ -89,6 +119,48 @@ func interact(player: CharacterBody3D) -> void:
 		return
 
 	_request_ai_scan(player, product)
+
+
+func get_checkout_camera() -> Camera3D:
+	return checkout_camera
+
+
+func show_checkout_instructions() -> void:
+	checkout_instructions.show()
+
+
+func hide_checkout_instructions() -> void:
+	checkout_instructions.hide()
+
+
+func is_mouse_over_scanner(mouse_position: Vector2) -> bool:
+
+	var camera: Camera3D = checkout_camera
+
+	if camera == null:
+		return false
+
+	var origin: Vector3 = camera.project_ray_origin(mouse_position)
+	var direction: Vector3 = camera.project_ray_normal(mouse_position)
+
+	var query := PhysicsRayQueryParameters3D.create(
+		origin,
+		origin + direction * 100.0
+	)
+
+	# ScanArea uses collision layer 256.
+	query.collision_mask = scan_area.collision_layer
+	query.collide_with_areas = true
+	query.collide_with_bodies = false
+
+	var result: Dictionary = (
+		get_world_3d().direct_space_state.intersect_ray(query)
+	)
+
+	if result.is_empty():
+		return false
+
+	return result.get("collider") == scan_area
 
 
 func request_checkout(customer: ShopperAI) -> Marker3D:
@@ -178,11 +250,11 @@ func _server_scan_ai_product(
 
 	if player.network_held_item_path != product.resource_path:
 		return
-	
+
 	# Validate the origin recorded by the server.
 	if player.held_item_origin != player.ItemOrigin.CHECKOUT_GRID:
 		return
-	
+
 	# Produce must have the correct code before scanning.
 	if product.product_category == "produce":
 		if entered_code.is_empty():
@@ -193,11 +265,19 @@ func _server_scan_ai_product(
 
 	if not scan_ai_product(product):
 		return
-	
-	# Product was successfully scanned.
-	player.held_item_origin = player.ItemOrigin.NONE
-	
+
+	# Record that this held product has been successfully scanned.
+	player.checkout_scanned_product_path = product.resource_path
+
 	var peer_id: int = player.get_multiplayer_authority()
+
+	# Synchronize the scanned-product state with the owning client.
+	if peer_id != multiplayer.get_unique_id():
+		_sync_scanned_product_to_player.rpc_id(
+			peer_id,
+			player.get_path(),
+			product.resource_path
+		)
 
 	# Close and reset the barcode HUD after a successful produce scan.
 	if product.product_category == "produce":
@@ -207,12 +287,6 @@ func _server_scan_ai_product(
 		else:
 			_apply_barcode_hud_state.rpc_id(peer_id, false)
 			_reset_completed_barcode_code.rpc_id(peer_id)
-
-	# Remove the scanned product from the player's hand.
-	if peer_id == multiplayer.get_unique_id():
-		player._clear_held_item()
-	else:
-		player.clear_held_item.rpc_id(peer_id)
 
 
 func _open_produce_code_hud(
@@ -376,29 +450,63 @@ func scan_ai_product(product: ProductData) -> bool:
 	if not can_scan_ai_product(product):
 		return false
 
-	if not bag_grid.add_item(product):
-		return false
-
 	for i: int in range(unscanned_items.size()):
 		if unscanned_items[i].resource_path == product.resource_path:
 			unscanned_items.remove_at(i)
 			break
 
-	_sync_grid_to_clients(bag_grid)
 	_play_scanner_beep.rpc()
 	_reset_checkout_wait()
 
+	# Update the display without completing the sale yet.
 	_update_checkout_display.rpc(
 		product.display_name,
 		product.product_price,
-		unscanned_items.is_empty()
+		false
 	)
 
-	if unscanned_items.is_empty() and checkout_customer != null:
+	if unscanned_items.is_empty():
 		_stop_checkout_wait()
-		checkout_customer.checkout_scanning_completed()
 
 	return true
+
+
+func notify_product_bagged(player: CharacterBody3D) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if player == null:
+		return
+
+	# Clear the scanned-product state on the server.
+	player.checkout_scanned_product_path = ""
+
+	var peer_id: int = player.get_multiplayer_authority()
+
+	# Also clear it on the player's client.
+	if peer_id != multiplayer.get_unique_id():
+		_sync_scanned_product_to_player.rpc_id(
+			peer_id,
+			player.get_path(),
+			""
+		)
+
+	if checkout_customer == null:
+		return
+
+	# All products must have been scanned.
+	if not unscanned_items.is_empty():
+		return
+
+	# All products must also have been placed in the bag.
+	if bag_grid.cart_items.size() < checkout_customer.purchased_items.size():
+		return
+
+	# Start the sale-complete display timer only after
+	# the final product has been placed in the bag.
+	checkout_display.complete_sale.rpc()
+
+	checkout_customer.checkout_scanning_completed()
 
 
 func _clear_grid(grid: CartGrid) -> void:
@@ -443,6 +551,96 @@ func customer_finished_checkout(customer: ShopperAI) -> void:
 	# Do not advance the queue yet.
 	# The shopper must collect their bag first.
 
+
+func _create_bag_outline() -> void:
+	if bag_mesh == null or bag_mesh.mesh == null:
+		return
+
+	bag_outline = MeshInstance3D.new()
+	bag_outline.name = "BagHoverOutline"
+
+	# Copy the original bag mesh.
+	bag_outline.mesh = bag_mesh.mesh
+
+	# Match the bag's position, rotation, and scale.
+	bag_outline.transform = bag_mesh.transform
+
+	# Make the outline slightly larger than the original.
+	bag_outline.scale *= Vector3(1.065, 1.00, 1.03)
+	#bag_outline.position.y -= 0.025
+
+	# Apply the existing outline material.
+	bag_outline.material_override = CHECKOUT_OUTLINE_MATERIAL
+
+	# Don't let the outline cast shadows.
+	bag_outline.cast_shadow = (
+		GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	)
+
+	# Add it beside the original bag mesh.
+	bag_mesh.get_parent().add_child(bag_outline)
+
+	# Only show it when the mouse hovers over the bag.
+	bag_outline.hide()
+
+
+func is_mouse_over_bag(mouse_position: Vector2) -> bool:
+
+	if not bag_mesh.visible or bag_mesh.mesh == null:
+		return false
+
+	var camera: Camera3D = checkout_camera
+
+	if camera == null:
+		return false
+
+	var origin: Vector3 = camera.project_ray_origin(mouse_position)
+	var direction: Vector3 = camera.project_ray_normal(mouse_position)
+
+	# Reuse CartGrid's existing ray-to-mesh intersection function.
+	var distance: float = bag_grid._get_ray_mesh_distance(
+		origin,
+		direction,
+		bag_mesh
+	)
+
+	return distance >= 0.0
+
+
+func update_checkout_hover_outline(
+	mouse_position: Vector2,
+	can_hover_products: bool
+) -> void:
+
+	# First, check whether the mouse is over a product.
+	var product_index: int = -1
+
+	if can_hover_products:
+		product_index = checkout_grid.update_mouse_item_outline(
+			mouse_position
+		)
+	else:
+		checkout_grid.clear_mouse_item_outline()
+
+	# If a product is highlighted, hide the bag outline.
+	if product_index >= 0:
+		if is_instance_valid(bag_outline):
+			bag_outline.hide()
+
+		return
+
+	# Otherwise, check whether the mouse is over the bag.
+	var over_bag: bool = is_mouse_over_bag(mouse_position)
+
+	if is_instance_valid(bag_outline):
+		bag_outline.visible = over_bag
+
+
+func clear_checkout_hover_outlines() -> void:
+	checkout_grid.clear_mouse_item_outline()
+
+	if is_instance_valid(bag_outline):
+		bag_outline.hide()
 
 
 func _move_customer(
@@ -554,3 +752,18 @@ func _update_checkout_display(
 
 	if sale_complete:
 		checkout_display.complete_sale()
+
+
+@rpc("authority", "call_remote", "reliable")
+func _sync_scanned_product_to_player(
+	player_path: NodePath,
+	product_path: String
+) -> void:
+	var player: CharacterBody3D = get_node_or_null(
+		player_path
+	) as CharacterBody3D
+
+	if player == null:
+		return
+
+	player.checkout_scanned_product_path = product_path

@@ -113,6 +113,8 @@ func add_scanned_item(
 	subtotal_label.show()
 	_scroll_to_latest_item.call_deferred()
 
+
+@rpc("authority", "call_local", "reliable")
 func complete_sale() -> void:
 	header_label.text = "SALE COMPLETE"
 	total_label.text = "TOTAL: $%.2f" % subtotal

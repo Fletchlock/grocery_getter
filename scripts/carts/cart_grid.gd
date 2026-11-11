@@ -383,6 +383,11 @@ func get_interaction_prompt_for_player(player: CharacterBody3D) -> String:
 			return "[E] Place Item"
 		return "[E] Place " + player.held_item.display_name
 	
+	# Checkout products can only be picked up in checkout mode.
+	if self is CheckoutGrid and not player.checkout_mode_active:
+		_clear_take_item_outline()
+		return ""
+	
 	# Other held equipment prevents taking products.
 	if player.is_holding_equipment():
 		_clear_take_item_outline()
@@ -434,6 +439,80 @@ func _get_take_item_index(player: CharacterBody3D) -> int:
 	return chosen
 
 
+func get_mouse_item_index(mouse_position: Vector2) -> int:
+
+	if cart_items.is_empty():
+		return -1
+
+	var camera: Camera3D = get_viewport().get_camera_3d()
+
+	if camera == null:
+		return -1
+
+	var origin: Vector3 = camera.project_ray_origin(mouse_position)
+	var direction: Vector3 = camera.project_ray_normal(mouse_position)
+
+	var closest_distance: float = INF
+	var chosen_index: int = -1
+
+	for index: int in range(
+		mini(cart_items.size(), item_visuals.size())
+	):
+
+		var visual: MeshInstance3D = item_visuals[index]
+
+		if not is_instance_valid(visual):
+			continue
+
+		if visual.mesh == null:
+			continue
+
+		var distance: float = _get_ray_mesh_distance(
+			origin,
+			direction,
+			visual
+		)
+
+		if distance >= 0.0 and distance < closest_distance:
+			closest_distance = distance
+			chosen_index = index
+
+	return chosen_index
+
+
+func request_take_item_at_mouse(
+	player: CharacterBody3D,
+	mouse_position: Vector2
+) -> void:
+
+	if player == null:
+		return
+
+	if player.held_item != null:
+		return
+
+	if player.is_holding_equipment():
+		return
+
+	if not has_items():
+		return
+
+	var item_index: int = get_mouse_item_index(mouse_position)
+
+	if item_index < 0:
+		return
+
+	# Use the existing multiplayer pickup system.
+	if multiplayer.is_server():
+		_take_item_for_player(player, item_index)
+	else:
+		request_take_item.rpc_id(
+			1,
+			player.get_path(),
+			item_index
+		)
+
+
 func _get_ray_mesh_distance(origin: Vector3, direction: Vector3, visual: MeshInstance3D) -> float:
 	if visual == null or visual.mesh == null:
 		return -1.0
@@ -474,6 +553,7 @@ func _ray_aabb_distance(origin: Vector3, direction: Vector3, bounds: AABB) -> fl
 # Multiplayer interaction requests (server authoritative)
 # -------------------------------------------------------------------
 func request_interact(player: CharacterBody3D) -> void:
+	
 	if player == null:
 		return
 	if player.held_item != null:
@@ -482,6 +562,10 @@ func request_interact(player: CharacterBody3D) -> void:
 			_add_item_from_player(player, path)
 		else:
 			request_add_item.rpc_id(1, player.get_path(), path)
+		return
+
+	# Prevent normal-world pickup from the checkout counter.
+	if self is CheckoutGrid and not player.checkout_mode_active:
 		return
 
 	if player.is_holding_equipment():
@@ -516,6 +600,11 @@ func _add_item_from_player(player: CharacterBody3D, product_path: String) -> voi
 	if product == null:
 		return
 
+	# BagGrid only accepts products successfully scanned at checkout.
+	if name == "BagGrid":
+		if player.checkout_scanned_product_path != product_path:
+			return
+
 	var peer_id: int = player.get_multiplayer_authority()
 	var player_order: OrderData = OrderManager.get_player_order(peer_id)
 
@@ -537,6 +626,12 @@ func _add_item_from_player(player: CharacterBody3D, product_path: String) -> voi
 	# No order-list or quantity validation.
 	if not add_item(product):
 		return
+
+	if name == "BagGrid":
+		var checkout: Checkout = get_parent() as Checkout
+
+		if checkout != null:
+			checkout.notify_product_bagged(player)
 
 	# Assign the cart when an order picker first uses it.
 	if order_owner_peer_id == 0 and player_order != null:
@@ -789,3 +884,13 @@ func _clear_take_item_outline() -> void:
 		cart_outline.queue_free()
 	cart_outline = null
 	outlined_visual = null
+
+
+func update_mouse_item_outline(mouse_position: Vector2) -> int:
+	var item_index: int = get_mouse_item_index(mouse_position)
+	_update_take_item_outline(item_index)
+	return item_index
+
+
+func clear_mouse_item_outline() -> void:
+	_clear_take_item_outline()
