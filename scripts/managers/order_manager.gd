@@ -561,11 +561,24 @@ func get_player_order(peer_id: int) -> OrderData:
 
 
 func get_player_order_any_state(peer_id: int) -> OrderData:
-	for order: OrderData in orders:
-		if order.accepted_by_peer_id == peer_id:
+	var latest_order: OrderData = null
+
+	# Search newest orders first.
+	for i: int in range(orders.size() - 1, -1, -1):
+		var order: OrderData = orders[i]
+
+		if order.accepted_by_peer_id != peer_id:
+			continue
+
+		# Always prioritize the player's currently active order.
+		if order.state == OrderData.OrderState.ACTIVE:
 			return order
 
-	return null
+		# Otherwise, remember the most recently accepted order.
+		if latest_order == null:
+			latest_order = order
+
+	return latest_order
 
 
 func get_available_order() -> OrderData:
