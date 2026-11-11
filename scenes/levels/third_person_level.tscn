@@ -1953,3 +1953,5 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.34
 [editable path="ScannerHolder"]
 [editable path="ScannerHolder/RestockScanner"]
 [editable path="Mop"]
+[editable path="DeliveryTruck"]
+[editable path="DeliveryTruck/delivery_truck_door_baked"]

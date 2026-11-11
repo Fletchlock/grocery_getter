@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://dbe6d5ctp5ja8"]
 
+[ext_resource type="Script" uid="uid://dp45suoyub467" path="res://scripts/objects/delivery_truck.gd" id="1_e3mcj"]
 [ext_resource type="ArrayMesh" uid="uid://dcxgfhkgiidff" path="res://assets/models/objects/delivery_truck_Cube_037.res" id="1_es2cn"]
+[ext_resource type="PackedScene" uid="uid://bbiv4n8nt5kyi" path="res://assets/models/objects/delivery_truck_door_baked.glb" id="2_fu584"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
 size = Vector3(3.0062904, 1.1561091, 5.943165)
@@ -17,7 +19,14 @@ size = Vector3(0.1265223, 2.8890848, 5.9579353)
 [sub_resource type="BoxShape3D" id="BoxShape3D_3rncn"]
 size = Vector3(2.8851967, 0.069084644, 5.9919376)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_5331b"]
+size = Vector3(2.8925705, 0.58340365, 0.04931605)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hd853"]
+size = Vector3(2.1652832, 3.4613495, 1.972229)
+
 [node name="DeliveryTruck" type="Node3D" unique_id=366024847]
+script = ExtResource("1_e3mcj")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=768222125]
 mesh = ExtResource("1_es2cn")
@@ -48,3 +57,37 @@ debug_color = Color(0.78431374, 0.019607844, 0.84705883, 0.827451)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0029315948, 4.0635433, 2.0014791)
 shape = SubResource("BoxShape3D_3rncn")
 debug_color = Color(0.78431374, 0.019607844, 0.84705883, 0.827451)
+
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="StaticBody3D" unique_id=500772058]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0051460266, 3.7491956, 4.975721)
+shape = SubResource("BoxShape3D_5331b")
+debug_color = Color(0.78431374, 0.019607844, 0.84705883, 0.827451)
+
+[node name="delivery_truck_door_baked" parent="." unique_id=78835206 instance=ExtResource("2_fu584")]
+
+[node name="DoorPanel_1" parent="delivery_truck_door_baked" index="0" unique_id=85845051]
+transform = Transform3D(-1, 7.9861677e-19, 8.742278e-08, 7.9861584e-19, 1, -1.0919045e-17, -8.742278e-08, -1.0919045e-17, -1, -1.7523766e-05, 1.4334127, 4.985921)
+
+[node name="DoorPanel_2" parent="delivery_truck_door_baked" index="1" unique_id=2068284613]
+transform = Transform3D(-1, -8.78966e-18, 8.742278e-08, -8.78965e-18, 1, 1.1029234e-16, -8.742278e-08, 1.1029234e-16, -1, -1.7523766e-05, 2.0110078, 4.985921)
+
+[node name="DoorPanel_3" parent="delivery_truck_door_baked" index="2" unique_id=69616263]
+transform = Transform3D(-1, -1.9526163e-14, 8.742278e-08, -1.9526163e-14, 1, 4.8076108e-17, -8.742278e-08, 4.80744e-17, -1, -1.7523766e-05, 2.5886033, 4.985921)
+
+[node name="DoorPanel_4" parent="delivery_truck_door_baked" index="3" unique_id=363324334]
+transform = Transform3D(-1, 1.2918775e-08, -1.5099508e-07, 1.3382127e-08, 0.9999953, -0.0030690604, 1.5095473e-07, -0.0030690606, -0.99999523, -1.7518802e-05, 3.1661234, 4.985046)
+
+[node name="DoorPanel_5" parent="delivery_truck_door_baked" index="4" unique_id=950241238]
+transform = Transform3D(-0.9999999, -6.2441416e-08, -1.2912331e-07, 1.35395615e-08, 0.85514504, -0.5183884, 1.4278811e-07, -0.5183884, -0.85514504, -1.7180848e-05, 3.692861, 4.8392134)
+
+[node name="OpenDoorArea" type="Area3D" parent="." unique_id=2079075276]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.596448)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="OpenDoorArea" unique_id=575484676]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0057373047, 1.7237867, -0.58950806)
+shape = SubResource("BoxShape3D_hd853")
+
+[connection signal="body_entered" from="OpenDoorArea" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_exited" from="OpenDoorArea" to="." method="_on_area_3d_body_exited"]
+
+[editable path="delivery_truck_door_baked"]
