@@ -101,5 +101,11 @@ func get_interaction_prompt_for_player(
 	return ""
 
 
-func request_interact(_player: CharacterBody3D) -> void:
-	return
+func request_interact(player: CharacterBody3D) -> void:
+	if player == null:
+		return
+
+	if player.held_item == null:
+		return
+
+	super.request_interact(player)

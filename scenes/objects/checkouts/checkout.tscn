@@ -8,6 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://v8oalnmtq657" path="res://assets/sounds/scanner_beep.wav" id="6_m1o1u"]
 [ext_resource type="Script" uid="uid://dkmmhbntn6xlq" path="res://scripts/checkouts/checkout_display.gd" id="7_5e8nf"]
 [ext_resource type="AudioStream" uid="uid://gs3bod6iy10j" path="res://assets/sounds/277033__headphaze__ui-completed-status-alert-notification-sfx001.wav" id="7_l61bx"]
+[ext_resource type="Texture2D" uid="uid://ifkotnnto2y6" path="res://assets/images/order_notify_bg_dk_grey.png" id="8_t0cer"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ibuna"]
 size = Vector3(0.75454557, 0.7067013, 1.6119537)
@@ -18,6 +19,9 @@ size = Vector3(0.75454557, 0.7067013, 1.6119537)
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hd853"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_umdtr"]
+texture = ExtResource("8_t0cer")
 
 [sub_resource type="QuadMesh" id="QuadMesh_6aigx"]
 size = Vector2(1.4, 1)
@@ -71,6 +75,10 @@ mesh = ExtResource("4_36puo")
 
 [node name="BagPoint" type="Marker3D" parent="." unique_id=1567782599]
 
+[node name="CheckoutCamera" type="Camera3D" parent="." unique_id=1698270421]
+transform = Transform3D(-4.280559e-08, 0.20252214, -0.97927773, 8.852524e-09, 0.97927773, 0.20252214, 1, 0, -4.3711392e-08, -1.7806282, 1.388417, -0.65990967)
+fov = 59.0
+
 [node name="CheckoutArea" type="Area3D" parent="." unique_id=957745189]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CheckoutArea" unique_id=741477035]
@@ -103,6 +111,30 @@ collision_layer = 256
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ScanArea" unique_id=1790967742]
 shape = SubResource("BoxShape3D_hd853")
 debug_color = Color(0.9131919, 0.0074887597, 0.9999998, 1)
+
+[node name="CheckoutInstructions" type="CanvasLayer" parent="." unique_id=732059030]
+visible = false
+
+[node name="InstructionsPanel" type="PanelContainer" parent="CheckoutInstructions" unique_id=1532479664]
+anchors_preset = -1
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_umdtr")
+
+[node name="MarginContainer" type="MarginContainer" parent="CheckoutInstructions/InstructionsPanel" unique_id=1965434731]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Instructions" type="Label" parent="CheckoutInstructions/InstructionsPanel/MarginContainer" unique_id=653593547]
+layout_mode = 2
+text = "Grab item: [E], [LMB]
+Scan item: [E], [LMB]
+Exit: [Q], [ESC]"
 
 [node name="CheckoutScreen" type="MeshInstance3D" parent="." unique_id=1333936591]
 mesh = SubResource("QuadMesh_6aigx")
