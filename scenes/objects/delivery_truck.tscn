@@ -25,8 +25,9 @@ size = Vector3(2.8925705, 0.58340365, 0.04931605)
 [sub_resource type="BoxShape3D" id="BoxShape3D_hd853"]
 size = Vector3(2.1652832, 3.4613495, 1.972229)
 
-[node name="DeliveryTruck" type="Node3D" unique_id=366024847]
+[node name="DeliveryTruck" type="Node3D" unique_id=366024847 node_paths=PackedStringArray("door_trigger")]
 script = ExtResource("1_e3mcj")
+door_trigger = NodePath("OpenDoorArea")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=768222125]
 mesh = ExtResource("1_es2cn")
