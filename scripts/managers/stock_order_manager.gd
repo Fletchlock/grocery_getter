@@ -488,16 +488,11 @@ func reset_stock_orders() -> void:
 	_sync_pending_orders.rpc(pending_orders, pending_order_paths)
 
 
-
-func add_unlock_starter_stock(product_path: String) -> void:
+func spawn_unlock_starter_stock(product_path: String) -> void:
 	if not multiplayer.is_server():
 		return
 
-	if product_path.is_empty():
-		return
-
 	if not ResourceLoader.exists(product_path):
-		push_warning("Starter stock: Product resource not found: " + product_path)
 		return
 
 	var product: ProductData = load(product_path) as ProductData
@@ -505,8 +500,68 @@ func add_unlock_starter_stock(product_path: String) -> void:
 	if product == null:
 		return
 
-	confirmed_orders[product_path] = (
-		int(confirmed_orders.get(product_path, 0)) + 10
+	var level: Node = get_tree().root.get_node_or_null(
+		"Main/Game/ThirdPersonLevel"
 	)
 
-	print("STARTER STOCK QUEUED: ", product.display_name, " x10")
+	if level == null:
+		push_warning("Starter stock: Level not found.")
+		return
+
+	var deliveries: Node3D = level.get_node_or_null(
+		"Deliveries"
+	) as Node3D
+
+	if deliveries == null:
+		return
+
+	var spawn_point: Marker3D = deliveries.get_node_or_null(
+		"DeliverySpawnPoint"
+	) as Marker3D
+
+	var spawner: MultiplayerSpawner = deliveries.get_node_or_null(
+		"MultiplayerSpawner"
+	) as MultiplayerSpawner
+
+	if spawn_point == null or spawner == null:
+		return
+
+	# Account for boxes already on the shelf.
+	var box_index: int = 0
+
+	for child: Node in deliveries.get_children():
+		if child is RestockBox:
+			box_index += 1
+
+	var box_width: float = 0.5
+	var box_height: float = 0.5
+
+	var stack_column: int = floori(
+		float(box_index) / float(delivery_stack_height)
+	)
+	var stack_row: int = box_index % delivery_stack_height
+
+	var local_offset: Vector3 = Vector3(
+		float(stack_column) * (box_width + delivery_horizontal_spacing),
+		float(stack_row) * (box_height + delivery_vertical_spacing),
+		0.0
+	)
+
+	var box_transform: Transform3D = (
+		spawn_point.global_transform
+		* Transform3D(Basis.IDENTITY, local_offset)
+	)
+
+	var local_transform: Transform3D = (
+		deliveries.global_transform.affine_inverse()
+		* box_transform
+	)
+
+	spawner.spawn({
+		"product_path": product_path,
+		"quantity": 10,
+		"position": local_transform.origin,
+		"rotation": local_transform.basis.get_euler()
+	})
+
+	print("STARTER STOCK SPAWNED: ", product.display_name, " x10")
