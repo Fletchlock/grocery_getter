@@ -132,12 +132,17 @@ func evaluate_unlocks(day: int) -> void:
 		if product == null:
 			continue
 
+		
 		unlocked_products[display_id] = true
+
+		# Give newly unlocked products 10 free starter units.
+		StockOrderManager.add_unlock_starter_stock(product.resource_path)
 
 		var unlock_info: Dictionary = {
 			"save_id": display_id,
 			"product_name": product.display_name
 		}
+
 
 		todays_unlocks.append(unlock_info)
 
