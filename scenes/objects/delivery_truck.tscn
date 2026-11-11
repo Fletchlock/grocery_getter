@@ -87,7 +87,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.596448)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0057373047, 1.7237867, -0.58950806)
 shape = SubResource("BoxShape3D_hd853")
 
-[connection signal="body_entered" from="OpenDoorArea" to="." method="_on_area_3d_body_entered"]
-[connection signal="body_exited" from="OpenDoorArea" to="." method="_on_area_3d_body_exited"]
+[connection signal="body_entered" from="OpenDoorArea" to="." method="_on_body_entered"]
+[connection signal="body_exited" from="OpenDoorArea" to="." method="_on_body_exited"]
 
 [editable path="delivery_truck_door_baked"]
