@@ -6,9 +6,10 @@ class_name OrderPickerDrone
 @export_group("Flight Settings")
 @export var flight_height: float = 3.0
 @export var flight_speed: float = 3.5
-@export var acceleration: float = 3.0
+@export var acceleration: float = 3.5
+@export var braking_distance: float = 2.0
 @export var rotation_speed: float = 4.0
-@export var arrival_distance: float = 0.03
+@export var arrival_distance: float = 0.20
 @export var pause_duration: float = 2.0
 
 @export_group("Flight Sway")
@@ -123,10 +124,10 @@ func _collect_product_points() -> void:
 		if shopper_point == null:
 			continue
 
-		var position: Vector3 = shopper_point.global_position
-		position.y = flight_height
+		var product_position: Vector3 = shopper_point.global_position
+		product_position.y = flight_height
 
-		product_points.append(position)
+		product_points.append(product_position)
 
 
 func start_route() -> void:
@@ -144,8 +145,7 @@ func _update_flight(delta: float) -> void:
 	var direction: Vector3 = target_position - global_position
 	var distance: float = direction.length()
 
-	if distance <= arrival_distance:
-		global_position = target_position
+	if distance <= arrival_distance and current_speed <= 0.08:
 		current_speed = 0.0
 
 		if state == DroneState.RETURNING:
@@ -158,18 +158,26 @@ func _update_flight(delta: float) -> void:
 
 	direction = direction.normalized()
 
-	# Calculate braking speed based on remaining distance.
-	var braking_speed: float = sqrt(2.0 * acceleration * distance)
-	var desired_speed: float = minf(flight_speed, braking_speed)
+	# Begin slowing down within the braking distance.
+	var braking_factor: float = clampf(
+		distance / maxf(braking_distance, 0.001),
+		0.0,
+		1.0
+	)
 
-	# Smoothly accelerate or decelerate.
+	# Smoothstep creates a gradual braking curve.
+	braking_factor = smoothstep(0.0, 1.0, braking_factor)
+
+	var desired_speed: float = flight_speed * braking_factor
+
+	# Gradually adjust speed toward the desired speed.
 	current_speed = move_toward(
 		current_speed,
 		desired_speed,
 		acceleration * delta
 	)
 
-	# Prevent overshooting the destination.
+	# Move without overshooting.
 	var movement: float = minf(current_speed * delta, distance)
 	global_position += direction * movement
 
