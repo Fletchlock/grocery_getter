@@ -67,6 +67,12 @@ var return_retry_count: int = 0
 const MAX_EXIT_RETRIES: int = 3
 const MAX_RETURN_RETRIES: int = 3
 
+var return_stuck_timer: float = 0.0
+var return_last_position: Vector3 = Vector3.ZERO
+
+const RETURN_STUCK_TIMEOUT: float = 5.0
+const RETURN_MIN_MOVEMENT: float = 0.1
+
 # Animations
 var current_animation: StringName = &""
 @onready var skeleton_ik_node: SkeletonIK3D = $Armature/Skeleton3D/SkeletonIK3D
@@ -589,6 +595,9 @@ func go_to_spawn_point(spawn_point: Marker3D) -> void:
 		queue_free()
 		return
 
+	return_stuck_timer = 0.0
+	return_last_position = global_position
+
 	set_navigation_target(spawn_point.global_position)
 	state = State.RETURNING_TO_SPAWN
 
@@ -721,6 +730,25 @@ func _on_moving(delta: float) -> void:
 	#]:
 		#target_rotation = atan2(direction.x, direction.z)
 
+	if state == State.RETURNING_TO_SPAWN:
+		var horizontal_movement: Vector3 = (
+			current_position - return_last_position
+		)
+		horizontal_movement.y = 0.0
+
+		if horizontal_movement.length() >= RETURN_MIN_MOVEMENT:
+			return_stuck_timer = 0.0
+			return_last_position = current_position
+		else:
+			return_stuck_timer += delta
+
+		if return_stuck_timer >= RETURN_STUCK_TIMEOUT:
+			return_stuck_timer = 0.0
+			try_another_spawn_point()
+
+		return
+
+	# Existing stuck detection for all other states.
 	if current_position.distance_to(last_position) < 0.05:
 		stuck_timer += delta
 	else:
