@@ -213,6 +213,7 @@ func spawn_shopper() -> void:
 		return
 
 	shopper.global_position = spawn_point.global_position
+	shopper.original_spawn_point = spawn_point
 
 	if shopper.has_signal("reached_enter_point"):
 		shopper.reached_enter_point.connect(
