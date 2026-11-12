@@ -606,6 +606,17 @@ func start_visual_departure() -> void:
 	complete_store_exit()
 
 	return_retry_count = 0
+
+	velocity = Vector3.ZERO
+	navigation_agent_3d.velocity = Vector3.ZERO
+
+	state = State.RETURNING_TO_SPAWN
+
+	await get_tree().physics_frame
+
+	if not is_inside_tree():
+		return
+
 	go_to_spawn_point(original_spawn_point)
 
 
@@ -688,6 +699,13 @@ func set_navigation_target(target: Vector3) -> void:
 func _on_moving(delta: float) -> void:
 	var current_position: Vector3 = global_position
 	var next_position: Vector3 = navigation_agent_3d.get_next_path_position()
+	
+	if state == State.RETURNING_TO_SPAWN \
+	and navigation_agent_3d.is_navigation_finished():
+		velocity.x = 0.0
+		velocity.z = 0.0
+		navigation_agent_3d.velocity = Vector3.ZERO
+		return
 
 	if state == State.SHOPPING and not shopping_point_checked and current_shopping_point != null:
 		var shopper_point: Marker3D = current_shopping_point.get_node("AIShopperPoint")
