@@ -44,6 +44,8 @@ const BELL_WAIT_MINUTES: int = 10
 var last_scan_game_minute: int = 0
 var checkout_active: bool = false
 
+var scanner_user_peer_id: int = 0
+
 
 func _ready() -> void:
 	add_to_group("checkout")
@@ -110,8 +112,12 @@ func interact(player: CharacterBody3D) -> void:
 	if product == null:
 		return
 
-	# Don't allow an already-scanned product to be scanned again.
-	if player.checkout_scanned_product_path == product.resource_path:
+	# Don't allow an already-scanned or pending-barcode
+	# product to trigger the scanner again.
+	if (
+		player.checkout_scanned_product_path == product.resource_path
+		or player.checkout_barcode_product_path == product.resource_path
+	):
 		return
 
 	if product.product_category == "produce":
@@ -289,12 +295,149 @@ func _server_scan_ai_product(
 			_reset_completed_barcode_code.rpc_id(peer_id)
 
 
+func request_scanner_access(player: CharacterBody3D) -> void:
+	if player == null:
+		return
+
+	if not player.is_multiplayer_authority():
+		return
+
+	if multiplayer.is_server():
+		_server_request_scanner_access(
+			player,
+			player.get_multiplayer_authority()
+		)
+	else:
+		request_scanner_access_rpc.rpc_id(
+			1,
+			player.get_path()
+		)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_scanner_access_rpc(player_path: NodePath) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var peer_id: int = multiplayer.get_remote_sender_id()
+
+	var player: CharacterBody3D = get_node_or_null(
+		player_path
+	) as CharacterBody3D
+
+	if player == null:
+		return
+
+	if player.get_multiplayer_authority() != peer_id:
+		return
+
+	_server_request_scanner_access(player, peer_id)
+
+
+func _server_request_scanner_access(
+	player: CharacterBody3D,
+	peer_id: int
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if player == null or peer_id <= 0:
+		# Players must have empty hands to enter checkout mode.
+		if (
+			player.network_holding_item
+			or player.held_item != null
+			or player.is_holding_equipment()
+		):
+			return
+
+	# The scanner is already occupied by another player.
+	if (
+		scanner_user_peer_id != 0
+		and scanner_user_peer_id != peer_id
+	):
+		return
+
+	scanner_user_peer_id = peer_id
+	sync_scanner_user.rpc(peer_id)
+
+	if peer_id == multiplayer.get_unique_id():
+		player._activate_checkout_mode(self)
+	else:
+		grant_scanner_access.rpc_id(
+			peer_id,
+			player.get_path()
+		)
+
+
+@rpc("authority", "call_local", "reliable")
+func sync_scanner_user(peer_id: int) -> void:
+	scanner_user_peer_id = peer_id
+
+
+@rpc("authority", "call_remote", "reliable")
+func grant_scanner_access(player_path: NodePath) -> void:
+	var player: CharacterBody3D = get_node_or_null(
+		player_path
+	) as CharacterBody3D
+
+	if player == null:
+		return
+
+	if not player.is_multiplayer_authority():
+		return
+
+	player._activate_checkout_mode(self)
+
+
+func release_scanner_access(player: CharacterBody3D) -> void:
+	if player == null:
+		return
+
+	var peer_id: int = player.get_multiplayer_authority()
+
+	if multiplayer.is_server():
+		_server_release_scanner_access(peer_id)
+	else:
+		release_scanner_access_rpc.rpc_id(1)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func release_scanner_access_rpc() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var peer_id: int = multiplayer.get_remote_sender_id()
+	_server_release_scanner_access(peer_id)
+
+
+func _server_release_scanner_access(peer_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+
+	# Only the player currently using the scanner can release it.
+	if scanner_user_peer_id != peer_id:
+		return
+
+	scanner_user_peer_id = 0
+	sync_scanner_user.rpc(0)
+
+
 func _open_produce_code_hud(
 	player: CharacterBody3D,
 	product: ProductData
 ) -> void:
 	if player == null or product == null:
 		return
+
+	# Don't reopen an existing barcode prompt.
+	if (
+		player.checkout_scanned_product_path == product.resource_path
+		or player.checkout_barcode_product_path == product.resource_path
+	):
+		return
+
+	# Mark this product as having an active barcode prompt.
+	player.checkout_barcode_product_path = product.resource_path
 
 	var player_peer_id: int = player.get_multiplayer_authority()
 
@@ -478,8 +621,9 @@ func notify_product_bagged(player: CharacterBody3D) -> void:
 	if player == null:
 		return
 
-	# Clear the scanned-product state on the server.
+	# Clear the scanned and pending barcode states.
 	player.checkout_scanned_product_path = ""
+	player.checkout_barcode_product_path = ""
 
 	var peer_id: int = player.get_multiplayer_authority()
 
@@ -767,3 +911,6 @@ func _sync_scanned_product_to_player(
 		return
 
 	player.checkout_scanned_product_path = product_path
+
+	if product_path.is_empty():
+		player.checkout_barcode_product_path = ""

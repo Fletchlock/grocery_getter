@@ -158,14 +158,14 @@ var checkout_cursor_last_safe_position: Vector3 = Vector3.ZERO
 var checkout_cursor_has_safe_position: bool = false
 var checkout_cursor_sensor: Area3D = null
 var rotating_held_product: bool = false
-var held_product_base_rotation: Vector3 = Vector3.ZERO
-var held_product_rotation_offset: Vector2 = Vector2.ZERO
 var checkout_rotation_mouse_position: Vector2 = Vector2.ZERO
 var checkout_last_mouse_position: Vector2 = Vector2.ZERO
 var checkout_rotation_previous_mouse_mode: Input.MouseMode = Input.MOUSE_MODE_VISIBLE
-var held_product_center_local: Vector3 = Vector3.ZERO
-var held_product_center_parent: Vector3 = Vector3.ZERO
 var checkout_scanned_product_path: String = ""
+var checkout_auto_bag_hover_active: bool = false
+var checkout_barcode_product_path: String = ""
+var checkout_virtual_mouse_position: Vector2 = Vector2.ZERO
+var checkout_virtual_mouse_initialized: bool = false
 
 func can_process_gameplay_input() -> bool:
 	return (
@@ -191,7 +191,6 @@ enum ItemOrigin {
 @export_group("Checkout Cursor Item")
 @export var checkout_cursor_offset: Vector2 = Vector2(0.0, 0.0)
 @export var checkout_cursor_depth: float = 1.0
-var checkout_cursor_collision_offset: Vector2 = Vector2.ZERO
 
 @export_group("Held Product Rotation")
 @export var held_product_rotation_sensitivity: float = 0.008
@@ -377,6 +376,29 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	
 	if checkout_mode_active:
+		# Track captured mouse movement in viewport coordinates.
+		if event is InputEventMouseMotion:
+			if (
+				held_item != null
+				and held_item_origin == ItemOrigin.CHECKOUT_GRID
+				and not rotating_held_product
+			):
+				# Match the raw mouse movement used by normal camera controls.
+				checkout_virtual_mouse_position += event.screen_relative
+
+				checkout_virtual_mouse_position = (
+					checkout_virtual_mouse_position.clamp(
+						Vector2.ZERO,
+						get_viewport().get_visible_rect().size
+					)
+				)
+
+				checkout_last_mouse_position = (
+					checkout_virtual_mouse_position
+				)
+
+			get_viewport().set_input_as_handled()
+			return
 		# Escape (or q) exits checkout mode.
 		if (
 			event is InputEventKey
@@ -714,7 +736,12 @@ func _process(delta: float) -> void:
 	# Update checkout hover outlines.
 	if checkout_mode_active and is_instance_valid(active_checkout):
 		var mouse_position: Vector2 = (
-			get_viewport().get_mouse_position()
+			checkout_virtual_mouse_position
+			if (
+				held_item != null
+				and held_item_origin == ItemOrigin.CHECKOUT_GRID
+			)
+			else get_viewport().get_mouse_position()
 		)
 
 		# Products can only be highlighted when we're not holding anything.
@@ -723,23 +750,41 @@ func _process(delta: float) -> void:
 			and not is_holding_equipment()
 		)
 
-		# Keep bag detection aligned with the held product's actual position.
+		# Keep hover detection aligned with the product's actual position.
 		if (
 			held_item != null
 			and held_item_origin == ItemOrigin.CHECKOUT_GRID
 		):
-			if rotating_held_product:
-				mouse_position = checkout_rotation_mouse_position
-
-			mouse_position += (
-				checkout_cursor_offset
-				+ checkout_cursor_collision_offset
-			)
+			mouse_position = get_checkout_cursor_screen_position()
 
 		active_checkout.update_checkout_hover_outline(
 			mouse_position,
 			can_hover_products
 		)
+
+		# Automatically bag successfully scanned products on hover.
+		var should_auto_bag: bool = false
+
+		if (
+			is_multiplayer_authority()
+			and held_item != null
+			and held_item_origin == ItemOrigin.CHECKOUT_GRID
+			and active_checkout.is_mouse_over_bag(mouse_position)
+		):
+			var held_product: ProductData = held_item as ProductData
+
+			if held_product != null:
+				should_auto_bag = (
+					checkout_scanned_product_path
+					== held_product.resource_path
+				)
+
+		if should_auto_bag and not checkout_auto_bag_hover_active:
+			checkout_auto_bag_hover_active = true
+			active_checkout.bag_grid.request_interact(self)
+
+		elif not should_auto_bag:
+			checkout_auto_bag_hover_active = false
 
 
 func _physics_process(delta: float) -> void:
@@ -1012,6 +1057,10 @@ func _physics_process(delta: float) -> void:
 		and not is_crouching
 		and sprint_allowed
 		and raw_input.length_squared() > 0.0
+		and not (
+			held_item != null
+			and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT)
+		)
 	)
 		
 	var target_move_speed: float = (
@@ -2527,10 +2576,6 @@ func _clear_held_item() -> void:
 
 	# Stop any active product rotation.
 	rotating_held_product = false
-	held_product_rotation_offset = Vector2.ZERO
-	held_product_base_rotation = Vector3.ZERO
-	held_product_center_local = Vector3.ZERO
-	held_product_center_parent = Vector3.ZERO
 
 	# Remember where the product preview was on screen.
 	var restore_mouse_position := false
@@ -2583,7 +2628,6 @@ func _clear_held_restock_box() -> void:
 
 
 func create_checkout_cursor_visual() -> void:
-
 	# Only create this for the local player.
 	if not is_multiplayer_authority():
 		return
@@ -2606,14 +2650,17 @@ func create_checkout_cursor_visual() -> void:
 	# Remove any previous preview.
 	clear_checkout_cursor_visual()
 
-	# Start each new product with a fresh mouse position.
-	checkout_cursor_collision_offset = Vector2.ZERO
+	# Initialize the virtual cursor from the actual mouse position.
+	if not checkout_virtual_mouse_initialized:
+		checkout_virtual_mouse_position = (
+			get_viewport().get_mouse_position()
+		)
+		checkout_virtual_mouse_initialized = true
 
 	if held_item_visual == null:
 		return
 
 	# Duplicate the existing local product visual.
-	# This leaves the original held item untouched.
 	checkout_cursor_visual = held_item_visual.duplicate() as MeshInstance3D
 
 	if checkout_cursor_visual == null:
@@ -2623,15 +2670,13 @@ func create_checkout_cursor_visual() -> void:
 
 	active_checkout.checkout_camera.add_child(checkout_cursor_visual)
 
-	# Attach a collision sensor to the product preview.
 	create_checkout_cursor_sensor()
 
-	# Match the currently held product's rotation.
 	checkout_cursor_visual.rotation = held_item_visual.rotation
 
-	# Calculate the initial cursor position.
+	# Calculate the initial cursor position using the virtual mouse.
 	var mouse_position: Vector2 = (
-		get_viewport().get_mouse_position()
+		checkout_virtual_mouse_position
 		+ checkout_cursor_offset
 	)
 
@@ -2642,7 +2687,6 @@ func create_checkout_cursor_visual() -> void:
 		)
 	)
 
-	# Raise the initial position by 20 cm in world space.
 	var spawn_world_position: Vector3 = (
 		active_checkout.checkout_camera.to_global(initial_position)
 		+ Vector3.UP * 0.2
@@ -2656,7 +2700,6 @@ func create_checkout_cursor_visual() -> void:
 
 	checkout_cursor_visual.position = spawn_position
 
-	# Find a clear position if the product overlaps the desk.
 	if not is_checkout_cursor_position_clear(spawn_position):
 		if not find_checkout_cursor_safe_position(spawn_position):
 			clear_checkout_cursor_visual()
@@ -2667,7 +2710,6 @@ func create_checkout_cursor_visual() -> void:
 
 
 func update_checkout_cursor_visual() -> void:
-
 	update_checkout_mouse_cursor()
 
 	if not checkout_mode_active:
@@ -2695,22 +2737,26 @@ func update_checkout_cursor_visual() -> void:
 	if not is_instance_valid(camera):
 		return
 
-	var mouse_position: Vector2
-
-	if rotating_held_product:
-		mouse_position = checkout_rotation_mouse_position
-	else:
-		mouse_position = get_viewport().get_mouse_position()
-		checkout_last_mouse_position = mouse_position
-
-	var raw_mouse_position: Vector2 = mouse_position
-
-	mouse_position += (
-		checkout_cursor_offset
-		+ checkout_cursor_collision_offset
+	var mouse_position: Vector2 = (
+		checkout_rotation_mouse_position
+		if rotating_held_product
+		else checkout_virtual_mouse_position
 	)
 
-	# Calculate the desired position.
+	if not rotating_held_product:
+		checkout_last_mouse_position = mouse_position
+
+	mouse_position += checkout_cursor_offset
+
+	var viewport_size: Vector2 = (
+		get_viewport().get_visible_rect().size
+	)
+
+	mouse_position = mouse_position.clamp(
+		Vector2.ZERO,
+		viewport_size
+	)
+
 	var target_position: Vector3 = (
 		get_checkout_cursor_centered_position(
 			camera,
@@ -2718,40 +2764,36 @@ func update_checkout_cursor_visual() -> void:
 		)
 	)
 
-	# Move the product while respecting collisions.
 	var result_position: Vector3 = (
 		get_checkout_cursor_collision_position(target_position)
 	)
 
 	checkout_cursor_visual.position = result_position
 
-	# Remember the latest position that is free of collisions.
 	if is_checkout_cursor_position_clear(result_position):
 		checkout_cursor_last_safe_position = result_position
 		checkout_cursor_has_safe_position = true
 
-	# Re-anchor the mouse if collision prevented the product
-	# from reaching its desired position.
+	# If collision blocked movement, re-anchor the virtual mouse
+	# to the product's actual position. This prevents movement
+	# from accumulating behind the collision.
 	if (
 		not rotating_held_product
 		and result_position.distance_to(target_position) > 0.001
 	):
-		var product_bounds: AABB = checkout_cursor_visual.get_aabb()
-
-		var product_center: Vector3 = (
-			checkout_cursor_visual.global_position
-			+ checkout_cursor_visual.global_transform.basis
-			* product_bounds.get_center()
-		)
-
 		var actual_screen_position: Vector2 = (
-			camera.unproject_position(product_center)
+			get_checkout_cursor_screen_position()
 		)
 
-		checkout_cursor_collision_offset = (
-			actual_screen_position
-			- raw_mouse_position
-			- checkout_cursor_offset
+		checkout_virtual_mouse_position = (
+			actual_screen_position - checkout_cursor_offset
+		).clamp(
+			Vector2.ZERO,
+			viewport_size
+		)
+
+		checkout_last_mouse_position = (
+			checkout_virtual_mouse_position
 		)
 
 
@@ -2856,6 +2898,29 @@ func get_checkout_cursor_centered_position(
 	return target_position - center_offset
 
 
+func get_checkout_cursor_screen_position() -> Vector2:
+	if not is_instance_valid(checkout_cursor_visual):
+		return checkout_virtual_mouse_position
+
+	if not is_instance_valid(active_checkout):
+		return checkout_virtual_mouse_position
+
+	var camera: Camera3D = active_checkout.checkout_camera
+
+	if not is_instance_valid(camera):
+		return checkout_virtual_mouse_position
+
+	var product_bounds: AABB = checkout_cursor_visual.get_aabb()
+
+	var product_center: Vector3 = (
+		checkout_cursor_visual.global_position
+		+ checkout_cursor_visual.global_transform.basis
+		* product_bounds.get_center()
+	)
+
+	return camera.unproject_position(product_center)
+
+
 func get_checkout_cursor_shape_query(
 		candidate_position: Vector3
 ) -> PhysicsShapeQueryParameters3D:
@@ -2907,16 +2972,30 @@ func is_checkout_cursor_position_clear(
 ) -> bool:
 
 	var query := get_checkout_cursor_shape_query(candidate_position)
-
 	if query == null:
 		return false
 
 	var space_state := get_world_3d().direct_space_state
 	var overlaps: Array[Dictionary] = (
-		space_state.intersect_shape(query, 1)
+		space_state.intersect_shape(query, 64)
 	)
 
-	return overlaps.is_empty()
+	for overlap: Dictionary in overlaps:
+		var collider: Object = overlap.get("collider")
+
+		# Ignore other player characters, but keep detecting
+		# collisions with counters and other physical objects.
+		var player_collider := collider as CharacterBody3D
+
+		if (
+			player_collider != null
+			and player_collider.get_script() == get_script()
+		):
+			continue
+
+		return false
+
+	return true
 
 
 func find_checkout_cursor_safe_position(
@@ -3104,7 +3183,6 @@ func receive_product(
 
 	# Reset rotation for the newly picked-up product.
 	rotating_held_product = false
-	held_product_rotation_offset = Vector2.ZERO
 
 	player_equipment.remove_local_product_visual(held_item_visual)
 
@@ -3112,18 +3190,6 @@ func receive_product(
 		held_item,
 		held_item_holder
 	)
-
-	# Remember the product's original orientation and center.
-	if is_instance_valid(held_item_visual):
-		held_product_base_rotation = held_item_visual.rotation
-
-		held_product_center_local = (
-			held_item_visual.get_aabb().get_center()
-		)
-
-		held_product_center_parent = (
-			held_item_visual.transform * held_product_center_local
-		)
 	
 	# Create cursor preview if we're currently in checkout mode.
 	if checkout_mode_active:
@@ -3268,6 +3334,23 @@ func enter_checkout_mode(checkout: Checkout) -> void:
 		push_warning("Checkout has no CheckoutCamera!")
 		return
 
+	# Ask the server for permission before entering.
+	checkout.request_scanner_access(self)
+
+
+func _activate_checkout_mode(checkout: Checkout) -> void:
+	if not is_multiplayer_authority():
+		return
+
+	if checkout_mode_active:
+		return
+
+	if checkout == null:
+		return
+
+	if checkout.checkout_camera == null:
+		return
+
 	checkout_mode_active = true
 	active_checkout = checkout
 
@@ -3296,10 +3379,10 @@ func enter_checkout_mode(checkout: Checkout) -> void:
 	# Activate the checkout camera.
 	checkout.checkout_camera.make_current()
 
-	# Show instructions/controls UI
+	# Show instructions/controls UI.
 	checkout.show_checkout_instructions()
 
-	# Show cursor-held item if one is already in hand.
+	# Create the checkout cursor visual.
 	create_checkout_cursor_visual()
 
 
@@ -3307,7 +3390,13 @@ func exit_checkout_mode() -> void:
 	if not checkout_mode_active:
 		return
 
+	# Do not allow checkout mode to be exited while holding a product.
+	if held_item != null or network_holding_item:
+		return
+
 	_stop_held_product_rotation()
+
+	var checkout_to_release: Checkout = active_checkout
 
 	if is_instance_valid(active_checkout):
 		active_checkout.clear_checkout_hover_outlines()
@@ -3337,10 +3426,13 @@ func exit_checkout_mode() -> void:
 	crosshair.visible = is_multiplayer_authority() and _first_person
 
 	active_checkout = null
-
 	checkout_previous_camera = null
 
 	clear_checkout_cursor_visual()
+
+	# Release the scanner so another player can use it.
+	if is_instance_valid(checkout_to_release):
+		checkout_to_release.release_scanner_access(self)
 
 
 func handle_checkout_interaction() -> void:
@@ -3350,21 +3442,15 @@ func handle_checkout_interaction() -> void:
 	if active_checkout == null:
 		return
 
-	var mouse_position: Vector2 = get_viewport().get_mouse_position()
+	var mouse_position: Vector2 = (
+		checkout_virtual_mouse_position
+	)
 
 	if held_item != null:
 		if held_item_origin != ItemOrigin.CHECKOUT_GRID:
 			return
 
-		# Match the mouse position used by the cursor visual
-		# and checkout hover outline.
-		if rotating_held_product:
-			mouse_position = checkout_rotation_mouse_position
-
-		mouse_position += (
-			checkout_cursor_offset
-			+ checkout_cursor_collision_offset
-		)
+		mouse_position = get_checkout_cursor_screen_position()
 
 		if active_checkout.is_mouse_over_scanner(mouse_position):
 			active_checkout.interact(self)
@@ -3426,7 +3512,10 @@ func _handle_held_product_rotation_input(event: InputEvent) -> bool:
 		var mouse_delta: Vector2 = event.screen_relative
 
 		# Apply rotation relative to the active camera's axes.
-		_apply_held_product_rotation(mouse_delta)
+		_apply_held_product_rotation(
+			mouse_delta,
+			event.shift_pressed
+		)
 
 		get_viewport().set_input_as_handled()
 		return true
@@ -3435,11 +3524,9 @@ func _handle_held_product_rotation_input(event: InputEvent) -> bool:
 
 
 func update_checkout_mouse_cursor() -> void:
-
 	if not checkout_mode_active:
 		return
 
-	# Don't interfere with the captured mouse during rotation.
 	if rotating_held_product:
 		return
 
@@ -3449,69 +3536,101 @@ func update_checkout_mouse_cursor() -> void:
 	)
 
 	if holding_checkout_product:
-		Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	else:
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			# Clamp before restoring the visible mouse.
+			checkout_virtual_mouse_position = (
+				checkout_virtual_mouse_position.clamp(
+					Vector2.ZERO,
+					get_viewport().get_visible_rect().size
+				)
+			)
+
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+			get_viewport().warp_mouse(
+				checkout_virtual_mouse_position
+			)
+
+		checkout_virtual_mouse_position = (
+			get_viewport().get_mouse_position()
+		)
+
+		checkout_virtual_mouse_initialized = true
 
 
 func _set_product_rotation_around_center(
 	product_mesh: MeshInstance3D,
 	rotation_camera: Camera3D,
 	mouse_delta: Vector2,
-	center_position: Vector3
+	roll_rotation: bool = false
 ) -> void:
 
 	if not is_instance_valid(product_mesh):
 		return
 
-	var parent_node: Node3D = product_mesh.get_parent() as Node3D
-
-	if parent_node == null:
-		return
-
-	# Get the camera's right and up directions in the mesh
-	# parent's local coordinate system.
-	var camera_basis: Basis = rotation_camera.global_basis.orthonormalized()
-	var parent_basis: Basis = parent_node.global_basis.orthonormalized()
-
-	var local_right: Vector3 = (
-		parent_basis.inverse() * camera_basis.x
-	).normalized()
-
-	var local_up: Vector3 = (
-		parent_basis.inverse() * camera_basis.y
-	).normalized()
-
-	# Rotate around the camera's vertical and horizontal axes.
-	var horizontal_rotation: Quaternion = Quaternion(
-		local_up,
-		mouse_delta.x * held_product_rotation_sensitivity
+	# Use the camera's fixed world-space directions.
+	# These remain camera-relative regardless of product rotation.
+	var camera_basis: Basis = (
+		rotation_camera.global_basis.orthonormalized()
 	)
 
-	var vertical_rotation: Quaternion = Quaternion(
-		local_right,
-		mouse_delta.y * held_product_rotation_sensitivity
+	var world_rotation: Quaternion
+
+	if roll_rotation:
+		# Shift + horizontal drag: camera-relative Z axis.
+		world_rotation = Quaternion(
+			-camera_basis.z,
+			mouse_delta.x * held_product_rotation_sensitivity
+		)
+	else:
+		# Horizontal drag: camera-relative Y axis.
+		var horizontal_rotation := Quaternion(
+			camera_basis.y,
+			mouse_delta.x * held_product_rotation_sensitivity
+		)
+
+		# Vertical drag: camera-relative X axis.
+		var vertical_rotation := Quaternion(
+			camera_basis.x,
+			mouse_delta.y * held_product_rotation_sensitivity
+		)
+
+		world_rotation = horizontal_rotation * vertical_rotation
+
+	# Preserve the visual center while rotating.
+	var product_transform: Transform3D = product_mesh.global_transform
+	var mesh_center: Vector3 = product_mesh.get_aabb().get_center()
+	var world_center: Vector3 = product_transform * mesh_center
+
+	product_transform.basis = (
+		Basis(world_rotation) * product_transform.basis
 	)
 
-	# Apply both rotations to the product's current orientation.
-	product_mesh.quaternion = (
-		horizontal_rotation
-		* vertical_rotation
-		* product_mesh.quaternion
+	product_transform.origin = (
+		world_center - product_transform.basis * mesh_center
 	)
 
-	# Keep the visual center stationary while rotating.
-	var center_offset: Vector3 = (
-		product_mesh.transform.basis
-		* product_mesh.get_aabb().get_center()
-	)
-
-	product_mesh.position = center_position - center_offset
+	product_mesh.global_transform = product_transform
 
 
-func _apply_held_product_rotation(mouse_delta: Vector2) -> void:
+func _apply_held_product_rotation(
+	mouse_delta: Vector2,
+	roll_rotation: bool = false
+) -> void:
 
-	var rotation_camera: Camera3D = get_viewport().get_camera_3d()
+	var rotation_camera: Camera3D = null
+
+	# Explicitly use the checkout camera while scanning.
+	if (
+		checkout_mode_active
+		and is_instance_valid(active_checkout)
+		and is_instance_valid(active_checkout.checkout_camera)
+	):
+		rotation_camera = active_checkout.checkout_camera
+	else:
+		rotation_camera = get_viewport().get_camera_3d()
 
 	if not is_instance_valid(rotation_camera):
 		rotation_camera = _first_person_camera
@@ -3519,30 +3638,22 @@ func _apply_held_product_rotation(mouse_delta: Vector2) -> void:
 	if not is_instance_valid(rotation_camera):
 		return
 
-	# Rotate the first-person held product around its center.
+	# Rotate the first-person held product.
 	if is_instance_valid(held_item_visual):
 		_set_product_rotation_around_center(
 			held_item_visual,
 			rotation_camera,
 			mouse_delta,
-			held_product_center_parent
+			roll_rotation
 		)
 
-	# Rotate the checkout cursor preview around its center.
+	# Rotate the checkout cursor preview.
 	if is_instance_valid(checkout_cursor_visual):
-		var cursor_center_position: Vector3 = (
-			checkout_cursor_visual.position
-			+ (
-				checkout_cursor_visual.transform.basis
-				* checkout_cursor_visual.get_aabb().get_center()
-			)
-		)
-
 		_set_product_rotation_around_center(
 			checkout_cursor_visual,
 			rotation_camera,
 			mouse_delta,
-			cursor_center_position
+			roll_rotation
 		)
 
 
