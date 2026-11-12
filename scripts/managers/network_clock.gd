@@ -48,7 +48,15 @@ func _process(delta: float) -> void:
 
 	if multiplayer.get_unique_id() <= SERVER_PEER_ID:
 		return
+		
+	var peer: MultiplayerPeer = multiplayer.multiplayer_peer
 
+	if peer == null:
+		return
+
+	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
+		return
+		
 	var now: float = _local_time()
 
 	# Allow a lost synchronization request to time out.
@@ -90,6 +98,14 @@ func _local_time() -> float:
 
 
 func _request_time_sync() -> void:
+	var peer: MultiplayerPeer = multiplayer.multiplayer_peer
+
+	if peer == null:
+		return
+
+	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
+		return
+		
 	_request_sequence += 1
 	_pending_sequence = _request_sequence
 	_pending_sent_time = _local_time()

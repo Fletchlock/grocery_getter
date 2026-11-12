@@ -3,6 +3,20 @@
 [ext_resource type="ArrayMesh" uid="uid://b173vf8hxfeqq" path="res://assets/models/objects/ufo_drone_Cylinder_005.res" id="1_gskgb"]
 [ext_resource type="Script" uid="uid://tbl6ikbvb30a" path="res://scripts/objects/order_picker_drone.gd" id="1_hnauv"]
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_hnauv"]
+properties/0/path = NodePath(".:network_position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:network_rotation_y")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:network_sway_pitch")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:network_sway_roll")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+
 [node name="OrderPickerDrone" type="Node3D" unique_id=818767136]
 script = ExtResource("1_hnauv")
 
@@ -12,3 +26,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DroneVisual" unique_id=674151940]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
 mesh = ExtResource("1_gskgb")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1459057937]
+replication_interval = 0.05
+replication_config = SubResource("SceneReplicationConfig_hnauv")
