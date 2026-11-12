@@ -4,12 +4,26 @@ class_name OrderPickerDrone
 
 
 @export_group("Flight Settings")
-@export var flight_height: float = 2.5
+@export var flight_height: float = 3.0
 @export var flight_speed: float = 3.5
 @export var acceleration: float = 3.0
 @export var rotation_speed: float = 4.0
-@export var arrival_distance: float = 0.05
+@export var arrival_distance: float = 0.03
 @export var pause_duration: float = 2.0
+
+@export_group("Flight Sway")
+@export var max_pitch: float = 8.0
+@export var max_roll: float = 10.0
+@export var sway_response: float = 4.0
+@export var sway_damping: float = 3.0
+
+@onready var drone_visual: Node3D = $DroneVisual
+
+var sway_pitch: float = 0.0
+var sway_roll: float = 0.0
+var pitch_velocity: float = 0.0
+var roll_velocity: float = 0.0
+var previous_velocity: Vector3 = Vector3.ZERO
 
 @export_group("Testing")
 @export var auto_start: bool = true
@@ -44,6 +58,8 @@ func _physics_process(delta: float) -> void:
 	if not multiplayer.is_server():
 		return
 
+	var previous_position: Vector3 = global_position
+
 	match state:
 		DroneState.FLYING, DroneState.RETURNING:
 			_update_flight(delta)
@@ -53,6 +69,47 @@ func _physics_process(delta: float) -> void:
 
 			if pause_timer <= 0.0:
 				_next_target()
+
+	var velocity: Vector3 = Vector3.ZERO
+
+	if delta > 0.0:
+		velocity = (global_position - previous_position) / delta
+
+	_update_sway(delta, velocity)
+
+
+func _update_sway(delta: float, velocity: Vector3) -> void:
+	if delta <= 0.0:
+		return
+
+	var acceleration_vector: Vector3 = (velocity - previous_velocity) / delta
+	previous_velocity = velocity
+
+	var local_acceleration: Vector3 = global_basis.inverse() * acceleration_vector
+
+	var target_pitch: float = clampf(
+		local_acceleration.z * 0.065,
+		-deg_to_rad(max_pitch),
+		deg_to_rad(max_pitch)
+	)
+
+	var target_roll: float = clampf(
+		local_acceleration.x * 0.065,
+		-deg_to_rad(max_roll),
+		deg_to_rad(max_roll)
+	)
+
+	pitch_velocity += (target_pitch - sway_pitch) * sway_response * delta
+	roll_velocity += (target_roll - sway_roll) * sway_response * delta
+
+	pitch_velocity *= exp(-sway_damping * delta)
+	roll_velocity *= exp(-sway_damping * delta)
+
+	sway_pitch += pitch_velocity * delta
+	sway_roll += roll_velocity * delta
+
+	drone_visual.rotation.x = sway_pitch
+	drone_visual.rotation.z = sway_roll
 
 
 func _collect_product_points() -> void:
@@ -101,16 +158,29 @@ func _update_flight(delta: float) -> void:
 
 	direction = direction.normalized()
 
-	var desired_speed: float = minf(flight_speed, sqrt(2.0 * acceleration * distance))
-	current_speed = move_toward(current_speed, desired_speed, acceleration * delta)
+	# Calculate braking speed based on remaining distance.
+	var braking_speed: float = sqrt(2.0 * acceleration * distance)
+	var desired_speed: float = minf(flight_speed, braking_speed)
 
+	# Smoothly accelerate or decelerate.
+	current_speed = move_toward(
+		current_speed,
+		desired_speed,
+		acceleration * delta
+	)
+
+	# Prevent overshooting the destination.
 	var movement: float = minf(current_speed * delta, distance)
 	global_position += direction * movement
 
+	# Smoothly rotate toward the flight direction.
 	var horizontal_direction: Vector3 = Vector3(direction.x, 0.0, direction.z)
 
 	if horizontal_direction.length_squared() > 0.001:
-		var target_yaw: float = atan2(-horizontal_direction.x, -horizontal_direction.z)
+		var target_yaw: float = atan2(
+			-horizontal_direction.x,
+			-horizontal_direction.z
+		)
 
 		rotation.y = lerp_angle(
 			rotation.y,
