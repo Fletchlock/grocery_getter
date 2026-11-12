@@ -523,6 +523,7 @@ func _rebuild_product_multimeshes(
 	product_mesh_data.instance_count = instance_capacity
 
 	product_multimesh = MultiMeshInstance3D.new()
+	product_multimesh.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	product_multimesh.multimesh = product_mesh_data
 	product_multimesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	product_multimesh.set_meta("generated_product", true)
@@ -538,6 +539,7 @@ func _rebuild_product_multimeshes(
 		outline_mesh_data.instance_count = instance_capacity
 
 		outline_multimesh = MultiMeshInstance3D.new()
+		outline_multimesh.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 		outline_multimesh.multimesh = outline_mesh_data
 		outline_multimesh.material_override = outline_material
 		outline_multimesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF

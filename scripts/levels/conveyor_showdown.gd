@@ -431,18 +431,21 @@ func _spawn_random_obstacle() -> void:
 		"product_path": selected_product.resource_path,
 		"scale": obstacle_scale,
 		"rotation_y": rotation_y,
-		"rolling": should_roll
+		"rolling": should_roll,
+		"spawn_time": NetworkClock.get_time()
 	})
 
 
 func _spawn_conveyor_obstacle(data: Variant) -> Node:
 	var spawn_data: Dictionary = data
-
+	
 	var spawn_position: Vector3 = spawn_data["position"]
 	var product_path: String = spawn_data["product_path"]
 	var scale_multiplier: float = spawn_data["scale"]
 	var rotation_y: float = spawn_data["rotation_y"]
 	var should_roll: bool = spawn_data["rolling"]
+	var spawn_time: float = float(spawn_data["spawn_time"])
+	
 
 	var obstacle: ConveyorObstacle = (
 		CONVEYOR_OBSTACLE_SCENE.instantiate() as ConveyorObstacle
@@ -463,6 +466,7 @@ func _spawn_conveyor_obstacle(data: Variant) -> Node:
 	obstacle.rotation.y = rotation_y
 	obstacle.conveyor_belt = conveyor_belt
 	obstacle.is_rolling = should_roll
+	obstacle.spawn_time = spawn_time
 
 	obstacle.configure_product(product, scale_multiplier)
 

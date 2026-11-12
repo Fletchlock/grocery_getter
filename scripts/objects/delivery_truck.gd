@@ -12,9 +12,20 @@ var door_is_open: bool = false
 
 
 func _ready() -> void:
+	if door_trigger == null:
+		push_error("DeliveryTruck: Door Trigger has not been assigned!")
+		return
+
+	if door_animation_player == null:
+		push_error("DeliveryTruck: Door Animation Player has not been assigned!")
+		return
+
 	if multiplayer.is_server():
-		door_trigger.body_entered.connect(_on_body_entered)
-		door_trigger.body_exited.connect(_on_body_exited)
+		if not door_trigger.body_entered.is_connected(_on_body_entered):
+			door_trigger.body_entered.connect(_on_body_entered)
+
+		if not door_trigger.body_exited.is_connected(_on_body_exited):
+			door_trigger.body_exited.connect(_on_body_exited)
 
 
 func _on_body_entered(body: Node3D) -> void:
