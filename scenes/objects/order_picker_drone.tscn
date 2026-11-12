@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://h0nxruexsykl"]
+
+[ext_resource type="ArrayMesh" uid="uid://cnhy1fm853q7w" path="res://assets/models/objects/ufo_drone_Cylinder_005.res" id="1_gskgb"]
+[ext_resource type="Script" uid="uid://tbl6ikbvb30a" path="res://scripts/objects/order_picker_drone.gd" id="1_hnauv"]
+
+[node name="OrderPickerDrone" type="Node3D" unique_id=818767136]
+script = ExtResource("1_hnauv")
+
+[node name="DroneVisual" type="Node3D" parent="." unique_id=505583932]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="DroneVisual" unique_id=674151940]
+mesh = ExtResource("1_gskgb")
