@@ -126,7 +126,7 @@ func _prepare_transition(id: int) -> void:
 		if player_container != null:
 			for player: Node in player_container.get_children():
 				var synchronizer: MultiplayerSynchronizer = player.get_node_or_null(
-					"MultiplayerSyncronizer"
+					"MultiplayerSynchronizer"
 				) as MultiplayerSynchronizer
 
 				if synchronizer != null:

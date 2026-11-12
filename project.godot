@@ -41,6 +41,7 @@ MusicManager="*uid://ddq00x3m3oo2w"
 SettingsManager="*uid://b0p3e435rysrn"
 UiSoundManager="*uid://k6t5f7c66tef"
 MenuInputManager="*uid://c6xa750k5qbc0"
+NetworkClock="*uid://dg78okmfi4gh7"
 
 [debug]
 
@@ -55,6 +56,7 @@ window/size/borderless=true
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/vsync/vsync_mode=0
+mouse_cursor/custom_image="uid://bhvwxkt8wdbm8"
 
 [editor_plugins]
 

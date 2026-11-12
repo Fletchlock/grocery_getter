@@ -7,6 +7,9 @@ class_name ConveyorObstacle
 
 var conveyor_belt: ConveyorBelt = null
 var is_rolling: bool = false
+var spawn_time: float = 0.0
+var initial_position: Vector3 = Vector3.ZERO
+var initial_rolling_rotation: Quaternion = Quaternion.IDENTITY
 
 @export_group("Rolling Speed")
 @export var rolling_speed: float = 6.0
@@ -17,8 +20,6 @@ var is_rolling: bool = false
 @export var bounce_height: float = 1.5
 @export var bounce_interval: float = 1.2
 
-var bounce_timer: float = 0.0
-var bounce_offset: float = 0.0
 
 @export_group("Player Knockback")
 @export var knockback_strength: float = 12.0
@@ -77,59 +78,88 @@ func configure_product(product: ProductData, scale_multiplier: float = 10.0) -> 
 	collision.position = Vector3(0.0, scaled_size.y * 0.5, 0.0)
 
 
-func _process(delta: float) -> void:
-	if not is_rolling:
-		return
+func _ready() -> void:
+	initial_position = position
+	initial_rolling_rotation = $RollingPivot.quaternion
 
+
+func _physics_process(_delta: float) -> void:
 	if not movement_enabled:
 		return
 
 	if not is_instance_valid(conveyor_belt):
 		return
 
-	var belt_direction: Vector3 = conveyor_belt.get_belt_velocity().normalized()
-
-	if belt_direction.length_squared() < 0.001:
+	# Wait until the client has a valid host-time estimate.
+	if not NetworkClock.has_valid_time():
 		return
 
-	var world_roll_axis: Vector3 = Vector3.UP.cross(belt_direction).normalized()
-	var local_roll_axis: Vector3 = global_basis.inverse() * world_roll_axis
-
-	$RollingPivot.rotate_object_local(
-		local_roll_axis.normalized(),
-		rolling_speed * delta
+	var elapsed: float = maxf(
+		0.0,
+		NetworkClock.get_time() - spawn_time
 	)
 
-
-func _physics_process(delta: float) -> void:
-	if not multiplayer.is_server():
-		return
-
-	if not movement_enabled:
-		return
-
-	if not is_instance_valid(conveyor_belt):
-		return
+	var belt_velocity: Vector3 = conveyor_belt.get_belt_velocity()
 
 	var movement_multiplier: float = 1.0
 
 	if is_rolling:
 		movement_multiplier = rolling_movement_multiplier
 
-	var next_position: Vector3 = global_position
-	next_position += conveyor_belt.get_belt_velocity() * movement_multiplier * delta
+	# Convert world-space belt movement into parent-local space.
+	var local_velocity: Vector3 = (
+		get_parent_node_3d().global_basis.inverse()
+		* belt_velocity
+	)
 
+	var new_position: Vector3 = (
+		initial_position
+		+ local_velocity * movement_multiplier * elapsed
+	)
+
+	# Deterministic bounce, based on elapsed network time.
 	if is_rolling and bounce_enabled and bounce_interval > 0.0:
-		bounce_timer = fposmod(bounce_timer + delta, bounce_interval)
+		var progress: float = fposmod(
+			elapsed,
+			bounce_interval
+		) / bounce_interval
 
-		var progress: float = bounce_timer / bounce_interval
-		var new_offset: float = 4.0 * bounce_height * progress * (1.0 - progress)
+		var height_offset: float = (
+			4.0
+			* bounce_height
+			* progress
+			* (1.0 - progress)
+		)
 
-		next_position.y += new_offset - bounce_offset
-		bounce_offset = new_offset
+		new_position.y += height_offset
 
-	global_position = next_position
-	_check_player_collisions()
+	position = new_position
+
+	# Deterministic rolling animation.
+	if is_rolling and belt_velocity.length_squared() > 0.0001:
+		var belt_direction: Vector3 = belt_velocity.normalized()
+
+		var world_roll_axis: Vector3 = (
+			Vector3.UP.cross(belt_direction).normalized()
+		)
+
+		var local_roll_axis: Vector3 = (
+			global_basis.inverse() * world_roll_axis
+		).normalized()
+
+		var roll_rotation: Quaternion = Quaternion(
+			local_roll_axis,
+			rolling_speed * elapsed
+		)
+
+		$RollingPivot.quaternion = (
+			initial_rolling_rotation * roll_rotation
+		).normalized()
+
+	# Only the host determines obstacle hits.
+	if multiplayer.is_server():
+		_check_player_collisions()
+
 
 func _check_player_collisions() -> void:
 	if not multiplayer.is_server():

@@ -230,8 +230,15 @@ func _process(delta: float) -> void:
 	# Run the dynamic director.
 	if order_director_running and DayManager.clock_running:
 		_update_order_director(delta)
+	
+	# Do not synchronize grocery-store orders during minigames.
+	var current_level: Node = LevelManager.current_level
 
-	# Preserve existing multiplayer timer synchronization.
+	if current_level == null or current_level.scene_file_path != \
+			"res://scenes/levels/third_person_level.tscn":
+		timer_sync_accumulator = 0.0
+		return
+
 	timer_sync_accumulator += delta
 
 	if timer_sync_accumulator >= TIMER_SYNC_INTERVAL:
