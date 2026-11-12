@@ -53,11 +53,19 @@ var shopping_point_checked: bool = false
 var experience: ShopperExperience = null
 var missed_shopping_items: int = 0
 
-
 # AI Movement and rotation
 @export var rotation_speed: float = 10.0
 @export var speed: float = 2.25
 var target_rotation: float = 0.0
+
+# Visual departure
+var original_spawn_point: Marker3D = null
+var store_exit_completed: bool = false
+var exit_retry_count: int = 0
+var return_retry_count: int = 0
+
+const MAX_EXIT_RETRIES: int = 3
+const MAX_RETURN_RETRIES: int = 3
 
 # Animations
 var current_animation: StringName = &""
@@ -120,7 +128,8 @@ enum State {
 	CHECKOUT_LINEUP,
 	CHECKOUT_WAITING,
 	CHECKOUT_QUEUE_FULL,
-	EXITING
+	EXITING,
+	RETURNING_TO_SPAWN
 }
 
 
@@ -227,6 +236,10 @@ func _physics_process(delta: float) -> void:
 
 		State.EXITING:
 			_on_moving(delta)
+		
+		State.RETURNING_TO_SPAWN:
+			_on_moving(delta)
+
 	
 	update_animation()
 	
@@ -239,7 +252,8 @@ func _physics_process(delta: float) -> void:
 		State.CHECKOUT,
 		State.CHECKOUT_LINEUP,
 		State.BAGGING,
-		State.EXITING
+		State.EXITING,
+		State.RETURNING_TO_SPAWN
 	]:
 		move_and_slide()
 
@@ -555,8 +569,63 @@ func go_to_enter() -> void:
 
 
 func go_to_exit() -> void:
+	exit_retry_count = 0
 	set_navigation_target(exit_point.global_position)
 	state = State.EXITING
+
+
+func complete_store_exit() -> void:
+	if store_exit_completed:
+		return
+
+	store_exit_completed = true
+
+	remove_from_group("shopper_in_store")
+	finished_shopping.emit()
+
+
+func go_to_spawn_point(spawn_point: Marker3D) -> void:
+	if not is_instance_valid(spawn_point):
+		queue_free()
+		return
+
+	set_navigation_target(spawn_point.global_position)
+	state = State.RETURNING_TO_SPAWN
+
+
+func start_visual_departure() -> void:
+	complete_store_exit()
+
+	return_retry_count = 0
+	go_to_spawn_point(original_spawn_point)
+
+
+func try_another_spawn_point() -> void:
+	return_retry_count += 1
+
+	if return_retry_count > MAX_RETURN_RETRIES:
+		queue_free()
+		return
+
+	var spawner: Node = get_node_or_null("../ShopperSpawner")
+
+	if spawner == null:
+		queue_free()
+		return
+
+	var spawn_points: Array[Marker3D] = spawner.spawn_points
+	var available_points: Array[Marker3D] = []
+
+	for point: Marker3D in spawn_points:
+		if is_instance_valid(point):
+			available_points.append(point)
+
+	if available_points.is_empty():
+		queue_free()
+		return
+
+	var new_point: Marker3D = available_points.pick_random()
+	go_to_spawn_point(new_point)
 
 
 func is_shopping_point_available(shopping_point: Node3D) -> bool:
@@ -677,11 +746,19 @@ func handle_stuck() -> void:
 		set_navigation_target(wander_target)
 	
 	elif state == State.EXITING:
-		remove_from_group("shopper_in_store")
-		finished_shopping.emit()
-		queue_free()
+		exit_retry_count += 1
+
+		if exit_retry_count > MAX_EXIT_RETRIES:
+			start_visual_departure()
+		else:
+			set_navigation_target(exit_point.global_position)
+
 		return
-	
+
+	elif state == State.RETURNING_TO_SPAWN:
+		try_another_spawn_point()
+		return
+
 	elif state == State.CHECKOUT:
 		pass
 		
@@ -756,11 +833,13 @@ func _on_navigation_agent_3d_target_reached() -> void:
 		return
 
 	if state == State.EXITING:
-		remove_from_group("shopper_in_store")
-		queue_free()
-		finished_shopping.emit()
+		start_visual_departure()
 		return
-	
+
+	if state == State.RETURNING_TO_SPAWN:
+		queue_free()
+		return
+
 	if state == State.CHECKOUT:
 		velocity = Vector3.ZERO
 		navigation_agent_3d.velocity = Vector3.ZERO
@@ -827,7 +906,8 @@ func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
 		State.CHECKOUT,
 		State.CHECKOUT_LINEUP,
 		State.BAGGING,
-		State.EXITING
+		State.EXITING,
+		State.RETURNING_TO_SPAWN
 	]:
 		#velocity.x = move_toward(velocity.x, safe_velocity.x, 0.55)
 		#velocity.z = move_toward(velocity.z, safe_velocity.z, 0.55)
@@ -882,7 +962,8 @@ func update_animation() -> void:
 
 		State.MOVING, State.ENTERING, State.SHOPPING, \
 		State.SHOPPING_WAITING, State.CHECKOUT, \
-		State.CHECKOUT_LINEUP, State.BAGGING, State.EXITING:
+		State.CHECKOUT_LINEUP, State.BAGGING, \
+		State.EXITING, State.RETURNING_TO_SPAWN:
 			new_animation = &"low_poly_character_anims/Walk"
 
 

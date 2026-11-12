@@ -85,6 +85,7 @@ radius = 0.5971316
 
 [node name="Shopper AI" type="CharacterBody3D" unique_id=810827079]
 collision_layer = 8
+collision_mask = 9
 script = ExtResource("1_h2sg7")
 shopping_wait_max = 5.0
 look_speed = 1.5
