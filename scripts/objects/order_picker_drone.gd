@@ -13,12 +13,20 @@ class_name OrderPickerDrone
 @export var pause_duration: float = 2.0
 
 @export_group("Flight Sway")
-@export var max_pitch: float = 8.0
-@export var max_roll: float = 10.0
+@export var max_pitch: float = 15.0
+@export var max_roll: float = 15.0
 @export var sway_response: float = 4.0
-@export var sway_damping: float = 3.0
+@export var sway_damping: float = 2.0
 
 @onready var drone_visual: Node3D = $DroneVisual
+
+@export_group("Multiplayer")
+@export var interpolation_speed: float = 12.0
+
+@export var network_position: Vector3 = Vector3.ZERO
+@export var network_rotation_y: float = 0.0
+@export var network_sway_pitch: float = 0.0
+@export var network_sway_roll: float = 0.0
 
 var sway_pitch: float = 0.0
 var sway_roll: float = 0.0
@@ -49,34 +57,71 @@ var pause_timer: float = 0.0
 
 func _ready() -> void:
 	home_position = global_position
-	_collect_product_points()
 
-	if auto_start and multiplayer.is_server():
-		start_route()
+	network_position = global_position
+	network_rotation_y = rotation.y
+
+	if multiplayer.is_server():
+		_collect_product_points()
+
+		if auto_start:
+			start_route()
 
 
 func _physics_process(delta: float) -> void:
-	if not multiplayer.is_server():
-		return
-
 	var previous_position: Vector3 = global_position
 
-	match state:
-		DroneState.FLYING, DroneState.RETURNING:
-			_update_flight(delta)
+	if multiplayer.is_server():
+		match state:
+			DroneState.FLYING, DroneState.RETURNING:
+				_update_flight(delta)
 
-		DroneState.PAUSED:
-			pause_timer -= delta
+			DroneState.PAUSED:
+				pause_timer -= delta
 
-			if pause_timer <= 0.0:
-				_next_target()
+				if pause_timer <= 0.0:
+					_next_target()
 
+		# Publish the authoritative transform.
+		network_position = global_position
+		network_rotation_y = rotation.y
+
+	else:
+		# Smoothly follow the replicated transform.
+		var weight: float = 1.0 - exp(
+			-interpolation_speed * delta
+		)
+
+		global_position = global_position.lerp(
+			network_position,
+			weight
+		)
+
+		rotation.y = lerp_angle(
+			rotation.y,
+			network_rotation_y,
+			weight
+		)
+
+	# Calculate local velocity for visual sway.
 	var velocity: Vector3 = Vector3.ZERO
 
 	if delta > 0.0:
 		velocity = (global_position - previous_position) / delta
 
-	_update_sway(delta, velocity)
+	if multiplayer.is_server():
+		_update_sway(delta, velocity)
+
+		network_sway_pitch = sway_pitch
+		network_sway_roll = sway_roll
+	else:
+		var weight: float = 1.0 - exp(-interpolation_speed * delta)
+
+		sway_pitch = lerpf(sway_pitch, network_sway_pitch, weight)
+		sway_roll = lerpf(sway_roll, network_sway_roll, weight)
+
+		drone_visual.rotation.x = sway_pitch
+		drone_visual.rotation.z = sway_roll
 
 
 func _update_sway(delta: float, velocity: Vector3) -> void:
