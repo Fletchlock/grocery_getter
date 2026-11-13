@@ -12,6 +12,21 @@ extends Node3D
 @onready var order_scanner_beep_player: AudioStreamPlayer3D = $AcceptOrderArea/OrderScannerBeepPlayer
 
 
+func _get_checkout_order(peer_id: int) -> OrderData:
+	if not online_order_checkout:
+		return null
+
+	var order_grid: OrderGrid = (
+		get_tree().get_first_node_in_group("online_order_grid")
+		as OrderGrid
+	)
+
+	if order_grid == null:
+		return null
+
+	return order_grid.get_checkout_order(peer_id)
+
+
 func _ready() -> void:
 	OrderManager.order_generated.connect(_on_order_generated)
 	OrderManager.order_updated.connect(_on_order_updated)
@@ -60,6 +75,8 @@ func _get_order_summary(order: OrderData) -> String:
 			var player_name: String = LobbyManager.get_player_name(
 				order.accepted_by_peer_id
 			)
+			if order.accepted_by_peer_id == 0:
+				player_name = "UFO"
 
 			if player_name.is_empty():
 				player_name = "Player"
@@ -84,6 +101,8 @@ func _get_order_summary(order: OrderData) -> String:
 			var player_name: String = LobbyManager.get_player_name(
 				order.accepted_by_peer_id
 			)
+			if order.accepted_by_peer_id == 0:
+				player_name = "UFO"
 
 			if player_name.is_empty():
 				player_name = "Player"
@@ -103,6 +122,8 @@ func _get_order_summary(order: OrderData) -> String:
 			var player_name: String = LobbyManager.get_player_name(
 				order.accepted_by_peer_id
 			)
+			if order.accepted_by_peer_id == 0:
+				player_name = "UFO"
 
 			if player_name.is_empty():
 				player_name = "Player"
@@ -116,6 +137,9 @@ func _get_order_summary(order: OrderData) -> String:
 
 
 func get_interaction_prompt(player: CharacterBody3D) -> String:
+	if player == null:
+		return ""
+
 	var peer_id: int = player.get_multiplayer_authority()
 
 	if player.network_holding_item:
@@ -124,21 +148,20 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 		if product == null:
 			return ""
 
-		var order: OrderData = OrderManager.get_player_order(peer_id)
+		if player.held_item_origin != player.ItemOrigin.ORDER_GRID:
+			return ""
+
+		var order: OrderData = _get_checkout_order(peer_id)
 
 		if order == null or not order.checkout_started:
 			return ""
 
-		if player.held_item_origin != player.ItemOrigin.ORDER_GRID:
-			return ""
-
 		return "[E] Scan " + product.display_name
 
-	# Players with an active order cannot accept another.
-	if OrderManager.get_player_order(peer_id) != null:
+	if not allow_orders:
 		return ""
 
-	if not allow_orders:
+	if OrderManager.get_player_order(peer_id) != null:
 		return ""
 
 	if OrderManager.get_available_order() == null:
@@ -176,7 +199,7 @@ func interact(player: CharacterBody3D) -> void:
 		if product == null:
 			return
 
-		var order: OrderData = OrderManager.get_player_order(peer_id)
+		var order: OrderData = _get_checkout_order(peer_id)
 
 		if order == null or not order.checkout_started:
 			return
@@ -267,7 +290,7 @@ func request_submit_product(
 	if player.get_multiplayer_authority() != requesting_peer_id:
 		return
 
-	var order: OrderData = OrderManager.get_player_order(
+	var order: OrderData = _get_checkout_order(
 		requesting_peer_id
 	)
 
@@ -314,7 +337,7 @@ func _submit_product_to_checkout(
 	if not order_grid.can_use_checkout(peer_id):
 		return false
 	
-	var order: OrderData = OrderManager.get_player_order(peer_id)
+	var order: OrderData = order_grid.get_checkout_order(peer_id)
 
 	if order == null or not order.checkout_started:
 		return false
@@ -331,7 +354,20 @@ func _submit_product_to_checkout(
 	if player.held_item_origin != player.ItemOrigin.ORDER_GRID:
 		return false
 
-	if not OrderManager.record_checkout_scan(peer_id, product):
+	var scan_successful: bool = false
+
+	if order_grid.has_drone_checkout():
+		scan_successful = OrderManager.record_drone_checkout_scan(
+			order_grid.drone_checkout_order_id,
+			product
+		)
+	else:
+		scan_successful = OrderManager.record_checkout_scan(
+			peer_id,
+			product
+		)
+
+	if not scan_successful:
 		return false
 
 	# Product successfully scanned.
@@ -467,7 +503,7 @@ func complete_produce_code(product_code: String) -> void:
 		return
 
 	var peer_id: int = player.get_multiplayer_authority()
-	var order: OrderData = OrderManager.get_player_order(peer_id)
+	var order: OrderData = _get_checkout_order(peer_id)
 
 	if order == null or not order.checkout_started:
 		return

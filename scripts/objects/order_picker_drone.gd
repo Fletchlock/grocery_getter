@@ -219,7 +219,23 @@ func _check_for_order(delta: float) -> void:
 		return
 
 	if active_order_id >= 0:
-		return
+		var previous_order: OrderData = OrderManager.get_order(
+			active_order_id
+		)
+
+		# The UFO must finish its current order before
+		# accepting another one.
+		if previous_order != null:
+			if previous_order.state == OrderData.OrderState.ACTIVE:
+				return
+
+		# The order has been completed or cancelled.
+		active_order_id = -1
+		collected_products.clear()
+		route_displays.clear()
+		product_points.clear()
+
+		print("ORDER DRONE: Ready for another order.")
 
 	# Do not accept another order while the previous
 	# drone assignment is still held.
@@ -1097,7 +1113,7 @@ func _update_delivery_visual(delta: float) -> void:
 	var start_position: Vector3 = delivery_start_transform.origin
 	var end_position: Vector3 = delivery_end_transform.origin
 
-	var position: Vector3 = start_position.lerp(
+	var item_position: Vector3 = start_position.lerp(
 		end_position,
 		eased
 	)
@@ -1130,7 +1146,7 @@ func _update_delivery_visual(delta: float) -> void:
 
 	delivery_visual.global_transform = Transform3D(
 		Basis(rotation_value).scaled(scale_value),
-		position
+		item_position
 	)
 
 

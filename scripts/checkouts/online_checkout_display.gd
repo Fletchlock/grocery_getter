@@ -68,7 +68,23 @@ func _setup_screen_material() -> void:
 func _refresh_display() -> void:
 	if display_mode == DisplayMode.RESULTS:
 		return
+	
+	if order_grid.has_drone_checkout():
+		var drone_order: OrderData = OrderManager.get_order(
+			order_grid.drone_checkout_order_id
+		)
 
+		if drone_order != null:
+			if drone_order.state == OrderData.OrderState.COMPLETED:
+				_show_checkout_results(drone_order)
+				return
+
+			if drone_order.state == OrderData.OrderState.ACTIVE:
+				if drone_order.checkout_started:
+					active_order_id = drone_order.order_id
+					_show_scanning(drone_order)
+					return
+	
 	var owner_id: int = order_grid.order_owner_peer_id
 
 	if owner_id != 0:
@@ -130,7 +146,10 @@ func _show_scanning(order: OrderData) -> void:
 
 	_clear_items()
 
-	header_label.text = "ORDER #%02d - CHECKOUT" % order.order_id
+	if order.accepted_by_peer_id == 0:
+		header_label.text = "UFO ORDER #%02d - CHECKOUT" % order.order_id
+	else:
+		header_label.text = "ORDER #%02d - CHECKOUT" % order.order_id
 
 	var scanned_total: float = 0.0
 
@@ -263,6 +282,8 @@ func _get_order_summary(order: OrderData) -> String:
 			var player_name: String = LobbyManager.get_player_name(
 				order.accepted_by_peer_id
 			)
+			if order.accepted_by_peer_id == 0:
+				player_name = "UFO"
 
 			if player_name.is_empty():
 				player_name = "Player"
@@ -286,6 +307,8 @@ func _get_order_summary(order: OrderData) -> String:
 			var player_name: String = LobbyManager.get_player_name(
 				order.accepted_by_peer_id
 			)
+			if order.accepted_by_peer_id == 0:
+				player_name = "UFO"
 
 			if player_name.is_empty():
 				player_name = "Player"
@@ -305,6 +328,8 @@ func _get_order_summary(order: OrderData) -> String:
 			var player_name: String = LobbyManager.get_player_name(
 				order.accepted_by_peer_id
 			)
+			if order.accepted_by_peer_id == 0:
+				player_name = "UFO"
 
 			if player_name.is_empty():
 				player_name = "Player"
