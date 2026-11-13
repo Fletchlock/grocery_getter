@@ -10,7 +10,7 @@ class_name OrderPickerDrone
 @export var braking_distance: float = 2.0
 @export var rotation_speed: float = 4.0
 @export var arrival_distance: float = 0.20
-@export var pause_duration: float = 3.5
+@export var pause_duration: float = 3.0
 
 @export_group("Flight Sway")
 @export var max_pitch: float = 15.0
@@ -19,6 +19,19 @@ class_name OrderPickerDrone
 @export var sway_damping: float = 2.0
 
 @onready var drone_visual: Node3D = $DroneVisual
+
+@export_group("Doorway Navigation")
+@export var door_inside: Marker3D
+@export var door_outside: Marker3D
+
+enum TravelDirection {
+	NONE,
+	TO_STORE,
+	FROM_STORE
+}
+
+var travel_direction: TravelDirection = TravelDirection.NONE
+var doorway_stage: int = 0
 
 @export_group("Tractor Beam")
 @export var beam_activation_time: float = 0.35
@@ -211,14 +224,43 @@ func _collect_product_points() -> void:
 
 
 func start_route() -> void:
+	if not multiplayer.is_server():
+		return
+
 	if product_points.is_empty():
+		return
+
+	if door_inside == null or door_outside == null:
+		push_warning("Drone doorway markers are not assigned.")
 		return
 
 	current_target_index = 0
 	current_speed = 0.0
 
-	target_position = product_points[current_target_index]
+	travel_direction = TravelDirection.TO_STORE
+	doorway_stage = 0
+
+	target_position = door_inside.global_position
 	state = DroneState.FLYING
+
+
+func _advance_doorway_route() -> void:
+	if travel_direction == TravelDirection.TO_STORE:
+		if doorway_stage == 0:
+			doorway_stage = 1
+			target_position = door_outside.global_position
+		else:
+			travel_direction = TravelDirection.NONE
+			target_position = product_points[current_target_index]
+
+	elif travel_direction == TravelDirection.FROM_STORE:
+		if doorway_stage == 0:
+			doorway_stage = 1
+			target_position = door_inside.global_position
+		else:
+			travel_direction = TravelDirection.NONE
+			target_position = home_position
+			state = DroneState.RETURNING
 
 
 func _update_flight(delta: float) -> void:
@@ -228,13 +270,21 @@ func _update_flight(delta: float) -> void:
 	if distance <= arrival_distance and current_speed <= 0.08:
 		current_speed = 0.0
 
+		# Doorway navigation takes priority.
+		if travel_direction != TravelDirection.NONE:
+			_advance_doorway_route()
+			return
+
+		# Returned home after completing the route.
 		if state == DroneState.RETURNING:
 			state = DroneState.IDLE
-		else:
-			pause_timer = pause_duration
-			state = DroneState.PAUSED
-			network_beam_active = true
-			pickup_started = false
+			return
+
+		# Arrived at a product display.
+		pause_timer = pause_duration
+		state = DroneState.PAUSED
+		network_beam_active = true
+		pickup_started = false
 
 		return
 
@@ -283,8 +333,11 @@ func _next_target() -> void:
 	current_target_index += 1
 
 	if current_target_index >= product_points.size():
-		target_position = home_position
-		state = DroneState.RETURNING
+		travel_direction = TravelDirection.FROM_STORE
+		doorway_stage = 0
+
+		target_position = door_outside.global_position
+		state = DroneState.FLYING
 		return
 
 	target_position = product_points[current_target_index]
