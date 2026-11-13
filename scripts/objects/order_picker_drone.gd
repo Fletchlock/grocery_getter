@@ -31,6 +31,19 @@ class_name OrderPickerDrone
 
 var beam_extension: float = 0.0
 
+@export_group("Product Pickup")
+@export var pickup_duration: float = 1.7
+@export var pickup_rotation_speed: float = 3.0
+@export var pickup_end_scale: float = 0.15
+@export_range(0.1, 0.8, 0.05) var pickup_centering_fraction: float = 0.30
+
+@onready var tractor_beam: Node3D = $DroneVisual/TractorBeam
+
+var pickup_product: MeshInstance3D = null
+var pickup_elapsed: float = 0.0
+var pickup_start_position: Vector3 = Vector3.ZERO
+var pickup_started: bool = false
+
 @export_group("Multiplayer")
 @export var interpolation_speed: float = 12.0
 
@@ -90,6 +103,12 @@ func _physics_process(delta: float) -> void:
 			DroneState.PAUSED:
 				pause_timer -= delta
 
+				# Start lifting after the beam extends.
+				if not pickup_started:
+					if pause_timer <= pause_duration - beam_activation_time - 0.15:
+						pickup_started = true
+						_begin_test_pickup()
+
 				if pause_timer <= beam_deactivation_time:
 					network_beam_active = false
 
@@ -137,6 +156,7 @@ func _physics_process(delta: float) -> void:
 		drone_visual.rotation.z = sway_roll
 		
 	_update_tractor_beam(delta)
+	_update_product_pickup(delta)
 
 
 func _update_sway(delta: float, velocity: Vector3) -> void:
@@ -214,6 +234,7 @@ func _update_flight(delta: float) -> void:
 			pause_timer = pause_duration
 			state = DroneState.PAUSED
 			network_beam_active = true
+			pickup_started = false
 
 		return
 
@@ -298,3 +319,174 @@ func _update_tractor_beam(delta: float) -> void:
 		"beam_cutoff",
 		cutoff
 	)
+
+
+func _begin_test_pickup() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var displays: Array[Node] = get_tree().get_nodes_in_group(
+		"product_displays"
+	)
+
+	var valid_displays: Array[Node3D] = []
+
+	for display: Node in displays:
+		var shopper_point: Marker3D = (
+			display.get_node_or_null("AIShopperPoint") as Marker3D
+		)
+
+		if shopper_point != null:
+			valid_displays.append(display as Node3D)
+
+	if current_target_index >= valid_displays.size():
+		return
+
+	var display: Node3D = valid_displays[current_target_index]
+
+	var data: ProductData = display.get("product_data") as ProductData
+
+	if data == null or data.product_mesh == null:
+		return
+
+	if data.resource_path.is_empty():
+		return
+
+	var product_grid: Node3D = (
+		display.get_node_or_null("ProductGrid") as Node3D
+	)
+
+	if product_grid == null:
+		return
+
+	# Approximate the centre of a product on the shelf.
+	var mesh_bounds: AABB = data.product_mesh.get_aabb()
+
+	var start_position: Vector3 = product_grid.to_global(
+		mesh_bounds.get_center()
+	)
+
+	_start_product_pickup.rpc(
+		data.resource_path,
+		start_position
+	)
+
+
+@rpc("authority", "call_local", "reliable")
+func _start_product_pickup(
+	product_path: String,
+	start_world_position: Vector3
+) -> void:
+	if pickup_product != null:
+		pickup_product.queue_free()
+		pickup_product = null
+
+	var data: ProductData = load(product_path) as ProductData
+
+	if data == null or data.product_mesh == null:
+		return
+
+	pickup_product = MeshInstance3D.new()
+	pickup_product.mesh = data.product_mesh
+	pickup_product.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	pickup_product.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
+
+	tractor_beam.add_child(pickup_product)
+
+	# Convert the shelf position into the beam's local space.
+	pickup_start_position = tractor_beam.to_local(start_world_position)
+
+	pickup_product.position = pickup_start_position
+	pickup_product.rotation = Vector3.ZERO
+	pickup_product.scale = Vector3.ONE
+
+	pickup_elapsed = 0.0
+
+
+func _update_product_pickup(delta: float) -> void:
+	if pickup_product == null:
+		return
+
+	pickup_elapsed += delta
+
+	var progress: float = clampf(
+		pickup_elapsed / maxf(pickup_duration, 0.001),
+		0.0,
+		1.0
+	)
+
+	var centered_position: Vector3 = Vector3(
+		0.0,
+		pickup_start_position.y,
+		0.0
+	)
+
+	if progress < pickup_centering_fraction:
+		# Stage 1: Pull the product horizontally
+		# toward the centre of the tractor beam.
+		var center_progress: float = clampf(
+			progress / pickup_centering_fraction,
+			0.0,
+			1.0
+		)
+
+		center_progress = smoothstep(
+			0.0,
+			1.0,
+			center_progress
+		)
+
+		pickup_product.position = pickup_start_position.lerp(
+			centered_position,
+			center_progress
+		)
+
+	else:
+		# Stage 2: Lift the product straight up
+		# through the centre of the beam.
+		var lift_progress: float = clampf(
+			(progress - pickup_centering_fraction)
+			/ (1.0 - pickup_centering_fraction),
+			0.0,
+			1.0
+		)
+
+		lift_progress = smoothstep(
+			0.0,
+			1.0,
+			lift_progress
+		)
+
+		pickup_product.position = centered_position.lerp(
+			Vector3.ZERO,
+			lift_progress
+		)
+
+	# Keep the product gently rotating throughout.
+	pickup_product.rotation.y += pickup_rotation_speed * delta
+
+	# Shrink near the end of the upward movement.
+	var shrink_progress: float = smoothstep(
+		0.70,
+		1.0,
+		progress
+	)
+
+	var product_scale: float = lerpf(
+		1.0,
+		pickup_end_scale,
+		shrink_progress
+	)
+
+	pickup_product.scale = Vector3.ONE * product_scale
+
+	if progress >= 1.0:
+		_finish_product_pickup()
+
+
+func _finish_product_pickup() -> void:
+	if pickup_product == null:
+		return
+
+	pickup_product.queue_free()
+	pickup_product = null
