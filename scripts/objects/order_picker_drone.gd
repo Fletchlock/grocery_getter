@@ -74,6 +74,7 @@ var pickup_finishing: bool = false
 @export var delivery_duration: float = 2.0
 @export var delivery_gap: float = 0.35
 @export var delivery_start_scale: float = 0.15
+@export var return_home_delay: float = 1.0
 
 var delivery_grid: OrderGrid = null
 var delivery_product_path: String = ""
@@ -146,8 +147,14 @@ func _physics_process(delta: float) -> void:
 
 	if multiplayer.is_server():
 		match state:
-			DroneState.FLYING, DroneState.RETURNING, DroneState.DELIVERING:
+			DroneState.FLYING, DroneState.DELIVERING:
 				_update_flight(delta)
+
+			DroneState.RETURNING:
+				if delivery_timer > 0.0:
+					delivery_timer -= delta
+				else:
+					_update_flight(delta)
 				
 			DroneState.UNLOADING:
 				_update_delivery(delta)
@@ -634,6 +641,10 @@ func _update_flight(delta: float) -> void:
 
 			if state == DroneState.RETURNING:
 				state = DroneState.IDLE
+				current_speed = 0.0
+
+				print("ORDER DRONE: Returned home.")
+
 				return
 
 			state = DroneState.PAUSED
@@ -1006,12 +1017,25 @@ func _stop_delivery() -> void:
 	_finish_delivery_visual.rpc()
 
 	network_beam_active = false
-	state = DroneState.IDLE
 
 	print(
 		"ORDER DRONE: Unloading finished. Remaining cargo: ",
 		collected_products
 	)
+
+	delivery_product_path = ""
+	delivery_waiting = false
+	delivery_grid = null
+
+	# Wait for the tractor beam to retract before flying home.
+	delivery_timer = maxf(
+		return_home_delay,
+		beam_deactivation_time
+	)
+
+	state = DroneState.RETURNING
+	target_position = home_position
+	current_speed = 0.0
 
 
 @rpc("authority", "call_local", "reliable")
