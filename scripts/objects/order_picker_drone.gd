@@ -10,7 +10,7 @@ class_name OrderPickerDrone
 @export var braking_distance: float = 2.0
 @export var rotation_speed: float = 4.0
 @export var arrival_distance: float = 0.20
-@export var pause_duration: float = 3.0
+@export var pause_duration: float = 3.5
 
 @export_group("Flight Sway")
 @export var max_pitch: float = 15.0
@@ -23,6 +23,8 @@ class_name OrderPickerDrone
 @export_group("Doorway Navigation")
 @export var door_inside: Marker3D
 @export var door_outside: Marker3D
+@export var doorway_speed: float = 1.8
+@export var doorway_arrival_distance: float = 0.25
 
 enum TravelDirection {
 	NONE,
@@ -46,7 +48,7 @@ var beam_extension: float = 0.0
 
 @export_group("Product Pickup")
 @export var pickup_duration: float = 1.7
-@export var pickup_rotation_speed: float = 3.0
+@export var pickup_rotation_speed: float = 2.0
 @export var pickup_end_scale: float = 0.15
 @export_range(0.1, 0.8, 0.05) var pickup_centering_fraction: float = 0.30
 
@@ -267,54 +269,66 @@ func _update_flight(delta: float) -> void:
 	var direction: Vector3 = target_position - global_position
 	var distance: float = direction.length()
 
-	if distance <= arrival_distance and current_speed <= 0.08:
-		current_speed = 0.0
+	var using_doorway: bool = (
+		travel_direction != TravelDirection.NONE
+	)
 
-		# Doorway navigation takes priority.
-		if travel_direction != TravelDirection.NONE:
-			_advance_doorway_route()
+	# Doorway markers are pass-through waypoints.
+	# No need to slow to a complete stop.
+	if using_doorway and distance <= doorway_arrival_distance:
+		_advance_doorway_route()
+		return
+
+	# Product displays and home still require a full stop.
+	if not using_doorway:
+		if distance <= arrival_distance and current_speed <= 0.08:
+			current_speed = 0.0
+
+			if state == DroneState.RETURNING:
+				state = DroneState.IDLE
+				return
+
+			pause_timer = pause_duration
+			state = DroneState.PAUSED
+			network_beam_active = true
+			pickup_started = false
 			return
 
-		# Returned home after completing the route.
-		if state == DroneState.RETURNING:
-			state = DroneState.IDLE
-			return
-
-		# Arrived at a product display.
-		pause_timer = pause_duration
-		state = DroneState.PAUSED
-		network_beam_active = true
-		pickup_started = false
-
+	if distance <= 0.0001:
 		return
 
 	direction = direction.normalized()
 
-	# Begin slowing down within the braking distance.
-	var braking_factor: float = clampf(
-		distance / maxf(braking_distance, 0.001),
-		0.0,
-		1.0
-	)
+	var desired_speed: float = flight_speed
 
-	# Smoothstep creates a gradual braking curve.
-	braking_factor = smoothstep(0.0, 1.0, braking_factor)
+	if using_doorway:
+		# Maintain a controlled speed through the doorway.
+		desired_speed = doorway_speed
+	else:
+		# Existing smooth braking for product displays and home.
+		var braking_factor: float = clampf(
+			distance / maxf(braking_distance, 0.001),
+			0.0,
+			1.0
+		)
 
-	var desired_speed: float = flight_speed * braking_factor
+		braking_factor = smoothstep(0.0, 1.0, braking_factor)
+		desired_speed = flight_speed * braking_factor
 
-	# Gradually adjust speed toward the desired speed.
 	current_speed = move_toward(
 		current_speed,
 		desired_speed,
 		acceleration * delta
 	)
 
-	# Move without overshooting.
 	var movement: float = minf(current_speed * delta, distance)
 	global_position += direction * movement
 
-	# Smoothly rotate toward the flight direction.
-	var horizontal_direction: Vector3 = Vector3(direction.x, 0.0, direction.z)
+	var horizontal_direction: Vector3 = Vector3(
+		direction.x,
+		0.0,
+		direction.z
+	)
 
 	if horizontal_direction.length_squared() > 0.001:
 		var target_yaw: float = atan2(
@@ -516,7 +530,7 @@ func _update_product_pickup(delta: float) -> void:
 		)
 
 	# Keep the product gently rotating throughout.
-	pickup_product.rotation.y += pickup_rotation_speed * delta
+	pickup_product.rotation.x += pickup_rotation_speed * delta
 
 	# Shrink near the end of the upward movement.
 	var shrink_progress: float = smoothstep(

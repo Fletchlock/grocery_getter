@@ -34,7 +34,7 @@ var last_spawn_point: Marker3D = null
 var shopper_mesh_pool: Array[int] = []
 var spawn_timer: float = 0.0
 var last_open_day: int = 0
-var current_max_shoppers: int = 1
+var current_max_shoppers: int = 0
 
 
 func _ready() -> void:
