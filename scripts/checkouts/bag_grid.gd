@@ -34,12 +34,14 @@ func _find_position_for_new_item(
 func _create_product_visual(
 	product: ProductData,
 	target_center: Vector3,
-	item_index: int
+	item_index: int,
+	scale_override: float = -1.0
 	) -> MeshInstance3D:
 	var visual: MeshInstance3D = super._create_product_visual(
 		product,
 		target_center,
-		item_index
+		item_index,
+		scale_override
 	)
 
 	if visual == null:

@@ -70,6 +70,21 @@ var pickup_remaining: int = 0
 var pickup_interval_timer: float = 0.0
 var pickup_finishing: bool = false
 
+@export_group("Product Delivery")
+@export var delivery_duration: float = 2.0
+@export var delivery_gap: float = 0.35
+@export var delivery_start_scale: float = 0.15
+
+var delivery_grid: OrderGrid = null
+var delivery_product_path: String = ""
+var delivery_timer: float = 0.0
+var delivery_waiting: bool = false
+
+var delivery_visual: MeshInstance3D = null
+var delivery_visual_elapsed: float = 0.0
+var delivery_start_transform: Transform3D
+var delivery_end_transform: Transform3D
+
 @export_group("Collection Timing")
 @export var pickup_gap: float = 0.25
 
@@ -98,7 +113,8 @@ enum DroneState {
 	FLYING,
 	PAUSED,
 	RETURNING,
-	DELIVERING
+	DELIVERING,
+	UNLOADING
 }
 
 var state: DroneState = DroneState.IDLE
@@ -132,6 +148,9 @@ func _physics_process(delta: float) -> void:
 		match state:
 			DroneState.FLYING, DroneState.RETURNING, DroneState.DELIVERING:
 				_update_flight(delta)
+				
+			DroneState.UNLOADING:
+				_update_delivery(delta)
 				
 			DroneState.IDLE:
 				_check_for_order(delta)
@@ -181,6 +200,7 @@ func _physics_process(delta: float) -> void:
 		
 	_update_tractor_beam(delta)
 	_update_product_pickup(delta)
+	_update_delivery_visual(delta)
 	_update_ride_platform_rotation()
 
 
@@ -594,13 +614,22 @@ func _update_flight(delta: float) -> void:
 			current_speed = 0.0
 
 			if state == DroneState.DELIVERING:
-				state = DroneState.IDLE
+				current_speed = 0.0
+				state = DroneState.UNLOADING
+				network_beam_active = true
 
 				print(
-					"ORDER DRONE: Arrived at delivery point. Cargo: ",
+					"ORDER DRONE: Beginning delivery. Cargo: ",
 					collected_products
 				)
-				_test_deliver_cargo()
+
+				delivery_grid = (
+					get_tree().get_first_node_in_group("online_order_grid")
+					as OrderGrid
+				)
+
+				delivery_timer = beam_activation_time + 0.15
+				delivery_waiting = false
 				return
 
 			if state == DroneState.RETURNING:
@@ -878,39 +907,213 @@ func _finish_product_pickup() -> void:
 	pickup_product = null
 
 
-func _test_deliver_cargo() -> void:
+func _update_delivery(delta: float) -> void:
 	if not multiplayer.is_server():
 		return
 
-	var order_grid: OrderGrid = (
-		get_tree().get_first_node_in_group("online_order_grid")
-		as OrderGrid
-	)
+	delivery_timer -= delta
 
-	if order_grid == null:
-		push_warning("ORDER DRONE: Online OrderGrid not found.")
+	if delivery_timer > 0.0:
+		return
+
+	if delivery_waiting:
+		_finish_delivery_product()
+		return
+
+	if delivery_grid == null:
+		push_warning("ORDER DRONE: Delivery grid missing.")
+		_stop_delivery()
 		return
 
 	for product_path: String in collected_products.keys():
+		if int(collected_products[product_path]) <= 0:
+			continue
+
 		var product: ProductData = load(product_path) as ProductData
 
 		if product == null:
-			continue
+			push_warning("ORDER DRONE: Invalid cargo " + product_path)
+			_stop_delivery()
+			return
 
-		var quantity: int = int(collected_products[product_path])
+		var placement: Dictionary = (
+			delivery_grid.get_next_item_placement(product)
+		)
 
-		for i: int in quantity:
-			if not order_grid.add_drone_product(product):
-				push_warning(
-					"ORDER DRONE: Could not deliver " + product_path
-				)
-				break
-
-			collected_products[product_path] = (
-				int(collected_products[product_path]) - 1
+		if placement.is_empty():
+			push_warning(
+				"ORDER DRONE: No room for " + product.display_name
 			)
+			_stop_delivery()
+			return
+
+		delivery_product_path = product_path
+		delivery_waiting = true
+		delivery_timer = delivery_duration
+
+		var destination: Transform3D = placement["transform"]
+
+		_start_delivery_visual.rpc(
+			product_path,
+			destination
+		)
+
+		print(
+			"ORDER DRONE: Lowering ",
+			product.display_name
+		)
+		return
+
+	# All cargo successfully unloaded.
+	_stop_delivery()
+
+
+func _finish_delivery_product() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var product: ProductData = (
+		load(delivery_product_path) as ProductData
+	)
+
+	if product == null or delivery_grid == null:
+		_stop_delivery()
+		return
+
+	if not delivery_grid.add_drone_product(product):
+		push_warning(
+			"ORDER DRONE: Placement failed for "
+			+ delivery_product_path
+		)
+		_stop_delivery()
+		return
+
+	collected_products[delivery_product_path] = (
+		int(collected_products[delivery_product_path]) - 1
+	)
+
+	_finish_delivery_visual.rpc()
+
+	delivery_product_path = ""
+	delivery_waiting = false
+	delivery_timer = delivery_gap
+
+
+func _stop_delivery() -> void:
+	if not multiplayer.is_server():
+		return
+
+	_finish_delivery_visual.rpc()
+
+	network_beam_active = false
+	state = DroneState.IDLE
 
 	print(
-		"ORDER DRONE: Remaining cargo: ",
+		"ORDER DRONE: Unloading finished. Remaining cargo: ",
 		collected_products
 	)
+
+
+@rpc("authority", "call_local", "reliable")
+func _start_delivery_visual(
+	product_path: String,
+	destination: Transform3D
+) -> void:
+	if delivery_visual != null:
+		delivery_visual.queue_free()
+		delivery_visual = null
+
+	var product: ProductData = load(product_path) as ProductData
+
+	if product == null or product.product_mesh == null:
+		return
+
+	delivery_visual = MeshInstance3D.new()
+	delivery_visual.mesh = product.product_mesh
+	delivery_visual.cast_shadow = (
+		GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	)
+	delivery_visual.physics_interpolation_mode = (
+		Node.PHYSICS_INTERPOLATION_MODE_OFF
+	)
+
+	# Keep the animated product in world space,
+	# independent of the UFO's transform.
+	get_tree().current_scene.add_child(delivery_visual)
+
+	delivery_end_transform = destination
+
+	var start_position: Vector3 = tractor_beam.global_position
+
+	delivery_start_transform = Transform3D(
+		Basis.IDENTITY.scaled(
+			Vector3.ONE * delivery_start_scale
+		),
+		start_position
+	)
+
+	delivery_visual.global_transform = delivery_start_transform
+	delivery_visual_elapsed = 0.0
+
+
+func _update_delivery_visual(delta: float) -> void:
+	if delivery_visual == null:
+		return
+
+	delivery_visual_elapsed += delta
+
+	var progress: float = clampf(
+		delivery_visual_elapsed / maxf(delivery_duration, 0.001),
+		0.0,
+		1.0
+	)
+
+	var eased: float = smoothstep(0.0, 1.0, progress)
+
+	var start_position: Vector3 = delivery_start_transform.origin
+	var end_position: Vector3 = delivery_end_transform.origin
+
+	var position: Vector3 = start_position.lerp(
+		end_position,
+		eased
+	)
+
+	var start_rotation: Quaternion = (
+		delivery_start_transform.basis.get_rotation_quaternion()
+	)
+
+	var end_rotation: Quaternion = (
+		delivery_end_transform.basis.get_rotation_quaternion()
+	)
+
+	var rotation_value: Quaternion = start_rotation.slerp(
+		end_rotation,
+		eased
+	)
+
+	var start_scale: Vector3 = (
+		delivery_start_transform.basis.get_scale()
+	)
+
+	var end_scale: Vector3 = (
+		delivery_end_transform.basis.get_scale()
+	)
+
+	var scale_value: Vector3 = start_scale.lerp(
+		end_scale,
+		eased
+	)
+
+	delivery_visual.global_transform = Transform3D(
+		Basis(rotation_value).scaled(scale_value),
+		position
+	)
+
+
+@rpc("authority", "call_local", "reliable")
+func _finish_delivery_visual() -> void:
+	if delivery_visual == null:
+		return
+
+	delivery_visual.queue_free()
+	delivery_visual = null
