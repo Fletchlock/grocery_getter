@@ -97,7 +97,8 @@ enum DroneState {
 	IDLE,
 	FLYING,
 	PAUSED,
-	RETURNING
+	RETURNING,
+	DELIVERING
 }
 
 var state: DroneState = DroneState.IDLE
@@ -129,7 +130,7 @@ func _physics_process(delta: float) -> void:
 
 	if multiplayer.is_server():
 		match state:
-			DroneState.FLYING, DroneState.RETURNING:
+			DroneState.FLYING, DroneState.RETURNING, DroneState.DELIVERING:
 				_update_flight(delta)
 				
 			DroneState.IDLE:
@@ -215,7 +216,10 @@ func _check_for_order(delta: float) -> void:
 
 	if door_inside == null or door_outside == null:
 		return
-
+	
+	if order_delivery_point == null:
+		return
+	
 	# Build and validate the route before claiming the order.
 	if not _build_order_route(available_order):
 		return
@@ -562,8 +566,8 @@ func _advance_doorway_route() -> void:
 			target_position = door_inside.global_position
 		else:
 			travel_direction = TravelDirection.NONE
-			target_position = home_position
-			state = DroneState.RETURNING
+			target_position = order_delivery_point.global_position
+			state = DroneState.DELIVERING
 
 
 func _update_ride_platform_rotation() -> void:
@@ -589,14 +593,18 @@ func _update_flight(delta: float) -> void:
 		if distance <= arrival_distance and current_speed <= 0.08:
 			current_speed = 0.0
 
-			if state == DroneState.RETURNING:
+			if state == DroneState.DELIVERING:
 				state = DroneState.IDLE
 
 				print(
-					"ORDER DRONE: Returned home with cargo: ",
+					"ORDER DRONE: Arrived at delivery point. Cargo: ",
 					collected_products
 				)
 
+				return
+
+			if state == DroneState.RETURNING:
+				state = DroneState.IDLE
 				return
 
 			state = DroneState.PAUSED
