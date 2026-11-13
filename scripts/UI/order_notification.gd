@@ -100,6 +100,20 @@ func slide_out() -> void:
 	removal_finished.emit()
 
 
+func _get_order_owner_name(order: OrderData) -> String:
+	if order.accepted_by_peer_id == 0:
+		return "UFO"
+
+	var player_name: String = LobbyManager.get_player_name(
+		order.accepted_by_peer_id
+	)
+
+	if player_name.is_empty():
+		player_name = "Player %d" % order.accepted_by_peer_id
+
+	return player_name
+
+
 func update_acceptance_countdown() -> void:
 	if acceptance_deadline < 0:
 		return
@@ -131,12 +145,7 @@ func update_active_order(order: OrderData) -> void:
 	# Accepted orders use the blue background.
 	_set_background(BG_BLUE)
 
-	var player_name: String = LobbyManager.get_player_name(
-		order.accepted_by_peer_id
-	)
-
-	if player_name.is_empty():
-		player_name = "Player %d" % order.accepted_by_peer_id
+	var player_name: String = _get_order_owner_name(order)
 
 	var remaining: int = maxi(
 		ceili(order.time_limit - order.elapsed_time),
@@ -161,12 +170,7 @@ func show_order_result(order: OrderData) -> void:
 
 	result_displayed = true
 
-	var player_name: String = LobbyManager.get_player_name(
-		order.accepted_by_peer_id
-	)
-
-	if player_name.is_empty():
-		player_name = "Player %d" % order.accepted_by_peer_id
+	var player_name: String = _get_order_owner_name(order)
 
 	var result_text: String = ""
 	var result_texture: Texture2D = BG_GREEN
