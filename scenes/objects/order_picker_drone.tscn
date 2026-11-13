@@ -2,6 +2,41 @@
 
 [ext_resource type="ArrayMesh" uid="uid://b173vf8hxfeqq" path="res://assets/models/objects/ufo_drone_Cylinder_005.res" id="1_gskgb"]
 [ext_resource type="Script" uid="uid://tbl6ikbvb30a" path="res://scripts/objects/order_picker_drone.gd" id="1_hnauv"]
+[ext_resource type="Shader" uid="uid://c1xirpity4fdg" path="res://beam_cone.gdshader" id="2_w6yxi"]
+[ext_resource type="Shader" uid="uid://ce6iv43ip7wn" path="res://scenes/objects/energy_rings.gdshader" id="4_w6yxi"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_6aigx"]
+top_radius = 0.08
+radial_segments = 48
+rings = 8
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_km81x"]
+render_priority = 0
+shader = ExtResource("2_w6yxi")
+shader_parameter/beam_color = Color(0.05, 0.85, 1, 1)
+shader_parameter/beam_opacity = 0.28
+shader_parameter/swirl_speed = 3.0000001425
+shader_parameter/swirl_density = 8.0000003325
+shader_parameter/glow_strength = 2.0
+shader_parameter/bottom_fade_height = 0.35
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_hd853"]
+top_radius = 0.08
+rings = 32
+cap_top = false
+cap_bottom = false
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7ajv0"]
+render_priority = 0
+shader = ExtResource("4_w6yxi")
+shader_parameter/ring_color = Color(0.90018815, 0.92745, 1.540184e-06, 1)
+shader_parameter/ring_count = 4.0
+shader_parameter/ring_speed = 1.0000000475
+shader_parameter/ring_width = 0.045
+shader_parameter/ring_brightness = 3.0
+shader_parameter/ring_opacity = 0.8
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_hnauv"]
 properties/0/path = NodePath(".:network_position")
@@ -16,12 +51,28 @@ properties/2/replication_mode = 1
 properties/3/path = NodePath(".:network_sway_roll")
 properties/3/spawn = true
 properties/3/replication_mode = 1
+properties/4/path = NodePath(".:network_beam_active")
+properties/4/spawn = true
+properties/4/replication_mode = 1
 
 [node name="OrderPickerDrone" type="Node3D" unique_id=818767136]
 script = ExtResource("1_hnauv")
 
 [node name="DroneVisual" type="Node3D" parent="." unique_id=505583932]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+
+[node name="TractorBeam" type="Node3D" parent="DroneVisual" unique_id=944736944]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.19170961, 0)
+
+[node name="BeamCone" type="MeshInstance3D" parent="DroneVisual/TractorBeam" unique_id=897764468]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+mesh = SubResource("CylinderMesh_6aigx")
+surface_material_override/0 = SubResource("ShaderMaterial_km81x")
+
+[node name="EnergyRings" type="MeshInstance3D" parent="DroneVisual/TractorBeam" unique_id=988778023]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+mesh = SubResource("CylinderMesh_hd853")
+surface_material_override/0 = SubResource("ShaderMaterial_7ajv0")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="DroneVisual" unique_id=674151940]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
