@@ -10,7 +10,7 @@ class_name OrderPickerDrone
 @export var braking_distance: float = 2.0
 @export var rotation_speed: float = 4.0
 @export var arrival_distance: float = 0.20
-@export var pause_duration: float = 2.0
+@export var pause_duration: float = 3.5
 
 @export_group("Flight Sway")
 @export var max_pitch: float = 15.0
@@ -19,6 +19,17 @@ class_name OrderPickerDrone
 @export var sway_damping: float = 2.0
 
 @onready var drone_visual: Node3D = $DroneVisual
+
+@export_group("Tractor Beam")
+@export var beam_activation_time: float = 0.35
+@export var beam_deactivation_time: float = 0.40
+
+@export var network_beam_active: bool = false
+
+@onready var beam_cone: MeshInstance3D = $DroneVisual/TractorBeam/BeamCone
+@onready var energy_rings: MeshInstance3D = $DroneVisual/TractorBeam/EnergyRings
+
+var beam_extension: float = 0.0
 
 @export_group("Multiplayer")
 @export var interpolation_speed: float = 12.0
@@ -79,13 +90,15 @@ func _physics_process(delta: float) -> void:
 			DroneState.PAUSED:
 				pause_timer -= delta
 
+				if pause_timer <= beam_deactivation_time:
+					network_beam_active = false
+
 				if pause_timer <= 0.0:
 					_next_target()
 
 		# Publish the authoritative transform.
 		network_position = global_position
 		network_rotation_y = rotation.y
-
 	else:
 		# Smoothly follow the replicated transform.
 		var weight: float = 1.0 - exp(
@@ -122,6 +135,8 @@ func _physics_process(delta: float) -> void:
 
 		drone_visual.rotation.x = sway_pitch
 		drone_visual.rotation.z = sway_roll
+		
+	_update_tractor_beam(delta)
 
 
 func _update_sway(delta: float, velocity: Vector3) -> void:
@@ -198,6 +213,7 @@ func _update_flight(delta: float) -> void:
 		else:
 			pause_timer = pause_duration
 			state = DroneState.PAUSED
+			network_beam_active = true
 
 		return
 
@@ -252,3 +268,33 @@ func _next_target() -> void:
 
 	target_position = product_points[current_target_index]
 	state = DroneState.FLYING
+
+
+func _update_tractor_beam(delta: float) -> void:
+	var target_extension: float = 1.0 if network_beam_active else 0.0
+
+	var duration: float = (
+		beam_activation_time
+		if network_beam_active
+		else beam_deactivation_time
+	)
+
+	var step: float = delta / maxf(duration, 0.001)
+
+	beam_extension = move_toward(
+		beam_extension,
+		target_extension,
+		step
+	)
+
+	var cutoff: float = 1.0 - beam_extension
+
+	beam_cone.set_instance_shader_parameter(
+		"beam_cutoff",
+		cutoff
+	)
+
+	energy_rings.set_instance_shader_parameter(
+		"beam_cutoff",
+		cutoff
+	)
