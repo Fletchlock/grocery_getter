@@ -5,6 +5,29 @@ class_name OrderGrid
 
 signal checkout_owner_changed
 
+var drone_checkout_order_id: int = -1
+
+
+func has_drone_checkout() -> bool:
+	if drone_checkout_order_id < 0:
+		return false
+
+	var order: OrderData = OrderManager.get_order(
+		drone_checkout_order_id
+	)
+
+	return (
+		order != null
+		and order.state == OrderData.OrderState.ACTIVE
+	)
+
+
+@rpc("authority", "call_local", "reliable")
+func sync_drone_checkout(order_id: int) -> void:
+	drone_checkout_order_id = order_id
+	checkout_owner_changed.emit()
+
+
 func can_use_checkout(peer_id: int) -> bool:
 	if order_owner_peer_id == 0:
 		return false
@@ -18,7 +41,10 @@ func can_use_checkout(peer_id: int) -> bool:
 func claim_checkout(peer_id: int) -> bool:
 	if not multiplayer.is_server():
 		return false
-
+	
+	if has_drone_checkout():
+		return false
+	
 	if peer_id <= 0:
 		return false
 
@@ -116,6 +142,13 @@ func add_drone_product(product: ProductData) -> bool:
 	if order_owner_peer_id != 0:
 		return false
 
+	# Do not mix deliveries from different drone orders.
+	if (
+		drone_checkout_order_id >= 0
+		and drone_checkout_order_id != drone_order.order_id
+	):
+		return false
+
 	# Confirm this product belongs to the drone's order.
 	var requested: bool = false
 
@@ -145,7 +178,15 @@ func add_drone_product(product: ProductData) -> bool:
 	# Use the existing CartGrid packing system.
 	if not add_item(product):
 		return false
+	
+	if drone_checkout_order_id < 0:
+		sync_drone_checkout.rpc(drone_order.order_id)
 
+		print(
+			"ORDER DRONE: Checkout assigned to order #",
+			drone_order.order_id
+		)
+	
 	# Synchronize the new grid contents to all clients.
 	sync_cart_state.rpc(
 		_get_product_paths(),
@@ -164,3 +205,20 @@ func add_drone_product(product: ProductData) -> bool:
 	)
 
 	return true
+
+
+func get_interaction_prompt_for_player(
+	player: CharacterBody3D
+) -> String:
+	if player == null:
+		return ""
+
+	if has_drone_checkout():
+		_clear_take_item_outline()
+
+		if has_items():
+			return "UFO ORDER - Awaiting Checkout"
+
+		return "UFO ORDER - Preparing Delivery"
+
+	return super.get_interaction_prompt_for_player(player)
