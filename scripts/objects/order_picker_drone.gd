@@ -19,6 +19,7 @@ class_name OrderPickerDrone
 @export var sway_damping: float = 2.0
 
 @onready var drone_visual: Node3D = $DroneVisual
+@onready var ride_platform: AnimatableBody3D = $RidePlatform
 
 @export_group("Doorway Navigation")
 @export var door_inside: Marker3D
@@ -172,6 +173,7 @@ func _physics_process(delta: float) -> void:
 		
 	_update_tractor_beam(delta)
 	_update_product_pickup(delta)
+	_update_ride_platform_rotation()
 
 
 func _update_sway(delta: float, velocity: Vector3) -> void:
@@ -263,6 +265,10 @@ func _advance_doorway_route() -> void:
 			travel_direction = TravelDirection.NONE
 			target_position = home_position
 			state = DroneState.RETURNING
+
+
+func _update_ride_platform_rotation() -> void:
+	ride_platform.global_rotation = Vector3.ZERO
 
 
 func _update_flight(delta: float) -> void:

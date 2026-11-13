@@ -82,10 +82,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 mesh = SubResource("CylinderMesh_hd853")
 surface_material_override/0 = SubResource("ShaderMaterial_7ajv0")
 
-[node name="AnimatableBody3D" type="AnimatableBody3D" parent="." unique_id=1757142886]
+[node name="RidePlatform" type="AnimatableBody3D" parent="." unique_id=1757142886]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+sync_to_physics = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AnimatableBody3D" unique_id=1727654410]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RidePlatform" unique_id=1727654410]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.044819653, 0)
 shape = SubResource("CylinderShape3D_6aigx")
 debug_color = Color(0.8745098, 0.03137255, 0.83137256, 1)
