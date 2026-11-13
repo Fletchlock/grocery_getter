@@ -94,3 +94,61 @@ func _take_item_for_player(
 		return
 
 	super._take_item_for_player(player, item_index)
+
+
+# -------------------------------------------------------------------
+# UFO drone delivery
+# -------------------------------------------------------------------
+func add_drone_product(product: ProductData) -> bool:
+	if not multiplayer.is_server():
+		return false
+
+	if product == null:
+		return false
+
+	# Only accept deliveries for the drone's active order.
+	var drone_order: OrderData = OrderManager.get_drone_order()
+
+	if drone_order == null:
+		return false
+
+	# Do not mix drone deliveries with player checkouts.
+	if order_owner_peer_id != 0:
+		return false
+
+	# Confirm this product belongs to the drone's order.
+	var requested: bool = false
+
+	for item: OrderItem in drone_order.items:
+		if item.product == null:
+			continue
+
+		if item.product.resource_path == product.resource_path:
+			requested = true
+			break
+
+	if not requested:
+		return false
+
+	# Use the existing CartGrid packing system.
+	if not add_item(product):
+		return false
+
+	# Synchronize the new grid contents to all clients.
+	sync_cart_state.rpc(
+		_get_product_paths(),
+		item_positions.duplicate(),
+		item_scales.duplicate(),
+		_get_item_rotations()
+	)
+
+	cart_contents_changed.emit(self)
+
+	print(
+		"ORDER DRONE: Delivered ",
+		product.display_name,
+		" | Grid items: ",
+		get_item_count()
+	)
+
+	return true

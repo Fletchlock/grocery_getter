@@ -600,7 +600,7 @@ func _update_flight(delta: float) -> void:
 					"ORDER DRONE: Arrived at delivery point. Cargo: ",
 					collected_products
 				)
-
+				_test_deliver_cargo()
 				return
 
 			if state == DroneState.RETURNING:
@@ -876,3 +876,41 @@ func _finish_product_pickup() -> void:
 
 	pickup_product.queue_free()
 	pickup_product = null
+
+
+func _test_deliver_cargo() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var order_grid: OrderGrid = (
+		get_tree().get_first_node_in_group("online_order_grid")
+		as OrderGrid
+	)
+
+	if order_grid == null:
+		push_warning("ORDER DRONE: Online OrderGrid not found.")
+		return
+
+	for product_path: String in collected_products.keys():
+		var product: ProductData = load(product_path) as ProductData
+
+		if product == null:
+			continue
+
+		var quantity: int = int(collected_products[product_path])
+
+		for i: int in quantity:
+			if not order_grid.add_drone_product(product):
+				push_warning(
+					"ORDER DRONE: Could not deliver " + product_path
+				)
+				break
+
+			collected_products[product_path] = (
+				int(collected_products[product_path]) - 1
+			)
+
+	print(
+		"ORDER DRONE: Remaining cargo: ",
+		collected_products
+	)
