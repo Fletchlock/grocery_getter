@@ -173,6 +173,42 @@ func _can_fit_product(product: ProductData) -> bool:
 	return placement != Vector3.INF
 
 
+# -------------------------------------------------------------------
+# Product placement preview
+# -------------------------------------------------------------------
+func get_next_item_placement(product: ProductData) -> Dictionary:
+	if product == null:
+		return {}
+
+	if not _can_fit_product(product):
+		return {}
+
+	var item_index: int = cart_items.size()
+	var placement: Vector3 = cached_fit_position
+	var scale_factor: float = cached_fit_scale
+
+	# Use the same visual creation logic as add_item().
+	# This gives us the actual mesh position, rotation and scale.
+	var preview_visual: MeshInstance3D = _create_product_visual(
+		product,
+		placement,
+		item_index,
+		scale_factor
+	)
+
+	if preview_visual == null:
+		return {}
+
+	var local_transform: Transform3D = preview_visual.transform
+	preview_visual.free()
+
+	return {
+		"transform": global_transform * local_transform,
+		"position": global_transform * placement,
+		"scale_factor": scale_factor
+	}
+
+
 func _invalidate_fit_cache() -> void:
 	cached_fit_product = null
 	cached_fit_position = Vector3.INF
@@ -342,10 +378,22 @@ func _create_and_add_visual(product: ProductData, target_center: Vector3, item_i
 	item_visuals.append(visual)
 
 
-func _create_product_visual(product: ProductData, target_center: Vector3, item_index: int) -> MeshInstance3D:
+func _create_product_visual(
+	product: ProductData,
+	target_center: Vector3,
+	item_index: int,
+	scale_override: float = -1.0
+) -> MeshInstance3D:
 	if product == null or product.product_mesh == null:
 		return null
-	var factor: float = item_scales[item_index] if item_index < item_scales.size() else 1.0
+	var factor: float = scale_override
+
+	if factor < 0.0:
+		factor = (
+			item_scales[item_index]
+			if item_index < item_scales.size()
+			else 1.0
+		)
 	var visual: MeshInstance3D = MeshInstance3D.new()
 	visual.mesh = product.product_mesh
 	visual.scale = item_scale * factor

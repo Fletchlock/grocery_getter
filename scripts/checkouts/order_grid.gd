@@ -129,7 +129,19 @@ func add_drone_product(product: ProductData) -> bool:
 
 	if not requested:
 		return false
+	
+	var placement_preview: Dictionary = get_next_item_placement(product)
 
+	if placement_preview.is_empty():
+		return false
+
+	print(
+		"ORDER DRONE: Planned placement for ",
+		product.display_name,
+		" at ",
+		placement_preview["position"]
+	)
+	
 	# Use the existing CartGrid packing system.
 	if not add_item(product):
 		return false
