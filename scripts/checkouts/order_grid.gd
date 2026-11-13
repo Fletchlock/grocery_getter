@@ -5,6 +5,9 @@ class_name OrderGrid
 
 signal checkout_owner_changed
 
+@export_group("UFO Checkout")
+@export var ufo_prompt_height_offset: float = -0.4
+
 var drone_checkout_order_id: int = -1
 
 
@@ -114,7 +117,10 @@ func _add_item_from_player(
 ) -> void:
 	if player == null:
 		return
-
+		
+	if has_drone_checkout():
+		return
+		
 	var peer_id: int = player.get_multiplayer_authority()
 
 	if not can_use_checkout(peer_id):
@@ -241,14 +247,52 @@ func get_interaction_prompt_for_player(
 	player: CharacterBody3D
 ) -> String:
 	if player == null:
+		_clear_take_item_outline()
 		return ""
 
 	if has_drone_checkout():
-		_clear_take_item_outline()
+		# Players cannot add products to a UFO checkout.
+		if player.held_item != null:
+			_clear_take_item_outline()
+			return ""
 
-		if has_items():
+		if player.is_holding_equipment():
+			_clear_take_item_outline()
+			return ""
+
+		# No products available yet.
+		if not has_items():
+			_clear_take_item_outline()
+			return "UFO ORDER - Awaiting Delivery"
+
+		# Find the individual product the player is aiming at.
+		var item_index: int = _get_take_item_index(player)
+
+		if item_index < 0:
+			_clear_take_item_outline()
 			return "UFO ORDER - Awaiting Checkout"
 
-		return "UFO ORDER - Preparing Delivery"
+		# Highlight the targeted product.
+		_update_take_item_outline(item_index)
+
+		var product: ProductData = cart_items[item_index]
+
+		if product == null:
+			return ""
+
+		return "[E] Take " + product.display_name
 
 	return super.get_interaction_prompt_for_player(player)
+
+
+func get_interaction_prompt_position(
+	collision_shape: CollisionShape3D
+) -> Vector3:
+	var prompt_position: Vector3 = (
+		super.get_interaction_prompt_position(collision_shape)
+	)
+
+	if has_drone_checkout() and not is_instance_valid(outlined_visual):
+		prompt_position.y += ufo_prompt_height_offset
+
+	return prompt_position
