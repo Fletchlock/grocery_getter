@@ -24,6 +24,7 @@ class_name OrderPickerDrone
 @export_group("Doorway Navigation")
 @export var door_inside: Marker3D
 @export var door_outside: Marker3D
+@export var order_delivery_point: Marker3D
 @export var doorway_speed: float = 1.8
 @export var doorway_arrival_distance: float = 0.25
 
@@ -115,7 +116,11 @@ func _ready() -> void:
 
 	network_position = global_position
 	network_rotation_y = rotation.y
-
+	
+	if multiplayer.is_server():
+		if order_delivery_point == null:
+			push_warning("ORDER DRONE: Delivery point is not assigned.")
+	
 	order_check_timer = 0.0
 
 

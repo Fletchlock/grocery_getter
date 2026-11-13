@@ -1667,11 +1667,12 @@ transform = Transform3D(0.93267465, 0, -0.36071923, 0, 1, 0, 0.36071923, 0, 0.93
 [node name="DesertMountains" parent="." unique_id=1614444229 instance=ExtResource("16_ho602")]
 transform = Transform3D(0.9326745, 0, -0.36071923, 0, 1, 0, 0.36071923, 0, 0.9326745, 0, -1.56, -11.964066)
 
-[node name="OrderPickerDrone" parent="." unique_id=818767136 node_paths=PackedStringArray("door_inside", "door_outside") instance=ExtResource("47_a51l3")]
+[node name="OrderPickerDrone" parent="." unique_id=818767136 node_paths=PackedStringArray("door_inside", "door_outside", "order_delivery_point") instance=ExtResource("47_a51l3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.257788, 1.4824432, 6.4534597)
 flight_height = 2.5
 door_inside = NodePath("../DroneNavigation/DroneDoorInside")
 door_outside = NodePath("../DroneNavigation/DroneDoorOutside")
+order_delivery_point = NodePath("../DroneNavigation/OrderDeliveryPoint")
 pickup_duration = 2.0
 
 [node name="DroneNavigation" type="Node3D" parent="." unique_id=1534524550]
