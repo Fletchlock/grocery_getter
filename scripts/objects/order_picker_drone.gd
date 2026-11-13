@@ -62,6 +62,15 @@ var pickup_started: bool = false
 var route_displays: Array[Node3D] = []
 var active_order_id: int = -1
 var order_check_timer: float = 0.0
+# Server-side cargo: product resource path -> quantity.
+var collected_products: Dictionary = {}
+
+var pickup_remaining: int = 0
+var pickup_interval_timer: float = 0.0
+var pickup_finishing: bool = false
+
+@export_group("Collection Timing")
+@export var pickup_gap: float = 0.25
 
 @export_group("Order Automation")
 @export var order_check_interval: float = 1.0
@@ -122,19 +131,7 @@ func _physics_process(delta: float) -> void:
 				_check_for_order(delta)
 
 			DroneState.PAUSED:
-				pause_timer -= delta
-
-				# Start lifting after the beam extends.
-				#if not pickup_started:
-					#if pause_timer <= pause_duration - beam_activation_time - 0.15:
-						#pickup_started = true
-						#_begin_test_pickup()
-
-				if pause_timer <= beam_deactivation_time:
-					network_beam_active = false
-
-				if pause_timer <= 0.0:
-					_next_target()
+				_update_display_collection(delta)
 
 		# Publish the authoritative transform.
 		network_position = global_position
@@ -224,6 +221,7 @@ func _check_for_order(delta: float) -> void:
 		return
 
 	active_order_id = accepted_order.order_id
+	collected_products.clear()
 
 	print(
 		"ORDER DRONE: Starting route for order #",
@@ -362,6 +360,167 @@ func _collect_product_points() -> void:
 		product_points.append(product_position)
 
 
+func _begin_display_collection() -> void:
+	pickup_remaining = 0
+	pickup_interval_timer = beam_activation_time + 0.15
+	pickup_finishing = false
+
+	if current_target_index >= route_displays.size():
+		return
+
+	var display: Node3D = route_displays[current_target_index]
+
+	if not is_instance_valid(display):
+		return
+
+	var order: OrderData = OrderManager.get_order(active_order_id)
+
+	if order == null or order.state != OrderData.OrderState.ACTIVE:
+		return
+
+	var data: ProductData = display.get("product_data") as ProductData
+
+	if data == null:
+		return
+
+	for item: OrderItem in order.items:
+		if item.product == null:
+			continue
+
+		if item.product.resource_path == data.resource_path:
+			pickup_remaining = item.quantity
+			break
+
+	print(
+		"ORDER DRONE: Collecting ",
+		data.display_name,
+		" x",
+		pickup_remaining
+	)
+
+
+func _update_display_collection(delta: float) -> void:
+	if pickup_finishing:
+		pause_timer -= delta
+
+		if pause_timer <= beam_deactivation_time:
+			network_beam_active = false
+
+		if pause_timer <= 0.0:
+			pickup_finishing = false
+			_next_target()
+
+		return
+
+	pickup_interval_timer -= delta
+
+	if pickup_interval_timer > 0.0:
+		return
+
+	# Wait for the previous product animation to finish.
+	if pickup_product != null:
+		return
+
+	if pickup_remaining <= 0:
+		_finish_display_collection()
+		return
+
+	_collect_one_product()
+
+	pickup_interval_timer = pickup_duration + pickup_gap
+
+
+func _collect_one_product() -> void:
+	if not multiplayer.is_server():
+		return
+
+	if current_target_index >= route_displays.size():
+		pickup_remaining = 0
+		return
+
+	var display: Node3D = route_displays[current_target_index]
+
+	if not is_instance_valid(display):
+		pickup_remaining = 0
+		return
+
+	var data: ProductData = display.get("product_data") as ProductData
+
+	if data == null:
+		pickup_remaining = 0
+		return
+
+	# Reuse the existing server-authoritative inventory logic.
+	var taken_product: ProductData = display.ai_take_product()
+
+	if taken_product == null:
+		print(
+			"ORDER DRONE: Out of stock - ",
+			data.display_name
+		)
+
+		pickup_remaining = 0
+		return
+
+	var product_path: String = taken_product.resource_path
+
+	collected_products[product_path] = (
+		int(collected_products.get(product_path, 0)) + 1
+	)
+
+	pickup_remaining -= 1
+
+	# Play the existing visual pickup on every peer.
+	_play_collection_animation(display, taken_product)
+
+	print(
+		"ORDER DRONE: Picked up ",
+		taken_product.display_name,
+		" | Remaining: ",
+		pickup_remaining,
+		" | Shelf stock: ",
+		int(display.get("quantity"))
+	)
+
+
+func _play_collection_animation(
+	display: Node3D,
+	data: ProductData
+) -> void:
+	if data.product_mesh == null:
+		return
+
+	var product_grid: Node3D = (
+		display.get_node_or_null("ProductGrid") as Node3D
+	)
+
+	if product_grid == null:
+		return
+
+	var mesh_bounds: AABB = data.product_mesh.get_aabb()
+
+	var start_position: Vector3 = product_grid.to_global(
+		mesh_bounds.get_center()
+	)
+
+	_start_product_pickup.rpc(
+		data.resource_path,
+		start_position
+	)
+
+
+func _finish_display_collection() -> void:
+	pickup_finishing = true
+	pause_timer = beam_deactivation_time + 0.15
+
+	print(
+		"ORDER DRONE: Finished display ",
+		current_target_index + 1,
+		"/",
+		route_displays.size()
+	)
+
+
 func start_route() -> void:
 	if not multiplayer.is_server():
 		return
@@ -427,12 +586,18 @@ func _update_flight(delta: float) -> void:
 
 			if state == DroneState.RETURNING:
 				state = DroneState.IDLE
+
+				print(
+					"ORDER DRONE: Returned home with cargo: ",
+					collected_products
+				)
+
 				return
 
-			pause_timer = pause_duration
 			state = DroneState.PAUSED
 			network_beam_active = true
-			pickup_started = false
+
+			_begin_display_collection()
 			return
 
 	if distance <= 0.0001:

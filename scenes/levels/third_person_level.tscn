@@ -1670,15 +1670,20 @@ transform = Transform3D(0.9326745, 0, -0.36071923, 0, 1, 0, 0.36071923, 0, 0.932
 [node name="OrderPickerDrone" parent="." unique_id=818767136 node_paths=PackedStringArray("door_inside", "door_outside") instance=ExtResource("47_a51l3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.257788, 1.4824432, 6.4534597)
 flight_height = 2.5
-door_inside = NodePath("../DroneDoorInside")
-door_outside = NodePath("../DroneDoorOutside")
+door_inside = NodePath("../DroneNavigation/DroneDoorInside")
+door_outside = NodePath("../DroneNavigation/DroneDoorOutside")
 pickup_duration = 2.0
 
-[node name="DroneDoorInside" type="Marker3D" parent="." unique_id=1574070515]
+[node name="DroneNavigation" type="Node3D" parent="." unique_id=1534524550]
+
+[node name="DroneDoorInside" type="Marker3D" parent="DroneNavigation" unique_id=1574070515]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.65, 0.5, 2.092596)
 
-[node name="DroneDoorOutside" type="Marker3D" parent="." unique_id=6327007]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.65, 0.5, -0.45764986)
+[node name="DroneDoorOutside" type="Marker3D" parent="DroneNavigation" unique_id=6327007]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.65, 0.5, -0.45764995)
+
+[node name="OrderDeliveryPoint" type="Marker3D" parent="DroneNavigation" unique_id=1296597988]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2105951, 1.7309767, 6.059341)
 
 [node name="raykin2" parent="." unique_id=1413140257 instance=ExtResource("8_ijfqo")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -4.5812306, 3.879442, -12.014489)
