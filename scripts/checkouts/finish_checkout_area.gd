@@ -17,15 +17,13 @@ func get_interaction_prompt(player: CharacterBody3D) -> String:
 		return ""
 
 	var peer_id: int = player.get_multiplayer_authority()
-	var order: OrderData = OrderManager.get_player_order(peer_id)
-
-	if order == null:
-		return ""
-
-	if not order.checkout_started:
-		return ""
 
 	if not order_grid.can_use_checkout(peer_id):
+		return ""
+
+	var order: OrderData = order_grid.get_checkout_order(peer_id)
+
+	if order == null or not order.checkout_started:
 		return ""
 
 	if order_grid.has_items():
@@ -79,15 +77,24 @@ func _finish_checkout(peer_id: int) -> void:
 	if order_grid.has_items():
 		return
 
-	var order: OrderData = OrderManager.get_player_order(peer_id)
+	var order: OrderData = order_grid.get_checkout_order(peer_id)
 
 	if order == null or not order.checkout_started:
 		return
 
-	if not OrderManager.finish_order_checkout(peer_id):
+	var is_drone_order: bool = order_grid.has_drone_checkout()
+	var finished: bool = false
+
+	if is_drone_order:
+		finished = OrderManager.finish_drone_checkout(
+			order.order_id
+		)
+	else:
+		finished = OrderManager.finish_order_checkout(peer_id)
+
+	if not finished:
 		return
 
-	# Explicitly tell the checkout screen to show the results.
 	var checkout_display: OnlineCheckoutDisplay = (
 		get_parent().get_node_or_null(
 			"CheckoutViewport/OnlineCheckoutUI"
@@ -95,15 +102,20 @@ func _finish_checkout(peer_id: int) -> void:
 	)
 
 	if checkout_display != null:
-		checkout_display.show_finished_order.rpc(order.order_id)
+		checkout_display.show_finished_order.rpc(
+			order.order_id
+		)
 
-	order_grid.release_checkout()
+	if is_drone_order:
+		order_grid.release_drone_checkout()
+	else:
+		order_grid.release_checkout()
 
 	print(
-		"Online order checkout finished for player ",
-		peer_id,
-		" | Order #",
+		"ONLINE CHECKOUT: Finished order #",
 		order.order_id,
+		" | UFO: ",
+		is_drone_order,
 		" | Incorrect items: ",
 		order.incorrect_item_count
 	)

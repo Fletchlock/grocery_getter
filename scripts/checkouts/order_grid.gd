@@ -29,6 +29,12 @@ func sync_drone_checkout(order_id: int) -> void:
 
 
 func can_use_checkout(peer_id: int) -> bool:
+	if peer_id <= 0:
+		return false
+
+	if has_drone_checkout():
+		return true
+
 	if order_owner_peer_id == 0:
 		return false
 
@@ -36,6 +42,16 @@ func can_use_checkout(peer_id: int) -> bool:
 		return false
 
 	return OrderManager.get_player_order(peer_id) != null
+
+
+func get_checkout_order(peer_id: int) -> OrderData:
+	if has_drone_checkout():
+		return OrderManager.get_order(drone_checkout_order_id)
+
+	if not can_use_checkout(peer_id):
+		return null
+
+	return OrderManager.get_player_order(peer_id)
 
 
 func claim_checkout(peer_id: int) -> bool:
@@ -180,6 +196,13 @@ func add_drone_product(product: ProductData) -> bool:
 		return false
 	
 	if drone_checkout_order_id < 0:
+		if not OrderManager.start_drone_checkout(
+			drone_order.order_id
+		):
+			# Roll back the item if checkout cannot start.
+			take_item_at_index(cart_items.size() - 1)
+			return false
+
 		sync_drone_checkout.rpc(drone_order.order_id)
 
 		print(
@@ -205,6 +228,13 @@ func add_drone_product(product: ProductData) -> bool:
 	)
 
 	return true
+
+
+func release_drone_checkout() -> void:
+	if not multiplayer.is_server():
+		return
+
+	sync_drone_checkout.rpc(-1)
 
 
 func get_interaction_prompt_for_player(

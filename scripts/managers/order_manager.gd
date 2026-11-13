@@ -573,6 +573,8 @@ func get_player_order(peer_id: int) -> OrderData:
 
 
 func get_player_order_any_state(peer_id: int) -> OrderData:
+	if peer_id <= 0:
+		return null
 	var latest_order: OrderData = null
 
 	# Search newest orders first.
@@ -772,6 +774,8 @@ func record_checkout_scan(
 
 
 func finish_order_checkout(peer_id: int) -> bool:
+	if peer_id <= 0:
+		return false
 	if not multiplayer.is_server():
 		return false
 
@@ -1110,3 +1114,104 @@ func sync_orders(
 		order_updated.emit(order)
 
 	orders_synced.emit()
+
+
+# -------------------------------------------------------------------
+# UFO order checkout
+# -------------------------------------------------------------------
+func start_drone_checkout(order_id: int) -> bool:
+	if not multiplayer.is_server():
+		return false
+
+	if drone_order_id != order_id:
+		return false
+
+	var order: OrderData = get_drone_order()
+
+	if order == null:
+		return false
+
+	if order.checkout_started:
+		return true
+
+	order.checkout_started = true
+	order.scanned_items.clear()
+	order.checkout_result.clear()
+	order.validated_profit = 0.0
+	order.incorrect_item_count = 0
+
+	order_updated.emit(order)
+	_sync_orders()
+
+	return true
+
+
+func record_drone_checkout_scan(
+	order_id: int,
+	product: ProductData
+) -> bool:
+	if not multiplayer.is_server():
+		return false
+
+	if drone_order_id != order_id:
+		return false
+
+	var order: OrderData = get_drone_order()
+
+	if order == null or not order.checkout_started:
+		return false
+
+	if not order.record_scanned_product(product):
+		return false
+
+	order_updated.emit(order)
+	_sync_orders()
+
+	return true
+
+
+func finish_drone_checkout(order_id: int) -> bool:
+	if not multiplayer.is_server():
+		return false
+
+	if drone_order_id != order_id:
+		return false
+
+	var order: OrderData = get_drone_order()
+
+	if order == null or not order.checkout_started:
+		return false
+
+	order.validate_checkout()
+
+	var mistake_penalty: float = (
+		float(order.incorrect_item_count)
+		* INCORRECT_ITEM_PENALTY
+	)
+
+	if order.incorrect_item_count > 0:
+		ReputationManager.submit_order_reputation(
+			mistake_penalty,
+			"UFO order #%d had %d incorrect units" % [
+				order.order_id,
+				order.incorrect_item_count
+			]
+		)
+
+	var payout_ratio: float = 0.0
+
+	if order.base_profit > 0.0:
+		payout_ratio = clampf(
+			order.current_profit / order.base_profit,
+			0.0,
+			1.0
+		)
+
+	order.current_profit = (
+		order.validated_profit * payout_ratio
+	)
+
+	complete_order(order)
+	release_drone_order(order_id)
+
+	return true
