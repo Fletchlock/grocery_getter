@@ -83,6 +83,10 @@ var waiting_order_deadlines: Dictionary = {}
 var pending_order_penalties: Dictionary = {}
 var last_settled_day: int = -1
 
+# Drone order ownership.
+# -1 means the drone has no claimed order.
+var drone_order_id: int = -1
+
 var timer_sync_accumulator: float = 0.0
 const TIMER_SYNC_INTERVAL: float = 0.1
 
@@ -103,6 +107,7 @@ func _initialize_orders() -> void:
 	orders.clear()
 	waiting_order_deadlines.clear()
 	pending_order_penalties.clear()
+	drone_order_id = -1
 
 	order_spawn_timer = 0.0
 	recovery_timer = 0.0
@@ -595,6 +600,77 @@ func get_available_order() -> OrderData:
 
 	return null
 
+# ===== UFO Drone Orders ====
+func get_drone_order() -> OrderData:
+	if drone_order_id < 0:
+		return null
+
+	var order: OrderData = get_order(drone_order_id)
+
+	if order == null:
+		return null
+
+	if order.state != OrderData.OrderState.ACTIVE:
+		return null
+
+	return order
+
+
+func accept_drone_order() -> OrderData:
+	if not multiplayer.is_server():
+		return null
+
+	if not DayManager.store_open:
+		return null
+
+	# Only one active drone order at a time.
+	if get_drone_order() != null:
+		return null
+
+	# Do not claim another order while the previous
+	# one is still assigned to the drone.
+	if drone_order_id >= 0:
+		return null
+
+	# This already returns the first WAITING order.
+	var order: OrderData = get_available_order()
+
+	if order == null:
+		return null
+
+	order.state = OrderData.OrderState.ACTIVE
+	order.accepted_by_peer_id = 0
+
+	drone_order_id = order.order_id
+
+	# The order is no longer waiting for acceptance.
+	waiting_order_deadlines.erase(order.order_id)
+
+	order_updated.emit(order)
+	_sync_orders()
+
+	print(
+		"ORDER DRONE: Accepted online order #",
+		order.order_id
+	)
+
+	return order
+
+
+func release_drone_order(order_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if drone_order_id != order_id:
+		return
+
+	drone_order_id = -1
+
+	print(
+		"ORDER DRONE: Released online order #",
+		order_id
+	)
+# =======================================
 
 func accept_order(player: CharacterBody3D) -> void:
 	if not multiplayer.is_server():
@@ -873,6 +949,9 @@ func cancel_order(order: OrderData) -> void:
 		return
 
 	order.state = OrderData.OrderState.CANCELLED
+	
+	if drone_order_id == order.order_id:
+		drone_order_id = -1
 
 	ReputationManager.submit_order_reputation(
 		CANCELLED_ORDER_PENALTY,

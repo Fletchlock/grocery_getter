@@ -59,6 +59,12 @@ var pickup_product: MeshInstance3D = null
 var pickup_elapsed: float = 0.0
 var pickup_start_position: Vector3 = Vector3.ZERO
 var pickup_started: bool = false
+var route_displays: Array[Node3D] = []
+var active_order_id: int = -1
+var order_check_timer: float = 0.0
+
+@export_group("Order Automation")
+@export var order_check_interval: float = 1.0
 
 @export_group("Multiplayer")
 @export var interpolation_speed: float = 12.0
@@ -101,11 +107,7 @@ func _ready() -> void:
 	network_position = global_position
 	network_rotation_y = rotation.y
 
-	if multiplayer.is_server():
-		_collect_product_points()
-
-		if auto_start:
-			start_route()
+	order_check_timer = 0.0
 
 
 func _physics_process(delta: float) -> void:
@@ -115,15 +117,18 @@ func _physics_process(delta: float) -> void:
 		match state:
 			DroneState.FLYING, DroneState.RETURNING:
 				_update_flight(delta)
+				
+			DroneState.IDLE:
+				_check_for_order(delta)
 
 			DroneState.PAUSED:
 				pause_timer -= delta
 
 				# Start lifting after the beam extends.
-				if not pickup_started:
-					if pause_timer <= pause_duration - beam_activation_time - 0.15:
-						pickup_started = true
-						_begin_test_pickup()
+				#if not pickup_started:
+					#if pause_timer <= pause_duration - beam_activation_time - 0.15:
+						#pickup_started = true
+						#_begin_test_pickup()
 
 				if pause_timer <= beam_deactivation_time:
 					network_beam_active = false
@@ -174,6 +179,136 @@ func _physics_process(delta: float) -> void:
 	_update_tractor_beam(delta)
 	_update_product_pickup(delta)
 	_update_ride_platform_rotation()
+
+
+func _check_for_order(delta: float) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if state != DroneState.IDLE:
+		return
+
+	if active_order_id >= 0:
+		return
+
+	# Do not accept another order while the previous
+	# drone assignment is still held.
+	if OrderManager.drone_order_id >= 0:
+		return
+
+	order_check_timer -= delta
+
+	if order_check_timer > 0.0:
+		return
+
+	order_check_timer = order_check_interval
+
+	var available_order: OrderData = OrderManager.get_available_order()
+
+	if available_order == null:
+		return
+
+	if not DayManager.store_open:
+		return
+
+	if door_inside == null or door_outside == null:
+		return
+
+	# Build and validate the route before claiming the order.
+	if not _build_order_route(available_order):
+		return
+
+	var accepted_order: OrderData = OrderManager.accept_drone_order()
+
+	if accepted_order == null:
+		return
+
+	active_order_id = accepted_order.order_id
+
+	print(
+		"ORDER DRONE: Starting route for order #",
+		active_order_id,
+		" | Displays: ",
+		route_displays.size()
+	)
+
+	start_route()
+
+
+func _build_order_route(order: OrderData) -> bool:
+	product_points.clear()
+	route_displays.clear()
+
+	if order == null:
+		return false
+
+	var displays: Array[Node] = get_tree().get_nodes_in_group(
+		"product_displays"
+	)
+
+	for item: OrderItem in order.items:
+		if item.product == null:
+			return false
+
+		var found_display: Node3D = null
+
+		for node: Node in displays:
+			var display: Node3D = node as Node3D
+
+			if display == null:
+				continue
+
+			if not bool(display.get("is_unlocked")):
+				continue
+
+			var data: ProductData = (
+				display.get("product_data") as ProductData
+			)
+
+			if data == null:
+				continue
+
+			if data.resource_path != item.product.resource_path:
+				continue
+
+			var shopper_point: Marker3D = (
+				display.get_node_or_null("AIShopperPoint") as Marker3D
+			)
+
+			if shopper_point == null:
+				continue
+
+			found_display = display
+			break
+
+		if found_display == null:
+			push_warning(
+				"ORDER DRONE: No display found for "
+				+ item.product.resource_path
+			)
+
+			product_points.clear()
+			route_displays.clear()
+			return false
+
+		var marker: Marker3D = (
+			found_display.get_node("AIShopperPoint") as Marker3D
+		)
+
+		var destination: Vector3 = marker.global_position
+		destination.y = flight_height
+
+		product_points.append(destination)
+		route_displays.append(found_display)
+
+		print(
+			"ORDER DRONE: ",
+			item.product.display_name,
+			" x",
+			item.quantity
+		)
+
+	return not product_points.is_empty()
 
 
 func _update_sway(delta: float, velocity: Vector3) -> void:
