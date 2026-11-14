@@ -10,10 +10,13 @@
 [ext_resource type="Texture2D" uid="uid://ifkotnnto2y6" path="res://assets/images/order_notify_bg_dk_grey.png" id="6_xiw3s"]
 [ext_resource type="Texture2D" uid="uid://b1pmpfog6myug" path="res://assets/images/star_unfilled.png" id="7_lc70o"]
 [ext_resource type="Texture2D" uid="uid://cbem724xdcnhn" path="res://assets/images/star_filled.png" id="8_newvj"]
+[ext_resource type="FontFile" uid="uid://c370it7ifsg28" path="res://assets/fonts/Space/a_space/A-Space Bold Demo.otf" id="8_qlfp5"]
 [ext_resource type="PackedScene" uid="uid://cjnto3v2tcbd3" path="res://scenes/UI/PlayerHud.tscn" id="9_newvj"]
 [ext_resource type="Texture2D" uid="uid://dcbfwxda8kuuw" path="res://assets/images/order_notify_bg_grey.png" id="10_2toow"]
 [ext_resource type="Texture2D" uid="uid://bej7ittej76m0" path="res://assets/images/order_notify_bg_red.png" id="10_xiw3s"]
 [ext_resource type="Script" uid="uid://cpm4qni4l4cqw" path="res://scripts/UI/player_hud.gd" id="13_q7g1v"]
+[ext_resource type="FontFile" uid="uid://cvhmb0bcpx5ks" path="res://assets/fonts/Space/a_space/A-Space Regular Demo.otf" id="13_qlfp5"]
+[ext_resource type="FontFile" uid="uid://bnba6vpbcdga7" path="res://assets/fonts/Space/a_space/A-Space Italic Demo.otf" id="16_qlfp5"]
 
 [sub_resource type="Animation" id="Animation_prtv8"]
 length = 0.001
@@ -161,7 +164,7 @@ size_flags_vertical = 0
 
 [node name="PanelContainer" type="PanelContainer" parent="TopCenterContainer/VBoxContainer" unique_id=1661235052]
 texture_filter = 3
-custom_minimum_size = Vector2(750, 0)
+custom_minimum_size = Vector2(900, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 mouse_filter = 2
@@ -192,6 +195,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_constants/outline_size = 4
 theme_override_constants/shadow_outline_size = 2
+theme_override_fonts/font = ExtResource("8_qlfp5")
 theme_override_font_sizes/font_size = 24
 text = "10"
 horizontal_alignment = 1
@@ -199,16 +203,17 @@ horizontal_alignment = 1
 [node name="ClockLabel" type="Label" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer" unique_id=978800866]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 0
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.39215687)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_constants/outline_size = 4
 theme_override_constants/shadow_outline_size = 2
+theme_override_fonts/font = ExtResource("8_qlfp5")
 theme_override_font_sizes/font_size = 24
 text = "DAY: 01    TIME: 07:00 AM   $10000.00"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ReputationContainer" type="HBoxContainer" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer" unique_id=1032023267]
 layout_mode = 2
@@ -232,8 +237,8 @@ theme_override_constants/separation = 2
 
 [node name="Star1" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=580123627]
 texture_filter = 1
-custom_minimum_size = Vector2(28, 28)
-custom_maximum_size = Vector2(24, 24)
+custom_minimum_size = Vector2(30, 30)
+custom_maximum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -244,8 +249,8 @@ texture_progress = ExtResource("8_newvj")
 
 [node name="Star2" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=1333299339]
 texture_filter = 1
-custom_minimum_size = Vector2(28, 28)
-custom_maximum_size = Vector2(24, 24)
+custom_minimum_size = Vector2(30, 30)
+custom_maximum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -256,8 +261,8 @@ texture_progress = ExtResource("8_newvj")
 
 [node name="Star3" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=825266277]
 texture_filter = 1
-custom_minimum_size = Vector2(28, 28)
-custom_maximum_size = Vector2(24, 24)
+custom_minimum_size = Vector2(30, 30)
+custom_maximum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -268,8 +273,8 @@ texture_progress = ExtResource("8_newvj")
 
 [node name="Star4" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=1093919580]
 texture_filter = 1
-custom_minimum_size = Vector2(28, 28)
-custom_maximum_size = Vector2(24, 24)
+custom_minimum_size = Vector2(30, 30)
+custom_maximum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -280,8 +285,8 @@ texture_progress = ExtResource("8_newvj")
 
 [node name="Star5" type="TextureProgressBar" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer/StarsContainer" unique_id=694500669]
 texture_filter = 1
-custom_minimum_size = Vector2(28, 28)
-custom_maximum_size = Vector2(24, 24)
+custom_minimum_size = Vector2(30, 30)
+custom_maximum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -326,8 +331,9 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_xiw3s")
 [node name="RestockLabel" type="Label" parent="CenterContainer/VBoxContainer/PanelContainer" unique_id=376943300]
 layout_mode = 2
 size_flags_vertical = 0
+theme_override_fonts/font = ExtResource("13_qlfp5")
 theme_override_font_sizes/font_size = 22
-text = "Stock orders close @ 8pm!"
+text = "Orders Close @ 8pm!"
 
 [node name="OrderNotifications" type="Control" parent="." unique_id=1128642380]
 custom_minimum_size = Vector2(340, 150)
@@ -385,7 +391,17 @@ grow_horizontal = 1
 grow_vertical = 1
 script = ExtResource("13_q7g1v")
 
+[node name="Customize" parent="PlayerHud/VBoxContainer" parent_id_path=PackedInt32Array(1122592883, 800635377) index="0" unique_id=607906378]
+theme_override_fonts/font = ExtResource("16_qlfp5")
+
+[node name="Achievements" parent="PlayerHud/VBoxContainer" parent_id_path=PackedInt32Array(1122592883, 800635377) index="1" unique_id=386894225]
+theme_override_fonts/font = ExtResource("16_qlfp5")
+
+[node name="ProductsList" parent="PlayerHud/VBoxContainer" parent_id_path=PackedInt32Array(1122592883, 800635377) index="2" unique_id=814067409]
+theme_override_fonts/font = ExtResource("16_qlfp5")
+
 [node name="ScaleSelect" parent="PlayerHud/ScannerScalesMenu/VBoxContainer" parent_id_path=PackedInt32Array(1122592883, 540936680) index="0" unique_id=509898520]
+theme_override_fonts/font = ExtResource("16_qlfp5")
 item_count = 0
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1547641565]

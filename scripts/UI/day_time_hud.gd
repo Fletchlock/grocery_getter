@@ -43,6 +43,7 @@ var current_order_list: OnlineOrderList = null
 var active_order_cart: CartGrid = null
 var barcode_hud: Control = null
 var barcode_player: Node = null
+var barcode_order_id: int = -1
 var completed_barcode_code: String = ""
 var barcode_checkout: Node = null
 var saved_scan_combo: int = 0
@@ -68,6 +69,7 @@ func _ready() -> void:
 	)
 	
 	OrderManager.orders_synced.connect(_update_order_notifications)
+	OrderManager.orders_synced.connect(_check_barcode_order_status)
 	_update_order_notifications()
 	call_deferred("_connect_order_carts")
 	
@@ -97,6 +99,38 @@ func _exit_tree() -> void:
 		ProductUnlockManager.product_unlocked.disconnect(
 			_on_product_unlocked
 		)
+	if OrderManager.orders_synced.is_connected(
+		_check_barcode_order_status
+	):
+		OrderManager.orders_synced.disconnect(
+			_check_barcode_order_status
+		)
+
+
+func _get_barcode_order() -> OrderData:
+	if not is_instance_valid(barcode_checkout):
+		return null
+
+	var player: CharacterBody3D = (
+		get_tree().get_first_node_in_group("local_player")
+		as CharacterBody3D
+	)
+
+	if player == null:
+		return null
+
+	var order_grid: OrderGrid = (
+		get_tree().get_first_node_in_group("online_order_grid")
+		as OrderGrid
+	)
+
+	if order_grid == null:
+		return null
+
+	var peer_id: int = player.get_multiplayer_authority()
+
+	return order_grid.get_checkout_order(peer_id)
+
 
 func _on_lobby_player_updated(_peer_id: int) -> void:
 	_update_active_notifications()
@@ -633,8 +667,32 @@ func show_barcode_hud(product_code: String) -> void:
 		add_child(barcode_hud)
 		barcode_hud.tree_exited.connect(_on_barcode_hud_exited)
 		barcode_hud.code_completed.connect(_on_barcode_code_completed)
+	
+	var order: OrderData = _get_barcode_order()
 
+	if order != null:
+		barcode_order_id = order.order_id
+		
 	_update_barcode(product_code)
+
+
+func _check_barcode_order_status() -> void:
+	if not is_instance_valid(barcode_hud):
+		return
+
+	if barcode_order_id < 0:
+		return
+
+	var order: OrderData = OrderManager.get_order(barcode_order_id)
+
+	if order == null or order.state != OrderData.OrderState.ACTIVE:
+		print(
+			"BARCODE HUD: Order #",
+			barcode_order_id,
+			" is no longer active. Closing barcode HUD."
+		)
+
+		close_barcode_hud()
 
 
 func _update_barcode(product_code: String) -> void:
@@ -655,6 +713,9 @@ func _on_barcode_hud_exited() -> void:
 
 	barcode_hud = null
 	barcode_player = null
+	barcode_order_id = -1
+	barcode_checkout = null
+	completed_barcode_code = ""
 
 func close_barcode_hud() -> void:
 	if is_instance_valid(barcode_hud):
