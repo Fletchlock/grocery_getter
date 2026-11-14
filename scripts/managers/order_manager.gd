@@ -953,6 +953,14 @@ func cancel_order(order: OrderData) -> void:
 		return
 
 	order.state = OrderData.OrderState.CANCELLED
+	var order_grids: Array[Node] = get_tree().get_nodes_in_group(
+		"order_grids"
+	)
+
+	for node: Node in order_grids:
+		if node is OrderGrid:
+			var grid: OrderGrid = node as OrderGrid
+			grid.clear_cancelled_checkout(order.order_id)
 	
 	if drone_order_id == order.order_id:
 		drone_order_id = -1

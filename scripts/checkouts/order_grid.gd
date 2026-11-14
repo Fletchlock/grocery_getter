@@ -296,3 +296,56 @@ func get_interaction_prompt_position(
 		prompt_position.y += ufo_prompt_height_offset
 
 	return prompt_position
+
+
+func clear_cancelled_checkout(order_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var is_drone_order: bool = (
+		drone_checkout_order_id == order_id
+	)
+
+	var is_player_order: bool = false
+
+	if order_owner_peer_id > 0:
+		for order: OrderData in OrderManager.orders:
+			if (
+				order.order_id == order_id
+				and order.accepted_by_peer_id == order_owner_peer_id
+			):
+				is_player_order = true
+				break
+
+	if not is_drone_order and not is_player_order:
+		return
+
+	# Remove remaining products and their visuals.
+	while not cart_items.is_empty():
+		take_item_at_index(cart_items.size() - 1)
+
+	# Synchronize the empty grid to all clients.
+	var empty_paths: Array[String] = []
+	var empty_positions: Array[Vector3] = []
+	var empty_scales: Array[float] = []
+	var empty_rotations: Array[float] = []
+
+	sync_cart_state.rpc(
+		empty_paths,
+		empty_positions,
+		empty_scales,
+		empty_rotations
+	)
+
+	cart_contents_changed.emit(self)
+
+	# Release the checkout reservation.
+	if is_drone_order:
+		release_drone_checkout()
+	else:
+		release_checkout()
+
+	print(
+		"ORDER GRID: Cleared cancelled order #",
+		order_id
+	)
