@@ -3600,11 +3600,21 @@ func update_checkout_mouse_cursor() -> void:
 				checkout_virtual_mouse_position
 			)
 
-		checkout_virtual_mouse_position = (
-			get_viewport().get_mouse_position()
+		# Only synchronize from the physical mouse when the
+		# controller is not actively moving the cursor.
+		var controller_cursor_input: Vector2 = Input.get_vector(
+			"left",
+			"right",
+			"up",
+			"down"
 		)
 
-		checkout_virtual_mouse_initialized = true
+		if controller_cursor_input.length() < 0.15:
+			checkout_virtual_mouse_position = (
+				get_viewport().get_mouse_position()
+			)
+
+	checkout_virtual_mouse_initialized = true
 
 
 func update_checkout_controller_cursor(delta: float) -> void:
@@ -3620,6 +3630,13 @@ func update_checkout_controller_cursor(delta: float) -> void:
 		"up",
 		"down"
 	)
+	
+	if stick_input.length() > 0.15:
+		print(
+			"CHECKOUT STICK: ", stick_input,
+			" | MOUSE MODE: ", Input.mouse_mode,
+			" | CURSOR: ", checkout_virtual_mouse_position
+		)
 
 	if stick_input.length() < 0.15:
 		return
@@ -3628,23 +3645,27 @@ func update_checkout_controller_cursor(delta: float) -> void:
 		get_viewport().get_visible_rect().size
 	)
 
-	checkout_virtual_mouse_position += (
-		stick_input * gamepad_cursor_speed * delta
+	var new_position: Vector2 = (
+		checkout_virtual_mouse_position
+		+ stick_input * gamepad_cursor_speed * delta
 	)
 
-	checkout_virtual_mouse_position = (
-		checkout_virtual_mouse_position.clamp(
-			Vector2.ZERO,
-			viewport_size
-		)
+	new_position = new_position.clamp(
+		Vector2.ZERO,
+		viewport_size
 	)
-
-	checkout_last_mouse_position = checkout_virtual_mouse_position
 
 	if held_item == null:
-		get_viewport().warp_mouse(
-			checkout_virtual_mouse_position
+		get_viewport().warp_mouse(new_position)
+
+		print(
+			"TARGET: ", new_position,
+			" | ACTUAL: ", get_viewport().get_mouse_position()
 		)
+
+	checkout_virtual_mouse_position = new_position
+	checkout_last_mouse_position = new_position
+	checkout_virtual_mouse_initialized = true
 
 
 func _set_product_rotation_around_center(
@@ -3663,28 +3684,26 @@ func _set_product_rotation_around_center(
 		rotation_camera.global_basis.orthonormalized()
 	)
 
-	var world_rotation: Quaternion
+	# Vertical movement always controls pitch.
+	var vertical_rotation: Quaternion = Quaternion(
+		camera_basis.x,
+		mouse_delta.y * held_product_rotation_sensitivity
+	)
 
+	var horizontal_axis: Vector3 = camera_basis.y
+
+	# Roll modifier changes horizontal rotation from yaw to roll.
 	if roll_rotation:
-		# Shift + horizontal drag: camera-relative Z axis.
-		world_rotation = Quaternion(
-			-camera_basis.z,
-			mouse_delta.x * held_product_rotation_sensitivity
-		)
-	else:
-		# Horizontal drag: camera-relative Y axis.
-		var horizontal_rotation := Quaternion(
-			camera_basis.y,
-			mouse_delta.x * held_product_rotation_sensitivity
-		)
+		horizontal_axis = -camera_basis.z
 
-		# Vertical drag: camera-relative X axis.
-		var vertical_rotation := Quaternion(
-			camera_basis.x,
-			mouse_delta.y * held_product_rotation_sensitivity
-		)
+	var horizontal_rotation: Quaternion = Quaternion(
+		horizontal_axis,
+		mouse_delta.x * held_product_rotation_sensitivity
+	)
 
-		world_rotation = horizontal_rotation * vertical_rotation
+	var world_rotation: Quaternion = (
+		horizontal_rotation * vertical_rotation
+	)
 
 	# Preserve the visual center while rotating.
 	var product_transform: Transform3D = product_mesh.global_transform
