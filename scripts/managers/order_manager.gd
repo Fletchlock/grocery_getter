@@ -958,6 +958,9 @@ func cancel_order(order: OrderData) -> void:
 
 	order.state = OrderData.OrderState.CANCELLED
 
+	# Remove products held by players for this order.
+	_clear_cancelled_order_held_items(order.order_id)
+
 	# Restore products collected for this order.
 	restore_cancelled_order_stock(order.order_id)
 
@@ -1331,3 +1334,31 @@ func restore_cancelled_order_stock(order_id: int) -> void:
 			)
 
 	collected_order_stock.erase(order_id)
+
+
+func _clear_cancelled_order_held_items(order_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var players: Array[Node] = get_tree().get_nodes_in_group(
+		"player"
+	)
+
+	for node: Node in players:
+		if not node is CharacterBody3D:
+			continue
+
+		var player: CharacterBody3D = node as CharacterBody3D
+
+		if not player.has_method("clear_cancelled_order_item"):
+			continue
+
+		var peer_id: int = player.get_multiplayer_authority()
+
+		if peer_id == multiplayer.get_unique_id():
+			player._clear_cancelled_order_item_local(order_id)
+		else:
+			player.clear_cancelled_order_item.rpc_id(
+				peer_id,
+				order_id
+			)

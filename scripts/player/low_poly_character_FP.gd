@@ -153,6 +153,7 @@ var checkout_previous_held_item_visibility: bool = true
 var held_item: ProductData = null
 var held_item_visual: MeshInstance3D = null
 var held_item_origin: ItemOrigin = ItemOrigin.NONE
+var held_item_order_id: int = -1
 var checkout_cursor_visual: MeshInstance3D = null
 var checkout_cursor_last_safe_position: Vector3 = Vector3.ZERO
 var checkout_cursor_has_safe_position: bool = false
@@ -2615,6 +2616,7 @@ func _clear_held_item() -> void:
 
 	held_item = null
 	held_item_origin = ItemOrigin.NONE
+	held_item_order_id = -1
 
 
 func _clear_held_restock_box() -> void:
@@ -3166,8 +3168,9 @@ func clear_held_item() -> void:
 @rpc("any_peer", "call_remote", "reliable")
 func receive_product(
 	product_path: String,
-	origin: ItemOrigin = ItemOrigin.NONE
-	) -> void:
+	origin: ItemOrigin = ItemOrigin.NONE,
+	order_id: int = -1
+) -> void:
 	# Only accept product deliveries from the server.
 	if not multiplayer.is_server():
 		if multiplayer.get_remote_sender_id() != 1:
@@ -3180,8 +3183,8 @@ func receive_product(
 
 	held_item = loaded_resource as ProductData
 	held_item_origin = origin
+	held_item_order_id = order_id
 
-	# Reset rotation for the newly picked-up product.
 	rotating_held_product = false
 
 	player_equipment.remove_local_product_visual(held_item_visual)
@@ -3190,10 +3193,33 @@ func receive_product(
 		held_item,
 		held_item_holder
 	)
-	
-	# Create cursor preview if we're currently in checkout mode.
+
 	if checkout_mode_active:
 		create_checkout_cursor_visual()
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func clear_cancelled_order_item(order_id: int) -> void:
+	if multiplayer.get_remote_sender_id() != 1:
+		return
+
+	_clear_cancelled_order_item_local(order_id)
+
+
+func _clear_cancelled_order_item_local(order_id: int) -> void:
+	if not is_multiplayer_authority():
+		return
+
+	if held_item == null:
+		return
+
+	if held_item_origin != ItemOrigin.ORDER_GRID:
+		return
+
+	if held_item_order_id != order_id:
+		return
+
+	_clear_held_item()
 
 
 func play_footstep() -> void:
