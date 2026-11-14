@@ -377,6 +377,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	
 	if checkout_mode_active:
+		if event.is_action_pressed("checkout_exit"):
+			exit_checkout_mode()
+			get_viewport().set_input_as_handled()
+			return
 		# Track captured mouse movement in viewport coordinates.
 		if event is InputEventMouseMotion:
 			if (
@@ -732,6 +736,8 @@ func _process(delta: float) -> void:
 	update_idle_look(delta)
 	player_equipment.update_hand_targets(delta, network_is_crouching)
 	player_equipment.update_mop_right_hand_target(delta)
+	update_checkout_controller_cursor(delta)
+	update_controller_product_rotation(delta)
 	update_checkout_cursor_visual()
 
 	# Update checkout hover outlines.
@@ -864,7 +870,16 @@ func _physics_process(delta: float) -> void:
 		_mouse_input_direction = Vector2.ZERO
 		_smoothed_mouse_velocity = Vector2.ZERO
 
-	if checkout_mode_active or rotating_held_product:
+	var controller_rotating_product: bool = (
+		held_item != null
+		and Input.is_action_pressed("product_rotate")
+	)
+
+	if (
+		checkout_mode_active
+		or rotating_held_product
+		or controller_rotating_product
+	):
 		gamepad_look = Vector2.ZERO
 		_camera_input_direction = Vector2.ZERO
 		_mouse_input_direction = Vector2.ZERO
@@ -3401,6 +3416,12 @@ func _activate_checkout_mode(checkout: Checkout) -> void:
 
 	# Show the mouse cursor.
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	checkout_virtual_mouse_position = (
+		get_viewport().get_mouse_position()
+	)
+
+	checkout_last_mouse_position = checkout_virtual_mouse_position
+	checkout_virtual_mouse_initialized = true
 
 	# Activate the checkout camera.
 	checkout.checkout_camera.make_current()
@@ -3586,6 +3607,46 @@ func update_checkout_mouse_cursor() -> void:
 		checkout_virtual_mouse_initialized = true
 
 
+func update_checkout_controller_cursor(delta: float) -> void:
+	if not is_multiplayer_authority():
+		return
+
+	if not checkout_mode_active:
+		return
+
+	var stick_input: Vector2 = Input.get_vector(
+		"left",
+		"right",
+		"up",
+		"down"
+	)
+
+	if stick_input.length() < 0.15:
+		return
+
+	var viewport_size: Vector2 = (
+		get_viewport().get_visible_rect().size
+	)
+
+	checkout_virtual_mouse_position += (
+		stick_input * gamepad_cursor_speed * delta
+	)
+
+	checkout_virtual_mouse_position = (
+		checkout_virtual_mouse_position.clamp(
+			Vector2.ZERO,
+			viewport_size
+		)
+	)
+
+	checkout_last_mouse_position = checkout_virtual_mouse_position
+
+	if held_item == null:
+		get_viewport().warp_mouse(
+			checkout_virtual_mouse_position
+		)
+
+
 func _set_product_rotation_around_center(
 	product_mesh: MeshInstance3D,
 	rotation_camera: Camera3D,
@@ -3681,6 +3742,43 @@ func _apply_held_product_rotation(
 			mouse_delta,
 			roll_rotation
 		)
+
+
+func update_controller_product_rotation(delta: float) -> void:
+	if not is_multiplayer_authority():
+		return
+
+	if not can_process_gameplay_input():
+		return
+
+	if held_item == null:
+		return
+
+	if not Input.is_action_pressed("product_rotate"):
+		return
+
+	var stick_input: Vector2 = Input.get_vector(
+		"look_left",
+		"look_right",
+		"look_up",
+		"look_down"
+	)
+
+	if stick_input.length() < 0.15:
+		return
+
+	var rotation_delta: Vector2 = (
+		stick_input * 500.0 * delta
+	)
+
+	var roll_rotation: bool = Input.is_action_pressed(
+		"product_roll"
+	)
+
+	_apply_held_product_rotation(
+		rotation_delta,
+		roll_rotation
+	)
 
 
 func _stop_held_product_rotation() -> void:
