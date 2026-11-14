@@ -4,6 +4,8 @@
 [ext_resource type="Script" uid="uid://bek20vi66ge4a" path="res://scripts/menus/options_menu.gd" id="1_tiokm"]
 [ext_resource type="Texture2D" uid="uid://blae7m4aomsr3" path="res://assets/images/menu_button_normal_grey.png" id="2_dwjoh"]
 [ext_resource type="Texture2D" uid="uid://byiqbpxrirkiv" path="res://assets/images/menu_button_pressed_grey.png" id="3_erhyl"]
+[ext_resource type="FontFile" uid="uid://c5smmmli4hgm" path="res://assets/fonts/Atmospheric/aAtmospheric.ttf" id="3_yxgvl"]
+[ext_resource type="FontFile" uid="uid://bnba6vpbcdga7" path="res://assets/fonts/Space/a_space/A-Space Italic Demo.otf" id="4_frorf"]
 [ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="4_tiokm"]
 [ext_resource type="Script" uid="uid://bimg6esvjfivg" path="res://scripts/menus/button_hover_text_size.gd" id="5_frorf"]
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="5_gjmye"]
@@ -100,6 +102,7 @@ theme_override_constants/separation = 12
 
 [node name="TitleLabel" type="Label" parent="OptionsPanel/MarginContainer/VBoxContainer" unique_id=342234708]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_yxgvl")
 theme_override_font_sizes/font_size = 30
 text = "Options"
 horizontal_alignment = 1
@@ -109,6 +112,7 @@ custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
+theme_override_fonts/font = ExtResource("4_frorf")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_yxgvl")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_frorf")
@@ -117,7 +121,6 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_23plx")
 text = "Display"
 script = ExtResource("5_frorf")
 normal_font_size = 30
-hover_font_size = 34
 highlighted_font_size = 34
 
 [node name="GraphicsButton" type="Button" parent="OptionsPanel/MarginContainer/VBoxContainer" unique_id=1488452223]
@@ -125,6 +128,7 @@ custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
+theme_override_fonts/font = ExtResource("4_frorf")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_yxgvl")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_frorf")
@@ -133,7 +137,6 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_23plx")
 text = "Graphics"
 script = ExtResource("5_frorf")
 normal_font_size = 30
-hover_font_size = 34
 highlighted_font_size = 34
 
 [node name="ControlsButton" type="Button" parent="OptionsPanel/MarginContainer/VBoxContainer" unique_id=1853229703]
@@ -141,6 +144,7 @@ custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
+theme_override_fonts/font = ExtResource("4_frorf")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_yxgvl")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_frorf")
@@ -149,7 +153,6 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_23plx")
 text = "Controls"
 script = ExtResource("5_frorf")
 normal_font_size = 30
-hover_font_size = 34
 highlighted_font_size = 34
 
 [node name="AudioButton" type="Button" parent="OptionsPanel/MarginContainer/VBoxContainer" unique_id=1965885483]
@@ -157,6 +160,7 @@ custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
+theme_override_fonts/font = ExtResource("4_frorf")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_yxgvl")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_frorf")
@@ -165,13 +169,13 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_23plx")
 text = "Audio"
 script = ExtResource("5_frorf")
 normal_font_size = 30
-hover_font_size = 34
 highlighted_font_size = 34
 
 [node name="BackButton" type="Button" parent="OptionsPanel/MarginContainer/VBoxContainer" unique_id=300272075]
 custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_frorf")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_pqks5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_ygobi")
@@ -180,7 +184,6 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_yayen")
 text = "Back"
 script = ExtResource("5_frorf")
 normal_font_size = 30
-hover_font_size = 34
 highlighted_font_size = 34
 
 [node name="DisplaySettings" parent="." unique_id=1952363439 instance=ExtResource("8_gjmye")]

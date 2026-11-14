@@ -1477,9 +1477,6 @@ debug_color = Color(0.9847451, 0.4989375, 0.4725191, 1)
 [node name="OnlineOrderCheckout" parent="NavigationRegion3D" unique_id=1046442366 instance=ExtResource("63_5gipu")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 2.0088646, 1.0330372, 25.240444)
 
-[node name="OrderGrid" parent="NavigationRegion3D/OnlineOrderCheckout" index="0" unique_id=925843198]
-ufo_prompt_height_offset = null
-
 [node name="CollisionShape3D" parent="NavigationRegion3D/OnlineOrderCheckout/OrderGrid/InteractionArea" parent_id_path=PackedInt32Array(1046442366, 2127909686) index="0" unique_id=1039239870]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.016437054, 0.2262379, -0.015843391)
 shape = SubResource("BoxShape3D_m7tku")

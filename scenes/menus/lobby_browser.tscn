@@ -2,8 +2,10 @@
 
 [ext_resource type="Script" uid="uid://dgxc7x4cogp7n" path="res://scripts/menus/lobby_browser.gd" id="1_3w3ne"]
 [ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="2_km3i3"]
+[ext_resource type="FontFile" uid="uid://c5smmmli4hgm" path="res://assets/fonts/Atmospheric/aAtmospheric.ttf" id="3_qjrkl"]
 [ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="3_v8ffg"]
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="4_6jkf3"]
+[ext_resource type="FontFile" uid="uid://bnba6vpbcdga7" path="res://assets/fonts/Space/a_space/A-Space Italic Demo.otf" id="5_ldnla"]
 [ext_resource type="Texture2D" uid="uid://blae7m4aomsr3" path="res://assets/images/menu_button_normal_grey.png" id="5_ydbif"]
 [ext_resource type="Texture2D" uid="uid://byiqbpxrirkiv" path="res://assets/images/menu_button_pressed_grey.png" id="6_ldnla"]
 [ext_resource type="Texture2D" uid="uid://cwboh5tm5ts47" path="res://assets/images/menu_button_hover_grey.png" id="7_qjrkl"]
@@ -89,11 +91,13 @@ theme_override_constants/separation = 20
 
 [node name="Label" type="Label" parent="PanelContainer/VBoxContainer" unique_id=1699724925]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_qjrkl")
 theme_override_font_sizes/font_size = 40
 text = "Available Games"
 
 [node name="StatusLabel" type="Label" parent="PanelContainer/VBoxContainer" unique_id=2114575507]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ldnla")
 theme_override_font_sizes/font_size = 30
 text = "Searching for games..."
 
@@ -111,6 +115,7 @@ theme_override_constants/separation = 20
 [node name="RefreshButton" type="Button" parent="PanelContainer/VBoxContainer/ButtonRow" unique_id=437392330]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("5_ldnla")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
@@ -121,6 +126,7 @@ text = "Refresh"
 [node name="BackButton" type="Button" parent="PanelContainer/VBoxContainer/ButtonRow" unique_id=127770484]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("5_ldnla")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
@@ -131,6 +137,7 @@ text = "Back"
 [node name="JoinButtonTemplate" type="Button" parent="PanelContainer" unique_id=1491961006]
 custom_minimum_size = Vector2(140, 50)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ldnla")
 theme_override_font_sizes/font_size = 26
 theme_override_styles/normal = SubResource("StyleBoxTexture_km3i3")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_v8ffg")

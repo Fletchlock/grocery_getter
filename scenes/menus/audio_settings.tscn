@@ -2,7 +2,9 @@
 
 [ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="1_7tjcx"]
 [ext_resource type="Script" uid="uid://j5mscr3elx7w" path="res://scripts/menus/audio_settings.gd" id="2_cebfg"]
+[ext_resource type="FontFile" uid="uid://c5smmmli4hgm" path="res://assets/fonts/Atmospheric/aAtmospheric.ttf" id="3_njmp2"]
 [ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="3_to6uk"]
+[ext_resource type="FontFile" uid="uid://bnba6vpbcdga7" path="res://assets/fonts/Space/a_space/A-Space Italic Demo.otf" id="4_s526t"]
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="4_ykg3t"]
 [ext_resource type="Script" uid="uid://bimg6esvjfivg" path="res://scripts/menus/button_hover_text_size.gd" id="5_to6uk"]
 
@@ -48,12 +50,13 @@ theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1865560636]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 25
 alignment = 1
 
 [node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1590595060]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_njmp2")
 theme_override_font_sizes/font_size = 30
 text = "Audio Settings"
 horizontal_alignment = 1
@@ -89,6 +92,7 @@ theme_override_constants/separation = 10
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/MasterContainer" unique_id=1277246403]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_s526t")
 theme_override_font_sizes/font_size = 30
 text = "Master Volume"
 
@@ -107,6 +111,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/MusicContainer" unique_id=1571092807]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_s526t")
 theme_override_font_sizes/font_size = 30
 text = "Music Volume"
 
@@ -125,6 +130,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/SFXContainer" unique_id=2132539216]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_s526t")
 theme_override_font_sizes/font_size = 30
 text = "SFX Volume    "
 
@@ -141,6 +147,7 @@ step = 0.05
 custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_s526t")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_7tjcx")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_to6uk")
