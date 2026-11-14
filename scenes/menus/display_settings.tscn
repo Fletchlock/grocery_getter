@@ -4,7 +4,9 @@
 [ext_resource type="Script" uid="uid://nrptlu4j0klq" path="res://scripts/menus/display_settings.gd" id="2_5u744"]
 [ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="3_o4j8r"]
 [ext_resource type="Texture2D" uid="uid://b60241ltqjs1y" path="res://assets/images/menu_button_normal_yellow.png" id="3_ukhq4"]
+[ext_resource type="FontFile" uid="uid://c5smmmli4hgm" path="res://assets/fonts/Atmospheric/aAtmospheric.ttf" id="3_xekdv"]
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="4_1biva"]
+[ext_resource type="FontFile" uid="uid://bnba6vpbcdga7" path="res://assets/fonts/Space/a_space/A-Space Italic Demo.otf" id="4_4ub7t"]
 [ext_resource type="Texture2D" uid="uid://shwtjhqdkrjv" path="res://assets/images/menu_button_pressed_yellow.png" id="4_w5rgp"]
 [ext_resource type="Texture2D" uid="uid://64lrd4be5n5g" path="res://assets/images/menu_button_hover_yellow.png" id="5_23qtx"]
 [ext_resource type="Script" uid="uid://bimg6esvjfivg" path="res://scripts/menus/button_hover_text_size.gd" id="6_w5rgp"]
@@ -72,12 +74,13 @@ theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1865560636]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 25
 alignment = 1
 
 [node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1590595060]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_xekdv")
 theme_override_font_sizes/font_size = 30
 text = "Display Settings"
 horizontal_alignment = 1
@@ -87,6 +90,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/DisplayModeContainer" unique_id=1055725871]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_4ub7t")
 theme_override_font_sizes/font_size = 30
 text = "Display Mode"
 
@@ -98,6 +102,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ResolutionContainer" unique_id=525059267]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_4ub7t")
 theme_override_font_sizes/font_size = 30
 text = "Resolution"
 
@@ -108,6 +113,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_4ub7t")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_xekdv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_4ub7t")
@@ -116,13 +122,13 @@ theme_override_styles/focus = SubResource("StyleBoxTexture_7jpr4")
 text = "Apply"
 script = ExtResource("6_w5rgp")
 normal_font_size = 30
-hover_font_size = 34
 highlighted_font_size = 34
 
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1362661456]
 custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_4ub7t")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
@@ -132,5 +138,4 @@ text = "Back
 "
 script = ExtResource("6_w5rgp")
 normal_font_size = 30
-hover_font_size = 34
 highlighted_font_size = 34

@@ -1,9 +1,11 @@
 [gd_scene format=3 uid="uid://ga0gq26e65dd"]
 
 [ext_resource type="Script" uid="uid://drv7wprqfvxnv" path="res://scripts/menus/main_menu.gd" id="1_xqga4"]
-[ext_resource type="Texture2D" uid="uid://dijd7y50urwue" path="res://assets/images/StoreScreenshot.png" id="2_ovrgc"]
+[ext_resource type="Texture2D" uid="uid://4d583oth5smh" path="res://assets/images/UFO_Eggs.png" id="2_nkawv"]
 [ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="3_1hnlc"]
+[ext_resource type="FontFile" uid="uid://c5smmmli4hgm" path="res://assets/fonts/Atmospheric/aAtmospheric.ttf" id="3_nkawv"]
 [ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="4_50h1w"]
+[ext_resource type="FontFile" uid="uid://bnba6vpbcdga7" path="res://assets/fonts/Space/a_space/A-Space Italic Demo.otf" id="4_w32d4"]
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="5_euy4r"]
 [ext_resource type="Texture2D" uid="uid://blae7m4aomsr3" path="res://assets/images/menu_button_normal_grey.png" id="6_3w8rc"]
 [ext_resource type="Script" uid="uid://bimg6esvjfivg" path="res://scripts/menus/button_hover_text_size.gd" id="6_a3hrp"]
@@ -224,7 +226,7 @@ grow_vertical = 2
 [node name="TextureRect" type="TextureRect" parent="ImageContainer" unique_id=150316271]
 custom_minimum_size = Vector2(900, 800)
 layout_mode = 2
-texture = ExtResource("2_ovrgc")
+texture = ExtResource("2_nkawv")
 expand_mode = 1
 stretch_mode = 5
 
@@ -244,8 +246,10 @@ theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/shadow_offset_x = 5
 theme_override_constants/shadow_offset_y = 5
 theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("3_nkawv")
 theme_override_font_sizes/font_size = 90
-text = "Grocery Getter"
+text = "Galactic Grocers"
+vertical_alignment = 1
 
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=838868233]
 layout_mode = 1
@@ -270,6 +274,7 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("3_nkawv")
 theme_override_font_sizes/font_size = 51
 text = "MAIN MENU"
 horizontal_alignment = 1
@@ -277,6 +282,7 @@ horizontal_alignment = 1
 [node name="ContinueGameButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=2032042663]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
@@ -288,6 +294,7 @@ script = ExtResource("6_a3hrp")
 [node name="NewGameButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1826968477]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
@@ -299,6 +306,7 @@ script = ExtResource("6_a3hrp")
 [node name="JoinButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1494536901]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
@@ -310,6 +318,7 @@ script = ExtResource("6_a3hrp")
 [node name="OptionsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=697564445]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
@@ -321,6 +330,7 @@ script = ExtResource("6_a3hrp")
 [node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=313277346]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
@@ -378,6 +388,7 @@ theme_override_constants/separation = 20
 
 [node name="TitleLabel" type="Label" parent="SaveSlotPanel/MarginContainer/VBoxContainer" unique_id=403438168]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_nkawv")
 theme_override_font_sizes/font_size = 26
 text = "SELECT SAVE SLOT"
 horizontal_alignment = 1
@@ -390,6 +401,7 @@ custom_minimum_size = Vector2(400, 60)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
@@ -424,6 +436,7 @@ custom_minimum_size = Vector2(400, 60)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
@@ -458,6 +471,7 @@ custom_minimum_size = Vector2(400, 60)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
@@ -492,6 +506,7 @@ custom_minimum_size = Vector2(400, 60)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
@@ -527,6 +542,7 @@ layout_mode = 2
 focus_neighbor_bottom = NodePath("../../BackButton")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
@@ -557,6 +573,7 @@ highlighted_font_size = 24
 custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_pqks5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_ygobi")
@@ -597,6 +614,7 @@ theme_override_constants/separation = 20
 
 [node name="TitleLabel" type="Label" parent="HostPrivacyPanel/MarginContainer/VBoxContainer" unique_id=422371782]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_nkawv")
 theme_override_font_sizes/font_size = 30
 text = "HOST GAME - PRIVACY"
 horizontal_alignment = 1
@@ -605,6 +623,7 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
@@ -616,6 +635,7 @@ text = "Friends Can Join."
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.9999998, 0.9120543, 0.31310886, 1)
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
@@ -626,6 +646,7 @@ text = "Invite Only."
 [node name="BackButton" type="Button" parent="HostPrivacyPanel/MarginContainer/VBoxContainer" unique_id=1312620948]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_0pbgw")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_cybf0")
@@ -673,6 +694,7 @@ theme_override_constants/separation = 40
 
 [node name="TitleLabel" type="Label" parent="PlayModePanel/VBoxContainer" unique_id=1701793449]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_nkawv")
 theme_override_font_sizes/font_size = 30
 text = "CHOOSE THE SESSION TYPE"
 horizontal_alignment = 1
@@ -686,6 +708,7 @@ custom_minimum_size = Vector2(320, 110)
 layout_mode = 2
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxTexture_bh4e2")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_3w8rc")
@@ -701,6 +724,7 @@ custom_minimum_size = Vector2(320, 110)
 layout_mode = 2
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxTexture_w32d4")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_287l7")
@@ -715,6 +739,7 @@ highlighted_font_size = 44
 custom_minimum_size = Vector2(0, 75)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_w32d4")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_pqks5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_ygobi")

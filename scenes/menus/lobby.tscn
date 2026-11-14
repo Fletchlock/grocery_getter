@@ -7,6 +7,8 @@
 [ext_resource type="ArrayMesh" uid="uid://r2s70fshqswd" path="res://assets/models/characters/alien_character_Cube_035.res" id="5_mb6ek"]
 [ext_resource type="ArrayMesh" uid="uid://c81ei1hc8p5vd" path="res://assets/models/characters/alien_character_hat_Cube_036.res" id="6_22xsj"]
 [ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="7_fv84f"]
+[ext_resource type="FontFile" uid="uid://c5smmmli4hgm" path="res://assets/fonts/Atmospheric/aAtmospheric.ttf" id="7_s1tg1"]
+[ext_resource type="FontFile" uid="uid://bnba6vpbcdga7" path="res://assets/fonts/Space/a_space/A-Space Italic Demo.otf" id="8_87k40"]
 [ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="8_717b7"]
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="9_djew5"]
 [ext_resource type="Texture2D" uid="uid://t2dedkvcii" path="res://assets/images/menu_button_disabled_grey.png" id="10_717b7"]
@@ -335,6 +337,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="Players" type="Label" parent="CanvasLayer/PlayerList" unique_id=1307389534]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("7_s1tg1")
 theme_override_font_sizes/font_size = 30
 text = "Players in lobby               "
 
@@ -342,6 +345,7 @@ text = "Players in lobby               "
 layout_mode = 2
 offset_transform_enabled = true
 offset_transform_position = Vector2(45, 0)
+theme_override_fonts/font = ExtResource("8_87k40")
 theme_override_font_sizes/font_size = 24
 text = "Player 1"
 
@@ -363,6 +367,7 @@ expand_mode = 1
 layout_mode = 2
 offset_transform_enabled = true
 offset_transform_position = Vector2(45, 0)
+theme_override_fonts/font = ExtResource("8_87k40")
 theme_override_font_sizes/font_size = 24
 text = "Player 2"
 
@@ -384,6 +389,7 @@ expand_mode = 1
 layout_mode = 2
 offset_transform_enabled = true
 offset_transform_position = Vector2(45, 0)
+theme_override_fonts/font = ExtResource("8_87k40")
 theme_override_font_sizes/font_size = 24
 text = "Player 3"
 
@@ -405,6 +411,7 @@ expand_mode = 1
 layout_mode = 2
 offset_transform_enabled = true
 offset_transform_position = Vector2(45, 0)
+theme_override_fonts/font = ExtResource("8_87k40")
 theme_override_font_sizes/font_size = 24
 text = "Player 4"
 
@@ -441,6 +448,7 @@ alignment = 2
 custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
 size_flags_vertical = 4
+theme_override_fonts/font = ExtResource("8_87k40")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
@@ -456,6 +464,7 @@ highlighted_font_size = 34
 custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
 size_flags_vertical = 4
+theme_override_fonts/font = ExtResource("8_87k40")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
@@ -471,6 +480,7 @@ highlighted_font_size = 34
 custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
 size_flags_vertical = 4
+theme_override_fonts/font = ExtResource("8_87k40")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
@@ -485,6 +495,7 @@ highlighted_font_size = 34
 custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
 size_flags_vertical = 4
+theme_override_fonts/font = ExtResource("8_87k40")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
@@ -513,6 +524,7 @@ grow_vertical = 2
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
+theme_override_fonts/font = ExtResource("7_s1tg1")
 theme_override_font_sizes/font_size = 40
 text = "Select Character"
 
@@ -525,6 +537,7 @@ theme_override_constants/separation = 40
 [node name="RedButton" type="Button" parent="VBoxContainer/CharacterSelection" unique_id=188494757]
 custom_minimum_size = Vector2(120, 75)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("8_87k40")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
@@ -538,6 +551,7 @@ highlighted_font_size = 34
 [node name="GreenButton" type="Button" parent="VBoxContainer/CharacterSelection" unique_id=1246164382]
 custom_minimum_size = Vector2(120, 75)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("8_87k40")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
@@ -551,6 +565,7 @@ highlighted_font_size = 34
 [node name="BlueButton" type="Button" parent="VBoxContainer/CharacterSelection" unique_id=1001545074]
 custom_minimum_size = Vector2(120, 75)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("8_87k40")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
