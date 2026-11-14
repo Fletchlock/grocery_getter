@@ -349,3 +349,35 @@ func clear_cancelled_checkout(order_id: int) -> void:
 		"ORDER GRID: Cleared cancelled order #",
 		order_id
 	)
+
+
+func _give_product_to_player(
+	player: CharacterBody3D,
+	product: ProductData
+) -> void:
+	if player == null or product == null:
+		return
+
+	var peer_id: int = player.get_multiplayer_authority()
+	var order: OrderData = get_checkout_order(peer_id)
+
+	if order == null:
+		return
+
+	var origin: int = player.ItemOrigin.ORDER_GRID
+
+	player.held_item_origin = origin
+
+	if peer_id == multiplayer.get_unique_id():
+		player.receive_product(
+			product.resource_path,
+			origin,
+			order.order_id
+		)
+	else:
+		player.receive_product.rpc_id(
+			peer_id,
+			product.resource_path,
+			origin,
+			order.order_id
+		)
