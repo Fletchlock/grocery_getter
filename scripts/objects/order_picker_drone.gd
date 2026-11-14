@@ -146,6 +146,8 @@ func _physics_process(delta: float) -> void:
 	var previous_position: Vector3 = global_position
 
 	if multiplayer.is_server():
+		_check_cancelled_order()
+		
 		match state:
 			DroneState.FLYING, DroneState.DELIVERING:
 				_update_flight(delta)
@@ -1161,3 +1163,51 @@ func _finish_delivery_visual() -> void:
 
 	delivery_visual.queue_free()
 	delivery_visual = null
+
+
+func _check_cancelled_order() -> void:
+	if not multiplayer.is_server():
+		return
+
+	if active_order_id < 0:
+		return
+
+	var order: OrderData = OrderManager.get_order(active_order_id)
+
+	if order != null and order.state == OrderData.OrderState.ACTIVE:
+		return
+
+	# Stop collection and delivery immediately.
+	collected_products.clear()
+	route_displays.clear()
+	product_points.clear()
+
+	pickup_remaining = 0
+	pickup_interval_timer = 0.0
+	pickup_finishing = false
+	pause_timer = 0.0
+
+	delivery_waiting = false
+	delivery_product_path = ""
+	delivery_grid = null
+	delivery_timer = 0.0
+
+	network_beam_active = false
+
+	if is_instance_valid(pickup_product):
+		pickup_product.queue_free()
+		pickup_product = null
+
+	_finish_delivery_visual.rpc()
+
+	print(
+		"ORDER DRONE: Aborted inactive order #",
+		active_order_id
+	)
+
+	active_order_id = -1
+
+	# Return home before accepting another order.
+	state = DroneState.RETURNING
+	target_position = home_position
+	current_speed = 0.0
