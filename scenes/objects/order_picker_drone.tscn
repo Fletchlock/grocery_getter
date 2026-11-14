@@ -4,6 +4,10 @@
 [ext_resource type="Script" uid="uid://tbl6ikbvb30a" path="res://scripts/objects/order_picker_drone.gd" id="1_hnauv"]
 [ext_resource type="Shader" uid="uid://c1xirpity4fdg" path="res://beam_cone.gdshader" id="2_w6yxi"]
 [ext_resource type="Shader" uid="uid://ce6iv43ip7wn" path="res://scenes/objects/energy_rings.gdshader" id="4_w6yxi"]
+[ext_resource type="AudioStream" uid="uid://bbuf6k6nw3lro" path="res://assets/sounds/UFO_Beam.wav" id="5_h06iv"]
+[ext_resource type="AudioStream" uid="uid://c2ysrxi2k8a0h" path="res://assets/sounds/UFO_Beam_Inside.wav" id="6_vwuvk"]
+[ext_resource type="AudioStream" uid="uid://dnmbmby4bke12" path="res://assets/sounds/UFO_Idle_Start.wav" id="7_ps64h"]
+[ext_resource type="AudioStream" uid="uid://b7nyt733ujj4m" path="res://assets/sounds/UFO_Idle_Loop.wav" id="8_vwuvk"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_6aigx"]
 top_radius = 0.08
@@ -37,6 +41,8 @@ shader_parameter/ring_speed = 1.0000000475
 shader_parameter/ring_width = 0.045
 shader_parameter/ring_brightness = 3.0
 shader_parameter/ring_opacity = 0.8
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_djci4"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_6aigx"]
 height = 0.15913086
@@ -82,6 +88,51 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 mesh = SubResource("CylinderMesh_hd853")
 surface_material_override/0 = SubResource("ShaderMaterial_7ajv0")
 
+[node name="BeamDetection" type="Area3D" parent="DroneVisual/TractorBeam" unique_id=451818348]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.058290392, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DroneVisual/TractorBeam/BeamDetection" unique_id=2024252548]
+transform = Transform3D(0.715, 0, 0, 0, 1.055, 0, 0, 0, 0.715, 0, -0.92, 0)
+shape = SubResource("CylinderShape3D_djci4")
+
+[node name="BeamNormalAudio" type="AudioStreamPlayer3D" parent="DroneVisual" unique_id=152663010]
+stream = ExtResource("5_h06iv")
+volume_db = -12.0
+unit_size = 5.0
+max_db = 0.0
+max_distance = 5.0
+bus = &"SFX"
+
+[node name="BeamInsideAudio" type="AudioStreamPlayer3D" parent="DroneVisual" unique_id=418207931]
+stream = ExtResource("6_vwuvk")
+volume_db = -12.0
+unit_size = 5.0
+max_db = 0.0
+max_distance = 5.0
+bus = &"SFX"
+
+[node name="IdleStartAudio" type="AudioStreamPlayer3D" parent="DroneVisual" unique_id=732160343]
+stream = ExtResource("7_ps64h")
+volume_db = -12.0
+unit_size = 3.0
+max_db = 0.0
+autoplay = true
+max_distance = 5.0
+bus = &"SFX"
+
+[node name="IdleLoopAudio" type="AudioStreamPlayer3D" parent="DroneVisual" unique_id=773568865]
+stream = ExtResource("8_vwuvk")
+volume_db = -12.0
+unit_size = 3.0
+max_db = 0.0
+max_distance = 5.0
+bus = &"SFX"
+
+[node name="IdleLoopTimer" type="Timer" parent="DroneVisual" unique_id=1241067788]
+wait_time = 8.0
+one_shot = true
+autostart = true
+
 [node name="RidePlatform" type="AnimatableBody3D" parent="." unique_id=1757142886]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 sync_to_physics = false
@@ -94,3 +145,7 @@ debug_color = Color(0.8745098, 0.03137255, 0.83137256, 1)
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1459057937]
 replication_interval = 0.05
 replication_config = SubResource("SceneReplicationConfig_hnauv")
+
+[connection signal="body_entered" from="DroneVisual/TractorBeam/BeamDetection" to="." method="_on_beam_detection_body_entered"]
+[connection signal="body_exited" from="DroneVisual/TractorBeam/BeamDetection" to="." method="_on_beam_detection_body_exited"]
+[connection signal="timeout" from="DroneVisual/IdleLoopTimer" to="." method="_on_idle_loop_timer_timeout"]
