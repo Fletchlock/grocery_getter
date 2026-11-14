@@ -515,6 +515,10 @@ func _collect_one_product() -> void:
 		return
 
 	var product_path: String = taken_product.resource_path
+	OrderManager.record_order_stock_taken(
+		active_order_id,
+		taken_product
+	)
 
 	collected_products[product_path] = (
 		int(collected_products.get(product_path, 0)) + 1

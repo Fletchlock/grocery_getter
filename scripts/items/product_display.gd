@@ -292,7 +292,15 @@ func _take_product(player: CharacterBody3D) -> void:
 		return
 
 	quantity -= 1
+	
+	var peer_id: int = player.get_multiplayer_authority()
+	var active_order: OrderData = OrderManager.get_player_order(peer_id)
 
+	if active_order != null:
+		OrderManager.record_order_stock_taken(
+			active_order.order_id,
+			product_data
+		)
 
 	var product_path: String = product_data.resource_path
 
@@ -358,6 +366,15 @@ func _return_product(player: CharacterBody3D) -> void:
 		return
 
 	quantity += 1
+	var active_order: OrderData = OrderManager.get_player_order(
+		player.get_multiplayer_authority()
+	)
+
+	if active_order != null:
+		OrderManager.record_order_stock_returned(
+			active_order.order_id,
+			product_data
+		)
 
 	player.held_item_origin = player.ItemOrigin.NONE
 
