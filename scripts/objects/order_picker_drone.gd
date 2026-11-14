@@ -55,6 +55,14 @@ var beam_extension: float = 0.0
 @export_range(0.1, 0.8, 0.05) var pickup_centering_fraction: float = 0.30
 
 @onready var tractor_beam: Node3D = $DroneVisual/TractorBeam
+@onready var beam_normal_audio: AudioStreamPlayer3D = $DroneVisual/BeamNormalAudio
+@onready var beam_inside_audio: AudioStreamPlayer3D = $DroneVisual/BeamInsideAudio
+
+var players_in_beam: Array[Node3D] = []
+var beam_audio_playing: bool = false
+
+const BEAM_AUDIO_FADE_SPEED: float = 120.0
+const BEAM_AUDIO_SILENT_DB: float = -60.0
 
 var pickup_product: MeshInstance3D = null
 var pickup_elapsed: float = 0.0
@@ -208,6 +216,7 @@ func _physics_process(delta: float) -> void:
 		drone_visual.rotation.z = sway_roll
 		
 	_update_tractor_beam(delta)
+	_update_beam_audio(delta)
 	_update_product_pickup(delta)
 	_update_delivery_visual(delta)
 	_update_ride_platform_rotation()
@@ -1211,3 +1220,68 @@ func _check_cancelled_order() -> void:
 	state = DroneState.RETURNING
 	target_position = home_position
 	current_speed = 0.0
+
+
+func _on_idle_loop_timer_timeout() -> void:
+	print("Idle loop timer fired!")
+	print($DroneVisual/IdleLoopAudio.stream)
+	$DroneVisual/IdleLoopAudio.play()
+	print("Is playing: ", $DroneVisual/IdleLoopAudio.playing)
+
+
+func _on_beam_detection_body_entered(body: Node3D) -> void:
+	if body.is_in_group("player"):
+		if not players_in_beam.has(body):
+			players_in_beam.append(body)
+
+
+func _on_beam_detection_body_exited(body: Node3D) -> void:
+	if body.is_in_group("player"):
+		players_in_beam.erase(body)
+
+
+func _update_beam_audio(delta: float) -> void:
+
+	# Start both sounds together when the tractor beam activates.
+	if network_beam_active and not beam_audio_playing:
+
+		beam_audio_playing = true
+
+		beam_normal_audio.volume_db = 0.0
+		beam_inside_audio.volume_db = BEAM_AUDIO_SILENT_DB
+
+		beam_normal_audio.play()
+		beam_inside_audio.play()
+
+	# Stop both sounds when the tractor beam deactivates.
+	elif not network_beam_active and beam_audio_playing:
+
+		beam_normal_audio.stop()
+		beam_inside_audio.stop()
+
+		beam_audio_playing = false
+
+	# Crossfade between the sounds while the beam is active.
+	if beam_audio_playing:
+
+		var normal_target: float
+		var inside_target: float
+
+		if players_in_beam.is_empty():
+			normal_target = 0.0
+			inside_target = BEAM_AUDIO_SILENT_DB
+		else:
+			normal_target = BEAM_AUDIO_SILENT_DB
+			inside_target = 0.0
+
+		beam_normal_audio.volume_db = move_toward(
+			beam_normal_audio.volume_db,
+			normal_target,
+			BEAM_AUDIO_FADE_SPEED * delta
+		)
+
+		beam_inside_audio.volume_db = move_toward(
+			beam_inside_audio.volume_db,
+			inside_target,
+			BEAM_AUDIO_FADE_SPEED * delta
+		)
