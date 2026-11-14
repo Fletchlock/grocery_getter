@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://b3ch0sgodv70f" path="res://assets/images/order_notify_bg_blue.png" id="1_me23d"]
 [ext_resource type="Script" uid="uid://dgd0yhej1o8qr" path="res://scripts/UI/order_notification.gd" id="1_tobjv"]
+[ext_resource type="FontFile" uid="uid://l4qtp4o8qy1x" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-Bold.ttf" id="3_n0nf4"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_h6ycq"]
 texture = ExtResource("1_me23d")
@@ -30,7 +31,8 @@ script = ExtResource("1_tobjv")
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 22
+theme_override_fonts/font = ExtResource("3_n0nf4")
+theme_override_font_sizes/font_size = 30
 text = "Order 01 - Fletchlock - 1m45s"
 horizontal_alignment = 1
 vertical_alignment = 1

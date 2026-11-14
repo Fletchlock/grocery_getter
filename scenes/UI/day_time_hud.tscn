@@ -10,7 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://ifkotnnto2y6" path="res://assets/images/order_notify_bg_dk_grey.png" id="6_xiw3s"]
 [ext_resource type="Texture2D" uid="uid://b1pmpfog6myug" path="res://assets/images/star_unfilled.png" id="7_lc70o"]
 [ext_resource type="Texture2D" uid="uid://cbem724xdcnhn" path="res://assets/images/star_filled.png" id="8_newvj"]
-[ext_resource type="FontFile" uid="uid://c370it7ifsg28" path="res://assets/fonts/Space/a_space/A-Space Bold Demo.otf" id="8_qlfp5"]
+[ext_resource type="FontFile" uid="uid://l4qtp4o8qy1x" path="res://assets/fonts/Ubuntu_Mono/UbuntuMono-Bold.ttf" id="8_qlfp5"]
 [ext_resource type="PackedScene" uid="uid://cjnto3v2tcbd3" path="res://scenes/UI/PlayerHud.tscn" id="9_newvj"]
 [ext_resource type="Texture2D" uid="uid://dcbfwxda8kuuw" path="res://assets/images/order_notify_bg_grey.png" id="10_2toow"]
 [ext_resource type="Texture2D" uid="uid://bej7ittej76m0" path="res://assets/images/order_notify_bg_red.png" id="10_xiw3s"]
@@ -176,8 +176,8 @@ theme_override_constants/separation = 0
 
 [node name="ShopperIcon" type="TextureRect" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer" unique_id=1162855308]
 texture_filter = 3
-custom_minimum_size = Vector2(24, 24)
-custom_maximum_size = Vector2(24, 24)
+custom_minimum_size = Vector2(30, 30)
+custom_maximum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
@@ -193,12 +193,13 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.39215687)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 6
 theme_override_constants/shadow_outline_size = 2
 theme_override_fonts/font = ExtResource("8_qlfp5")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 30
 text = "10"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ClockLabel" type="Label" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer" unique_id=978800866]
 layout_mode = 2
@@ -207,10 +208,10 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.39215687)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_constants/outline_size = 4
+theme_override_constants/outline_size = 6
 theme_override_constants/shadow_outline_size = 2
 theme_override_fonts/font = ExtResource("8_qlfp5")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 30
 text = "DAY: 01    TIME: 07:00 AM   $10000.00"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -222,8 +223,8 @@ alignment = 1
 
 [node name="StoreIcon" type="TextureRect" parent="TopCenterContainer/VBoxContainer/PanelContainer/HBoxContainer/ReputationContainer" unique_id=554188307]
 texture_filter = 3
-custom_minimum_size = Vector2(32, 32)
-custom_maximum_size = Vector2(24, 24)
+custom_minimum_size = Vector2(34, 34)
+custom_maximum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4

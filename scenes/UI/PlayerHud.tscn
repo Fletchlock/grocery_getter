@@ -1,7 +1,9 @@
 [gd_scene format=3 uid="uid://cjnto3v2tcbd3"]
 
 [ext_resource type="Texture2D" uid="uid://b3ch0sgodv70f" path="res://assets/images/order_notify_bg_blue.png" id="1_qqktu"]
+[ext_resource type="FontFile" uid="uid://bnba6vpbcdga7" path="res://assets/fonts/Space/a_space/A-Space Italic Demo.otf" id="2_4qear"]
 [ext_resource type="AudioStream" uid="uid://2dgca1g582ma" path="res://assets/sounds/scan_code_scale.wav" id="2_qqktu"]
+[ext_resource type="FontFile" uid="uid://c5smmmli4hgm" path="res://assets/fonts/Atmospheric/aAtmospheric.ttf" id="3_h7i0i"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_h6ycq"]
 texture = ExtResource("1_qqktu")
@@ -28,21 +30,25 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_h6ycq")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=800635377]
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_vertical = 4
 
 [node name="Customize" type="Button" parent="VBoxContainer" unique_id=607906378]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_4qear")
 theme_override_font_sizes/font_size = 45
 text = "Customize"
 
 [node name="Achievements" type="Button" parent="VBoxContainer" unique_id=386894225]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_4qear")
 theme_override_font_sizes/font_size = 45
 text = "Achievements"
 
 [node name="ProductsList" type="Button" parent="VBoxContainer" unique_id=814067409]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_4qear")
 theme_override_font_sizes/font_size = 45
 text = "Products List"
 
@@ -51,33 +57,38 @@ visible = false
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CustomizeMenu" unique_id=1318362885]
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -164.5
+offset_left = -250.0
 offset_top = -110.5
-offset_right = 164.5
-offset_bottom = 110.5
+offset_right = 250.0
+offset_bottom = 108.0
 grow_horizontal = 2
 grow_vertical = 2
+alignment = 1
 
 [node name="Outfits" type="Button" parent="CustomizeMenu/VBoxContainer" unique_id=336408972]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_4qear")
 theme_override_font_sizes/font_size = 45
 text = "Outfits
 "
 
 [node name="ScannerScales" type="Button" parent="CustomizeMenu/VBoxContainer" unique_id=1962635548]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_4qear")
 theme_override_font_sizes/font_size = 45
 text = "Scanner Scales
 "
 
 [node name="Back" type="Button" parent="CustomizeMenu/VBoxContainer" unique_id=340473930]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_4qear")
 theme_override_font_sizes/font_size = 45
 text = "Back"
 
@@ -92,6 +103,8 @@ offset_bottom = 40.0
 
 [node name="ScaleSelect" type="MenuButton" parent="ScannerScalesMenu/VBoxContainer" unique_id=509898520]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("3_h7i0i")
+theme_override_font_sizes/font_size = 24
 text = "Scale Select"
 item_count = 3
 popup/item_0/text = "Lydian"
