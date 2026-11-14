@@ -83,6 +83,10 @@ var waiting_order_deadlines: Dictionary = {}
 var pending_order_penalties: Dictionary = {}
 var last_settled_day: int = -1
 
+# Products physically removed from shelves for each order.
+# order_id -> { product_resource_path: quantity }
+var collected_order_stock: Dictionary = {}
+
 # Drone order ownership.
 # -1 means the drone has no claimed order.
 var drone_order_id: int = -1
@@ -922,7 +926,7 @@ func complete_order(order: OrderData) -> void:
 		return
 
 	order.state = OrderData.OrderState.COMPLETED
-	
+	collected_order_stock.erase(order.order_id)
 	_apply_completion_reputation(order)
 	
 	recovery_timer = completion_recovery
@@ -953,6 +957,11 @@ func cancel_order(order: OrderData) -> void:
 		return
 
 	order.state = OrderData.OrderState.CANCELLED
+
+	# Restore products collected for this order.
+	restore_cancelled_order_stock(order.order_id)
+
+	# Clear any checkout belonging to the cancelled order.
 	var order_grids: Array[Node] = get_tree().get_nodes_in_group(
 		"order_grids"
 	)
@@ -961,7 +970,7 @@ func cancel_order(order: OrderData) -> void:
 		if node is OrderGrid:
 			var grid: OrderGrid = node as OrderGrid
 			grid.clear_cancelled_checkout(order.order_id)
-	
+
 	if drone_order_id == order.order_id:
 		drone_order_id = -1
 
@@ -1223,3 +1232,102 @@ func finish_drone_checkout(order_id: int) -> bool:
 	release_drone_order(order_id)
 
 	return true
+
+
+func record_order_stock_taken(
+	order_id: int,
+	product: ProductData
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if product == null:
+		return
+
+	var order: OrderData = get_order(order_id)
+
+	if order == null or order.state != OrderData.OrderState.ACTIVE:
+		return
+
+	if not collected_order_stock.has(order_id):
+		collected_order_stock[order_id] = {}
+
+	var stock: Dictionary = collected_order_stock[order_id]
+	var path: String = product.resource_path
+
+	stock[path] = int(stock.get(path, 0)) + 1
+
+
+func record_order_stock_returned(
+	order_id: int,
+	product: ProductData
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if product == null:
+		return
+
+	if not collected_order_stock.has(order_id):
+		return
+
+	var stock: Dictionary = collected_order_stock[order_id]
+	var path: String = product.resource_path
+	var count: int = int(stock.get(path, 0))
+
+	if count <= 0:
+		return
+
+	if count == 1:
+		stock.erase(path)
+	else:
+		stock[path] = count - 1
+
+
+func restore_cancelled_order_stock(order_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if not collected_order_stock.has(order_id):
+		return
+
+	var stock: Dictionary = collected_order_stock[order_id]
+	var displays: Array[Node] = get_tree().get_nodes_in_group(
+		"product_displays"
+	)
+
+	for product_path: String in stock:
+		var remaining: int = int(stock[product_path])
+
+		for node: Node in displays:
+			var display: Node3D = node as Node3D
+
+			if display == null or display.product_data == null:
+				continue
+
+			if display.product_data.resource_path != product_path:
+				continue
+
+			var available_space: int = maxi(
+				display.max_quantity - display.quantity,
+				0
+			)
+
+			var restore_amount: int = mini(
+				remaining,
+				available_space
+			)
+
+			display.quantity += restore_amount
+			remaining -= restore_amount
+
+			if remaining <= 0:
+				break
+
+		if remaining > 0:
+			push_warning(
+				"ORDER RESTORE: Could not return %d units of %s"
+				% [remaining, product_path]
+			)
+
+	collected_order_stock.erase(order_id)
