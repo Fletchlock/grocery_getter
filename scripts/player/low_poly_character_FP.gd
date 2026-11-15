@@ -102,7 +102,10 @@ const NORMAL_INTERPOLATION_DELAY := 0.07
 const PLATFORM_INTERPOLATION_DELAY := 0.05
 
 @export_group("UI Navigation")
-@export var gamepad_cursor_speed := 800.0
+@export var gamepad_cursor_speed: float = 500.0 #base spped
+
+@export_group("Checkout Cursor")
+@export_range(1.0, 5.0, 0.1) var checkout_controller_sensitivity: float = 2.0 #base speed multiplier
 
 @export_group("Blink")
 @export var blink_min_time: float = 2.5 ## Minimum time to wait before a blink.
@@ -1016,7 +1019,15 @@ func _physics_process(delta: float) -> void:
 
 
 	# === 2. Directional Movement ===
-
+	if checkout_mode_active:
+		if Input.get_vector("left", "right", "up", "down").length() > 0.15:
+			print(
+				"CHECKOUT: movement_locked=", movement_locked,
+				" | velocity=", velocity,
+				" | position=", global_position
+			)
+	
+	
 	var raw_input: Vector2 = Vector2.ZERO
 
 	if can_process_gameplay_input() and not movement_locked:
@@ -2486,7 +2497,7 @@ func handle_restock_scanner_input(event: InputEvent) -> bool:
 		return false
 
 	if not held_restock_scanner.order_selection_active:
-		if event.is_action_pressed("interact"):
+		if event.is_action_pressed("interact") and Input.is_action_just_pressed("interact"):
 			var display: Node = held_restock_scanner.get_targeted_product_display(
 				interact_raycast_3d
 			)
@@ -2524,7 +2535,7 @@ func handle_restock_scanner_input(event: InputEvent) -> bool:
 
 		return false
 
-	if event.is_action_pressed("interact"):
+	if event.is_action_pressed("interact") and Input.is_action_just_pressed("interact"):
 		held_restock_scanner.confirm_order_selection()
 		return true
 
@@ -3278,6 +3289,10 @@ func network_play_footstep(volume: float, pitch: float) -> void:
 
 
 func set_movement_locked(locked: bool) -> void:
+	if checkout_mode_active and not locked:
+		print("Movement unlock ignored: checkout is active")
+		return
+		
 	movement_locked = locked
 	
 	if not locked:
@@ -3451,11 +3466,30 @@ func exit_checkout_mode() -> void:
 
 	var checkout_to_release: Checkout = active_checkout
 
-	if is_instance_valid(active_checkout):
-		active_checkout.clear_checkout_hover_outlines()
-		active_checkout.hide_checkout_instructions()
-
 	checkout_mode_active = false
+
+	# Match the player's view direction to the checkout camera.
+	if is_instance_valid(checkout_to_release):
+		if is_instance_valid(checkout_to_release.checkout_camera):
+			var checkout_rotation: Vector3 = (
+				checkout_to_release.checkout_camera.global_rotation
+			)
+
+			# Horizontal facing direction.
+			global_rotation.y = checkout_rotation.y
+
+			# Vertical look direction.
+			_first_person_pivot.rotation.x = clampf(
+				checkout_rotation.x,
+				deg_to_rad(-80.0),
+				deg_to_rad(80.0)
+			)
+
+	# Restore the previous camera.
+	if is_instance_valid(checkout_previous_camera):
+		checkout_previous_camera.make_current()
+	else:
+		_first_person_camera.make_current()
 
 	# Restore the previous camera.
 	if is_instance_valid(checkout_previous_camera):
@@ -3621,7 +3655,10 @@ func update_checkout_controller_cursor(delta: float) -> void:
 	)
 
 	checkout_virtual_mouse_position += (
-		stick_input * gamepad_cursor_speed * delta
+		stick_input
+		* gamepad_cursor_speed
+		* checkout_controller_sensitivity
+		* delta
 	)
 
 	checkout_virtual_mouse_position = (
