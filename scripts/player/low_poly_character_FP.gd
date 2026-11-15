@@ -3603,10 +3603,10 @@ func update_checkout_mouse_cursor() -> void:
 		# Only synchronize from the physical mouse when the
 		# controller is not actively moving the cursor.
 		var controller_cursor_input: Vector2 = Input.get_vector(
-			"left",
-			"right",
-			"up",
-			"down"
+			"checkout_cursor_left",
+			"checkout_cursor_right",
+			"checkout_cursor_up",
+			"checkout_cursor_down"
 		)
 
 		if controller_cursor_input.length() < 0.15:
@@ -3625,10 +3625,10 @@ func update_checkout_controller_cursor(delta: float) -> void:
 		return
 
 	var stick_input: Vector2 = Input.get_vector(
-		"left",
-		"right",
-		"up",
-		"down"
+		"checkout_cursor_left",
+		"checkout_cursor_right",
+		"checkout_cursor_up",
+		"checkout_cursor_down"
 	)
 	
 	if stick_input.length() > 0.15:
