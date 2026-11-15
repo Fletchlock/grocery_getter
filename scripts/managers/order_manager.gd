@@ -19,10 +19,10 @@ const CANCELLED_ORDER_PENALTY: float = -1.0
 const INCORRECT_ITEM_PENALTY: float = -0.5
 
 @export_group("Order Generation")
-@export var min_products: int = 3
+@export var min_products: int = 2
 @export var max_products: int = 5
 @export var min_items: int = 1
-@export var max_items: int = 1
+@export var max_items: int = 3
 
 var available_products: Array[ProductData] = []
 
@@ -551,6 +551,24 @@ func _create_order() -> OrderData:
 	order_generated.emit(order)
 	
 	return order
+
+
+func debug_spawn_order() -> void:
+	if not multiplayer.is_server():
+		return
+
+	if available_products.is_empty():
+		_collect_available_products()
+
+	if available_products.is_empty():
+		push_warning("TEST: No available products to generate an order.")
+		return
+
+	var order: OrderData = _create_order()
+
+	_sync_orders()
+
+	print("TEST: Manually generated online order #", order.order_id)
 
 
 func get_orders() -> Array[OrderData]:

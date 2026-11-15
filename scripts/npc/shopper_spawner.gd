@@ -38,6 +38,8 @@ var current_max_shoppers: int = 0
 
 
 func _ready() -> void:
+	add_to_group("shopper_spawner") 
+
 	randomize()
 
 	multiplayer_shopper_spawner.spawn_function = _spawn_shopper

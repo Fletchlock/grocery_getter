@@ -60,6 +60,7 @@ var beam_extension: float = 0.0
 
 var players_in_beam: Array[Node3D] = []
 var beam_audio_playing: bool = false
+var beam_audio_started: bool = false
 
 const BEAM_AUDIO_FADE_SPEED: float = 120.0
 const BEAM_AUDIO_SILENT_DB: float = -60.0
@@ -77,6 +78,10 @@ var collected_products: Dictionary = {}
 var pickup_remaining: int = 0
 var pickup_interval_timer: float = 0.0
 var pickup_finishing: bool = false
+
+var pickup_item_duration: float = 0.0
+var pickup_interval_duration: float = 0.0
+var pickup_animation_duration: float = 0.0
 
 @export_group("Product Delivery")
 @export var delivery_duration: float = 2.0
@@ -454,6 +459,16 @@ func _begin_display_collection() -> void:
 			pickup_remaining = item.quantity
 			break
 
+	if pickup_remaining > 0:
+		pickup_item_duration = pickup_duration / float(pickup_remaining)
+		pickup_interval_duration = (
+			(pickup_duration + pickup_gap)
+			/ float(pickup_remaining)
+		)
+	else:
+		pickup_item_duration = pickup_duration
+		pickup_interval_duration = pickup_duration + pickup_gap
+
 	print(
 		"ORDER DRONE: Collecting ",
 		data.display_name,
@@ -463,7 +478,10 @@ func _begin_display_collection() -> void:
 
 
 func _update_display_collection(delta: float) -> void:
+
+	# Handle the delay after finishing a display.
 	if pickup_finishing:
+
 		pause_timer -= delta
 
 		if pause_timer <= beam_deactivation_time:
@@ -475,6 +493,7 @@ func _update_display_collection(delta: float) -> void:
 
 		return
 
+	# Continue collecting products.
 	pickup_interval_timer -= delta
 
 	if pickup_interval_timer > 0.0:
@@ -490,7 +509,7 @@ func _update_display_collection(delta: float) -> void:
 
 	_collect_one_product()
 
-	pickup_interval_timer = pickup_duration + pickup_gap
+	pickup_interval_timer = pickup_interval_duration
 
 
 func _collect_one_product() -> void:
@@ -538,7 +557,11 @@ func _collect_one_product() -> void:
 	pickup_remaining -= 1
 
 	# Play the existing visual pickup on every peer.
-	_play_collection_animation(display, taken_product)
+	_play_collection_animation(
+		display,
+		taken_product,
+		pickup_item_duration
+	)
 
 	print(
 		"ORDER DRONE: Picked up ",
@@ -552,7 +575,8 @@ func _collect_one_product() -> void:
 
 func _play_collection_animation(
 	display: Node3D,
-	data: ProductData
+	data: ProductData,
+	animation_duration: float
 ) -> void:
 	if data.product_mesh == null:
 		return
@@ -572,7 +596,8 @@ func _play_collection_animation(
 
 	_start_product_pickup.rpc(
 		data.resource_path,
-		start_position
+		start_position,
+		animation_duration
 	)
 
 
@@ -825,14 +850,16 @@ func _begin_test_pickup() -> void:
 
 	_start_product_pickup.rpc(
 		data.resource_path,
-		start_position
+		start_position,
+		pickup_duration
 	)
 
 
 @rpc("authority", "call_local", "reliable")
 func _start_product_pickup(
 	product_path: String,
-	start_world_position: Vector3
+	start_world_position: Vector3,
+	animation_duration: float
 ) -> void:
 	if pickup_product != null:
 		pickup_product.queue_free()
@@ -858,6 +885,7 @@ func _start_product_pickup(
 	pickup_product.scale = Vector3.ONE
 
 	pickup_elapsed = 0.0
+	pickup_animation_duration = animation_duration
 
 
 func _update_product_pickup(delta: float) -> void:
@@ -867,7 +895,7 @@ func _update_product_pickup(delta: float) -> void:
 	pickup_elapsed += delta
 
 	var progress: float = clampf(
-		pickup_elapsed / maxf(pickup_duration, 0.001),
+		pickup_elapsed / maxf(pickup_animation_duration, 0.001),
 		0.0,
 		1.0
 	)
@@ -1201,6 +1229,12 @@ func _check_cancelled_order() -> void:
 	delivery_grid = null
 	delivery_timer = 0.0
 
+	beam_normal_audio.stop()
+	beam_inside_audio.stop()
+
+	beam_audio_playing = false
+	beam_audio_started = false
+
 	network_beam_active = false
 
 	if is_instance_valid(pickup_product):
@@ -1230,21 +1264,22 @@ func _on_idle_loop_timer_timeout() -> void:
 
 
 func _on_beam_detection_body_entered(body: Node3D) -> void:
-	if body.is_in_group("player"):
+	if body.is_in_group("player") and body.get_multiplayer_authority() == multiplayer.get_unique_id():
 		if not players_in_beam.has(body):
 			players_in_beam.append(body)
 
 
 func _on_beam_detection_body_exited(body: Node3D) -> void:
-	if body.is_in_group("player"):
+	if body.is_in_group("player") and body.get_multiplayer_authority() == multiplayer.get_unique_id():
 		players_in_beam.erase(body)
 
 
 func _update_beam_audio(delta: float) -> void:
 
 	# Start both sounds together when the tractor beam activates.
-	if network_beam_active and not beam_audio_playing:
+	if network_beam_active and not beam_audio_started:
 
+		beam_audio_started = true
 		beam_audio_playing = true
 
 		beam_normal_audio.volume_db = 0.0
@@ -1253,15 +1288,7 @@ func _update_beam_audio(delta: float) -> void:
 		beam_normal_audio.play()
 		beam_inside_audio.play()
 
-	# Stop both sounds when the tractor beam deactivates.
-	elif not network_beam_active and beam_audio_playing:
-
-		beam_normal_audio.stop()
-		beam_inside_audio.stop()
-
-		beam_audio_playing = false
-
-	# Crossfade between the sounds while the beam is active.
+	# Crossfade between the sounds while they are playing.
 	if beam_audio_playing:
 
 		var normal_target: float
@@ -1285,3 +1312,11 @@ func _update_beam_audio(delta: float) -> void:
 			inside_target,
 			BEAM_AUDIO_FADE_SPEED * delta
 		)
+
+		# Playback is finished only after BOTH sounds finish.
+		if not beam_normal_audio.playing and not beam_inside_audio.playing:
+			beam_audio_playing = false
+
+	# Allow another playback on the next beam activation.
+	if not network_beam_active and not beam_audio_playing:
+		beam_audio_started = false
