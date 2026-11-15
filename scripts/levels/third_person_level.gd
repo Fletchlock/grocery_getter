@@ -41,3 +41,34 @@ func _ready() -> void:
 
 	for source in music_sources:
 		source.play()
+
+
+#for SHIFT F5 F6 testing shortcuts
+func _unhandled_key_input(event: InputEvent) -> void:
+	if not event is InputEventKey:
+		return
+
+	if not event.pressed or event.echo:
+		return
+
+	if not event.shift_pressed:
+		return
+
+	if event.physical_keycode == KEY_F5:
+		if not multiplayer.is_server():
+			return
+
+		var shopper_spawner: Node = get_tree().get_first_node_in_group(
+			"shopper_spawner"
+		)
+
+		if shopper_spawner != null:
+			shopper_spawner.spawn_shopper()
+			get_viewport().set_input_as_handled()
+
+	elif event.physical_keycode == KEY_F6:
+		if not multiplayer.is_server():
+			return
+
+		OrderManager.debug_spawn_order()
+		get_viewport().set_input_as_handled()
