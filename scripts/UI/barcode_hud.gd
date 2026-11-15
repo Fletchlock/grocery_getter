@@ -84,13 +84,13 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	var direction := ""
 
-	if event.is_action_pressed("ui_up") and not event.is_echo():
+	if event.is_action_pressed("barcode_up") and not event.is_echo():
 		direction = "U"
-	elif event.is_action_pressed("ui_down") and not event.is_echo():
+	elif event.is_action_pressed("barcode_down") and not event.is_echo():
 		direction = "D"
-	elif event.is_action_pressed("ui_left") and not event.is_echo():
+	elif event.is_action_pressed("barcode_left") and not event.is_echo():
 		direction = "L"
-	elif event.is_action_pressed("ui_right") and not event.is_echo():
+	elif event.is_action_pressed("barcode_right") and not event.is_echo():
 		direction = "R"
 
 	if direction.is_empty():

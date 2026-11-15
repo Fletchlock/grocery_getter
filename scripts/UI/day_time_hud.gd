@@ -709,13 +709,16 @@ func _on_barcode_hud_exited() -> void:
 	if is_instance_valid(barcode_player):
 		barcode_player.velocity.x = 0.0
 		barcode_player.velocity.z = 0.0
-		barcode_player.set_movement_locked(false)
+
+		if not barcode_player.checkout_mode_active:
+			barcode_player.set_movement_locked(false)
 
 	barcode_hud = null
 	barcode_player = null
 	barcode_order_id = -1
 	barcode_checkout = null
 	completed_barcode_code = ""
+	
 
 func close_barcode_hud() -> void:
 	if is_instance_valid(barcode_hud):
