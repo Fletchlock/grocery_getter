@@ -19,10 +19,10 @@ const CANCELLED_ORDER_PENALTY: float = -1.0
 const INCORRECT_ITEM_PENALTY: float = -0.5
 
 @export_group("Order Generation")
-@export var min_products: int = 2
+@export var min_products: int = 3
 @export var max_products: int = 5
 @export var min_items: int = 1
-@export var max_items: int = 3
+@export var max_items: int = 1
 
 var available_products: Array[ProductData] = []
 
