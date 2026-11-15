@@ -3466,6 +3466,10 @@ func exit_checkout_mode() -> void:
 
 	var checkout_to_release: Checkout = active_checkout
 
+	if is_instance_valid(checkout_to_release):
+		checkout_to_release.clear_checkout_hover_outlines()
+		checkout_to_release.hide_checkout_instructions()
+
 	checkout_mode_active = false
 
 	# Match the player's view direction to the checkout camera.
@@ -3484,12 +3488,6 @@ func exit_checkout_mode() -> void:
 				deg_to_rad(-80.0),
 				deg_to_rad(80.0)
 			)
-
-	# Restore the previous camera.
-	if is_instance_valid(checkout_previous_camera):
-		checkout_previous_camera.make_current()
-	else:
-		_first_person_camera.make_current()
 
 	# Restore the previous camera.
 	if is_instance_valid(checkout_previous_camera):

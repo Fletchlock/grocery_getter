@@ -27,7 +27,7 @@ const INCORRECT_ITEM_PENALTY: float = -0.5
 var available_products: Array[ProductData] = []
 
 @export_group("Order Completion Time")
-@export var seconds_per_item: float = 15.0
+@export var seconds_per_item: float = 20.0
 @export var minimum_completion_time: float = 60.0
 @export var time_reduction_per_day: float = 0.03
 @export var maximum_time_reduction: float = 0.40
