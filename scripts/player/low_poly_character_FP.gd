@@ -167,6 +167,14 @@ var checkout_auto_bag_hover_active: bool = false
 var checkout_barcode_product_path: String = ""
 var checkout_virtual_mouse_position: Vector2 = Vector2.ZERO
 var checkout_virtual_mouse_initialized: bool = false
+var checkout_pointer_layer: CanvasLayer = null
+var checkout_pointer: Sprite2D = null
+
+var checkout_using_controller_cursor: bool = false
+
+const CHECKOUT_POINTER_TEXTURE: Texture2D = preload(
+	"res://assets/images/hand_pointer_32px.png"
+)
 
 func can_process_gameplay_input() -> bool:
 	return (
@@ -383,24 +391,24 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		# Track captured mouse movement in viewport coordinates.
 		if event is InputEventMouseMotion:
-			if (
-				held_item != null
-				and held_item_origin == ItemOrigin.CHECKOUT_GRID
-				and not rotating_held_product
-			):
-				# Match the raw mouse movement used by normal camera controls.
-				checkout_virtual_mouse_position += event.screen_relative
+			if not rotating_held_product:
+				var mouse_delta: Vector2 = event.screen_relative
 
-				checkout_virtual_mouse_position = (
-					checkout_virtual_mouse_position.clamp(
-						Vector2.ZERO,
-						get_viewport().get_visible_rect().size
+				if mouse_delta.length_squared() > 0.0:
+					checkout_using_controller_cursor = false
+
+					checkout_virtual_mouse_position += mouse_delta
+
+					checkout_virtual_mouse_position = (
+						checkout_virtual_mouse_position.clamp(
+							Vector2.ZERO,
+							get_viewport().get_visible_rect().size
+						)
 					)
-				)
 
-				checkout_last_mouse_position = (
-					checkout_virtual_mouse_position
-				)
+					checkout_last_mouse_position = (
+						checkout_virtual_mouse_position
+					)
 
 			get_viewport().set_input_as_handled()
 			return
@@ -739,17 +747,11 @@ func _process(delta: float) -> void:
 	update_checkout_controller_cursor(delta)
 	update_controller_product_rotation(delta)
 	update_checkout_cursor_visual()
+	update_checkout_pointer()
 
 	# Update checkout hover outlines.
 	if checkout_mode_active and is_instance_valid(active_checkout):
-		var mouse_position: Vector2 = (
-			checkout_virtual_mouse_position
-			if (
-				held_item != null
-				and held_item_origin == ItemOrigin.CHECKOUT_GRID
-			)
-			else get_viewport().get_mouse_position()
-		)
+		var mouse_position: Vector2 = checkout_virtual_mouse_position
 
 		# Products can only be highlighted when we're not holding anything.
 		var can_hover_products: bool = (
@@ -3422,6 +3424,10 @@ func _activate_checkout_mode(checkout: Checkout) -> void:
 
 	checkout_last_mouse_position = checkout_virtual_mouse_position
 	checkout_virtual_mouse_initialized = true
+	checkout_using_controller_cursor = false
+	create_checkout_pointer()
+
+	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 
 	# Activate the checkout camera.
 	checkout.checkout_camera.make_current()
@@ -3467,6 +3473,7 @@ func exit_checkout_mode() -> void:
 	held_item_holder.visible = checkout_previous_held_item_visibility
 
 	# Restore mouse state.
+	remove_checkout_pointer()
 	Input.mouse_mode = checkout_previous_mouse_mode
 
 	# Restore crosshair.
@@ -3585,34 +3592,7 @@ func update_checkout_mouse_cursor() -> void:
 	if holding_checkout_product:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	else:
-		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			# Clamp before restoring the visible mouse.
-			checkout_virtual_mouse_position = (
-				checkout_virtual_mouse_position.clamp(
-					Vector2.ZERO,
-					get_viewport().get_visible_rect().size
-				)
-			)
-
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-
-			get_viewport().warp_mouse(
-				checkout_virtual_mouse_position
-			)
-
-		# Only synchronize from the physical mouse when the
-		# controller is not actively moving the cursor.
-		var controller_cursor_input: Vector2 = Input.get_vector(
-			"checkout_cursor_left",
-			"checkout_cursor_right",
-			"checkout_cursor_up",
-			"checkout_cursor_down"
-		)
-
-		if controller_cursor_input.length() < 0.15:
-			checkout_virtual_mouse_position = (
-				get_viewport().get_mouse_position()
-			)
+		Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 
 	checkout_virtual_mouse_initialized = true
 
@@ -3630,42 +3610,74 @@ func update_checkout_controller_cursor(delta: float) -> void:
 		"checkout_cursor_up",
 		"checkout_cursor_down"
 	)
-	
-	if stick_input.length() > 0.15:
-		print(
-			"CHECKOUT STICK: ", stick_input,
-			" | MOUSE MODE: ", Input.mouse_mode,
-			" | CURSOR: ", checkout_virtual_mouse_position
-		)
 
 	if stick_input.length() < 0.15:
 		return
+
+	checkout_using_controller_cursor = true
 
 	var viewport_size: Vector2 = (
 		get_viewport().get_visible_rect().size
 	)
 
-	var new_position: Vector2 = (
-		checkout_virtual_mouse_position
-		+ stick_input * gamepad_cursor_speed * delta
+	checkout_virtual_mouse_position += (
+		stick_input * gamepad_cursor_speed * delta
 	)
 
-	new_position = new_position.clamp(
-		Vector2.ZERO,
-		viewport_size
-	)
-
-	if held_item == null:
-		get_viewport().warp_mouse(new_position)
-
-		print(
-			"TARGET: ", new_position,
-			" | ACTUAL: ", get_viewport().get_mouse_position()
+	checkout_virtual_mouse_position = (
+		checkout_virtual_mouse_position.clamp(
+			Vector2.ZERO,
+			viewport_size
 		)
+	)
 
-	checkout_virtual_mouse_position = new_position
-	checkout_last_mouse_position = new_position
+	checkout_last_mouse_position = checkout_virtual_mouse_position
 	checkout_virtual_mouse_initialized = true
+
+
+func create_checkout_pointer() -> void:
+	if is_instance_valid(checkout_pointer_layer):
+		return
+
+	checkout_pointer_layer = CanvasLayer.new()
+	checkout_pointer_layer.layer = 100
+	add_child(checkout_pointer_layer)
+
+	checkout_pointer = Sprite2D.new()
+	checkout_pointer.texture = CHECKOUT_POINTER_TEXTURE
+	checkout_pointer.centered = false
+	checkout_pointer.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+
+	checkout_pointer_layer.add_child(checkout_pointer)
+
+
+func remove_checkout_pointer() -> void:
+	if is_instance_valid(checkout_pointer_layer):
+		checkout_pointer_layer.queue_free()
+
+	checkout_pointer_layer = null
+	checkout_pointer = null
+	checkout_using_controller_cursor = false
+
+
+func update_checkout_pointer() -> void:
+	if not checkout_mode_active:
+		return
+
+	if not is_instance_valid(checkout_pointer):
+		return
+
+	var holding_checkout_product: bool = (
+		held_item != null
+		and held_item_origin == ItemOrigin.CHECKOUT_GRID
+	)
+
+	checkout_pointer.visible = (
+		not holding_checkout_product
+		and not rotating_held_product
+	)
+
+	checkout_pointer.position = checkout_virtual_mouse_position
 
 
 func _set_product_rotation_around_center(
