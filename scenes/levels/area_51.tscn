@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bdjs5bujwx7tp" path="res://assets/models/buildings/area_51_door_right.glb" id="3_j4y4f"]
 [ext_resource type="PackedScene" uid="uid://dhk7lotlv15x0" path="res://assets/models/buildings/area_51_door_left.glb" id="4_n5psj"]
 [ext_resource type="AudioStream" uid="uid://dcmtthm8lwkti" path="res://assets/sounds/538978__tbirch55__door-open.wav" id="6_j4y4f"]
+[ext_resource type="AudioStream" uid="uid://dapp0pb6ootw5" path="res://assets/sounds/door_unlock_blip.wav" id="8_kkmh4"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
 size = Vector3(1.9372864, 2.8743896, 2.3876953)
@@ -109,6 +110,16 @@ bus = &"SFX"
 attenuation_filter_cutoff_hz = 3500.0
 attenuation_filter_db = -6.0
 
+[node name="DoorUnlockAudio" type="AudioStreamPlayer3D" parent="Door1" unique_id=549786909]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+stream = ExtResource("8_kkmh4")
+volume_db = -15.0
+unit_size = 3.0
+max_distance = 25.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 3500.0
+attenuation_filter_db = -6.0
+
 [node name="Door2" type="Node3D" parent="." unique_id=894372973]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.1)
 script = ExtResource("2_j4y4f")
@@ -131,6 +142,16 @@ libraries/ = SubResource("AnimationLibrary_j4y4f")
 [node name="DoorAudio" type="AudioStreamPlayer3D" parent="Door2" unique_id=1405824156]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6330037, 0)
 stream = ExtResource("6_j4y4f")
+volume_db = -15.0
+unit_size = 3.0
+max_distance = 25.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 3500.0
+attenuation_filter_db = -6.0
+
+[node name="DoorUnlockAudio" type="AudioStreamPlayer3D" parent="Door2" unique_id=1113976021]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+stream = ExtResource("8_kkmh4")
 volume_db = -15.0
 unit_size = 3.0
 max_distance = 25.0
@@ -168,6 +189,16 @@ bus = &"SFX"
 attenuation_filter_cutoff_hz = 3500.0
 attenuation_filter_db = -6.0
 
+[node name="DoorUnlockAudio" type="AudioStreamPlayer3D" parent="Door3" unique_id=1584477619]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+stream = ExtResource("8_kkmh4")
+volume_db = -15.0
+unit_size = 3.0
+max_distance = 25.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 3500.0
+attenuation_filter_db = -6.0
+
 [node name="Door4" type="Node3D" parent="." unique_id=1255821781]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.2, 3.2, 7.1)
 script = ExtResource("2_j4y4f")
@@ -191,6 +222,16 @@ libraries/ = SubResource("AnimationLibrary_j4y4f")
 [node name="DoorAudio" type="AudioStreamPlayer3D" parent="Door4" unique_id=42647003]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6330037, 0)
 stream = ExtResource("6_j4y4f")
+volume_db = -15.0
+unit_size = 3.0
+max_distance = 25.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 3500.0
+attenuation_filter_db = -6.0
+
+[node name="DoorUnlockAudio" type="AudioStreamPlayer3D" parent="Door4" unique_id=1188253091]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+stream = ExtResource("8_kkmh4")
 volume_db = -15.0
 unit_size = 3.0
 max_distance = 25.0
@@ -227,6 +268,16 @@ bus = &"SFX"
 attenuation_filter_cutoff_hz = 3500.0
 attenuation_filter_db = -6.0
 
+[node name="DoorUnlockAudio" type="AudioStreamPlayer3D" parent="Door5" unique_id=1883593185]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+stream = ExtResource("8_kkmh4")
+volume_db = -15.0
+unit_size = 3.0
+max_distance = 25.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 3500.0
+attenuation_filter_db = -6.0
+
 [node name="Door6" type="Node3D" parent="." unique_id=1954787160]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.2, 3.2, -8.3)
 script = ExtResource("2_j4y4f")
@@ -256,6 +307,16 @@ bus = &"SFX"
 attenuation_filter_cutoff_hz = 3500.0
 attenuation_filter_db = -6.0
 
+[node name="DoorUnlockAudio" type="AudioStreamPlayer3D" parent="Door6" unique_id=589817389]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+stream = ExtResource("8_kkmh4")
+volume_db = -15.0
+unit_size = 3.0
+max_distance = 25.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 3500.0
+attenuation_filter_db = -6.0
+
 [node name="Door7" type="Node3D" parent="." unique_id=59482925]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.2, 6.4, -24.3)
 script = ExtResource("2_j4y4f")
@@ -278,6 +339,16 @@ libraries/ = SubResource("AnimationLibrary_j4y4f")
 [node name="DoorAudio" type="AudioStreamPlayer3D" parent="Door7" unique_id=1139301660]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6330037, 0)
 stream = ExtResource("6_j4y4f")
+volume_db = -15.0
+unit_size = 3.0
+max_distance = 25.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 3500.0
+attenuation_filter_db = -6.0
+
+[node name="DoorUnlockAudio" type="AudioStreamPlayer3D" parent="Door7" unique_id=1420785585]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+stream = ExtResource("8_kkmh4")
 volume_db = -15.0
 unit_size = 3.0
 max_distance = 25.0
