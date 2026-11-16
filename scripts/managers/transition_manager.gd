@@ -4,6 +4,7 @@ extends Node
 signal all_peers_loaded(level_path: String)
 
 const GROCERY_STORE_SCENE: String = "res://scenes/levels/third_person_level.tscn"
+const AREA51_SCENE: String = "res://scenes/levels/area_51.tscn"
 
 @onready var fade_rect: ColorRect = $CanvasLayer/ColorRect
 
@@ -32,6 +33,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 		KEY_F7:
 			_start_debug_minigame(1)
+		
+		KEY_F10:
+			start_area51()
 
 
 func _start_debug_minigame(index: int) -> void:
@@ -54,6 +58,13 @@ func start_minigame(scene_path: String) -> void:
 
 	StoreManager.capture_restock_boxes()
 	_begin_coordinated_transition(scene_path)
+
+
+func start_area51() -> void:
+	if not multiplayer.is_server() or transitioning:
+		return
+
+	await _begin_coordinated_transition(AREA51_SCENE)
 
 
 func return_to_grocery_store() -> void:
