@@ -141,6 +141,7 @@ attenuation_filter_db = -6.0
 [node name="Door3" type="Node3D" parent="." unique_id=1402893443]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5.1, 0, -6.2)
 script = ExtResource("2_j4y4f")
+locked = true
 
 [node name="area_51_door_frame" parent="Door3" unique_id=253059769 instance=ExtResource("2_hsh2i")]
 
@@ -170,6 +171,7 @@ attenuation_filter_db = -6.0
 [node name="Door4" type="Node3D" parent="." unique_id=1255821781]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.2, 3.2, 7.1)
 script = ExtResource("2_j4y4f")
+locked = true
 
 [node name="area_51_door_frame" parent="Door4" unique_id=217732394 instance=ExtResource("2_hsh2i")]
 
@@ -282,3 +284,5 @@ max_distance = 25.0
 bus = &"SFX"
 attenuation_filter_cutoff_hz = 3500.0
 attenuation_filter_db = -6.0
+
+[editable path="Door1/area_51_door_frame"]
