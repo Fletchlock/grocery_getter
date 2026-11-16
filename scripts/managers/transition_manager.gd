@@ -173,10 +173,24 @@ func _load_transition_level(id: int, level_path: String) -> void:
 	# Allow the new scene to initialize.
 	await get_tree().process_frame
 
-	# Wait for this peer's own character in Orange Survival.
-	if MinigameManager.is_minigame_scene(level_path):
+	# Wait for the local player in minigames and Area51.
+	var requires_player: bool = (
+		MinigameManager.is_minigame_scene(level_path)
+		or level_path == AREA51_SCENE
+	)
+
+	if requires_player:
 		var level: Node = LevelManager.current_level
-		var player_container: Node = level.get_node("Players")
+
+		if not is_instance_valid(level):
+			return
+
+		var player_container: Node = level.get_node_or_null("Players")
+
+		if player_container == null:
+			push_error("TRANSITION: Players node not found.")
+			return
+
 		var local_id: String = str(multiplayer.get_unique_id())
 
 		while (
