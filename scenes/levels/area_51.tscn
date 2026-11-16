@@ -96,18 +96,132 @@ navigation_mesh = SubResource("NavigationMesh_jdqmc")
 [node name="Lighting" type="Node3D" parent="." unique_id=1634578028]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3114046, 0)
 
+[node name="area_51_spot_light" parent="Lighting" unique_id=577614449 instance=ExtResource("2_qrhdr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.0081224, 1.1)
+
+[node name="area_51_spot_light2" parent="Lighting" unique_id=298929649 instance=ExtResource("2_qrhdr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.008, -6.1)
+
 [node name="SpotLight3D" type="SpotLight3D" parent="Lighting" unique_id=473089899]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 5.2300997, 1.1)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 5.0838776, 1.1)
 light_color = Color(0.89718634, 0.8811727, 0.7116915, 1)
-light_energy = 10.0
+light_energy = 12.0
 light_size = 0.2
+shadow_enabled = true
 spot_range = 10.0
-spot_angle = 73.75
+spot_angle = 70.0
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Lighting" unique_id=1032347823]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.972917, -6.1)
+light_color = Color(0.89718634, 0.8811727, 0.7116915, 1)
+light_energy = 2.5
+shadow_enabled = true
+
+[node name="AreaLight3D" type="OmniLight3D" parent="Lighting" unique_id=1846343328]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -7.1, 4.890506, 9.2)
+light_color = Color(0, 0.79260147, 0.98477787, 1)
+light_energy = 0.3
+shadow_enabled = true
+omni_range = 3.5
+omni_attenuation = -0.2
+
+[node name="AreaLight3D6" type="OmniLight3D" parent="Lighting" unique_id=633727183]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -7.1, 4.890506, 4.9152756)
+light_color = Color(0, 0.79260147, 0.98477787, 1)
+light_energy = 0.3
+shadow_enabled = true
+omni_range = 3.5
+omni_attenuation = -0.2
+
+[node name="AreaLight3D10" type="OmniLight3D" parent="Lighting" unique_id=652332408]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -7.1, 4.890506, -5.918198)
+light_color = Color(0, 0.79260147, 0.98477787, 1)
+light_energy = 0.3
+shadow_enabled = true
+omni_range = 3.5
+omni_attenuation = -0.2
+
+[node name="AreaLight3D11" type="OmniLight3D" parent="Lighting" unique_id=1469244475]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -7.1, 4.890506, -0.34334755)
+light_color = Color(0, 0.79260147, 0.98477787, 1)
+light_energy = 0.3
+shadow_enabled = true
+omni_range = 3.5
+omni_attenuation = -0.2
+
+[node name="AreaLight3D2" type="OmniLight3D" parent="Lighting" unique_id=2035742515]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 7.2, 4.890506, 9.2)
+light_color = Color(1, 0.5500437, 0.7582273, 1)
+light_energy = 0.3
+shadow_enabled = true
+omni_range = 3.5
+omni_attenuation = -0.2
+
+[node name="AreaLight3D3" type="OmniLight3D" parent="Lighting" unique_id=911965185]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 7.2, 4.890506, -6.5)
+light_color = Color(1, 0.5500437, 0.7582273, 1)
+light_energy = 0.3
+shadow_enabled = true
+omni_range = 3.5
+omni_attenuation = -0.2
+
+[node name="AreaLight3D12" type="OmniLight3D" parent="Lighting" unique_id=2113466103]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 7.2, 8.685313, -22.485)
+light_color = Color(0.25740877, 0.8540905, 0, 1)
+light_energy = 0.3
+shadow_enabled = true
+omni_range = 3.5
+omni_attenuation = -0.2
+
+[node name="AreaLight3D4" type="OmniLight3D" parent="Lighting" unique_id=802398726]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 19.2, 4.890506, -6.5)
+light_color = Color(1, 0.5500437, 0.7582273, 1)
+light_energy = 0.3
+shadow_enabled = true
+omni_range = 3.5
+omni_attenuation = -0.2
+
+[node name="AreaLight3D5" type="OmniLight3D" parent="Lighting" unique_id=286308785]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 19.2, 4.890506, 9.2)
+light_color = Color(1, 0.5500437, 0.7582273, 1)
+light_energy = 0.3
+shadow_enabled = true
+omni_range = 3.5
+omni_attenuation = -0.2
+
+[node name="AreaLight3D7" type="OmniLight3D" parent="Lighting" unique_id=1923491574]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 2, 1.6615058, 9.2)
+light_color = Color(1, 0.5500437, 0.7582273, 1)
+light_energy = 0.3
+shadow_enabled = true
+omni_range = 3.5
+omni_attenuation = -0.2
+
+[node name="AreaLight3D13" type="OmniLight3D" parent="Lighting" unique_id=515210218]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 7.21208, 1.6615058, 9.2)
+light_color = Color(1, 0.5500437, 0.7582273, 1)
+light_energy = 0.2
+shadow_enabled = true
+omni_range = 3.5
+omni_attenuation = -0.2
+
+[node name="AreaLight3D8" type="OmniLight3D" parent="Lighting" unique_id=1558531921]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -7.4, 1.3967401, 8.986877)
+light_color = Color(1, 0.5500437, 0.7582273, 1)
+light_energy = 0.2
+shadow_enabled = true
+omni_range = 3.5
+omni_attenuation = -0.2
+
+[node name="AreaLight3D9" type="OmniLight3D" parent="Lighting" unique_id=1622910780]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -7.4, 1.6615058, -6.2)
+light_color = Color(1, 0.5500437, 0.7582273, 1)
+light_energy = 0.3
+shadow_enabled = true
+omni_range = 3.5
+omni_attenuation = -0.2
 
 [node name="StoreMesh" type="Node3D" parent="." unique_id=79148187 groups=["level_geo"]]
-
-[node name="area_51_spot_light" parent="StoreMesh" unique_id=577614449 instance=ExtResource("2_qrhdr")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.319527, 1.1)
 
 [node name="area_51_training" parent="StoreMesh" unique_id=1853356214 groups=["level_geo"] instance=ExtResource("1_1q8fr")]
 
@@ -391,7 +505,7 @@ attenuation_filter_db = -6.0
 [node name="Players" type="Node3D" parent="." unique_id=1126256228]
 
 [node name="PlayerSpawnPoints" type="Node3D" parent="." unique_id=459346019]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8206028, 0.07032165, 1.1)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.8206028, 0.07032165, 1.1)
 
 [node name="PlayerSpawnPoint1" type="Marker3D" parent="PlayerSpawnPoints" unique_id=180523503]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0.01, 0.5)
@@ -405,4 +519,5 @@ gizmo_extents = 2.64
 _spawnable_scenes = PackedStringArray("uid://cpg08k3yexwhb")
 spawn_path = NodePath("../Players")
 
+[editable path="StoreMesh/area_51_training"]
 [editable path="Door1/area_51_door_frame"]

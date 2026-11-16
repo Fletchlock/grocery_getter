@@ -40,7 +40,8 @@ func load_level(level_path: String) -> bool:
 	current_level = level_scene.instantiate()
 	game.add_child(current_level)
 
-	if MinigameManager.is_minigame_scene(level_path):
+	if MinigameManager.is_minigame_scene(level_path) \
+			or level_path == "res://scenes/levels/area_51.tscn":
 		return true
 
 	var hud_scene: PackedScene = load(
