@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://b70x6sbte4kds" path="res://assets/models/buildings/area_51_training.glb" id="1_1q8fr"]
 [ext_resource type="PackedScene" uid="uid://k2xsbbmoquy5" path="res://assets/models/buildings/area_51_door_frame.glb" id="2_hsh2i"]
 [ext_resource type="Script" uid="uid://b5dovimg3f6vp" path="res://scripts/levels/area61_automatic_door.gd" id="2_j4y4f"]
+[ext_resource type="PackedScene" uid="uid://blpujyc2tl657" path="res://assets/models/buildings/area_51_training_hallways.glb" id="2_n5psj"]
 [ext_resource type="PackedScene" uid="uid://bdjs5bujwx7tp" path="res://assets/models/buildings/area_51_door_right.glb" id="3_j4y4f"]
 [ext_resource type="PackedScene" uid="uid://dhk7lotlv15x0" path="res://assets/models/buildings/area_51_door_left.glb" id="4_n5psj"]
 [ext_resource type="AudioStream" uid="uid://dcmtthm8lwkti" path="res://assets/sounds/538978__tbirch55__door-open.wav" id="6_j4y4f"]
@@ -77,6 +78,8 @@ _data = {
 
 [node name="area_51_training" parent="StoreMesh" unique_id=1853356214 instance=ExtResource("1_1q8fr")]
 
+[node name="area_51_training_hallways" parent="StoreMesh" unique_id=1818503216 instance=ExtResource("2_n5psj")]
+
 [node name="Door1" type="Node3D" parent="." unique_id=1703286239]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.1)
 script = ExtResource("2_j4y4f")
@@ -136,7 +139,8 @@ attenuation_filter_cutoff_hz = 3500.0
 attenuation_filter_db = -6.0
 
 [node name="Door3" type="Node3D" parent="." unique_id=1402893443]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5.1, 0, -5.6)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5.1, 0, -6.2)
+script = ExtResource("2_j4y4f")
 
 [node name="area_51_door_frame" parent="Door3" unique_id=253059769 instance=ExtResource("2_hsh2i")]
 
@@ -144,11 +148,137 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5.1
 
 [node name="area_51_door_left" parent="Door3" unique_id=606223713 instance=ExtResource("4_n5psj")]
 
+[node name="DetectionArea" type="Area3D" parent="Door3" unique_id=764547929]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Door3/DetectionArea" unique_id=2056140896]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.002609253, 1.4347534, 0.05029297)
+shape = SubResource("BoxShape3D_6aigx")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Door3" unique_id=256196591]
+libraries/ = SubResource("AnimationLibrary_j4y4f")
+
+[node name="DoorAudio" type="AudioStreamPlayer3D" parent="Door3" unique_id=1469384594]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6330037, 0)
+stream = ExtResource("6_j4y4f")
+volume_db = -15.0
+unit_size = 3.0
+max_distance = 25.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 3500.0
+attenuation_filter_db = -6.0
+
 [node name="Door4" type="Node3D" parent="." unique_id=1255821781]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.4, 3.2, 7.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.2, 3.2, 7.1)
+script = ExtResource("2_j4y4f")
 
 [node name="area_51_door_frame" parent="Door4" unique_id=217732394 instance=ExtResource("2_hsh2i")]
 
 [node name="area_51_door_right" parent="Door4" unique_id=1836182860 instance=ExtResource("3_j4y4f")]
 
 [node name="area_51_door_left" parent="Door4" unique_id=591536579 instance=ExtResource("4_n5psj")]
+
+[node name="DetectionArea" type="Area3D" parent="Door4" unique_id=1700593989]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Door4/DetectionArea" unique_id=1524976927]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.002609253, 1.4347534, 0.05029297)
+shape = SubResource("BoxShape3D_6aigx")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Door4" unique_id=1605682965]
+libraries/ = SubResource("AnimationLibrary_j4y4f")
+
+[node name="DoorAudio" type="AudioStreamPlayer3D" parent="Door4" unique_id=42647003]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6330037, 0)
+stream = ExtResource("6_j4y4f")
+volume_db = -15.0
+unit_size = 3.0
+max_distance = 25.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 3500.0
+attenuation_filter_db = -6.0
+
+[node name="Door5" type="Node3D" parent="." unique_id=519896466]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.1, 0, 9.2)
+script = ExtResource("2_j4y4f")
+
+[node name="area_51_door_frame" parent="Door5" unique_id=208538676 instance=ExtResource("2_hsh2i")]
+
+[node name="area_51_door_right" parent="Door5" unique_id=1543727790 instance=ExtResource("3_j4y4f")]
+
+[node name="area_51_door_left" parent="Door5" unique_id=983007606 instance=ExtResource("4_n5psj")]
+
+[node name="DetectionArea" type="Area3D" parent="Door5" unique_id=1564423969]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Door5/DetectionArea" unique_id=336727739]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.002609253, 1.4347534, 0.05029297)
+shape = SubResource("BoxShape3D_6aigx")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Door5" unique_id=873907226]
+libraries/ = SubResource("AnimationLibrary_j4y4f")
+
+[node name="DoorAudio" type="AudioStreamPlayer3D" parent="Door5" unique_id=1195222612]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6330037, 0)
+stream = ExtResource("6_j4y4f")
+volume_db = -15.0
+unit_size = 3.0
+max_distance = 25.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 3500.0
+attenuation_filter_db = -6.0
+
+[node name="Door6" type="Node3D" parent="." unique_id=1954787160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.2, 3.2, -8.3)
+script = ExtResource("2_j4y4f")
+
+[node name="area_51_door_frame" parent="Door6" unique_id=591799336 instance=ExtResource("2_hsh2i")]
+
+[node name="area_51_door_right" parent="Door6" unique_id=1836512889 instance=ExtResource("3_j4y4f")]
+
+[node name="area_51_door_left" parent="Door6" unique_id=687290603 instance=ExtResource("4_n5psj")]
+
+[node name="DetectionArea" type="Area3D" parent="Door6" unique_id=1277649900]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Door6/DetectionArea" unique_id=1031555967]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.002609253, 1.4347534, 0.05029297)
+shape = SubResource("BoxShape3D_6aigx")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Door6" unique_id=1148987847]
+libraries/ = SubResource("AnimationLibrary_j4y4f")
+
+[node name="DoorAudio" type="AudioStreamPlayer3D" parent="Door6" unique_id=1496901591]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6330037, 0)
+stream = ExtResource("6_j4y4f")
+volume_db = -15.0
+unit_size = 3.0
+max_distance = 25.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 3500.0
+attenuation_filter_db = -6.0
+
+[node name="Door7" type="Node3D" parent="." unique_id=59482925]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.2, 6.4, -24.3)
+script = ExtResource("2_j4y4f")
+
+[node name="area_51_door_frame" parent="Door7" unique_id=1099618931 instance=ExtResource("2_hsh2i")]
+
+[node name="area_51_door_right" parent="Door7" unique_id=710168331 instance=ExtResource("3_j4y4f")]
+
+[node name="area_51_door_left" parent="Door7" unique_id=1387410876 instance=ExtResource("4_n5psj")]
+
+[node name="DetectionArea" type="Area3D" parent="Door7" unique_id=2108434272]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Door7/DetectionArea" unique_id=1230837232]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.002609253, 1.4347534, 0.05029297)
+shape = SubResource("BoxShape3D_6aigx")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Door7" unique_id=806067120]
+libraries/ = SubResource("AnimationLibrary_j4y4f")
+
+[node name="DoorAudio" type="AudioStreamPlayer3D" parent="Door7" unique_id=1139301660]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6330037, 0)
+stream = ExtResource("6_j4y4f")
+volume_db = -15.0
+unit_size = 3.0
+max_distance = 25.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 3500.0
+attenuation_filter_db = -6.0
