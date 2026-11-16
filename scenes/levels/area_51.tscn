@@ -1,0 +1,154 @@
+[gd_scene format=3 uid="uid://0o1mc45r58gy"]
+
+[ext_resource type="PackedScene" uid="uid://b70x6sbte4kds" path="res://assets/models/buildings/area_51_training.glb" id="1_1q8fr"]
+[ext_resource type="PackedScene" uid="uid://k2xsbbmoquy5" path="res://assets/models/buildings/area_51_door_frame.glb" id="2_hsh2i"]
+[ext_resource type="Script" uid="uid://b5dovimg3f6vp" path="res://scripts/levels/area61_automatic_door.gd" id="2_j4y4f"]
+[ext_resource type="PackedScene" uid="uid://bdjs5bujwx7tp" path="res://assets/models/buildings/area_51_door_right.glb" id="3_j4y4f"]
+[ext_resource type="PackedScene" uid="uid://dhk7lotlv15x0" path="res://assets/models/buildings/area_51_door_left.glb" id="4_n5psj"]
+[ext_resource type="AudioStream" uid="uid://dcmtthm8lwkti" path="res://assets/sounds/538978__tbirch55__door-open.wav" id="6_j4y4f"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
+size = Vector3(1.9372864, 2.8743896, 2.3876953)
+
+[sub_resource type="Animation" id="Animation_1q8fr"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("area_51_door_left:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("area_51_door_right:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_hsh2i"]
+resource_name = "door_open"
+length = 0.75
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("area_51_door_right:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.75),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.95, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("area_51_door_left:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.75),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-0.85, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_j4y4f"]
+_data = {
+&"RESET": SubResource("Animation_1q8fr"),
+&"door_open": SubResource("Animation_hsh2i")
+}
+
+[node name="Area51" type="Node3D" unique_id=2054922177]
+
+[node name="StoreMesh" type="Node3D" parent="." unique_id=79148187]
+
+[node name="area_51_training" parent="StoreMesh" unique_id=1853356214 instance=ExtResource("1_1q8fr")]
+
+[node name="Door1" type="Node3D" parent="." unique_id=1703286239]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.1)
+script = ExtResource("2_j4y4f")
+
+[node name="area_51_door_frame" parent="Door1" unique_id=2144665498 instance=ExtResource("2_hsh2i")]
+
+[node name="area_51_door_right" parent="Door1" unique_id=1223189973 instance=ExtResource("3_j4y4f")]
+
+[node name="area_51_door_left" parent="Door1" unique_id=1681827560 instance=ExtResource("4_n5psj")]
+
+[node name="DetectionArea" type="Area3D" parent="Door1" unique_id=1661072218]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Door1/DetectionArea" unique_id=827948950]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.002609253, 1.4347534, 0.05029297)
+shape = SubResource("BoxShape3D_6aigx")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Door1" unique_id=790990530]
+libraries/ = SubResource("AnimationLibrary_j4y4f")
+
+[node name="DoorAudio" type="AudioStreamPlayer3D" parent="Door1" unique_id=262178880]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6330037, 0)
+stream = ExtResource("6_j4y4f")
+volume_db = -15.0
+unit_size = 3.0
+max_distance = 25.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 3500.0
+attenuation_filter_db = -6.0
+
+[node name="Door2" type="Node3D" parent="." unique_id=894372973]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.1)
+script = ExtResource("2_j4y4f")
+
+[node name="area_51_door_frame" parent="Door2" unique_id=519758511 instance=ExtResource("2_hsh2i")]
+
+[node name="area_51_door_right" parent="Door2" unique_id=1787607543 instance=ExtResource("3_j4y4f")]
+
+[node name="area_51_door_left" parent="Door2" unique_id=1518529091 instance=ExtResource("4_n5psj")]
+
+[node name="DetectionArea" type="Area3D" parent="Door2" unique_id=1141106395]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Door2/DetectionArea" unique_id=153424929]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.002609253, 1.4347534, 0.05029297)
+shape = SubResource("BoxShape3D_6aigx")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Door2" unique_id=876982819]
+libraries/ = SubResource("AnimationLibrary_j4y4f")
+
+[node name="DoorAudio" type="AudioStreamPlayer3D" parent="Door2" unique_id=1405824156]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6330037, 0)
+stream = ExtResource("6_j4y4f")
+volume_db = -15.0
+unit_size = 3.0
+max_distance = 25.0
+bus = &"SFX"
+attenuation_filter_cutoff_hz = 3500.0
+attenuation_filter_db = -6.0
+
+[node name="Door3" type="Node3D" parent="." unique_id=1402893443]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5.1, 0, -5.6)
+
+[node name="area_51_door_frame" parent="Door3" unique_id=253059769 instance=ExtResource("2_hsh2i")]
+
+[node name="area_51_door_right" parent="Door3" unique_id=1540355352 instance=ExtResource("3_j4y4f")]
+
+[node name="area_51_door_left" parent="Door3" unique_id=606223713 instance=ExtResource("4_n5psj")]
+
+[node name="Door4" type="Node3D" parent="." unique_id=1255821781]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.4, 3.2, 7.1)
+
+[node name="area_51_door_frame" parent="Door4" unique_id=217732394 instance=ExtResource("2_hsh2i")]
+
+[node name="area_51_door_right" parent="Door4" unique_id=1836182860 instance=ExtResource("3_j4y4f")]
+
+[node name="area_51_door_left" parent="Door4" unique_id=591536579 instance=ExtResource("4_n5psj")]
