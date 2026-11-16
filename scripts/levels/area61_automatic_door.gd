@@ -15,6 +15,7 @@ class_name Area51AutomaticDoors
 @onready var detection_area: Area3D = $DetectionArea
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var door_audio: AudioStreamPlayer3D = $DoorAudio
+@onready var door_unlock_audio: AudioStreamPlayer3D = $DoorUnlockAudio
 @onready var door_frame: Node3D = $area_51_door_frame
 
 
@@ -118,8 +119,13 @@ func set_locked(value: bool) -> void:
 
 
 func _apply_lock_state(value: bool) -> void:
+	if locked == value:
+		return
+
 	locked = value
 	_update_status_color()
+
+	door_unlock_audio.play()
 
 
 @rpc("authority", "call_remote", "reliable")
