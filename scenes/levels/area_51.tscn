@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://b70x6sbte4kds" path="res://assets/models/buildings/area_51_training.glb" id="1_1q8fr"]
 [ext_resource type="Script" uid="uid://c0lciupspydba" path="res://scripts/levels/area_51.gd" id="1_jdqmc"]
 [ext_resource type="PackedScene" uid="uid://k2xsbbmoquy5" path="res://assets/models/buildings/area_51_door_frame.glb" id="2_hsh2i"]
-[ext_resource type="Script" uid="uid://b5dovimg3f6vp" path="res://scripts/levels/area61_automatic_door.gd" id="2_j4y4f"]
+[ext_resource type="Script" uid="uid://b5dovimg3f6vp" path="res://scripts/levels/area51_automatic_door.gd" id="2_j4y4f"]
 [ext_resource type="PackedScene" uid="uid://blpujyc2tl657" path="res://assets/models/buildings/area_51_training_hallways.glb" id="2_n5psj"]
 [ext_resource type="PackedScene" uid="uid://dxpe8pxgabcbj" path="res://assets/models/buildings/area_51_spot_light.glb" id="2_qrhdr"]
 [ext_resource type="PackedScene" uid="uid://bdjs5bujwx7tp" path="res://assets/models/buildings/area_51_door_right.glb" id="3_j4y4f"]
@@ -12,8 +12,8 @@
 [ext_resource type="PackedScene" uid="uid://dp4op0cd6a822" path="res://assets/models/shelves/Freezer_Open_2row_col.glb" id="5_cjvmt"]
 [ext_resource type="PackedScene" uid="uid://dd6tc6u6mdtl3" path="res://assets/models/shelves/Shelf_3row_col.glb" id="6_crb0n"]
 [ext_resource type="AudioStream" uid="uid://dcmtthm8lwkti" path="res://assets/sounds/538978__tbirch55__door-open.wav" id="6_j4y4f"]
-[ext_resource type="PackedScene" uid="uid://dk15okxkgjdhu" path="res://assets/models/checkouts/checkout_sm_left_rework.glb" id="6_wy2h0"]
 [ext_resource type="PackedScene" uid="uid://ck1pxla0tuuds" path="res://assets/models/shelves/Endcap_5row_col.glb" id="7_bs0km"]
+[ext_resource type="PackedScene" uid="uid://cql32yiol8kkj" path="res://scenes/objects/checkouts/online_order_checkout.tscn" id="7_kvj8g"]
 [ext_resource type="PackedScene" uid="uid://c6j4kh3t5ngnw" path="res://scenes/objects/checkouts/checkout.tscn" id="7_wy2h0"]
 [ext_resource type="AudioStream" uid="uid://dapp0pb6ootw5" path="res://assets/sounds/door_unlock_blip.wav" id="8_kkmh4"]
 [ext_resource type="Script" uid="uid://b3a7jp52hrp74" path="res://scenes/levels/store_return_area.gd" id="11_uwxb6"]
@@ -50,18 +50,6 @@ text = "CHECKOUT"
 font = ExtResource("5_bs0km")
 font_size = 30
 depth = 0.03
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_kvj8g"]
-size = Vector3(0.5836981, 0.43937063, 0.99491215)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_8tjir"]
-size = Vector3(0.22951743, 0.44417262, 0.46826768)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_k1tj6"]
-size = Vector3(0.3213501, 0.038208008, 0.7963867)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_ykn52"]
-size = Vector3(0.18569946, 0.018554688, 0.13392639)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
 size = Vector3(1.9372864, 2.8743896, 2.3876953)
@@ -334,72 +322,23 @@ mesh = SubResource("TextMesh_6aigx")
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 5, 2.8, 1.784)
 mesh = SubResource("TextMesh_wy2h0")
 
-[node name="Checkout" type="Node3D" parent="." unique_id=1214020069 groups=["level_geo"]]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.942344, -2.3841858e-07, 2.7387211)
+[node name="Checkout" parent="." unique_id=2036172686 instance=ExtResource("7_wy2h0")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 2.1285284, -2.3841858e-07, 3.2297394)
 
-[node name="checkout_sm_left_rework" parent="Checkout" unique_id=1315105818 instance=ExtResource("6_wy2h0")]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.5, 0, 0.184)
+[node name="WaitingPoints" parent="Checkout" index="2" unique_id=1052031460]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.25, 0, 1.6)
 
-[node name="Checkout" parent="Checkout" unique_id=2036172686 instance=ExtResource("7_wy2h0")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.4322486, 0, 0.5978235)
+[node name="WaitingPoint1" parent="Checkout/WaitingPoints" index="0" unique_id=1115280265]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
 
-[node name="CheckoutPoint" parent="Checkout/Checkout" index="0" unique_id=875041205]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.79555815, 0, 0.6147452)
+[node name="WaitingPoint2" parent="Checkout/WaitingPoints" index="1" unique_id=611916992]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 1)
 
-[node name="WaitingPoints" parent="Checkout/Checkout" index="1" unique_id=1052031460]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9411627, 0, 1.5758795)
+[node name="WaitingPoint3" parent="Checkout/WaitingPoints" index="2" unique_id=239014317]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 2)
 
-[node name="WaitingPoint1" parent="Checkout/Checkout/WaitingPoints" index="0" unique_id=1115280265]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.68289393, 0, -0.5162778)
-
-[node name="WaitingPoint2" parent="Checkout/Checkout/WaitingPoints" index="1" unique_id=611916992]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6172589, 0, -0.9654041)
-
-[node name="WaitingPoint3" parent="Checkout/Checkout/WaitingPoints" index="2" unique_id=239014317]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4674044, 0, -0.5173118)
-
-[node name="CheckoutGrid" parent="Checkout/Checkout" index="2" unique_id=634095526]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9000004, 0.95608807)
-
-[node name="CollisionShape3D" parent="Checkout/Checkout/CheckoutGrid/InteractionArea" parent_id_path=PackedInt32Array(2036172686, 1880803924) index="0" unique_id=437933255]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.018246174, 0.21968538, 0.039032817)
-shape = SubResource("BoxShape3D_kvj8g")
-
-[node name="BagGrid" parent="Checkout/Checkout" index="3" unique_id=2061227671]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0.9000004, -0.753093)
-
-[node name="CollisionShape3D" parent="Checkout/Checkout/BagGrid/InteractionArea" parent_id_path=PackedInt32Array(2036172686, 514614208) index="0" unique_id=1370761931]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00018453598, 0.22363359, 0.0008111)
-shape = SubResource("BoxShape3D_8tjir")
-
-[node name="BagPoint" parent="Checkout/Checkout" index="4" unique_id=1567782599]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7379654, 1.1920929e-07, -1.0217035)
-
-[node name="CheckoutCamera" parent="Checkout/Checkout" index="5" unique_id=1698270421]
-transform = Transform3D(-4.280559e-08, 0.20252214, -0.97927773, 8.852524e-09, 0.97927773, 0.20252214, 1, 0, -4.371139e-08, -1.0490792, 1.4814731, 0.25016427)
-
-[node name="CheckoutArea" parent="Checkout/Checkout" index="6" unique_id=957745189]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9000004, 0)
-
-[node name="CollisionShape3D" parent="Checkout/Checkout/CheckoutArea" index="0" unique_id=741477035]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.20959091, 0.02016133, 0.060302734)
-shape = SubResource("BoxShape3D_k1tj6")
-
-[node name="ScanArea" parent="Checkout/Checkout" index="10" unique_id=1107148775]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9000004, 0.062945604)
-
-[node name="CollisionShape3D" parent="Checkout/Checkout/ScanArea" index="0" unique_id=1790967742]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1512909, 0.007324159, 0.002708435)
-shape = SubResource("BoxShape3D_ykn52")
-
-[node name="CheckoutScreen" parent="Checkout/Checkout" index="12" unique_id=1333936591]
-transform = Transform3D(-1.5970308e-08, 0.18851247, -0.9035714, 8.724757e-09, 0.3975714, 0.42843744, 0.46, -9.958953e-10, -3.949636e-08, 0.3, 1.362, 0.068)
-
-[node name="Orders" type="Node3D" parent="." unique_id=1123602176 groups=["level_geo"]]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.3642621, -2.3841858e-07, -2.377482)
-
-[node name="checkout_sm_left_rework" parent="Orders" unique_id=41617519 instance=ExtResource("6_wy2h0")]
-transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, 1.5494714, 0, 0.9866693)
+[node name="OnlineOrderCheckout" parent="." unique_id=1648185858 instance=ExtResource("7_kvj8g")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.229875, 0, -3.8856277)
 
 [node name="Products" type="Node3D" parent="." unique_id=1709649265]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5123484, 2.239954, -3.1068609)
@@ -702,7 +641,7 @@ attenuation_filter_db = -6.0
 [node name="Players" type="Node3D" parent="." unique_id=1126256228]
 
 [node name="PlayerSpawnPoints" type="Node3D" parent="." unique_id=459346019]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.8206028, 0.07032165, 1.1)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.059369385, 0.07032165, 1.6942205)
 
 [node name="PlayerSpawnPoint1" type="Marker3D" parent="PlayerSpawnPoints" unique_id=180523503]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0.01, 0.5)
@@ -725,5 +664,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.016204834, -0.007171631, 0
 shape = SubResource("BoxShape3D_hd853")
 
 [editable path="StoreMesh/area_51_training"]
-[editable path="Checkout/Checkout"]
+[editable path="Checkout"]
 [editable path="Door1/area_51_door_frame"]

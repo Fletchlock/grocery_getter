@@ -1,20 +1,25 @@
 [gd_scene format=3 uid="uid://cql32yiol8kkj"]
 
 [ext_resource type="Script" uid="uid://cgt13xa48an24" path="res://scripts/checkouts/order_grid.gd" id="1_2llfw"]
+[ext_resource type="PackedScene" uid="uid://dk15okxkgjdhu" path="res://assets/models/checkouts/checkout_sm_left_rework.glb" id="1_722px"]
 [ext_resource type="Script" uid="uid://bkd0j74vb2lai" path="res://scripts/checkouts/cart_parking_area.gd" id="2_dkaf2"]
 [ext_resource type="Material" uid="uid://d3iscxpv066o5" path="res://assets/materials/outline_standard_material_3d.tres" id="2_mcdyc"]
 [ext_resource type="AudioStream" uid="uid://v8oalnmtq657" path="res://assets/sounds/scanner_beep.wav" id="4_j6ua8"]
+[ext_resource type="Script" uid="uid://2jqcemsera3r" path="res://scripts/checkouts/online_checkout_scan_area.gd" id="4_n1x75"]
 [ext_resource type="Script" uid="uid://byvybsttl687x" path="res://scripts/checkouts/finish_checkout_area.gd" id="4_sgntm"]
 [ext_resource type="Script" uid="uid://upu8oii4xojm" path="res://scripts/checkouts/online_checkout_display.gd" id="5_uwfqi"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2bvqw"]
-size = Vector3(0.75454557, 0.7067013, 1.6119537)
+size = Vector3(0.6973034, 0.487508, 0.88288224)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
+size = Vector3(1.2466431, 0.91012573, 1.0891113)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_n1x75"]
+size = Vector3(0.24414063, 0.027832031, 0.18304443)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hd853"]
+size = Vector3(0.31195068, 0.067871094, 0.7763672)
 
 [sub_resource type="QuadMesh" id="QuadMesh_sgntm"]
 size = Vector2(1.4, 1)
@@ -28,7 +33,13 @@ bg_color = Color(0.08924944, 0.2548345, 0.50531375, 1)
 
 [node name="OnlineOrderCheckout" type="Node3D" unique_id=1648185858]
 
+[node name="OnlineOrderCounterMesh" type="Node3D" parent="." unique_id=1240367498]
+
+[node name="checkout_sm_left_rework" parent="OnlineOrderCounterMesh" unique_id=1315105818 instance=ExtResource("1_722px")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 0)
+
 [node name="OrderGrid" type="Node3D" parent="." unique_id=925843198 groups=["online_order_grid"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75017613, 0.9, 1.5)
 script = ExtResource("1_2llfw")
 max_items = 30
 outline_material = ExtResource("2_mcdyc")
@@ -38,40 +49,47 @@ metadata/_custom_type_script = "uid://cjpcpdqhqpcgo"
 collision_layer = 257
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="OrderGrid/InteractionArea" unique_id=1039239870]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.016851068, 0.64090204, 0.69018066)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.379167, 0.24115086, 0.4252875)
 shape = SubResource("BoxShape3D_2bvqw")
 debug_color = Color(0.9847451, 0.4989375, 0.4725191, 1)
 
 [node name="CartParkingArea" type="Area3D" parent="." unique_id=1605521636 groups=["online_order_cart_parking"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2622359, 0, 2.0087578)
 collision_mask = 2
 script = ExtResource("2_dkaf2")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CartParkingArea" unique_id=1267517600]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.108551025, 0.44911194, -0.06359863)
 shape = SubResource("BoxShape3D_6aigx")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="AcceptOrderArea" type="Area3D" parent="." unique_id=25647097]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5590564, 0.9000004, 0.99770033)
+collision_layer = 256
+script = ExtResource("4_n1x75")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AcceptOrderArea" unique_id=997013895]
 shape = SubResource("BoxShape3D_n1x75")
 
 [node name="OrderScannerBeepPlayer" type="AudioStreamPlayer3D" parent="AcceptOrderArea" unique_id=1705088326]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.008434296, 0.10440564, -0.0066661835)
 stream = ExtResource("4_j6ua8")
 volume_db = -20.0
 unit_size = 3.0
 bus = &"SFX"
 
 [node name="FinishCheckoutArea" type="Area3D" parent="." unique_id=1749312188 node_paths=PackedStringArray("order_grid")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2038893, 0.9000004, 0.99546707)
 collision_layer = 257
 script = ExtResource("4_sgntm")
 order_grid = NodePath("../OrderGrid")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="FinishCheckoutArea" unique_id=946718506]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.002532974, 0.028076112, 0.0026855469)
 shape = SubResource("BoxShape3D_hd853")
 debug_color = Color(0.827451, 0.39607844, 0.050980393, 1)
 
 [node name="CheckoutScreen" type="MeshInstance3D" parent="." unique_id=985737513]
+transform = Transform3D(-1.5970308e-08, 0.18851249, -0.90357137, 8.724756e-09, 0.39757138, 0.42843747, 0.46, -9.958936e-10, -3.9496356e-08, -0.11483354, 1.362, 1.0001625)
 mesh = SubResource("QuadMesh_sgntm")
 
 [node name="CheckoutViewport" type="SubViewport" parent="." unique_id=405642873]

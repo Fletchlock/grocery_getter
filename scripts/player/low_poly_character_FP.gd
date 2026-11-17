@@ -382,6 +382,13 @@ func _refresh_character_selection() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not can_process_gameplay_input():
 		return
+		
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			print("LEFT CLICK: ", event)
+			print("MATCHES INTERACT: ", event.is_action_pressed("interact"))
+			print("JUST PRESSED BY EVENT: ",
+				Input.is_action_just_pressed_by_event("interact", event))
 	
 	# Handle local held-product rotation before other input.
 	if _handle_held_product_rotation_input(event):
@@ -463,7 +470,16 @@ func _unhandled_input(event: InputEvent) -> void:
 		is_crouching = !is_crouching
 		update_crouch_collision()
 		
-	if event.is_action_pressed("interact") and Input.is_action_just_pressed("interact"):
+	var interact_pressed: bool = (
+		Input.is_action_just_pressed_by_event("interact", event)
+		or (
+			event is InputEventMouseButton
+			and event.button_index == MOUSE_BUTTON_LEFT
+			and event.pressed
+		)
+	)
+
+	if interact_pressed:
 		if attached_cart != null:
 			try_release_cart()
 		elif not _start_spill_cleaning():
@@ -2496,8 +2512,17 @@ func handle_restock_scanner_input(event: InputEvent) -> bool:
 	if held_restock_scanner == null:
 		return false
 
+	var interact_pressed: bool = (
+		Input.is_action_just_pressed_by_event("interact", event)
+		or (
+			event is InputEventMouseButton
+			and event.button_index == MOUSE_BUTTON_LEFT
+			and event.pressed
+		)
+	)
+
 	if not held_restock_scanner.order_selection_active:
-		if event.is_action_pressed("interact") and Input.is_action_just_pressed("interact"):
+		if interact_pressed:
 			var display: Node = held_restock_scanner.get_targeted_product_display(
 				interact_raycast_3d
 			)
@@ -2535,7 +2560,7 @@ func handle_restock_scanner_input(event: InputEvent) -> bool:
 
 		return false
 
-	if event.is_action_pressed("interact") and Input.is_action_just_pressed("interact"):
+	if interact_pressed:
 		held_restock_scanner.confirm_order_selection()
 		return true
 
@@ -2551,7 +2576,6 @@ func handle_restock_scanner_input(event: InputEvent) -> bool:
 		held_restock_scanner.adjust_order_quantity(1)
 		return true
 
-
 	if event.is_action_pressed("restock_decrease"):
 		if event is InputEventMouseButton:
 			var current_time_usec: int = Time.get_ticks_usec()
@@ -2563,7 +2587,6 @@ func handle_restock_scanner_input(event: InputEvent) -> bool:
 
 		held_restock_scanner.adjust_order_quantity(-1)
 		return true
-
 
 	if event is InputEventMouseButton:
 		var mouse_event: InputEventMouseButton = event
