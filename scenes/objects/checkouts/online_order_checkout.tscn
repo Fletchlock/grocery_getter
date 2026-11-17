@@ -7,6 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://v8oalnmtq657" path="res://assets/sounds/scanner_beep.wav" id="4_j6ua8"]
 [ext_resource type="Script" uid="uid://2jqcemsera3r" path="res://scripts/checkouts/online_checkout_scan_area.gd" id="4_n1x75"]
 [ext_resource type="Script" uid="uid://byvybsttl687x" path="res://scripts/checkouts/finish_checkout_area.gd" id="4_sgntm"]
+[ext_resource type="Texture2D" uid="uid://rxi57rlmyh33" path="res://assets/images/cart_parking.png" id="5_ubsv7"]
 [ext_resource type="Script" uid="uid://upu8oii4xojm" path="res://scripts/checkouts/online_checkout_display.gd" id="5_uwfqi"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2bvqw"]
@@ -62,6 +63,13 @@ script = ExtResource("2_dkaf2")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.108551025, 0.44911194, -0.06359863)
 shape = SubResource("BoxShape3D_6aigx")
 debug_color = Color(0, 0.6, 0.69803923, 1)
+
+[node name="CartParkingTexture" type="Sprite3D" parent="CartParkingArea" unique_id=1460889617]
+transform = Transform3D(0.06, 0, 0, 0, -2.6226832e-09, 0.06, 0, -0.06, -2.6226832e-09, -0.116564274, 0.01, -0.08200002)
+double_sided = false
+alpha_cut = 1
+texture_filter = 0
+texture = ExtResource("5_ubsv7")
 
 [node name="AcceptOrderArea" type="Area3D" parent="." unique_id=25647097]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5590564, 0.9000004, 0.99770033)
