@@ -665,4 +665,5 @@ shape = SubResource("BoxShape3D_hd853")
 
 [editable path="StoreMesh/area_51_training"]
 [editable path="Checkout"]
+[editable path="OnlineOrderCheckout"]
 [editable path="Door1/area_51_door_frame"]
