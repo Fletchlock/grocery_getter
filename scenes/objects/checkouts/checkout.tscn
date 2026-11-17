@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cw8gy08k5p7ey" path="res://scripts/checkouts/checkout.gd" id="1_ibuna"]
 [ext_resource type="Script" uid="uid://c775jll8k0omd" path="res://scripts/checkouts/checkout_grid.gd" id="2_36puo"]
+[ext_resource type="PackedScene" uid="uid://dk15okxkgjdhu" path="res://assets/models/checkouts/checkout_sm_left_rework.glb" id="2_tc3mi"]
 [ext_resource type="Script" uid="uid://cjpcpdqhqpcgo" path="res://scripts/carts/cart_grid.gd" id="3_uqttr"]
 [ext_resource type="ArrayMesh" uid="uid://du45akcvrhur3" path="res://assets/models/checkouts/shopping_bag_Cube_025.res" id="4_36puo"]
 [ext_resource type="AudioStream" uid="uid://bgixaqs2ln7i" path="res://assets/sounds/desk_bell.wav" id="5_uqttr"]
@@ -11,17 +12,23 @@
 [ext_resource type="Texture2D" uid="uid://ifkotnnto2y6" path="res://assets/images/order_notify_bg_dk_grey.png" id="8_t0cer"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ibuna"]
-size = Vector3(0.75454557, 0.7067013, 1.6119537)
+size = Vector3(0.6973034, 0.487508, 0.88288224)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_36puo"]
-size = Vector3(0.75454557, 0.7067013, 1.6119537)
+size = Vector3(0.22708854, 0.43623805, 0.46698487)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
+size = Vector3(0.31628418, 0.06137085, 0.7788086)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hd853"]
+size = Vector3(0.24414063, 0.027832031, 0.18304443)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_umdtr"]
 texture = ExtResource("8_t0cer")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
 
 [sub_resource type="QuadMesh" id="QuadMesh_6aigx"]
 size = Vector2(1.4, 1)
@@ -36,17 +43,28 @@ bg_color = Color(0.08924944, 0.2548345, 0.50531375, 1)
 [node name="Checkout" type="Node3D" unique_id=2036172686]
 script = ExtResource("1_ibuna")
 
+[node name="CheckoutCounterMesh" type="Node3D" parent="." unique_id=894303778]
+
+[node name="checkout_sm_left_rework" parent="CheckoutCounterMesh" unique_id=1315105818 groups=["level_geo"] instance=ExtResource("2_tc3mi")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 0)
+
 [node name="CheckoutPoint" type="Marker3D" parent="." unique_id=875041205]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.25, 0, 1.6)
 
 [node name="WaitingPoints" type="Node3D" parent="." unique_id=1052031460]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0, 2.6)
 
 [node name="WaitingPoint1" type="Marker3D" parent="WaitingPoints" unique_id=1115280265]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
 
 [node name="WaitingPoint2" type="Marker3D" parent="WaitingPoints" unique_id=611916992]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 1)
 
 [node name="WaitingPoint3" type="Marker3D" parent="WaitingPoints" unique_id=239014317]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 2)
 
 [node name="CheckoutGrid" type="Node3D" parent="." unique_id=634095526]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75017613, 0.9, 1.5)
 script = ExtResource("2_36puo")
 metadata/_custom_type_script = "uid://c775jll8k0omd"
 
@@ -54,11 +72,12 @@ metadata/_custom_type_script = "uid://c775jll8k0omd"
 collision_layer = 257
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CheckoutGrid/InteractionArea" unique_id=437933255]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.016851068, 0.64090204, 0.69018066)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.379167, 0.24115086, 0.4252875)
 shape = SubResource("BoxShape3D_ibuna")
 debug_color = Color(0.9847451, 0.4989375, 0.4725191, 1)
 
 [node name="BagGrid" type="Node3D" parent="." unique_id=2061227671]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.37, 0.9, 0.35)
 script = ExtResource("3_uqttr")
 metadata/_custom_type_script = "uid://cjpcpdqhqpcgo"
 
@@ -66,7 +85,7 @@ metadata/_custom_type_script = "uid://cjpcpdqhqpcgo"
 collision_layer = 257
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BagGrid/InteractionArea" unique_id=1370761931]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.016851068, 0.64090204, 0.69018066)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0014513433, 0.2178253, 9.393692e-05)
 shape = SubResource("BoxShape3D_36puo")
 debug_color = Color(0.9847451, 0.4989375, 0.4725191, 1)
 
@@ -74,30 +93,36 @@ debug_color = Color(0.9847451, 0.4989375, 0.4725191, 1)
 mesh = ExtResource("4_36puo")
 
 [node name="BagPoint" type="Marker3D" parent="." unique_id=1567782599]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.18438464, 0, 0)
 
 [node name="CheckoutCamera" type="Camera3D" parent="." unique_id=1698270421]
-transform = Transform3D(-4.280559e-08, 0.20252214, -0.97927773, 8.852524e-09, 0.97927773, 0.20252214, 1, 0, -4.3711392e-08, -1.7806282, 1.388417, -0.65990967)
+transform = Transform3D(-4.3348344e-08, 0.12861587, -0.9916945, 5.6219776e-09, 0.9916945, 0.12861587, 1, 8.881784e-16, -4.3711392e-08, -1.5429606, 1.4605315, 1.1157585)
 fov = 59.0
 
 [node name="CheckoutArea" type="Area3D" parent="." unique_id=957745189]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0.9, 1)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CheckoutArea" unique_id=741477035]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.006286606, 0.030807495, -0.0026855469)
 shape = SubResource("BoxShape3D_6aigx")
 debug_color = Color(0, 0.62352943, 0.5411765, 0.8627451)
 
 [node name="DeskBellPlayer" type="AudioStreamPlayer3D" parent="." unique_id=855594360]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06970975, 0.9000004, 1.4421617)
 stream = ExtResource("5_uqttr")
 volume_db = -25.0
 unit_size = 8.0
 bus = &"SFX"
 
 [node name="ScannerBeepPlayer" type="AudioStreamPlayer3D" parent="." unique_id=1748470177]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.56339693, 0.9000004, 0.9949717)
 stream = ExtResource("6_m1o1u")
 volume_db = -15.0
 unit_size = 3.0
 bus = &"SFX"
 
 [node name="CheckoutFinishedPlayer" type="AudioStreamPlayer3D" parent="." unique_id=1645962293]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.02222322, 1.356317, 0.991401)
 stream = ExtResource("7_l61bx")
 volume_db = -22.0
 unit_size = 2.0
@@ -105,7 +130,7 @@ max_db = 0.0
 bus = &"SFX"
 
 [node name="ScanArea" type="Area3D" parent="." unique_id=1107148775]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.2066052)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5590564, 0.9000004, 0.99770033)
 collision_layer = 256
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ScanArea" unique_id=1790967742]
@@ -113,14 +138,17 @@ shape = SubResource("BoxShape3D_hd853")
 debug_color = Color(0.9131919, 0.0074887597, 0.9999998, 1)
 
 [node name="CheckoutInstructions" type="CanvasLayer" parent="." unique_id=732059030]
-visible = false
+offset = Vector2(20, -20)
+transform = Transform2D(1, 0, 0, 1, 20, -20)
 
 [node name="InstructionsPanel" type="PanelContainer" parent="CheckoutInstructions" unique_id=1532479664]
-anchors_preset = -1
-offset_left = 20.0
-offset_top = 20.0
-offset_right = 40.0
-offset_bottom = 40.0
+visible = false
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -123.0
+offset_right = 207.0
+grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxTexture_umdtr")
 
 [node name="MarginContainer" type="MarginContainer" parent="CheckoutInstructions/InstructionsPanel" unique_id=1965434731]
@@ -132,11 +160,13 @@ theme_override_constants/margin_bottom = 10
 
 [node name="Instructions" type="Label" parent="CheckoutInstructions/InstructionsPanel/MarginContainer" unique_id=653593547]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "Grab item: [E], [LMB]
 Scan item: [E], [LMB]
 Exit: [Q], [ESC]"
 
 [node name="CheckoutScreen" type="MeshInstance3D" parent="." unique_id=1333936591]
+transform = Transform3D(-1.5970308e-08, 0.18851247, -0.90357137, 8.724756e-09, 0.39757138, 0.42843744, 0.46, -9.958936e-10, -3.9496356e-08, -0.11483354, 1.362, 1.0001625)
 mesh = SubResource("QuadMesh_6aigx")
 
 [node name="CheckoutViewport" type="SubViewport" parent="." unique_id=847904745]
