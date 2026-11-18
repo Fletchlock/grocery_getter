@@ -65,7 +65,7 @@ shape = SubResource("BoxShape3D_6aigx")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="CartParkingTexture" type="Sprite3D" parent="CartParkingArea" unique_id=1460889617]
-transform = Transform3D(0.06, 0, 0, 0, -2.6226832e-09, 0.06, 0, -0.06, -2.6226832e-09, -0.12144637, 0.01, -0.08200002)
+transform = Transform3D(-2.6226832e-09, 0.06, 2.6226834e-09, 0, -2.6226834e-09, 0.06, 0.06, 2.6226832e-09, 1.1464112e-16, -0.12144637, 0.01, -0.08200002)
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
