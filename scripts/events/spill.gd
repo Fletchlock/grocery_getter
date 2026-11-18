@@ -11,8 +11,18 @@ class_name Spill
 @export var cleaning_duration: float = 3.0
 @export var prompt_height: float = 0.15
 
+@export_group("Cleaning Target")
+@export var target_move_speed: float = 0.18
+@export var target_wander_radius_x: float = 0.25
+@export var target_wander_radius_z: float = 0.15
+@export var target_direction_interval_min: float = 0.7
+@export var target_direction_interval_max: float = 1.2
+@export var target_turn_speed: float = 4.0
+
 @onready var spill_mesh: MeshInstance3D = $SpillMesh
 @onready var cleaning_bubbles: GPUParticles3D = $CleaningBubbles
+@onready var cleaning_target: Node3D = $CleaningTarget
+@onready var target_sprite: Sprite3D = $CleaningTarget/TargetSprite
 
 const CLEAN_SPARKLES_SCENE: PackedScene = preload(
 	"res://scenes/events/clean_sparkles.tscn"
@@ -24,6 +34,14 @@ var spill_color: Color = Color.WHITE
 var cleaning_visual_active: bool = false
 var cleaning_visual_scale: Vector3 = Vector3.ONE
 var cleaning_visual_elapsed: float = 0.0
+
+var target_active: bool = false
+var target_velocity: Vector3 = Vector3.ZERO
+var target_desired_direction: Vector3 = Vector3.ZERO
+var target_direction_timer: float = 0.0
+var target_destination: Vector3 = Vector3.ZERO
+
+var target_rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 var growth_tween: Tween = null
 
@@ -61,9 +79,14 @@ func _ready() -> void:
 		Vector3.ONE,
 		growth_duration
 	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	
+	start_target_movement()
 
 
 func _process(delta: float) -> void:
+	if target_active:
+		_update_target_movement(delta)
+
 	if not cleaning_visual_active:
 		return
 
@@ -149,3 +172,87 @@ func play_clean_sparkles() -> void:
 	get_tree().current_scene.add_child(sparkles)
 
 	sparkles.global_position = global_position + Vector3.UP * 0.08
+
+
+func start_target_movement() -> void:
+	target_rng.randomize()
+
+	target_active = true
+	cleaning_target.position = Vector3(0.0, 0.05, 0.0)
+	target_sprite.visible = true
+	target_sprite.modulate = Color.RED
+
+	target_velocity = Vector3.ZERO
+	_choose_new_target_direction()
+
+
+func stop_target_movement() -> void:
+	target_active = false
+	target_sprite.visible = false
+	target_velocity = Vector3.ZERO
+
+
+func _choose_new_target_direction() -> void:
+	var angle: float = target_rng.randf_range(0.0, TAU)
+
+	# Square root gives an even distribution across the ellipse's area.
+	var radius: float = sqrt(target_rng.randf())
+
+	target_destination = Vector3(
+		cos(angle) * radius * target_wander_radius_x,
+		0.05,
+		sin(angle) * radius * target_wander_radius_z
+	)
+
+	target_direction_timer = target_rng.randf_range(
+		target_direction_interval_min,
+		target_direction_interval_max
+	)
+
+
+func _update_target_movement(delta: float) -> void:
+	if not target_active:
+		return
+
+	target_direction_timer -= delta
+
+	var current_position: Vector3 = cleaning_target.position
+	var distance_to_destination: float = current_position.distance_to(
+		target_destination
+	)
+
+	# Choose another destination when close enough or the timer expires.
+	if distance_to_destination < 0.025 or target_direction_timer <= 0.0:
+		_choose_new_target_direction()
+
+	var direction: Vector3 = (
+		target_destination - current_position
+	).normalized()
+
+	var desired_velocity: Vector3 = direction * target_move_speed
+
+	target_velocity = target_velocity.lerp(
+		desired_velocity,
+		clampf(target_turn_speed * delta, 0.0, 1.0)
+	)
+
+	var next_position: Vector3 = current_position + target_velocity * delta
+
+	# Keep the target inside the elliptical area.
+	var radius_x: float = maxf(target_wander_radius_x, 0.001)
+	var radius_z: float = maxf(target_wander_radius_z, 0.001)
+
+	var normalized_x: float = next_position.x / radius_x
+	var normalized_z: float = next_position.z / radius_z
+
+	var boundary_distance: float = sqrt(
+		normalized_x * normalized_x
+		+ normalized_z * normalized_z
+	)
+
+	if boundary_distance > 1.0:
+		next_position.x /= boundary_distance
+		next_position.z /= boundary_distance
+		target_velocity = Vector3.ZERO
+
+	cleaning_target.position = next_position
