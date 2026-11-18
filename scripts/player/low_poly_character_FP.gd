@@ -2161,7 +2161,10 @@ func _update_spill_cleaning(delta: float) -> void:
 	) > spill_cleaning_distance:
 		_stop_spill_cleaning()
 		return
-
+		
+	cleaning_spill.update_target_aim_feedback(
+		_first_person_camera
+	)
 	cleaning_progress += delta
 
 	if cleaning_progress >= cleaning_spill.cleaning_duration:
