@@ -18,6 +18,7 @@
 [ext_resource type="AudioStream" uid="uid://dapp0pb6ootw5" path="res://assets/sounds/door_unlock_blip.wav" id="8_kkmh4"]
 [ext_resource type="Script" uid="uid://b3a7jp52hrp74" path="res://scenes/levels/store_return_area.gd" id="11_uwxb6"]
 [ext_resource type="PackedScene" uid="uid://csbkiip4g1ndd" path="res://assets/models/shelves/Stock_Delivery_Shelf.glb" id="17_wy2h0"]
+[ext_resource type="PackedScene" uid="uid://1hei66lsnpc5" path="res://scenes/objects/carts/cart_small.tscn" id="19_kvj8g"]
 
 [sub_resource type="Environment" id="Environment_6aigx"]
 ambient_light_source = 2
@@ -662,6 +663,9 @@ script = ExtResource("11_uwxb6")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StoreReturnArea" unique_id=1105302645]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.016204834, -0.007171631, 0.25790405)
 shape = SubResource("BoxShape3D_hd853")
+
+[node name="cart_small" parent="." unique_id=1722978453 instance=ExtResource("19_kvj8g")]
+transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.70710677, 3.8424358, -1.4901161e-07, -5.2096624)
 
 [editable path="StoreMesh/area_51_training"]
 [editable path="Checkout"]
