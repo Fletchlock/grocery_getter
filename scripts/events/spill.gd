@@ -84,26 +84,11 @@ func _ready() -> void:
 		Vector3.ONE,
 		growth_duration
 	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	
-	start_target_movement()
 
 
 func _process(delta: float) -> void:
 	if target_active:
 		_update_target_movement(delta)
-	
-	if not cleaning_visual_active:
-		return
-
-	cleaning_visual_elapsed += delta
-
-	var progress: float = clampf(
-		cleaning_visual_elapsed / cleaning_duration,
-		0.0,
-		1.0
-	)
-
-	update_cleaning_visual(progress)
 
 
 func get_interaction_prompt_for_player(
