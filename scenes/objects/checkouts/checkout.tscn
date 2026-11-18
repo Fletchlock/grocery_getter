@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dk15okxkgjdhu" path="res://assets/models/checkouts/checkout_sm_left_rework.glb" id="2_tc3mi"]
 [ext_resource type="Script" uid="uid://cjpcpdqhqpcgo" path="res://scripts/carts/cart_grid.gd" id="3_uqttr"]
 [ext_resource type="ArrayMesh" uid="uid://du45akcvrhur3" path="res://assets/models/checkouts/shopping_bag_Cube_025.res" id="4_36puo"]
+[ext_resource type="Material" uid="uid://d3iscxpv066o5" path="res://assets/materials/outline_standard_material_3d.tres" id="5_rp67q"]
 [ext_resource type="AudioStream" uid="uid://bgixaqs2ln7i" path="res://assets/sounds/desk_bell.wav" id="5_uqttr"]
 [ext_resource type="AudioStream" uid="uid://v8oalnmtq657" path="res://assets/sounds/scanner_beep.wav" id="6_m1o1u"]
 [ext_resource type="Script" uid="uid://dkmmhbntn6xlq" path="res://scripts/checkouts/checkout_display.gd" id="7_5e8nf"]
@@ -79,6 +80,7 @@ debug_color = Color(0.9847451, 0.4989375, 0.4725191, 1)
 [node name="BagGrid" type="Node3D" parent="." unique_id=2061227671]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.37, 0.9, 0.35)
 script = ExtResource("3_uqttr")
+outline_material = ExtResource("5_rp67q")
 metadata/_custom_type_script = "uid://cjpcpdqhqpcgo"
 
 [node name="InteractionArea" type="Area3D" parent="BagGrid" unique_id=514614208]
