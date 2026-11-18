@@ -2116,6 +2116,7 @@ func _start_spill_cleaning() -> bool:
 
 	cleaning_spill = spill
 	cleaning_progress = 0.0
+	cleaning_spill.start_target_movement()
 	
 	network_is_cleaning_spill = true
 
@@ -2137,7 +2138,7 @@ func _start_spill_cleaning() -> bool:
 
 
 func _update_spill_cleaning(delta: float) -> void:
-	print("Cleaning update called. Spill: ", cleaning_spill)
+	
 	if cleaning_spill == null:
 		return
 
@@ -2169,8 +2170,6 @@ func _update_spill_cleaning(delta: float) -> void:
 		)
 	)
 	
-	print("Target hit: ", target_hit)
-
 	var cleaning_speed: float = 1.0
 
 	if not target_hit:
@@ -2179,6 +2178,14 @@ func _update_spill_cleaning(delta: float) -> void:
 		)
 
 	cleaning_progress += delta * cleaning_speed
+	
+	var visual_progress: float = clampf(
+		cleaning_progress / cleaning_spill.cleaning_duration,
+		0.0,
+		1.0
+	)
+
+	cleaning_spill.update_cleaning_visual(visual_progress)
 
 	if cleaning_progress >= cleaning_spill.cleaning_duration:
 		var spill_path: NodePath = cleaning_spill.get_path()
@@ -2197,6 +2204,7 @@ func _update_spill_cleaning(delta: float) -> void:
 
 func _stop_spill_cleaning() -> void:
 	if is_instance_valid(cleaning_spill):
+		cleaning_spill.stop_target_movement()
 		cleaning_spill.reset_cleaning_visual()
 
 	if cleaning_spill != null:
