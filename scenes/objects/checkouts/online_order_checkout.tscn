@@ -14,7 +14,7 @@
 size = Vector3(0.6973034, 0.487508, 0.88288224)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6aigx"]
-size = Vector3(1.2466431, 0.91012573, 1.0891113)
+size = Vector3(1.2986145, 0.91012573, 1.0891113)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_n1x75"]
 size = Vector3(0.24414063, 0.027832031, 0.18304443)
@@ -60,12 +60,12 @@ collision_mask = 2
 script = ExtResource("2_dkaf2")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CartParkingArea" unique_id=1267517600]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.108551025, 0.44911194, -0.06359863)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.13453674, 0.44911194, -0.06359863)
 shape = SubResource("BoxShape3D_6aigx")
 debug_color = Color(0, 0.6, 0.69803923, 1)
 
 [node name="CartParkingTexture" type="Sprite3D" parent="CartParkingArea" unique_id=1460889617]
-transform = Transform3D(0.06, 0, 0, 0, -2.6226832e-09, 0.06, 0, -0.06, -2.6226832e-09, -0.116564274, 0.01, -0.08200002)
+transform = Transform3D(0.06, 0, 0, 0, -2.6226832e-09, 0.06, 0, -0.06, -2.6226832e-09, -0.12144637, 0.01, -0.08200002)
 double_sided = false
 alpha_cut = 1
 texture_filter = 0

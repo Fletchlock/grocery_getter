@@ -12,9 +12,7 @@
 [ext_resource type="Shader" uid="uid://dy3eh2xtgjtsn" path="res://scenes/menus/main_menu.gdshader" id="6_uxao6"]
 [ext_resource type="Texture2D" uid="uid://byiqbpxrirkiv" path="res://assets/images/menu_button_pressed_grey.png" id="7_uxao6"]
 [ext_resource type="Texture2D" uid="uid://t2dedkvcii" path="res://assets/images/menu_button_disabled_grey.png" id="9_a3hrp"]
-[ext_resource type="Texture2D" uid="uid://b60241ltqjs1y" path="res://assets/images/menu_button_normal_yellow.png" id="9_bre17"]
 [ext_resource type="Texture2D" uid="uid://dbtw4audil258" path="res://assets/images/menu_button_normal_red.png" id="9_vr0hv"]
-[ext_resource type="Texture2D" uid="uid://shwtjhqdkrjv" path="res://assets/images/menu_button_pressed_yellow.png" id="10_88kup"]
 [ext_resource type="Texture2D" uid="uid://m13fo55dyq7n" path="res://assets/images/menu_button_pressed_red.png" id="10_a3hrp"]
 [ext_resource type="Texture2D" uid="uid://bi2qa748k4nhk" path="res://assets/images/menu_button_hover_red.png" id="11_25m6f"]
 [ext_resource type="Texture2D" uid="uid://64lrd4be5n5g" path="res://assets/images/menu_button_hover_yellow.png" id="11_bh4e2"]
@@ -155,42 +153,67 @@ texture_margin_top = 15.0
 texture_margin_right = 15.0
 texture_margin_bottom = 15.0
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_w32d4"]
+load_path = "res://godot/imported/menu_button_normal_yellow.png-6b9cea05bbf98f1c8a723023a3f640da.ctex"
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bh4e2"]
-texture = ExtResource("9_bre17")
+texture = SubResource("CompressedTexture2D_w32d4")
 texture_margin_left = 20.0
 texture_margin_top = 20.0
 texture_margin_right = 20.0
 texture_margin_bottom = 20.0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_287l7"]
+load_path = "res://godot/imported/menu_button_pressed_yellow.png-1f5146beb67b4a0eff9ab959bb5a936b.ctex"
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3w8rc"]
-texture = ExtResource("10_88kup")
+texture = SubResource("CompressedTexture2D_287l7")
 texture_margin_left = 20.0
 texture_margin_top = 20.0
 texture_margin_right = 20.0
 texture_margin_bottom = 20.0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8hoqd"]
+load_path = "res://godot/imported/menu_button_hover_yellow.png-79d734785300b6b8869ab498a78032d8.s3tc.ctex"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6imgi"]
+texture = SubResource("CompressedTexture2D_8hoqd")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_1hq2q"]
+load_path = "res://godot/imported/menu_button_hover_yellow.png-79d734785300b6b8869ab498a78032d8.s3tc.ctex"
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nkawv"]
-texture = ExtResource("11_bh4e2")
+texture = SubResource("CompressedTexture2D_1hq2q")
 texture_margin_left = 20.0
 texture_margin_top = 20.0
 texture_margin_right = 20.0
 texture_margin_bottom = 20.0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_vr0hv"]
+load_path = "res://godot/imported/menu_button_normal_yellow.png-6b9cea05bbf98f1c8a723023a3f640da.ctex"
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w32d4"]
-texture = ExtResource("9_bre17")
+texture = SubResource("CompressedTexture2D_vr0hv")
 texture_margin_left = 20.0
 texture_margin_top = 20.0
 texture_margin_right = 20.0
 texture_margin_bottom = 20.0
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_a3hrp"]
+load_path = "res://godot/imported/menu_button_pressed_yellow.png-1f5146beb67b4a0eff9ab959bb5a936b.ctex"
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_287l7"]
-texture = ExtResource("10_88kup")
+texture = SubResource("CompressedTexture2D_a3hrp")
 texture_margin_left = 20.0
 texture_margin_top = 20.0
 texture_margin_right = 20.0
 texture_margin_bottom = 20.0
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8hoqd"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1hq2q"]
 texture = ExtResource("11_bh4e2")
 texture_margin_left = 20.0
 texture_margin_top = 20.0
@@ -674,22 +697,24 @@ dialog_autowrap = true
 
 [node name="PlayModePanel" type="PanelContainer" parent="." unique_id=770686865]
 visible = false
+custom_minimum_size = Vector2(850, 0)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -425.0
+offset_top = -162.5
+offset_right = 425.0
+offset_bottom = 162.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_km81x")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PlayModePanel" unique_id=719824108]
 layout_mode = 2
+size_flags_horizontal = 4
 theme_override_constants/separation = 40
 
 [node name="TitleLabel" type="Label" parent="PlayModePanel/VBoxContainer" unique_id=1701793449]
@@ -704,36 +729,36 @@ layout_mode = 2
 theme_override_constants/separation = 40
 
 [node name="SinglePlayButton" type="Button" parent="PlayModePanel/VBoxContainer/HBoxContainer" unique_id=206785605]
-custom_minimum_size = Vector2(320, 110)
+custom_minimum_size = Vector2(420, 110)
 layout_mode = 2
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_w32d4")
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 38
 theme_override_styles/normal = SubResource("StyleBoxTexture_bh4e2")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_3w8rc")
-theme_override_styles/hover = SubResource("StyleBoxTexture_nkawv")
+theme_override_styles/hover = SubResource("StyleBoxTexture_6imgi")
 theme_override_styles/focus = SubResource("StyleBoxTexture_nkawv")
 text = "Single Player"
 script = ExtResource("6_a3hrp")
-normal_font_size = 40
-highlighted_font_size = 44
+normal_font_size = 38
+highlighted_font_size = 42
 
 [node name="MultiplayerButton" type="Button" parent="PlayModePanel/VBoxContainer/HBoxContainer" unique_id=863222104]
-custom_minimum_size = Vector2(320, 110)
+custom_minimum_size = Vector2(420, 110)
 layout_mode = 2
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("4_w32d4")
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 38
 theme_override_styles/normal = SubResource("StyleBoxTexture_w32d4")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_287l7")
-theme_override_styles/hover = SubResource("StyleBoxTexture_8hoqd")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1hq2q")
 theme_override_styles/focus = SubResource("StyleBoxTexture_nkawv")
 text = "Multiplayer"
 script = ExtResource("6_a3hrp")
-normal_font_size = 40
-highlighted_font_size = 44
+normal_font_size = 38
+highlighted_font_size = 42
 
 [node name="BackButton" type="Button" parent="PlayModePanel/VBoxContainer" unique_id=1601395634]
 custom_minimum_size = Vector2(0, 75)
