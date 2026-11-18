@@ -18,6 +18,9 @@ class_name Spill
 @export var target_direction_interval_min: float = 0.7
 @export var target_direction_interval_max: float = 1.2
 @export var target_turn_speed: float = 4.0
+@export var target_hit_radius: float = 0.045
+@export var target_hit_color: Color = Color.GREEN
+@export var target_miss_color: Color = Color.RED
 
 @onready var spill_mesh: MeshInstance3D = $SpillMesh
 @onready var cleaning_bubbles: GPUParticles3D = $CleaningBubbles
@@ -256,3 +259,38 @@ func _update_target_movement(delta: float) -> void:
 		target_velocity = Vector3.ZERO
 
 	cleaning_target.position = next_position
+
+
+func is_target_aimed_at(camera: Camera3D) -> bool:
+	if camera == null or not target_active:
+		return false
+
+	var target_position: Vector3 = cleaning_target.global_position
+	var camera_position: Vector3 = camera.global_position
+	var camera_forward: Vector3 = -camera.global_transform.basis.z.normalized()
+
+	var distance_along_view: float = (
+		target_position - camera_position
+	).dot(camera_forward)
+
+	if distance_along_view <= 0.0:
+		return false
+
+	var closest_point: Vector3 = (
+		camera_position + camera_forward * distance_along_view
+	)
+
+	var aim_distance: float = closest_point.distance_to(target_position)
+
+	return aim_distance <= target_hit_radius
+
+
+func update_target_aim_feedback(camera: Camera3D) -> bool:
+	var is_aiming: bool = is_target_aimed_at(camera)
+
+	if is_aiming:
+		target_sprite.modulate = target_hit_color
+	else:
+		target_sprite.modulate = target_miss_color
+
+	return is_aiming
