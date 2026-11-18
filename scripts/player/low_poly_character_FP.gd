@@ -2137,6 +2137,7 @@ func _start_spill_cleaning() -> bool:
 
 
 func _update_spill_cleaning(delta: float) -> void:
+	print("Cleaning update called. Spill: ", cleaning_spill)
 	if cleaning_spill == null:
 		return
 
@@ -2162,10 +2163,22 @@ func _update_spill_cleaning(delta: float) -> void:
 		_stop_spill_cleaning()
 		return
 		
-	cleaning_spill.update_target_aim_feedback(
-		_first_person_camera
+	var target_hit: bool = (
+		cleaning_spill.update_target_aim_feedback(
+			_first_person_camera
+		)
 	)
-	cleaning_progress += delta
+	
+	print("Target hit: ", target_hit)
+
+	var cleaning_speed: float = 1.0
+
+	if not target_hit:
+		cleaning_speed = (
+			cleaning_spill.missed_target_cleaning_multiplier
+		)
+
+	cleaning_progress += delta * cleaning_speed
 
 	if cleaning_progress >= cleaning_spill.cleaning_duration:
 		var spill_path: NodePath = cleaning_spill.get_path()

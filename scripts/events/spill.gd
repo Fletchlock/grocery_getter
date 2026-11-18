@@ -21,6 +21,8 @@ class_name Spill
 @export var target_hit_radius: float = 0.045
 @export var target_hit_color: Color = Color.GREEN
 @export var target_miss_color: Color = Color.RED
+@export_range(0.0, 1.0, 0.05)
+var missed_target_cleaning_multiplier: float = 0.2
 
 @onready var spill_mesh: MeshInstance3D = $SpillMesh
 @onready var cleaning_bubbles: GPUParticles3D = $CleaningBubbles
@@ -89,7 +91,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if target_active:
 		_update_target_movement(delta)
-
+	
 	if not cleaning_visual_active:
 		return
 
