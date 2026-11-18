@@ -2,7 +2,7 @@ extends Node
 
 
 @export_group("Spill Events")
-@export_range(0.0, 100.0, 1.0) var spill_chance: float = 10.0
+@export_range(0.0, 100.0, 1.0) var spill_chance: float = 100.0
 @export var spill_cooldown: float = 0.0
 @export var max_active_spills: int = 20
 
@@ -107,7 +107,7 @@ func on_shopper_at_point(
 
 	# Spawn 30 cm in front of the shopper.
 	var spill_position: Vector3 = (
-		shopper.global_position + forward * 0.3
+		shopper.global_position + forward * 0.1
 	)
 
 	# Find the floor directly beneath the shopper.
