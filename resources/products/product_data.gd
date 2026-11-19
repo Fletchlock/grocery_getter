@@ -12,6 +12,9 @@ class_name ProductData
 @export var product_price: float = 0.00
 @export var reorder_cost: float = 0.00
 
+@export_group("Barcode")
+@export var barcode_transform: Transform3D = Transform3D.IDENTITY
+
 @export_group("Held Item")
 @export var hand_position: Vector3 = Vector3.ZERO
 @export var hand_rotation: Vector3 = Vector3.ZERO
