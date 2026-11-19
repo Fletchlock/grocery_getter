@@ -2850,29 +2850,26 @@ func update_checkout_cursor_visual() -> void:
 	if is_checkout_cursor_position_clear(result_position):
 		checkout_cursor_last_safe_position = result_position
 		checkout_cursor_has_safe_position = true
+	
+		if (
+			is_multiplayer_authority()
+			and held_item != null
+			and held_item_origin == ItemOrigin.CHECKOUT_GRID
+			and is_instance_valid(active_checkout)
+			and is_instance_valid(checkout_cursor_visual)
+		):
+			var product: ProductData = held_item as ProductData
 
-	# If collision blocked movement, re-anchor the virtual mouse
-	# to the product's actual position. This prevents movement
-	# from accumulating behind the collision.
-	#if (
-		#not rotating_held_product
-		#and result_position.distance_to(target_position) > 0.001
-	#):
-		#var actual_screen_position: Vector2 = (
-			#get_checkout_cursor_screen_position()
-		#)
-#
-		#checkout_virtual_mouse_position = (
-			#actual_screen_position - checkout_cursor_offset
-		#).clamp(
-			#Vector2.ZERO,
-			#viewport_size
-		#)
-#
-		#checkout_last_mouse_position = (
-			#checkout_virtual_mouse_position
-		#)
-
+			if (
+				product != null
+				and product.product_category != "produce"
+				and checkout_scanned_product_path != product.resource_path
+				and active_checkout.is_barcode_aligned(
+					product,
+					checkout_cursor_visual
+				)
+			):
+				active_checkout.interact(self)
 
 func create_checkout_cursor_sensor() -> void:
 
