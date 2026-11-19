@@ -207,14 +207,20 @@ func spawn_shopper() -> void:
 
 	var mesh_index: int = shopper_mesh_pool.pop_back()
 
-	var shopper: Node3D = multiplayer_shopper_spawner.spawn(
-		mesh_index
-	) as Node3D
+	var spawn_data: Dictionary = {
+		"mesh_index": mesh_index,
+		"spawn_position": multiplayer_shopper_spawner.get_parent().to_local(
+			spawn_point.global_position
+		)
+	}
+
+	var shopper: ShopperAI = multiplayer_shopper_spawner.spawn(
+		spawn_data
+	) as ShopperAI
 
 	if shopper == null:
 		return
 
-	shopper.global_position = spawn_point.global_position
 	shopper.original_spawn_point = spawn_point
 
 	if shopper.has_signal("reached_enter_point"):
@@ -241,10 +247,19 @@ func spawn_shopper() -> void:
 
 
 func _spawn_shopper(data: Variant) -> Node:
-	var mesh_index: int = int(data)
-
 	if shopper_scene == null:
 		return null
+
+	if not data is Dictionary:
+		return null
+
+	var spawn_data: Dictionary = data
+
+	var mesh_index: int = int(spawn_data.get("mesh_index", -1))
+	var spawn_position: Vector3 = spawn_data.get(
+		"spawn_position",
+		Vector3.ZERO
+	)
 
 	if mesh_index < 0 or mesh_index >= shopper_meshes.size():
 		return null
@@ -255,6 +270,9 @@ func _spawn_shopper(data: Variant) -> Node:
 		return null
 
 	shopper.set_shopper_mesh(shopper_meshes[mesh_index])
+
+	# Set position before MultiplayerSpawner adds the shopper.
+	shopper.position = spawn_position
 
 	return shopper
 

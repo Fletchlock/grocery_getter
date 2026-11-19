@@ -105,8 +105,7 @@ var closed_idle_timer: float = 0.0
 var look_target: Node3D = null
 
 # Network replication
-@export var network_is_grounded : bool = true
-
+@export var network_is_grounded: bool = true
 @export var state: State = State.IDLE:
 	set(value):
 		state = value
@@ -114,6 +113,16 @@ var look_target: Node3D = null
 
 		if is_node_ready() and value == State.BAGGING_IDLE:
 			set_bag_active(true)
+
+@export_group("Network Smoothing")
+@export var network_smoothing_speed: float = 12.0
+
+@onready var armature: Node3D = $Armature
+
+var _armature_original_rotation: Quaternion = Quaternion.IDENTITY
+var _visual_position: Vector3 = Vector3.ZERO
+var _visual_rotation: Quaternion = Quaternion.IDENTITY
+
 
 
 # States
@@ -182,14 +191,23 @@ func _ready() -> void:
 		shopping_start_delay_min,
 		shopping_start_delay_max
 	)
-
+	
+	_armature_original_rotation = armature.quaternion
+	_visual_position = armature.global_position
+	_visual_rotation = armature.global_basis.get_rotation_quaternion()
+	
 	await get_tree().create_timer(start_delay).timeout
 
 	go_to_enter()
 
+
 func _process(delta: float) -> void:
 	blink(delta)
 	update_idle_look(delta)
+
+	if not is_multiplayer_authority():
+		_update_network_visuals(delta)
+
 
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
@@ -988,7 +1006,6 @@ func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
 # ---------------------------------------------------------
 # Animation
 # ---------------------------------------------------------
-
 func update_animation() -> void:
 	if not is_node_ready():
 		await ready
@@ -1017,12 +1034,35 @@ func update_animation() -> void:
 		$AnimationPlayer.play(new_animation)
 		current_animation = new_animation
 
+# ---------------------------------------------------------
+# Network Visuals
+# ---------------------------------------------------------
+func _update_network_visuals(delta: float) -> void:
+	var smoothing_weight: float = 1.0 - exp(-network_smoothing_speed * delta)
+
+	var target_visual_position: Vector3 = global_position
+	var target_visual_rotation: Quaternion = (
+		global_basis.get_rotation_quaternion()
+		* _armature_original_rotation
+	)
+
+	_visual_position = _visual_position.lerp(
+		target_visual_position,
+		smoothing_weight
+	)
+
+	_visual_rotation = _visual_rotation.slerp(
+		target_visual_rotation,
+		smoothing_weight
+	)
+
+	armature.global_position = _visual_position
+	armature.global_basis = Basis(_visual_rotation)
+
 
 # ---------------------------------------------------------
 # Blink
 # ---------------------------------------------------------
-
-
 func blink(delta: float) -> void:
 	if blink_progress < 0.0:
 		blink_timer -= delta
@@ -1056,8 +1096,6 @@ func blink(delta: float) -> void:
 # ---------------------------------------------------------
 # Looking at nearby players
 # ---------------------------------------------------------
-
-
 func update_idle_look(delta: float) -> void:
 
 	look_target = find_nearest_player()
