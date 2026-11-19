@@ -891,10 +891,15 @@ func _physics_process(delta: float) -> void:
 		_mouse_input_direction = Vector2.ZERO
 		_smoothed_mouse_velocity = Vector2.ZERO
 
+	
 	var controller_rotating_product: bool = (
 		held_item != null
-		and Input.is_action_pressed("product_rotate")
+		and (
+			checkout_mode_active
+			or Input.is_action_pressed("product_rotate")
+		)
 	)
+
 
 	if (
 		checkout_mode_active
@@ -3864,7 +3869,7 @@ func update_controller_product_rotation(delta: float) -> void:
 	if held_item == null:
 		return
 
-	if not Input.is_action_pressed("product_rotate"):
+	if not checkout_mode_active and not Input.is_action_pressed("product_rotate"):
 		return
 
 	var stick_input: Vector2 = Input.get_vector(
@@ -3877,12 +3882,12 @@ func update_controller_product_rotation(delta: float) -> void:
 	if stick_input.length() < 0.15:
 		return
 
-	var rotation_delta: Vector2 = (
-		stick_input * 500.0 * delta
-	)
+	var rotation_delta: Vector2 = stick_input * 500.0 * delta
 
-	var roll_rotation: bool = Input.is_action_pressed(
-		"product_roll"
+	var roll_rotation: bool = (
+		Input.is_action_pressed("product_rotate")
+		if checkout_mode_active
+		else Input.is_action_pressed("product_roll")
 	)
 
 	_apply_held_product_rotation(
