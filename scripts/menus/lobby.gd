@@ -75,6 +75,7 @@ func _on_player_changed(_peer_id: int) -> void:
 	_refresh_player_list()
 	_update_character_displays()
 	_update_ready_button()
+	_ensure_lobby_focus()
 
 
 func _update_play_button() -> void:
@@ -90,6 +91,8 @@ func _update_play_button() -> void:
 
 	if play_button.disabled and play_button.has_focus():
 		ready_button.grab_focus.call_deferred()
+		
+	_ensure_lobby_focus()
 
 
 func _refresh_player_list() -> void:
@@ -296,6 +299,20 @@ func _update_invite_button() -> void:
 		and NetworkManager.peer != null
 		and NetworkManager.current_lobby_id != 0
 	)
+
+
+func _ensure_lobby_focus() -> void:
+	await get_tree().process_frame
+
+	if not is_inside_tree():
+		return
+
+	var focused_control: Control = get_viewport().gui_get_focus_owner()
+
+	if focused_control != null:
+		return
+
+	_focus_primary_action()
 
 
 func _on_network_lobby_joined(_lobby_id: int) -> void:
