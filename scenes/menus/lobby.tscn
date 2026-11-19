@@ -445,7 +445,7 @@ theme_override_constants/separation = 20
 alignment = 2
 
 [node name="PlayButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer" unique_id=1380952413]
-custom_minimum_size = Vector2(300, 80)
+custom_minimum_size = Vector2(330, 80)
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_fonts/font = ExtResource("8_87k40")
@@ -461,7 +461,7 @@ normal_font_size = 30
 highlighted_font_size = 34
 
 [node name="ReadyButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer" unique_id=2025713875]
-custom_minimum_size = Vector2(300, 80)
+custom_minimum_size = Vector2(330, 80)
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_fonts/font = ExtResource("8_87k40")
@@ -477,7 +477,7 @@ normal_font_size = 30
 highlighted_font_size = 34
 
 [node name="InviteFriendsButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer" unique_id=1424807495]
-custom_minimum_size = Vector2(300, 80)
+custom_minimum_size = Vector2(330, 80)
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_fonts/font = ExtResource("8_87k40")
@@ -492,7 +492,7 @@ normal_font_size = 30
 highlighted_font_size = 34
 
 [node name="MainMenuButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer" unique_id=1792943070]
-custom_minimum_size = Vector2(300, 80)
+custom_minimum_size = Vector2(330, 80)
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_fonts/font = ExtResource("8_87k40")
