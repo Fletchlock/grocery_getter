@@ -25,6 +25,10 @@ const CHECKOUT_OUTLINE_MATERIAL: Material = preload(
 @onready var scanner_beep_player: AudioStreamPlayer3D = $ScannerBeepPlayer
 @onready var checkout_finished_player: AudioStreamPlayer3D = $CheckoutFinishedPlayer
 
+@export_group("Barcode Scanning")
+@export_range(0.0, 90.0, 1.0) var barcode_angle_tolerance: float = 25.0
+@export_range(0.01, 1.0, 0.01) var barcode_scan_distance: float = 0.10
+
 # Checkout Display
 @onready var checkout_display: CheckoutDisplay = $CheckoutViewport/CheckoutUI
 @onready var checkout_screen: MeshInstance3D = $CheckoutScreen
@@ -124,6 +128,12 @@ func interact(player: CharacterBody3D) -> void:
 		_open_produce_code_hud(player, product)
 		return
 
+	if not is_barcode_aligned(
+		product,
+		player.checkout_cursor_visual
+	):
+		return
+
 	_request_ai_scan(player, product)
 
 
@@ -167,6 +177,54 @@ func is_mouse_over_scanner(mouse_position: Vector2) -> bool:
 		return false
 
 	return result.get("collider") == scan_area
+
+
+func is_barcode_aligned(
+	product: ProductData,
+	product_visual: MeshInstance3D
+) -> bool:
+	if product == null:
+		return false
+
+	if not is_instance_valid(product_visual):
+		return false
+
+	if not is_instance_valid(scan_area):
+		return false
+
+	var barcode_world: Transform3D = (
+		product_visual.global_transform
+		* product.barcode_transform
+	)
+
+	# The barcode marker's +Z points outward from the product.
+	var barcode_direction: Vector3 = (
+		barcode_world.basis.z.normalized()
+	)
+
+	# The scanner's +Y points upward from its reading surface.
+	var scanner_direction: Vector3 = (
+		scan_area.global_basis.y.normalized()
+	)
+
+	var alignment: float = barcode_direction.dot(
+		-scanner_direction
+	)
+
+	var minimum_alignment: float = cos(
+		deg_to_rad(barcode_angle_tolerance)
+	)
+
+	if alignment < minimum_alignment:
+		return false
+
+	var distance: float = (
+		barcode_world.origin.distance_to(
+			scan_area.global_position
+		)
+	)
+
+	return distance <= barcode_scan_distance
 
 
 func request_checkout(customer: ShopperAI) -> Marker3D:
