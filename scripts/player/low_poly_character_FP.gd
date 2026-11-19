@@ -2654,37 +2654,37 @@ func _clear_held_item() -> void:
 	rotating_held_product = false
 
 	# Remember where the product preview was on screen.
-	var restore_mouse_position := false
-	var last_product_screen_position: Vector2 = Vector2.ZERO
-
-	if is_instance_valid(checkout_cursor_visual):
-		if is_instance_valid(active_checkout):
-			var camera: Camera3D = active_checkout.checkout_camera
-
-			if is_instance_valid(camera):
-				var product_bounds: AABB = (
-					checkout_cursor_visual.get_aabb()
-				)
-
-				var product_center: Vector3 = (
-					checkout_cursor_visual.global_position
-					+ checkout_cursor_visual.global_transform.basis
-					* product_bounds.get_center()
-				)
-
-				last_product_screen_position = (
-					camera.unproject_position(product_center)
-				)
-
-				restore_mouse_position = true
+	#var restore_mouse_position := false
+	#var last_product_screen_position: Vector2 = Vector2.ZERO
+#
+	#if is_instance_valid(checkout_cursor_visual):
+		#if is_instance_valid(active_checkout):
+			#var camera: Camera3D = active_checkout.checkout_camera
+#
+			#if is_instance_valid(camera):
+				#var product_bounds: AABB = (
+					#checkout_cursor_visual.get_aabb()
+				#)
+#
+				#var product_center: Vector3 = (
+					#checkout_cursor_visual.global_position
+					#+ checkout_cursor_visual.global_transform.basis
+					#* product_bounds.get_center()
+				#)
+#
+				#last_product_screen_position = (
+					#camera.unproject_position(product_center)
+				#)
+#
+				#restore_mouse_position = true
 
 	# Remove checkout cursor preview.
 	clear_checkout_cursor_visual()
 
 	# Snap the actual mouse pointer to the last preview position.
-	if restore_mouse_position:
-		Input.warp_mouse(last_product_screen_position)
-		checkout_last_mouse_position = last_product_screen_position
+	#if restore_mouse_position:
+		#Input.warp_mouse(last_product_screen_position)
+		#checkout_last_mouse_position = last_product_screen_position
 
 	player_equipment.remove_local_product_visual(held_item_visual)
 	held_item_visual = null
@@ -2854,24 +2854,24 @@ func update_checkout_cursor_visual() -> void:
 	# If collision blocked movement, re-anchor the virtual mouse
 	# to the product's actual position. This prevents movement
 	# from accumulating behind the collision.
-	if (
-		not rotating_held_product
-		and result_position.distance_to(target_position) > 0.001
-	):
-		var actual_screen_position: Vector2 = (
-			get_checkout_cursor_screen_position()
-		)
-
-		checkout_virtual_mouse_position = (
-			actual_screen_position - checkout_cursor_offset
-		).clamp(
-			Vector2.ZERO,
-			viewport_size
-		)
-
-		checkout_last_mouse_position = (
-			checkout_virtual_mouse_position
-		)
+	#if (
+		#not rotating_held_product
+		#and result_position.distance_to(target_position) > 0.001
+	#):
+		#var actual_screen_position: Vector2 = (
+			#get_checkout_cursor_screen_position()
+		#)
+#
+		#checkout_virtual_mouse_position = (
+			#actual_screen_position - checkout_cursor_offset
+		#).clamp(
+			#Vector2.ZERO,
+			#viewport_size
+		#)
+#
+		#checkout_last_mouse_position = (
+			#checkout_virtual_mouse_position
+		#)
 
 
 func create_checkout_cursor_sensor() -> void:
