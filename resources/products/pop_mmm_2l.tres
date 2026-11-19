@@ -10,4 +10,5 @@ display_name = "Misty Mountain Mist (2L)"
 product_mesh = ExtResource("1_rc37r")
 product_price = 5.0
 reorder_cost = 4.0
+barcode_transform = Transform3D(-0.33124045, 0, -0.94354635, 0, 1, 0, 0.94354635, 0, -0.33124045, -0.045043945, 0.18397938, -0.016540825)
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

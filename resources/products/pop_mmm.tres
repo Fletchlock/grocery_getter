@@ -10,4 +10,5 @@ display_name = "Misty Mountain Mist"
 product_mesh = ExtResource("1_fcq5p")
 product_price = 3.0
 reorder_cost = 2.4
+barcode_transform = Transform3D(-0.36737075, 0, -0.9300746, 0, 1, 0, 0.9300746, 0, -0.36737075, -0.02709961, 0.11486469, -0.008835137)
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"
