@@ -105,7 +105,10 @@ const PLATFORM_INTERPOLATION_DELAY := 0.05
 @export var gamepad_cursor_speed: float = 500.0 #base spped
 
 @export_group("Checkout Cursor")
-@export_range(1.0, 5.0, 0.1) var checkout_controller_sensitivity: float = 2.0 #base speed multiplier
+@export_range(1.0, 5.0, 0.1) 
+var checkout_controller_sensitivity: float = 2.0 #base speed multiplier
+@export_range(0.5, 5.0, 0.1)
+var checkout_mouse_sensitivity: float = 1.5
 
 @export_group("Blink")
 @export var blink_min_time: float = 2.5 ## Minimum time to wait before a blink.
@@ -402,7 +405,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		# Track captured mouse movement in viewport coordinates.
 		if event is InputEventMouseMotion:
 			if not rotating_held_product:
-				var mouse_delta: Vector2 = event.screen_relative
+				var mouse_delta: Vector2 = (
+					event.screen_relative * checkout_mouse_sensitivity
+				)
 
 				if mouse_delta.length_squared() > 0.0:
 					checkout_using_controller_cursor = false
