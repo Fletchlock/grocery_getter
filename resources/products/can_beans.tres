@@ -10,6 +10,6 @@ display_name = "Beans"
 product_mesh = ExtResource("1_kmfih")
 product_price = 2.0
 reorder_cost = 1.6
-barcode_transform = Transform3D(0.09085851, -0.2588191, 0.9616431, -0.9955662, 4.111653e-09, 0.094063655, -0.024345474, -0.9659258, -0.25767154, 0.039461136, 0.041641235, 0)
+barcode_transform = Transform3D(1.9106853e-15, -4.3711385e-08, 0.99999994, -0.9999999, -4.3711385e-08, 0, 4.3711385e-08, -0.9999999, -4.3711385e-08, 0.039461136, 0.041641235, 0)
 spill_color = Color(0.73789555, 0.5142972, 0.1729896, 1)
 metadata/_custom_type_script = "uid://ce7xl2fesyef6"

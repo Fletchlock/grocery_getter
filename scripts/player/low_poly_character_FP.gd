@@ -108,7 +108,7 @@ const PLATFORM_INTERPOLATION_DELAY := 0.05
 @export_range(1.0, 5.0, 0.1) 
 var checkout_controller_sensitivity: float = 2.0 #base speed multiplier
 @export_range(0.5, 5.0, 0.1)
-var checkout_mouse_sensitivity: float = 1.5
+var checkout_mouse_sensitivity: float = 1.4
 
 @export_group("Blink")
 @export var blink_min_time: float = 2.5 ## Minimum time to wait before a blink.
@@ -442,10 +442,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 
 		# E interacts with the product/scanner under the cursor.
-		if (
-			event.is_action_pressed("interact")
-			and not (event is InputEventKey and event.echo)
-		):
+		# Interact once per button press.
+		if Input.is_action_just_pressed_by_event("interact", event):
 			handle_checkout_interaction()
 			get_viewport().set_input_as_handled()
 			return
