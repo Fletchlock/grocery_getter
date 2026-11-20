@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://8y1555o2qp4o"
+uid="uid://cs4cj3m1cbqk0"
 path="res://godot/imported/flour.glb-2fa8d935d3df737f680b6109420bf04a.scn"
 
 [deps]
@@ -48,7 +48,7 @@ _subresources={
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
 "save_to_file/fallback_path": "res://assets/models/items/flour_Cube_009.res",
-"save_to_file/path": "uid://vd2xla4kw53j"
+"save_to_file/path": "uid://dcb3ye2of5rhp"
 }
 }
 }
