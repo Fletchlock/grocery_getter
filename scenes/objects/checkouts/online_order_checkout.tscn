@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://byvybsttl687x" path="res://scripts/checkouts/finish_checkout_area.gd" id="4_sgntm"]
 [ext_resource type="Texture2D" uid="uid://rxi57rlmyh33" path="res://assets/images/cart_parking.png" id="5_ubsv7"]
 [ext_resource type="Script" uid="uid://upu8oii4xojm" path="res://scripts/checkouts/online_checkout_display.gd" id="5_uwfqi"]
+[ext_resource type="Script" uid="uid://be1iwunwpnl25" path="res://scripts/checkouts/scanner_flash.gd" id="10_k4lt4"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2bvqw"]
 size = Vector3(0.6973034, 0.487508, 0.88288224)
@@ -159,3 +160,10 @@ theme_override_colors/font_color = Color(2.0214916e-06, 0.86096245, 0.45047575, 
 theme_override_font_sizes/font_size = 26
 text = "20.95"
 horizontal_alignment = 2
+
+[node name="ScannerFlash" type="Node3D" parent="." unique_id=2058036533 node_paths=PackedStringArray("scanner_mesh")]
+script = ExtResource("10_k4lt4")
+scanner_mesh = NodePath("../OnlineOrderCounterMesh/checkout_sm_left_rework/checkout_sm_left")
+surface_index = 3
+
+[editable path="OnlineOrderCounterMesh/checkout_sm_left_rework"]
