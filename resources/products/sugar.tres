@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ProductData" format=3 uid="uid://cusqf2gc2jl7h"]
 
-[ext_resource type="ArrayMesh" uid="uid://caa05bv6yoxay" path="res://assets/models/items/sugar_Cube_010.res" id="1_0qu0r"]
+[ext_resource type="ArrayMesh" uid="uid://cv4puxftm4lk3" path="res://assets/models/items/sugar_Cube_010.res" id="1_0qu0r"]
 [ext_resource type="Script" uid="uid://ce7xl2fesyef6" path="res://resources/products/product_data.gd" id="1_75eou"]
 
 [resource]
