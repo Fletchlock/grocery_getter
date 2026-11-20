@@ -24,6 +24,7 @@ const CHECKOUT_OUTLINE_MATERIAL: Material = preload(
 @onready var scan_area: Area3D = $ScanArea
 @onready var scanner_beep_player: AudioStreamPlayer3D = $ScannerBeepPlayer
 @onready var checkout_finished_player: AudioStreamPlayer3D = $CheckoutFinishedPlayer
+@onready var scanner_flash: ScannerFlash = $ScannerFlash
 
 @export_group("Barcode Scanning")
 @export_range(0.0, 90.0, 1.0) var barcode_angle_tolerance: float = 25.0
@@ -768,7 +769,7 @@ func _create_bag_outline() -> void:
 	bag_outline.transform = bag_mesh.transform
 
 	# Make the outline slightly larger than the original.
-	bag_outline.scale *= Vector3(1.065, 1.00, 1.03)
+	bag_outline.scale *= Vector3(1.01, 1.01, 1.01)
 	#bag_outline.position.y -= 0.025
 
 	# Apply the existing outline material.
@@ -926,11 +927,11 @@ func _play_desk_bell() -> void:
 
 @rpc("authority", "call_local", "reliable")
 func _play_scanner_beep() -> void:
-	if not is_instance_valid(scanner_beep_player):
-		return
+	if is_instance_valid(scanner_beep_player):
+		scanner_beep_player.pitch_scale = randf_range(1.0, 1.05)
+		scanner_beep_player.play()
 
-	scanner_beep_player.pitch_scale = randf_range(1.0, 1.05)
-	scanner_beep_player.play()
+	scanner_flash.flash()
 
 
 @rpc("authority", "call_local", "reliable")
