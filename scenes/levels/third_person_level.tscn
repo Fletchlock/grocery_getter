@@ -217,7 +217,7 @@ size = Vector3(0.75339556, 0.069360465, 0.75339556)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_keq6l"]
 resource_local_to_scene = true
-size = Vector3(1.35, 0.3, 0.62)
+size = Vector3(0.15, 7.186344e-09, 0.12)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_a51l3"]
 resource_local_to_scene = true
@@ -225,7 +225,7 @@ size = Vector3(0.52665436, 0.046109058, 0.5805085)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hiidl"]
 resource_local_to_scene = true
-size = Vector3(0.58, 0.19999999, 0.58000004)
+size = Vector3(0.06, 7.186344e-09, 0.08)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cbg0i"]
 resource_local_to_scene = true
@@ -621,7 +621,7 @@ max_quantity = 30
 quantity = 15
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Flour/Area3D" parent_id_path=PackedInt32Array(885535414, 1400837386) index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.575, 0.15, 0.26)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.075, 3.593172e-09, 0.06)
 shape = SubResource("BoxShape3D_keq6l")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Flour" index="4" unique_id=2005891054]
@@ -666,7 +666,7 @@ max_quantity = 20
 quantity = 20
 
 [node name="CollisionShape3D" parent="NavigationRegion3D/Items/Sugar/Area3D" parent_id_path=PackedInt32Array(267980143, 1400837386) index="0" unique_id=211993197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.225, 0.099999994, 0.24000002)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.03, 3.593172e-09, 0.04)
 shape = SubResource("BoxShape3D_hiidl")
 
 [node name="AIShopperPoint" parent="NavigationRegion3D/Items/Sugar" index="4" unique_id=2005891054]

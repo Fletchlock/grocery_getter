@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cxgwawqktw3e1"
+uid="uid://bjr1hdkmq0vgr"
 path="res://godot/imported/sugar.glb-1ea6b46af80228b123a71f86c46492b6.scn"
 
 [deps]
@@ -48,7 +48,7 @@ _subresources={
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
 "save_to_file/fallback_path": "res://assets/models/items/sugar_Cube_010.res",
-"save_to_file/path": "uid://d2rkmohxiilx1"
+"save_to_file/path": "uid://cv4puxftm4lk3"
 }
 }
 }
