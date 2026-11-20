@@ -3480,18 +3480,18 @@ func _activate_checkout_mode(checkout: Checkout) -> void:
 	# Hide the normal crosshair.
 	crosshair.hide()
 
-	# Show the mouse cursor.
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	checkout_virtual_mouse_position = (
-		get_viewport().get_mouse_position()
-	)
+	# Initialize the virtual checkout pointer at screen center.
+	var viewport_size: Vector2 = get_viewport().get_visible_rect().size
 
+	checkout_virtual_mouse_position = viewport_size * 0.5
 	checkout_last_mouse_position = checkout_virtual_mouse_position
 	checkout_virtual_mouse_initialized = true
 	checkout_using_controller_cursor = false
+
 	create_checkout_pointer()
 
-	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
+	# Capture the physical cursor while using our virtual pointer.
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 	# Activate the checkout camera.
 	checkout.checkout_camera.make_current()
@@ -3662,18 +3662,8 @@ func update_checkout_mouse_cursor() -> void:
 	if not checkout_mode_active:
 		return
 
-	if rotating_held_product:
-		return
-
-	var holding_checkout_product: bool = (
-		held_item != null
-		and held_item_origin == ItemOrigin.CHECKOUT_GRID
-	)
-
-	if holding_checkout_product:
+	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	else:
-		Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 
 	checkout_virtual_mouse_initialized = true
 

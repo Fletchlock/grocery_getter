@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://bstnqhfafsa1d"]
 
 [ext_resource type="Script" uid="uid://bpwulonp8m8mq" path="res://scripts/items/upc_positioning_tool.gd" id="1_085xp"]
-[ext_resource type="Resource" uid="uid://drhqmd8mbofk" path="res://resources/products/eggs.tres" id="2_lojbm"]
-[ext_resource type="ArrayMesh" uid="uid://cjfvgw78pqiqx" path="res://assets/models/items/eggs_Cube_011.res" id="3_i8w07"]
+[ext_resource type="Resource" uid="uid://cusqf2gc2jl7h" path="res://resources/products/sugar.tres" id="2_lojbm"]
+[ext_resource type="ArrayMesh" uid="uid://cv4puxftm4lk3" path="res://assets/models/items/sugar_Cube_010.res" id="3_i8w07"]
 
 [node name="UPCPositioningTool" type="Node3D" unique_id=673440713]
 script = ExtResource("1_085xp")
@@ -12,4 +12,4 @@ product_data = ExtResource("2_lojbm")
 mesh = ExtResource("3_i8w07")
 
 [node name="BarcodeMarker" type="Marker3D" parent="." unique_id=606684403]
-transform = Transform3D(-1, 0, 8.742278e-08, 2.0734799e-08, 0.9714661, 0.23717844, -8.492827e-08, 0.23717844, -0.9714661, -0.073036015, 0.0487442, -0.046251968)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.064934105, 0.028369859, 0.016983956)
