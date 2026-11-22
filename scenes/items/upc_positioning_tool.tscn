@@ -12,4 +12,4 @@ product_data = ExtResource("2_lojbm")
 mesh = ExtResource("3_i8w07")
 
 [node name="BarcodeMarker" type="Marker3D" parent="." unique_id=606684403]
-transform = Transform3D(-8.881784e-16, 0, 1.0000001, -1, -4.371139e-08, 0, 4.371139e-08, -1.0000001, 0, 0.039461136, 0.041641235, 0)
+transform = Transform3D(1.9106853e-15, -4.3711385e-08, 0.99999994, -0.9999999, -4.3711385e-08, 0, 4.3711385e-08, -0.9999999, -4.3711385e-08, 0.039461136, 0.041641235, 0)

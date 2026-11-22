@@ -442,10 +442,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 
 		# E interacts with the product/scanner under the cursor.
-		if (
-			event.is_action_pressed("interact")
-			and not (event is InputEventKey and event.echo)
-		):
+		# Interact once per button press.
+		if Input.is_action_just_pressed_by_event("interact", event):
 			handle_checkout_interaction()
 			get_viewport().set_input_as_handled()
 			return

@@ -11,6 +11,11 @@ signal checkout_owner_changed
 var drone_checkout_order_id: int = -1
 
 
+func _ready() -> void:
+	super._ready()
+	add_to_group("order_grids")
+
+
 func has_drone_checkout() -> bool:
 	if drone_checkout_order_id < 0:
 		return false

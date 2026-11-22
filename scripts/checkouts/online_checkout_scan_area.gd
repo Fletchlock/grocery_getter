@@ -9,7 +9,7 @@ class_name OnlineCheckoutScanArea
 
 @onready var order_grid: OrderGrid = $"../OrderGrid"
 @onready var order_scanner_beep_player: AudioStreamPlayer3D = $OrderScannerBeepPlayer
-
+@onready var scanner_flash: ScannerFlash = $"../ScannerFlash"
 
 # ============================================================
 # ORDER LOOKUP
@@ -410,8 +410,8 @@ func _reset_completed_barcode_code() -> void:
 
 @rpc("authority", "call_local", "reliable")
 func _play_order_scanner_beep() -> void:
-	if not is_instance_valid(order_scanner_beep_player):
-		return
+	if is_instance_valid(order_scanner_beep_player):
+		order_scanner_beep_player.pitch_scale = randf_range(1.0, 1.05)
+		order_scanner_beep_player.play()
 
-	order_scanner_beep_player.pitch_scale = randf_range(1.0, 1.05)
-	order_scanner_beep_player.play()
+	scanner_flash.flash()
