@@ -68,6 +68,14 @@ var pending_delete_slot: int = -1
 
 var pending_overwrite_slot: int = -1
 
+#UFO Transition
+@onready var space_background: SubViewportContainer = $SpaceBackground
+@onready var color_rect: ColorRect = $ColorRect
+@onready var space_ufo: Node = $SpaceBackground/SpaceViewport/MainMenuSpace/UFOFloat
+@onready var menu_back_buffer: CanvasItem = $MenuBackBuffer
+
+var is_transitioning_to_game: bool = false
+
 
 func _ready() -> void:
 	# Menu music
@@ -269,10 +277,23 @@ func _on_host_button_pressed() -> void:
 
 
 func _on_single_player_button_pressed() -> void:
+	if is_transitioning_to_game:
+		return
+
+	is_transitioning_to_game = true
+
 	print("MainMenu: Starting single player.")
 	print("MainMenu: Selected save slot: ", SaveManager.selected_slot)
 
 	NetworkManager.start_single_player()
+
+	_set_main_menu_focus_enabled(false)
+	get_viewport().gui_release_focus()
+
+	_hide_menu_ui_for_transition()
+
+	await space_ufo.call("begin_warp_departure")
+
 	GameManager.start_game()
 
 
@@ -687,3 +708,18 @@ func _on_privacy_back_button_pressed() -> void:
 	_set_play_mode_focus_isolated(true)
 
 	multiplayer_button.grab_focus.call_deferred()
+
+
+func _hide_menu_ui_for_transition() -> void:
+	# Hide all top-level UI controls except the space background
+	for child in get_children():
+		if child is Control:
+			if child == space_background or child == color_rect:
+				continue
+
+			child.hide()
+
+	# Hide the menu blur and confirmation dialogs
+	menu_back_buffer.hide()
+	overwrite_confirmation.hide()
+	delete_confirmation.hide()

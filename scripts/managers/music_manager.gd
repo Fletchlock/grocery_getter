@@ -3,8 +3,8 @@ extends Node
 
 @onready var player: AudioStreamPlayer = $AudioStreamPlayer
 
-var intro: AudioStream = preload("res://assets/music/DjangoIntro.wav")
-var loop: AudioStream = preload("res://assets/music/DjangoLoop.wav")
+var intro: AudioStream = preload("res://assets/music/xfiles.wav")
+var loop: AudioStream = preload("res://assets/music/xfiles.wav")
 
 func _ready() -> void:
 	player.finished.connect(_on_music_finished)

@@ -108,7 +108,7 @@ const PLATFORM_INTERPOLATION_DELAY := 0.05
 @export_range(1.0, 5.0, 0.1) 
 var checkout_controller_sensitivity: float = 2.0 #base speed multiplier
 @export_range(0.5, 5.0, 0.1)
-var checkout_mouse_sensitivity: float = 1.5
+var checkout_mouse_sensitivity: float = 1.4
 
 @export_group("Blink")
 @export var blink_min_time: float = 2.5 ## Minimum time to wait before a blink.
