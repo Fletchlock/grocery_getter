@@ -29,6 +29,10 @@ var selected_shopper_mesh: Mesh = null
 @export var shopping_wait_min: float = 2.0
 @export var shopping_wait_max: float = 4.0
 
+@export_group("Grab Animation Heights")
+@export var grab_low_max_height: float = 0.6
+@export var grab_mid_max_height: float = 1.3
+
 @export_group("Shopping Wander")
 @export var shopping_point_check_distance: float = 3.0
 @export var shopping_wander_distance_min: float = 1.0
@@ -48,6 +52,7 @@ var shopping_wait_timer: float = 0.0
 var checkout_sale_recorded: bool = false
 var current_shopping_point: Node3D = null
 var shopping_point_checked: bool = false
+var is_grabbing: bool = false
 
 # Shopper Experience / Rating
 var experience: ShopperExperience = null
@@ -512,15 +517,24 @@ func _on_checkout_queue_full(delta: float) -> void:
 		go_to_checkout()
 
 
+
 func _on_shopping_idle(delta: float) -> void:
 	velocity = Vector3.ZERO
 	navigation_agent_3d.velocity = Vector3.ZERO
+
+	if is_grabbing:
+		return
 
 	shopping_idle_timer -= delta
 
 	if shopping_idle_timer > 0.0:
 		return
 
+	is_grabbing = true
+	update_animation()
+
+
+func _take_shopping_product() -> void:
 	var purchased_product: ProductData = null
 
 	if is_instance_valid(current_shopping_point):
@@ -1006,6 +1020,38 @@ func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
 # ---------------------------------------------------------
 # Animation
 # ---------------------------------------------------------
+
+func get_shopping_grab_animation() -> StringName:
+	if not is_instance_valid(current_shopping_point):
+		return &"low_poly_character_anims/idle"
+
+	var shopper_point: Marker3D = current_shopping_point.get_node_or_null("AIShopperPoint")
+
+	if shopper_point == null:
+		return &"low_poly_character_anims/idle"
+
+	# Height relative to the shopper's origin
+	var height: float = shopper_point.global_position.y - global_position.y
+
+	if height <= grab_low_max_height:
+		return &"low_poly_character_anims/grab_low"
+	elif height <= grab_mid_max_height:
+		return &"low_poly_character_anims/grab_mid"
+	else:
+		return &"low_poly_character_anims/grab_high"
+
+
+func animation_grab_product() -> void:
+	if not is_multiplayer_authority():
+		return
+
+	if state != State.SHOPPING_IDLE or not is_grabbing:
+		return
+
+	is_grabbing = false
+	_take_shopping_product()
+
+
 func update_animation() -> void:
 	if not is_node_ready():
 		await ready
@@ -1016,9 +1062,15 @@ func update_animation() -> void:
 		State.IDLE, State.WAITING_TO_MOVE, State.CLOSED_IDLE, \
 		State.CHECKOUT_IDLE, State.CHECKOUT_WAITING, State.CHECKOUT_QUEUE_FULL:
 			new_animation = &"low_poly_character_anims/idle"
+		
+		State.SHOPPING_IDLE:
+			if is_grabbing:
+				new_animation = get_shopping_grab_animation()
+			else:
+				new_animation = &"low_poly_character_anims/idle"
 
-		State.SHOPPING_IDLE, State.BAGGING_IDLE:
-			new_animation = &"low_poly_character_anims/crouch_idle"
+		State.BAGGING_IDLE:
+			new_animation = &"low_poly_character_anims/grab_high"
 
 		State.SHOPPING_WAITING_IDLE:
 			new_animation = &"low_poly_character_anims/idle"
