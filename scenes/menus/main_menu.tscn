@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ga0gq26e65dd"]
 
 [ext_resource type="Script" uid="uid://drv7wprqfvxnv" path="res://scripts/menus/main_menu.gd" id="1_xqga4"]
+[ext_resource type="PackedScene" uid="uid://b04e0njmp34uv" path="res://scenes/menus/main_menu_space.tscn" id="2_25m6f"]
 [ext_resource type="Texture2D" uid="uid://4d583oth5smh" path="res://assets/images/UFO_Eggs.png" id="2_nkawv"]
 [ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="3_1hnlc"]
 [ext_resource type="FontFile" uid="uid://c5smmmli4hgm" path="res://assets/fonts/Atmospheric/aAtmospheric.ttf" id="3_nkawv"]
@@ -238,7 +239,25 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.0015758128, 0.1037861, 0.2419095, 1)
 
+[node name="SpaceBackground" type="SubViewportContainer" parent="." unique_id=550702876]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch = true
+
+[node name="SpaceViewport" type="SubViewport" parent="SpaceBackground" unique_id=1288963826]
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="MainMenuSpace" parent="SpaceBackground/SpaceViewport" unique_id=463923502 instance=ExtResource("2_25m6f")]
+
 [node name="ImageContainer" type="CenterContainer" parent="." unique_id=428769415]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
