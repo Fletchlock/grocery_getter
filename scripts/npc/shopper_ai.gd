@@ -38,6 +38,9 @@ var selected_shopper_mesh: Mesh = null
 @export var shopping_wander_distance_min: float = 1.0
 @export var shopping_wander_distance_max: float = 3.0
 
+@export var network_is_grabbing: bool = false
+@export var network_grab_animation: StringName = &""
+
 @onready var shopping_points_node: Node3D = $"../Items"
 @onready var exit_point: Marker3D = $"../ExitPoint"
 @onready var enter_point: Marker3D = $"../EnterPoint"
@@ -212,6 +215,7 @@ func _process(delta: float) -> void:
 
 	if not is_multiplayer_authority():
 		_update_network_visuals(delta)
+		update_animation()
 
 
 func _physics_process(delta: float) -> void:
@@ -531,6 +535,8 @@ func _on_shopping_idle(delta: float) -> void:
 		return
 
 	is_grabbing = true
+	network_is_grabbing = true
+	network_grab_animation = get_shopping_grab_animation()
 	update_animation()
 
 
@@ -907,6 +913,11 @@ func _on_navigation_agent_3d_target_reached() -> void:
 			shopping_idle_max
 		)
 
+		# Reset grab state before waiting at the shelf
+		is_grabbing = false
+		network_is_grabbing = false
+		network_grab_animation = &""
+
 		state = State.SHOPPING_IDLE
 		return
 
@@ -1049,6 +1060,7 @@ func animation_grab_product() -> void:
 		return
 
 	is_grabbing = false
+	network_is_grabbing = false
 	_take_shopping_product()
 
 
@@ -1064,8 +1076,8 @@ func update_animation() -> void:
 			new_animation = &"low_poly_character_anims/idle"
 		
 		State.SHOPPING_IDLE:
-			if is_grabbing:
-				new_animation = get_shopping_grab_animation()
+			if network_is_grabbing:
+				new_animation = network_grab_animation
 			else:
 				new_animation = &"low_poly_character_anims/idle"
 
