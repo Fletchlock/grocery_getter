@@ -6,6 +6,9 @@
 [ext_resource type="Animation" uid="uid://boyaivkkdgy2p" path="res://assets/animations/crouch_idle.res" id="2_rihnw"]
 [ext_resource type="Animation" uid="uid://y2mhuw7efofr" path="res://assets/animations/crouch_walk.res" id="3_5klam"]
 [ext_resource type="Animation" uid="uid://rpgs3a3xjfcc" path="res://assets/animations/run.res" id="3_bb0h6"]
+[ext_resource type="Animation" uid="uid://c3ou72rvxbtwv" path="res://assets/animations/grab_high.res" id="5_rihnw"]
+[ext_resource type="Animation" uid="uid://b3cjw3sjf6hta" path="res://assets/animations/grab_mid.res" id="6_5klam"]
+[ext_resource type="Animation" uid="uid://dmbasg5a7eant" path="res://assets/animations/grab_low.res" id="6_lxpa7"]
 
 [sub_resource type="Animation" id="Animation_ofxof"]
 resource_name = "Walk"
@@ -196,6 +199,9 @@ _data = {
 &"crouch_walk": ExtResource("3_5klam"),
 &"default": ExtResource("1_7wew1"),
 &"falling": ExtResource("1_4yv5c"),
+&"grab_high": ExtResource("5_rihnw"),
+&"grab_low": ExtResource("6_lxpa7"),
+&"grab_mid": ExtResource("6_5klam"),
 &"idle": ExtResource("2_7wew1"),
 &"run": ExtResource("3_bb0h6")
 }
