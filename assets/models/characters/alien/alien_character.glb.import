@@ -26771,24 +26771,6 @@ _subresources={
 }
 },
 "meshes": {
-"alien_character_alien_antennas_01": {
-"generate/lightmap_uv": 0,
-"generate/lods": 0,
-"generate/shadow_meshes": 0,
-"lods/normal_merge_angle": 20.0,
-"save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_antennas_01.res",
-"save_to_file/path": "uid://bf200hkkir7o3"
-},
-"alien_character_alien_antennas_02": {
-"generate/lightmap_uv": 0,
-"generate/lods": 0,
-"generate/shadow_meshes": 0,
-"lods/normal_merge_angle": 20.0,
-"save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_antennas_02.res",
-"save_to_file/path": "uid://bqh25w0r8kdil"
-},
 "alien_character_alien_antennas_03": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
@@ -26869,33 +26851,6 @@ _subresources={
 "save_to_file/enabled": true,
 "save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_shirt_03.res",
 "save_to_file/path": "uid://cj6e560hwjhn"
-},
-"alien_character_alien_shoes_01": {
-"generate/lightmap_uv": 0,
-"generate/lods": 0,
-"generate/shadow_meshes": 0,
-"lods/normal_merge_angle": 20.0,
-"save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_shoes_01.res",
-"save_to_file/path": "uid://dnalmq70mgho3"
-},
-"alien_character_alien_shoes_02": {
-"generate/lightmap_uv": 0,
-"generate/lods": 0,
-"generate/shadow_meshes": 0,
-"lods/normal_merge_angle": 20.0,
-"save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_shoes_02.res",
-"save_to_file/path": "uid://bb6cm14i20mjg"
-},
-"alien_character_alien_shoes_03": {
-"generate/lightmap_uv": 0,
-"generate/lods": 0,
-"generate/shadow_meshes": 0,
-"lods/normal_merge_angle": 20.0,
-"save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_shoes_03.res",
-"save_to_file/path": "uid://bgnt0ieu18huh"
 }
 }
 }
