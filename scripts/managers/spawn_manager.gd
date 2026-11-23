@@ -1,7 +1,7 @@
 
 extends Node
 
-const PLAYER_SCENE := preload("res://scenes/player/low_poly_character_FP.tscn")
+const PLAYER_SCENE := preload("res://scenes/player/alien_character.tscn")
 
 var players: Node3D
 var multiplayer_spawner: MultiplayerSpawner

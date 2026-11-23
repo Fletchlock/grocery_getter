@@ -944,6 +944,7 @@ skeleton = NodePath("..")
 blend_shapes/Blink = 0.0
 
 [node name="Hat" type="MeshInstance3D" parent="Armature/Skeleton3D/GroceryBlue" unique_id=32792588]
+visible = false
 mesh = ExtResource("7_2qh24")
 skin = SubResource("Skin_fs7re")
 skeleton = NodePath("../..")

@@ -118,12 +118,12 @@ func _set_blend_shape(
 	if target == null or target.mesh == null:
 		return
 
-	var index: int = target.mesh.find_blend_shape_by_name(shape_name)
+	var shape_count: int = target.mesh.get_blend_shape_count()
 
-	if index == -1:
-		return
-
-	target.set_blend_shape_value(index, value)
+	for i: int in range(shape_count):
+		if target.mesh.get_blend_shape_name(i) == shape_name:
+			target.set_blend_shape_value(i, value)
+			return
 
 
 func set_eyelashes_enabled(enabled: bool) -> void:
@@ -140,11 +140,25 @@ func _sync_blink() -> void:
 	if body.mesh == null or eyelashes.mesh == null:
 		return
 
-	var body_index: int = body.mesh.find_blend_shape_by_name(&"Blink")
-	var eyelash_index: int = eyelashes.mesh.find_blend_shape_by_name(&"Blink")
+	var body_index: int = _get_blend_shape_index(body, &"Blink")
+	var eyelash_index: int = _get_blend_shape_index(eyelashes, &"Blink")
 
 	if body_index == -1 or eyelash_index == -1:
 		return
 
 	var blink_value: float = body.get_blend_shape_value(body_index)
 	eyelashes.set_blend_shape_value(eyelash_index, blink_value)
+
+
+func _get_blend_shape_index(
+	target: MeshInstance3D,
+	shape_name: StringName
+) -> int:
+	if target == null or target.mesh == null:
+		return -1
+
+	for i: int in range(target.mesh.get_blend_shape_count()):
+		if target.mesh.get_blend_shape_name(i) == shape_name:
+			return i
+
+	return -1
