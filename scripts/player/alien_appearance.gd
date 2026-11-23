@@ -3,6 +3,58 @@ extends Node
 class_name AlienAppearance
 
 
+@export var appearance_data: AlienAppearanceData
+
+enum ClothingColor {
+	BLACK,
+	RED,
+	GREEN,
+	BLUE,
+	YELLOW,
+	BROWN,
+	ORANGE,
+	WHITE,
+	GREY
+}
+
+const CLOTHING_COLORS: Array[Color] = [
+	Color("#202020"), # Black 0
+	Color("#c83a3a"), # Red 1
+	Color("#459b55"), # Green 2
+	Color("#377ac4"), # Blue 3
+	Color("#e8c63b"), # Yellow 4
+	Color("#795438"), # Brown 5
+	Color("#e78b35"), # Orange 6
+	Color("#f1f1ed"), # White 7
+	Color("#888888")  # Grey 8
+]
+
+var top_color: int = ClothingColor.WHITE
+var bottom_color: int = ClothingColor.BLUE
+var feet_color: int = ClothingColor.BLACK
+var sole_color: int = ClothingColor.WHITE
+
+@export var default_skin_color: Color = Color("#40bf59")
+@export var default_pattern_color: Color = Color("#0d401a")
+
+var skin_color: Color
+var pattern_color: Color
+
+var skin_material: ShaderMaterial
+
+@export_group("Eye Customization")
+@export var default_pupil_color: Color = Color("#240c38")
+
+@export_group("Lip Customization")
+@export var lips_use_skin_color: bool = true
+@export var default_lip_color: Color = Color("#c95b86")
+
+var pupil_color: Color
+var lip_color: Color
+
+var pupil_material: StandardMaterial3D
+var lip_material: StandardMaterial3D
+
 @export_group("Character Meshes")
 @export var body: MeshInstance3D
 @export var eyelashes: MeshInstance3D
@@ -43,8 +95,23 @@ func _ready() -> void:
 	body_weight = default_weight
 	set_eyelashes_enabled(default_eyelashes)
 	set_body_weight(body_weight)
+	set_top_color(top_color)
+	set_bottom_color(bottom_color)
+	set_feet_color(feet_color)
+	set_sole_color(sole_color)
+	_setup_skin_material()
+	_setup_face_materials()
 	
 	_test_shirt_switching()
+	
+	set_top_color(ClothingColor.ORANGE)
+	set_bottom_color(ClothingColor.BLUE)
+	set_feet_color(ClothingColor.BROWN)
+	set_sole_color(ClothingColor.BLACK)
+	
+	if appearance_data != null:
+		apply_appearance(appearance_data)
+	
 
 
 func _process(_delta: float) -> void:
@@ -84,6 +151,17 @@ func _set_equipment(
 		return
 
 	slot.mesh = meshes[index]
+	
+	if slot == head:
+		_update_head_material()
+	
+	if slot == top:
+		set_top_color(top_color)
+	elif slot == bottom:
+		set_bottom_color(bottom_color)
+	elif slot == feet:
+		set_feet_color(feet_color)
+		set_sole_color(sole_color)
 
 	if slot == top or slot == bottom:
 		_apply_weight_to_mesh(slot)
@@ -160,3 +238,171 @@ func _get_blend_shape_index(
 			return i
 
 	return -1
+
+
+func _set_surface_color(
+	target: MeshInstance3D,
+	surface_index: int,
+	color_index: int
+) -> void:
+	if target == null or target.mesh == null:
+		return
+
+	if color_index < 0 or color_index >= CLOTHING_COLORS.size():
+		push_warning("Invalid clothing color index: %d" % color_index)
+		return
+
+	if surface_index < 0 or surface_index >= target.mesh.get_surface_count():
+		return
+
+	var source_material: Material = target.mesh.surface_get_material(surface_index)
+
+	if not source_material is StandardMaterial3D:
+		return
+
+	var material: StandardMaterial3D = source_material.duplicate() as StandardMaterial3D
+	material.albedo_color = CLOTHING_COLORS[color_index]
+
+	target.set_surface_override_material(surface_index, material)
+	
+	
+func set_top_color(color_index: int) -> void:
+	top_color = color_index
+	_set_surface_color(top, 0, top_color)
+
+
+func set_bottom_color(color_index: int) -> void:
+	bottom_color = color_index
+	_set_surface_color(bottom, 0, bottom_color)
+
+
+func set_feet_color(color_index: int) -> void:
+	feet_color = color_index
+	_set_surface_color(feet, 0, feet_color)
+
+
+func set_sole_color(color_index: int) -> void:
+	sole_color = color_index
+	_set_surface_color(feet, 1, sole_color)
+
+
+func _setup_skin_material() -> void:
+	if body == null:
+		return
+
+	var source_material: Material = body.get_active_material(0)
+
+	if not source_material is ShaderMaterial:
+		push_warning("AlienBody Surface 0 requires a ShaderMaterial.")
+		return
+
+	skin_material = source_material.duplicate() as ShaderMaterial
+	body.set_surface_override_material(0, skin_material)
+
+	skin_color = default_skin_color
+	pattern_color = default_pattern_color
+
+	set_skin_color(skin_color)
+	set_pattern_color(pattern_color)
+	_update_head_material()
+
+
+func set_skin_color(color: Color) -> void:
+	skin_color = color
+
+	if skin_material != null:
+		skin_material.set_shader_parameter("skin_color", skin_color)
+
+	if lips_use_skin_color:
+		_update_lip_color()
+
+
+func set_pattern_color(color: Color) -> void:
+	pattern_color = color
+
+	if skin_material != null:
+		skin_material.set_shader_parameter("pattern_color", pattern_color)
+
+
+func _update_head_material() -> void:
+	if head == null or head.mesh == null:
+		return
+
+	if skin_material == null:
+		return
+
+	head.set_surface_override_material(0, skin_material)
+
+
+func _setup_face_materials() -> void:
+	if body == null:
+		return
+
+	var pupil_source: Material = body.get_active_material(2)
+	var lip_source: Material = body.get_active_material(3)
+
+	if pupil_source is StandardMaterial3D:
+		pupil_material = pupil_source.duplicate() as StandardMaterial3D
+		body.set_surface_override_material(2, pupil_material)
+
+	if lip_source is StandardMaterial3D:
+		lip_material = lip_source.duplicate() as StandardMaterial3D
+		body.set_surface_override_material(3, lip_material)
+
+	pupil_color = default_pupil_color
+	lip_color = default_lip_color
+
+	set_pupil_color(pupil_color)
+	_update_lip_color()
+	
+
+func set_pupil_color(color: Color) -> void:
+	pupil_color = color
+
+	if pupil_material != null:
+		pupil_material.albedo_color = pupil_color
+
+
+func set_lip_color(color: Color) -> void:
+	lip_color = color
+	_update_lip_color()
+
+
+func set_lips_use_skin_color(enabled: bool) -> void:
+	lips_use_skin_color = enabled
+	_update_lip_color()
+
+
+func _update_lip_color() -> void:
+	if lip_material == null:
+		return
+
+	if lips_use_skin_color:
+		lip_material.albedo_color = skin_color
+	else:
+		lip_material.albedo_color = lip_color
+
+
+func apply_appearance(data: AlienAppearanceData) -> void:
+	if data == null:
+		return
+
+	set_body_weight(data.body_weight)
+
+	set_skin_color(data.skin_color)
+	set_pattern_color(data.pattern_color)
+
+	set_pupil_color(data.pupil_color)
+	set_lip_color(data.lip_color)
+	set_lips_use_skin_color(data.lips_use_skin_color)
+	set_eyelashes_enabled(data.eyelashes_enabled)
+
+	set_head_style(data.head_style)
+	set_top_style(data.top_style)
+	set_bottom_style(data.bottom_style)
+	set_feet_style(data.feet_style)
+
+	set_top_color(data.top_color)
+	set_bottom_color(data.bottom_color)
+	set_feet_color(data.feet_color)
+	set_sole_color(data.sole_color)
