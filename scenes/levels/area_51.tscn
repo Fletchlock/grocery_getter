@@ -669,5 +669,7 @@ transform = Transform3D(-0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, -0.
 
 [editable path="StoreMesh/area_51_training"]
 [editable path="Checkout"]
+[editable path="Checkout/CheckoutCounterMesh/checkout_sm_left_rework"]
 [editable path="OnlineOrderCheckout"]
+[editable path="OnlineOrderCheckout/OnlineOrderCounterMesh/checkout_sm_left_rework"]
 [editable path="Door1/area_51_door_frame"]
