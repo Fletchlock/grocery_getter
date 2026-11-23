@@ -26771,131 +26771,131 @@ _subresources={
 }
 },
 "meshes": {
-"alien_character_Cube_016": {
+"alien_character_alien_antennas_01": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_Cube_016.res",
-"save_to_file/path": "uid://dh6t4tojbapy6"
+"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_antennas_01.res",
+"save_to_file/path": "uid://bf200hkkir7o3"
 },
-"alien_character_Cube_041": {
+"alien_character_alien_antennas_02": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_Cube_041.res",
-"save_to_file/path": "uid://b5mnbuou08j74"
+"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_antennas_02.res",
+"save_to_file/path": "uid://bqh25w0r8kdil"
 },
-"alien_character_Cube_042": {
+"alien_character_alien_antennas_03": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_Cube_042.res",
-"save_to_file/path": "uid://c0g0o1q23r0kb"
+"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_antennas_03.res",
+"save_to_file/path": "uid://d1yq4a1r2anja"
 },
-"alien_character_Cube_043": {
+"alien_character_alien_character_mesh": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_Cube_043.res",
-"save_to_file/path": "uid://b61t64ht5gt00"
+"save_to_file/fallback_path": "res://assets/models/characters/alien/alien mesh/alien_character_alien_character_mesh.res",
+"save_to_file/path": "uid://dgc11mv3qflco"
 },
-"alien_character_Cube_044": {
+"alien_character_alien_eyelashes_mesh": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/alien mesh/alien_character_Cube_044.res",
-"save_to_file/path": "uid://bpiga1742bh41"
+"save_to_file/fallback_path": "res://assets/models/characters/alien/alien mesh/alien_character_alien_eyelashes_mesh.res",
+"save_to_file/path": "uid://3rl00tn4i4tx"
 },
-"alien_character_Cube_045": {
+"alien_character_alien_pants_01": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_Cube_045.res",
-"save_to_file/path": "uid://3158tfhq7f4s"
+"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_pants_01.res",
+"save_to_file/path": "uid://bu5ka0514exaj"
 },
-"alien_character_Cube_046": {
+"alien_character_alien_pants_02": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/alien mesh/alien_character_Cube_046.res",
-"save_to_file/path": "uid://c0kqyumx77mmn"
+"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_pants_02.res",
+"save_to_file/path": "uid://r1sjnapx3ua"
 },
-"alien_character_Cube_047": {
+"alien_character_alien_pants_03": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_Cube_047.res",
-"save_to_file/path": "uid://cbq67nugy8gea"
+"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_pants_03.res",
+"save_to_file/path": "uid://coeet74vueuhw"
 },
-"alien_character_Cube_049": {
+"alien_character_alien_shirt_01": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_Cube_049.res",
-"save_to_file/path": "uid://dpg86fetowpg1"
+"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_shirt_01.res",
+"save_to_file/path": "uid://d08uc4srggmx7"
 },
-"alien_character_Cube_050": {
+"alien_character_alien_shirt_02": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_Cube_050.res",
-"save_to_file/path": "uid://dsv5s73034fwj"
+"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_shirt_02.res",
+"save_to_file/path": "uid://di4nwv3f5wyfh"
 },
-"alien_character_Cube_051": {
+"alien_character_alien_shirt_03": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_Cube_051.res",
-"save_to_file/path": "uid://dln7f5gq3g31r"
+"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_shirt_03.res",
+"save_to_file/path": "uid://cj6e560hwjhn"
 },
-"alien_character_Cube_052": {
+"alien_character_alien_shoes_01": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_Cube_052.res",
-"save_to_file/path": "uid://citxxfo27ulop"
+"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_shoes_01.res",
+"save_to_file/path": "uid://dnalmq70mgho3"
 },
-"alien_character_Cube_053": {
+"alien_character_alien_shoes_02": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_Cube_053.res",
-"save_to_file/path": "uid://dllk50u7qlxkw"
+"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_shoes_02.res",
+"save_to_file/path": "uid://bb6cm14i20mjg"
 },
-"alien_character_Cube_054": {
+"alien_character_alien_shoes_03": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_Cube_054.res",
-"save_to_file/path": "uid://bgkbbtoxu15v1"
+"save_to_file/fallback_path": "res://assets/models/characters/alien/clothing mesh/alien_character_alien_shoes_03.res",
+"save_to_file/path": "uid://bgnt0ieu18huh"
 }
 }
 }
