@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dmuwgtn8i7s7e"]
 
 [ext_resource type="Script" uid="uid://cd2y7021vwfqm" path="res://scripts/menus/lobby.gd" id="1_1gv48"]
-[ext_resource type="PackedScene" uid="uid://u71xogfk53i" path="res://scenes/objects/carts/cart.tscn" id="2_cbhut"]
+[ext_resource type="Material" uid="uid://d1hkly2uqnv52" path="res://assets/materials/Material.002.tres" id="2_w0bhe"]
 [ext_resource type="Script" uid="uid://h3uh444aun6j" path="res://scripts/player/lobby_character_display.gd" id="3_g7oat"]
 [ext_resource type="PackedScene" uid="uid://cvpqemsd1xgdg" path="res://scenes/menus/lobby_character.tscn" id="4_cbhut"]
 [ext_resource type="ArrayMesh" uid="uid://r2s70fshqswd" path="res://assets/models/characters/alien_character_Cube_035.res" id="5_mb6ek"]
@@ -13,6 +13,10 @@
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="9_djew5"]
 [ext_resource type="Texture2D" uid="uid://t2dedkvcii" path="res://assets/images/menu_button_disabled_grey.png" id="10_717b7"]
 [ext_resource type="Script" uid="uid://bimg6esvjfivg" path="res://scripts/menus/button_hover_text_size.gd" id="11_djew5"]
+[ext_resource type="PackedScene" uid="uid://b70x6sbte4kds" path="res://assets/models/buildings/area_51_training.glb" id="13_uupr0"]
+[ext_resource type="PackedScene" uid="uid://k2xsbbmoquy5" path="res://assets/models/buildings/area_51_door_frame.glb" id="14_w0bhe"]
+[ext_resource type="PackedScene" uid="uid://dhk7lotlv15x0" path="res://assets/models/buildings/area_51_door_left.glb" id="15_px7up"]
+[ext_resource type="PackedScene" uid="uid://bdjs5bujwx7tp" path="res://assets/models/buildings/area_51_door_right.glb" id="16_aenqt"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cbhut"]
 sky_top_color = Color(0.18223205, 0.53926927, 0.85265213, 1)
@@ -25,16 +29,15 @@ sky_material = SubResource("ProceduralSkyMaterial_cbhut")
 
 [sub_resource type="Environment" id="Environment_6aigx"]
 background_mode = 2
-background_color = Color(0.31619856, 0.5567339, 0.6010179, 1)
+background_color = Color(0.75615865, 0.86162215, 0.92888236, 1)
+background_energy_multiplier = 1.51
 sky = SubResource("Sky_hd853")
 ambient_light_source = 3
-ambient_light_color = Color(0.86465263, 0.9045998, 0.87016726, 1)
+ambient_light_color = Color(0.7684908, 0.86593753, 0.97207254, 1)
 ambient_light_sky_contribution = 0.7
-ambient_light_energy = 1.58
-ssr_enabled = true
+ambient_light_energy = 2.39
 ssao_enabled = true
 ssil_enabled = true
-sdfgi_enabled = true
 fog_mode = 1
 fog_light_color = Color(0.4457872, 0.72341436, 0.829803, 1)
 fog_density = 0.7583
@@ -46,7 +49,8 @@ fog_depth_end = 1000.0
 exposure_multiplier = 1.25
 dof_blur_far_distance = 53.37
 
-[sub_resource type="BoxMesh" id="BoxMesh_6aigx"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_uupr0"]
+height = 1.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vr0hv"]
 texture = ExtResource("7_fv84f")
@@ -210,20 +214,13 @@ grow_vertical = 2
 stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=1015604292]
-own_world_3d = true
 handle_input_locally = false
-size = Vector2i(1920, 1080)
 render_target_update_mode = 4
-
-[node name="cart" parent="SubViewportContainer/SubViewport" unique_id=1247605086 instance=ExtResource("2_cbhut")]
-transform = Transform3D(-0.7488363, 0, 0.66275513, 0, 1, 0, -0.66275513, 0, -0.7488363, -5.372891, 0, -14.933574)
-
-[node name="cart2" parent="SubViewportContainer/SubViewport" unique_id=1114952967 instance=ExtResource("2_cbhut")]
-transform = Transform3D(-0.855348, 0, -0.5180539, 0, 1, 0, 0.5180539, 0, -0.855348, 3.1535811, 4.7683716e-07, -11.911709)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport" unique_id=1839875564]
 transform = Transform3D(0.94721025, 0.078106135, -0.31095353, 0, 0.969872, 0.24361502, 0.32061297, -0.23075464, 0.9186727, 4.1579533, 2.5029657, 1.0003548)
-light_color = Color(0.8709412, 0.8923224, 0.9034, 1)
+light_color = Color(0.8828012, 0.47000504, 0.41843548, 1)
+light_energy = 2.0
 light_specular = 0.0
 light_bake_mode = 1
 shadow_enabled = true
@@ -233,27 +230,31 @@ environment = SubResource("Environment_6aigx")
 camera_attributes = SubResource("CameraAttributesPractical_sq421")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport" unique_id=197713457]
-transform = Transform3D(1, 0, 0, 0, 0.99533665, 0.09646289, 0, -0.09646289, 0.99533665, 0, 2.071916, 1.4997816)
+transform = Transform3D(1, 0, 0, 0, 0.99533665, 0.09646289, 0, -0.09646289, 0.99533665, -0.5744265, 2.500683, 0.46447778)
 current = true
 
 [node name="CSGMesh3D" type="CSGMesh3D" parent="SubViewportContainer/SubViewport" unique_id=1465622006]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -3.7556458)
-mesh = SubResource("BoxMesh_6aigx")
+mesh = SubResource("CylinderMesh_uupr0")
+material = ExtResource("2_w0bhe")
 
 [node name="CSGMesh3D4" type="CSGMesh3D" parent="SubViewportContainer/SubViewport" unique_id=1526881132]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -3.7556458)
-mesh = SubResource("BoxMesh_6aigx")
+mesh = SubResource("CylinderMesh_uupr0")
+material = ExtResource("2_w0bhe")
 
 [node name="CSGMesh3D2" type="CSGMesh3D" parent="SubViewportContainer/SubViewport" unique_id=409183176]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -3.7556458)
-mesh = SubResource("BoxMesh_6aigx")
+mesh = SubResource("CylinderMesh_uupr0")
+material = ExtResource("2_w0bhe")
 
 [node name="CSGMesh3D3" type="CSGMesh3D" parent="SubViewportContainer/SubViewport" unique_id=563304780]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -3.7556458)
-mesh = SubResource("BoxMesh_6aigx")
+mesh = SubResource("CylinderMesh_uupr0")
+material = ExtResource("2_w0bhe")
 
 [node name="Player1" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=584775007]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -3, 0.5, -3.7)
+transform = Transform3D(-0.8741838, 0, -0.48559523, 0, 1, 0, 0.48559523, 0, -0.8741838, -3, 0.5, -3.7)
 script = ExtResource("3_g7oat")
 
 [node name="LobbyCharacter" parent="SubViewportContainer/SubViewport/Player1" unique_id=1612602312 instance=ExtResource("4_cbhut")]
@@ -270,7 +271,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2
 text = "Player 1"
 
 [node name="Player2" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=421643147]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -1, 0.5, -3.7)
+transform = Transform3D(-0.9964399, 0, -0.08430601, 0, 1, 0, 0.08430601, 0, -0.9964399, -1, 0.5, -3.7)
 script = ExtResource("3_g7oat")
 
 [node name="LobbyCharacter" parent="SubViewportContainer/SubViewport/Player2" unique_id=1242521985 instance=ExtResource("4_cbhut")]
@@ -287,7 +288,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2
 text = "Player 2"
 
 [node name="Player3" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=376685257]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 1, 0.5, -3.7)
+transform = Transform3D(-0.9755908, 0, 0.21959627, 0, 1, 0, -0.21959627, 0, -0.9755908, 1, 0.5, -3.7)
 script = ExtResource("3_g7oat")
 
 [node name="LobbyCharacter" parent="SubViewportContainer/SubViewport/Player3" unique_id=817015640 instance=ExtResource("4_cbhut")]
@@ -304,7 +305,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2
 text = "Player 3"
 
 [node name="Player4" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=585442441]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 3, 0.5, -3.7)
+transform = Transform3D(-0.7371719, 0, 0.6757053, 0, 1, 0, -0.6757053, 0, -0.7371719, 3, 0.5, -3.7)
 script = ExtResource("3_g7oat")
 
 [node name="LobbyCharacter" parent="SubViewportContainer/SubViewport/Player4" unique_id=145185328 instance=ExtResource("4_cbhut")]
@@ -575,6 +576,22 @@ text = "Paul"
 script = ExtResource("11_djew5")
 normal_font_size = 30
 highlighted_font_size = 34
+
+[node name="area_51_training" parent="." unique_id=727572012 instance=ExtResource("13_uupr0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.335292, 0.0059666634, -3.4734886)
+
+[node name="area_51_door_frame" parent="area_51_training" unique_id=124354247 instance=ExtResource("14_w0bhe")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.060545325, -1.1920929e-07, -4.0943537)
+
+[node name="area_51_door_left" parent="area_51_training/area_51_door_frame" unique_id=983007606 instance=ExtResource("15_px7up")]
+
+[node name="area_51_door_right" parent="area_51_training/area_51_door_frame" unique_id=1543727790 instance=ExtResource("16_aenqt")]
+
+[node name="OmniLight3D" type="OmniLight3D" parent="area_51_training" unique_id=230118621]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.52763903, 2.9805846, 3.2497344)
+light_color = Color(0.8317963, 0.7783159, 0.5508097, 1)
+light_energy = 4.0
+shadow_enabled = true
 
 [connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/ReadyButton" to="." method="_on_ready_button_pressed"]
