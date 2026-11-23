@@ -5,11 +5,19 @@
 [ext_resource type="Resource" uid="uid://bues032exn7ak" path="res://resources/player/default_alien_appearance.tres" id="2_3a2i6"]
 [ext_resource type="Shader" uid="uid://dqofm6ao1shxq" path="res://assets/shaders/alien_skin.gdshader" id="2_3yr5r"]
 [ext_resource type="Texture2D" uid="uid://bgtan2jpyfrm2" path="res://assets/models/characters/alien/alien_character_alien_pattern_01.png" id="3_3a2i6"]
+[ext_resource type="ArrayMesh" uid="uid://bf200hkkir7o3" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_antennas_01.res" id="3_jnx5h"]
+[ext_resource type="ArrayMesh" uid="uid://bqh25w0r8kdil" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_antennas_02.res" id="4_h34pi"]
 [ext_resource type="ArrayMesh" uid="uid://d1yq4a1r2anja" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_antennas_03.res" id="4_u37dy"]
 [ext_resource type="ArrayMesh" uid="uid://d08uc4srggmx7" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_shirt_01.res" id="5_i0dli"]
 [ext_resource type="ArrayMesh" uid="uid://bu5ka0514exaj" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_pants_01.res" id="6_bnwho"]
 [ext_resource type="ArrayMesh" uid="uid://bgnt0ieu18huh" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_shoes_03.res" id="7_5qeqm"]
+[ext_resource type="ArrayMesh" uid="uid://di4nwv3f5wyfh" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_shirt_02.res" id="7_iuphn"]
+[ext_resource type="ArrayMesh" uid="uid://cj6e560hwjhn" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_shirt_03.res" id="8_jwdv5"]
 [ext_resource type="AnimationLibrary" uid="uid://ct7ahx325bsdu" path="res://assets/animations/player/player_anims.res" id="8_nqq43"]
+[ext_resource type="ArrayMesh" uid="uid://r1sjnapx3ua" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_pants_02.res" id="10_6jg4s"]
+[ext_resource type="ArrayMesh" uid="uid://coeet74vueuhw" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_pants_03.res" id="11_b5whp"]
+[ext_resource type="ArrayMesh" uid="uid://dnalmq70mgho3" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_shoes_01.res" id="12_lwul0"]
+[ext_resource type="ArrayMesh" uid="uid://bb6cm14i20mjg" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_shoes_02.res" id="13_l7m07"]
 
 [sub_resource type="Animation" id="Animation_5wda0"]
 length = 0.001
@@ -210,9 +218,22 @@ shader_parameter/roughness = 0.8
 
 [node name="AlienPreviewCharacter" type="Node3D" unique_id=1396413471]
 
-[node name="AlienAppearance" type="Node" parent="." unique_id=652867367]
+[node name="AlienAppearance" type="Node" parent="." unique_id=652867367 node_paths=PackedStringArray("body", "eyelashes", "head", "top", "bottom", "feet")]
 script = ExtResource("1_3yr5r")
 appearance_data = ExtResource("2_3a2i6")
+default_skin_color = Color(0.33382058, 0.85620034, 0.5880719, 1)
+default_pattern_color = Color(0.56365716, 0.48217386, 1, 1)
+default_pupil_color = Color(0.04832329, 0.002019834, 0.10113884, 1)
+body = NodePath("../Armature/Skeleton3D/AlienBody")
+eyelashes = NodePath("../Armature/Skeleton3D/AlienBody/Eyelashes")
+head = NodePath("../Armature/Skeleton3D/Head")
+top = NodePath("../Armature/Skeleton3D/Top")
+bottom = NodePath("../Armature/Skeleton3D/Bottom")
+feet = NodePath("../Armature/Skeleton3D/Feet")
+head_meshes = Array[Mesh]([ExtResource("3_jnx5h"), ExtResource("4_h34pi"), ExtResource("4_u37dy")])
+top_meshes = Array[Mesh]([ExtResource("5_i0dli"), ExtResource("7_iuphn"), ExtResource("8_jwdv5")])
+bottom_meshes = Array[Mesh]([ExtResource("6_bnwho"), ExtResource("10_6jg4s"), ExtResource("11_b5whp")])
+feet_meshes = Array[Mesh]([ExtResource("12_lwul0"), ExtResource("13_l7m07"), ExtResource("7_5qeqm")])
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1663366734]
 libraries/ = SubResource("AnimationLibrary_jwdv5")

@@ -166,14 +166,19 @@ func _set_equipment(
 	if slot == top or slot == bottom:
 		_apply_weight_to_mesh(slot)
 
-
 func set_body_weight(value: float) -> void:
 	body_weight = clampf(value, 0.0, 1.0)
+
+	print("BODY: ", body)
+	print("TOP: ", top)
+	print("BOTTOM: ", bottom)
+
+	if body != null and body.mesh != null:
+		print("Body blend shapes: ", body.mesh.get_blend_shape_count())
 
 	_apply_weight_to_mesh(body)
 	_apply_weight_to_mesh(top)
 	_apply_weight_to_mesh(bottom)
-
 
 func _apply_weight_to_mesh(target: MeshInstance3D) -> void:
 	if target == null or target.mesh == null:

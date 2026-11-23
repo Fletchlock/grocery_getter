@@ -2,10 +2,52 @@
 
 [ext_resource type="Script" uid="uid://b1txrtj4yyhkc" path="res://scripts/menus/alien_preview.gd" id="1_0hbd3"]
 [ext_resource type="PackedScene" uid="uid://vbrfacp83r7p" path="res://scenes/menus/alien_preview_character.tscn" id="1_xbhp8"]
+[ext_resource type="Texture2D" uid="uid://byiqbpxrirkiv" path="res://assets/images/menu_button_pressed_grey.png" id="3_58mn1"]
+[ext_resource type="FontFile" uid="uid://c5smmmli4hgm" path="res://assets/fonts/Atmospheric/aAtmospheric.ttf" id="3_f4xs7"]
+[ext_resource type="FontFile" uid="uid://cvhmb0bcpx5ks" path="res://assets/fonts/Space/a_space/A-Space Regular Demo.otf" id="5_1gve1"]
+[ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="5_5wj15"]
+[ext_resource type="Texture2D" uid="uid://t2dedkvcii" path="res://assets/images/menu_button_disabled_grey.png" id="6_5wj15"]
+[ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="7_5wj15"]
+[ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="7_vw6n4"]
 
 [sub_resource type="Environment" id="Environment_6aigx"]
 background_mode = 1
 background_color = Color(0.08603018, 0.00012282968, 0.20758206, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_f4xs7"]
+texture = ExtResource("3_58mn1")
+texture_margin_left = 15.0
+texture_margin_top = 15.0
+texture_margin_right = 15.0
+texture_margin_bottom = 15.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_67ah5"]
+texture = ExtResource("6_5wj15")
+texture_margin_left = 15.0
+texture_margin_top = 15.0
+texture_margin_right = 15.0
+texture_margin_bottom = 15.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sqrrf"]
+texture = ExtResource("5_5wj15")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vw6n4"]
+texture = ExtResource("7_5wj15")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hn5qx"]
+texture = ExtResource("7_vw6n4")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
 
 [node name="AlienPreview" type="Node3D" unique_id=656249219]
 script = ExtResource("1_0hbd3")
@@ -40,20 +82,94 @@ environment = SubResource("Environment_6aigx")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1375515261]
 
-[node name="HSlider" type="HSlider" parent="CanvasLayer" unique_id=784508394]
-custom_minimum_size = Vector2(600, 20)
+[node name="RotationSlider" type="HSlider" parent="CanvasLayer" unique_id=784508394]
+custom_minimum_size = Vector2(400, 20)
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -4.0
-offset_top = -80.0
-offset_right = 4.0
-offset_bottom = -64.0
+offset_left = -200.0
+offset_top = -70.0
+offset_right = 200.0
+offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 0
+size_flags_horizontal = 4
 min_value = -180.0
 max_value = 180.0
 
-[connection signal="value_changed" from="CanvasLayer/HSlider" to="." method="_on_h_slider_value_changed"]
+[node name="CustomizationPanel" type="PanelContainer" parent="CanvasLayer" unique_id=2125156809]
+custom_minimum_size = Vector2(500, 750)
+offset_left = 50.0
+offset_top = 50.0
+offset_right = 450.0
+offset_bottom = 650.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_f4xs7")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel" unique_id=1965241815]
+layout_mode = 2
+
+[node name="TabContainer" type="TabContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer" unique_id=1971109812]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_f4xs7")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/panel = SubResource("StyleBoxTexture_67ah5")
+theme_override_styles/tab_unselected = SubResource("StyleBoxTexture_sqrrf")
+theme_override_styles/tab_hovered = SubResource("StyleBoxTexture_vw6n4")
+theme_override_styles/tab_selected = SubResource("StyleBoxTexture_hn5qx")
+theme_override_styles/tab_focus = SubResource("StyleBoxTexture_vw6n4")
+current_tab = 0
+
+[node name="Body" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=481228399]
+layout_mode = 2
+theme_override_constants/separation = 15
+metadata/_tab_index = 0
+
+[node name="WeightLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=383748663]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_1gve1")
+theme_override_font_sizes/font_size = 20
+text = "Body Weight"
+
+[node name="WeightSlider" type="HSlider" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=1008276733]
+layout_mode = 2
+size_flags_vertical = 3
+max_value = 1.0
+step = 0.01
+value = 0.5
+
+[node name="SkinColorLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=1658922341]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_1gve1")
+theme_override_font_sizes/font_size = 20
+text = "Skin Color"
+
+[node name="SkinColorPicker" type="ColorPickerButton" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=1377598804]
+layout_mode = 2
+color = Color(0.2256183, 0.8715274, 0.52877283, 1)
+
+[node name="PatternColorLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=2037252574]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_1gve1")
+theme_override_font_sizes/font_size = 20
+text = "Pattern Color"
+
+[node name="PatternColorPicker" type="ColorPickerButton" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=1902008181]
+layout_mode = 2
+color = Color(0.32009763, 0.5373339, 0.17194194, 1)
+
+[node name="Head" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=1181320693]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="Clothing" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=1300217043]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[connection signal="value_changed" from="CanvasLayer/RotationSlider" to="." method="_on_rotation_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/WeightSlider" to="." method="_on_weight_slider_value_changed"]
+[connection signal="color_changed" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinColorPicker" to="." method="_on_skin_color_picker_color_changed"]
+[connection signal="color_changed" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/PatternColorPicker" to="." method="_on_pattern_color_picker_color_changed"]
