@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://dx0gpbwvbsjtw"]
 
+[ext_resource type="Script" uid="uid://b1txrtj4yyhkc" path="res://scripts/menus/alien_preview.gd" id="1_0hbd3"]
 [ext_resource type="PackedScene" uid="uid://vbrfacp83r7p" path="res://scenes/menus/alien_preview_character.tscn" id="1_xbhp8"]
 
 [sub_resource type="Environment" id="Environment_6aigx"]
@@ -7,6 +8,7 @@ background_mode = 1
 background_color = Color(0.08603018, 0.00012282968, 0.20758206, 1)
 
 [node name="AlienPreview" type="Node3D" unique_id=656249219]
+script = ExtResource("1_0hbd3")
 
 [node name="CharacterPivot" type="Node3D" parent="." unique_id=1167958860]
 
@@ -14,7 +16,7 @@ background_color = Color(0.08603018, 0.00012282968, 0.20758206, 1)
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 
 [node name="PreviewCamera" type="Camera3D" parent="." unique_id=943909725]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0971633, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9922744, 4.414827)
 current = true
 fov = 35.0
 
@@ -35,3 +37,23 @@ shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=724573406]
 environment = SubResource("Environment_6aigx")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1375515261]
+
+[node name="HSlider" type="HSlider" parent="CanvasLayer" unique_id=784508394]
+custom_minimum_size = Vector2(600, 20)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = -80.0
+offset_right = 4.0
+offset_bottom = -64.0
+grow_horizontal = 2
+grow_vertical = 0
+min_value = -180.0
+max_value = 180.0
+
+[connection signal="value_changed" from="CanvasLayer/HSlider" to="." method="_on_h_slider_value_changed"]
