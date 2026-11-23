@@ -85,18 +85,16 @@ func _set_equipment(
 
 	slot.mesh = meshes[index]
 
-	_apply_weight_to_mesh(slot)
+	if slot == top or slot == bottom:
+		_apply_weight_to_mesh(slot)
 
 
 func set_body_weight(value: float) -> void:
 	body_weight = clampf(value, 0.0, 1.0)
 
 	_apply_weight_to_mesh(body)
-	_apply_weight_to_mesh(eyelashes)
-	_apply_weight_to_mesh(head)
 	_apply_weight_to_mesh(top)
 	_apply_weight_to_mesh(bottom)
-	_apply_weight_to_mesh(feet)
 
 
 func _apply_weight_to_mesh(target: MeshInstance3D) -> void:
