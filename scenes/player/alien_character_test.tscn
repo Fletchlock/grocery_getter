@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://bfop5nqily4cb"]
+
+[ext_resource type="PackedScene" uid="uid://cdrbvpeoasx3o" path="res://assets/models/characters/alien/alien_character.glb" id="1_ftjm8"]
+
+[node name="alien_character2" unique_id=1263115972 instance=ExtResource("1_ftjm8")]
