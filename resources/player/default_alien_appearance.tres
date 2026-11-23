@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="AlienAppearanceData" format=3 uid="uid://bues032exn7ak"]
+
+[ext_resource type="Script" uid="uid://tmm5jstpokx0" path="res://scripts/player/alien_appearance_data.gd" id="1_6m5vu"]
+
+[resource]
+script = ExtResource("1_6m5vu")
+skin_color = Color(0.29959652, 0.70052606, 0.3816833, 1)
+pattern_color = Color(0.41599947, 0.5938344, 0.16256595, 1)
+pupil_color = Color(0, 0, 0, 1)
+feet_color = 6
+metadata/_custom_type_script = "uid://tmm5jstpokx0"
