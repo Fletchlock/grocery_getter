@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://cgv5bp55bjc57"]
+
+[ext_resource type="Script" uid="uid://dx6wfce60grx6" path="res://scripts/menus/alien_color_palette.gd" id="1_3gnjy"]
+
+[node name="ColorPalette" type="VBoxContainer" unique_id=395454386]
+script = ExtResource("1_3gnjy")
+
+[node name="GridContainer" type="GridContainer" parent="." unique_id=1854938488]
+layout_mode = 2
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+columns = 6
