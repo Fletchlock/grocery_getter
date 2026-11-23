@@ -221,7 +221,6 @@ shader_parameter/roughness = 0.8
 [node name="AlienAppearance" type="Node" parent="." unique_id=652867367 node_paths=PackedStringArray("body", "eyelashes", "head", "top", "bottom", "feet")]
 script = ExtResource("1_3yr5r")
 appearance_data = ExtResource("2_3a2i6")
-default_skin_color = Color(0.33382058, 0.85620034, 0.5880719, 1)
 default_pattern_color = Color(0.56365716, 0.48217386, 1, 1)
 default_pupil_color = Color(0.04832329, 0.002019834, 0.10113884, 1)
 body = NodePath("../Armature/Skeleton3D/AlienBody")
