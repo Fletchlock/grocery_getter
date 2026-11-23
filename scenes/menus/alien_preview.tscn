@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://dx0gpbwvbsjtw"]
+
+[ext_resource type="PackedScene" uid="uid://vbrfacp83r7p" path="res://scenes/menus/alien_preview_character.tscn" id="1_xbhp8"]
+
+[sub_resource type="Environment" id="Environment_6aigx"]
+background_mode = 1
+background_color = Color(0.08603018, 0.00012282968, 0.20758206, 1)
+
+[node name="AlienPreview" type="Node3D" unique_id=656249219]
+
+[node name="CharacterPivot" type="Node3D" parent="." unique_id=1167958860]
+
+[node name="AlienPreviewCharacter" parent="CharacterPivot" unique_id=1396413471 instance=ExtResource("1_xbhp8")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+
+[node name="PreviewCamera" type="Camera3D" parent="." unique_id=943909725]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0971633, 4)
+current = true
+fov = 35.0
+
+[node name="KeyLight" type="DirectionalLight3D" parent="." unique_id=1176618301]
+transform = Transform3D(0.8660253, 0.13958144, -0.48012188, 0, 0.9602438, 0.27916288, 0.5, -0.24176213, 0.83159554, 0, 0, 0)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="FillLight" type="DirectionalLight3D" parent="." unique_id=1258292294]
+transform = Transform3D(0.74825644, -0.24328882, 0.6171895, 0, 0.9303294, 0.3667249, -0.6634096, -0.2744043, 0.696125, 0, 0, 0)
+light_energy = 0.5
+shadow_enabled = true
+
+[node name="BackLight" type="DirectionalLight3D" parent="." unique_id=1565506206]
+transform = Transform3D(-0.99781847, 0.06597686, 0.002375299, 0.055381753, 0.8169125, 0.5740968, 0.035936646, 0.5729758, -0.818784, 0, 0, 0)
+light_energy = 0.25
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=724573406]
+environment = SubResource("Environment_6aigx")
