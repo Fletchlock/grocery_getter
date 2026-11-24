@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://cff8b30blio24" path="res://scripts/menus/main_menu_ufo.gd" id="2_i1cnq"]
 [ext_resource type="Script" uid="uid://bk1pjn4kv2yl8" path="res://scripts/menus/ship_light_fade.gd" id="3_g06os"]
 [ext_resource type="Script" uid="uid://ci74c2u0wgxsk" path="res://scripts/menus/shooting_stars.gd" id="4_u2kwh"]
+[ext_resource type="Script" uid="uid://lgy5hcesodma" path="res://scripts/menus/main_menu_product_spawner.gd" id="6_nwxvi"]
 
 [sub_resource type="Environment" id="Environment_a3hrp"]
 background_mode = 1
@@ -83,3 +84,6 @@ mesh = SubResource("BoxMesh_umdtr")
 [node name="SpawnTimer" type="Timer" parent="ShootingStars" unique_id=2114967014]
 wait_time = 10.0
 one_shot = true
+
+[node name="ProductSpawner" type="Node3D" parent="." unique_id=1807420142]
+script = ExtResource("6_nwxvi")
