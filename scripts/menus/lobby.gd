@@ -29,6 +29,12 @@ extends Control
 	$SubViewportContainer/SubViewport/Player4/PlayerNameLabel
 ]
 
+const ALIEN_PREVIEW_SCENE: PackedScene = preload(
+	"res://scenes/menus/alien_preview.tscn"
+)
+
+var customization_scene: Node3D = null
+
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -62,6 +68,9 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if customization_scene != null:
+		return
+	
 	if not event.is_action_pressed("ui_cancel"):
 		return
 
@@ -342,4 +351,38 @@ func _on_customize_button_pressed() -> void:
 	if LobbyManager.is_ready(peer_id):
 		return
 
-	print("LOBBY: Customize Character pressed.")
+	if customization_scene != null:
+		return
+
+	customization_scene = ALIEN_PREVIEW_SCENE.instantiate() as Node3D
+
+	if customization_scene == null:
+		push_error("LOBBY: Failed to instantiate alien customization.")
+		return
+
+	customization_scene.customization_confirmed.connect(
+		_on_customization_confirmed
+	)
+
+	get_tree().root.add_child(customization_scene)
+
+	hide()
+
+	print("LOBBY: Alien customization opened.")
+
+
+func _on_customization_confirmed(appearance: AlienAppearanceData) -> void:
+	print(
+		"LOBBY: Alien confirmed | Skin: ",
+		appearance.skin_color.to_html(),
+		" | Weight: ",
+		appearance.body_weight
+	)
+
+	if customization_scene != null:
+		customization_scene.queue_free()
+		customization_scene = null
+
+	show()
+	_update_ready_button()
+	_focus_primary_action()
