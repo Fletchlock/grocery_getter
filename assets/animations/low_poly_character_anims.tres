@@ -8,7 +8,7 @@
 [ext_resource type="Animation" uid="uid://rpgs3a3xjfcc" path="res://assets/animations/run.res" id="3_bb0h6"]
 [ext_resource type="Animation" uid="uid://c3ou72rvxbtwv" path="res://assets/animations/grab_high.res" id="5_rihnw"]
 [ext_resource type="Animation" uid="uid://b3cjw3sjf6hta" path="res://assets/animations/grab_mid.res" id="6_5klam"]
-[ext_resource type="Animation" uid="uid://b0mi8bxp8ekdm" path="res://assets/animations/grab_low.res" id="6_lxpa7"]
+[ext_resource type="Animation" uid="uid://cnmn04t2gvgpg" path="res://assets/animations/grab_low.res" id="6_lxpa7"]
 
 [sub_resource type="Animation" id="Animation_ofxof"]
 resource_name = "Walk"
