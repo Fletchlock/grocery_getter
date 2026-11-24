@@ -102,8 +102,6 @@ func _ready() -> void:
 	_setup_skin_material()
 	_setup_face_materials()
 	
-	_test_shirt_switching()
-	
 	set_top_color(ClothingColor.ORANGE)
 	set_bottom_color(ClothingColor.BLUE)
 	set_feet_color(ClothingColor.BROWN)

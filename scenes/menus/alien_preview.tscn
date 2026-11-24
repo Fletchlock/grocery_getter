@@ -120,9 +120,10 @@ theme_override_styles/tab_unselected = SubResource("StyleBoxTexture_sqrrf")
 theme_override_styles/tab_hovered = SubResource("StyleBoxTexture_vw6n4")
 theme_override_styles/tab_selected = SubResource("StyleBoxTexture_hn5qx")
 theme_override_styles/tab_focus = SubResource("StyleBoxTexture_vw6n4")
-current_tab = 0
+current_tab = 1
 
 [node name="Body" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=481228399]
+visible = false
 layout_mode = 2
 theme_override_constants/separation = 15
 metadata/_tab_index = 0
@@ -130,7 +131,7 @@ metadata/_tab_index = 0
 [node name="WeightLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=383748663]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_1gve1")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 24
 text = "Body Weight"
 
 [node name="WeightSlider" type="HSlider" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=1008276733]
@@ -143,7 +144,7 @@ value = 0.5
 [node name="SkinColorLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=1658922341]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_1gve1")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 24
 text = "Skin Color"
 
 [node name="SkinColorPalette" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=395454386 instance=ExtResource("10_x2sd4")]
@@ -152,26 +153,57 @@ layout_mode = 2
 [node name="PatternColorLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=2037252574]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_1gve1")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 24
 text = "Pattern Color"
 
 [node name="PatternColorPalette" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=278159726 instance=ExtResource("10_x2sd4")]
 layout_mode = 2
 
 [node name="Head" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=1181320693]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
 [node name="PupilColorLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head" unique_id=79980578]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_1gve1")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 24
 text = "Eye Color"
 
 [node name="PupilColorPalette" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head" unique_id=1729303346 instance=ExtResource("10_x2sd4")]
 layout_mode = 2
 colors = Array[Color]([Color(0, 0, 0, 1), Color(0.35434595, 0.37381774, 0.096162684, 1), Color(0.19933689, 0.21041715, 0.043527097, 1), Color(0.26245895, 0.15723896, 0.02320037, 1), Color(0.42907402, 0.1401926, 0.09760616, 1), Color(0.54530436, 0.0848941, 0.21628559, 1), Color(0.43733862, 0.028771864, 0.3451998, 1), Color(0.3332895, 0.04504867, 0.48410565, 1), Color(0.24307254, 0.13818839, 0.65288055, 1), Color(0.060066827, 0.2688614, 0.57134324, 1), Color(0.07355829, 0.42536393, 0.47116035, 1), Color(0.1323241, 0.40957794, 0.27328622, 1)])
+
+[node name="EyelashesLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head" unique_id=164471248]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_1gve1")
+theme_override_font_sizes/font_size = 24
+text = "Eyelashes"
+
+[node name="EyelashesToggle" type="CheckButton" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head" unique_id=1777601865]
+layout_mode = 2
+size_flags_horizontal = 2
+theme_override_fonts/font = ExtResource("5_1gve1")
+theme_override_font_sizes/font_size = 24
+
+[node name="HSeparator" type="HSeparator" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head" unique_id=603319933]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head" unique_id=169198942]
+layout_mode = 2
+
+[node name="LipColorLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/HBoxContainer" unique_id=555847776]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_1gve1")
+theme_override_font_sizes/font_size = 24
+text = "Lip Color"
+
+[node name="MatchSkinColor" type="CheckButton" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/HBoxContainer" unique_id=1291605152]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="LipColorPalette" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head" unique_id=1057037188 instance=ExtResource("10_x2sd4")]
+layout_mode = 2
+colors = Array[Color]([Color(0, 0, 0, 1), Color(0.7958817, 0.12435455, 0.44531918, 1), Color(0.7248389, 0.213391, 0.5795022, 1), Color(0.60132307, 0.22382993, 0.9369615, 1), Color(0.63617563, 0.3442438, 0.15303299, 1), Color(0.30153355, 0.62521166, 0.27087367, 1), Color(0.14177936, 0.5254863, 0.7758417, 1), Color(0.3332895, 0.04504867, 0.48410565, 1), Color(0.24307254, 0.13818839, 0.65288055, 1), Color(0.060066827, 0.2688614, 0.57134324, 1), Color(0.07355829, 0.42536393, 0.47116035, 1), Color(0.1323241, 0.40957794, 0.27328622, 1)])
 
 [node name="Clothing" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=1300217043]
 visible = false
@@ -183,5 +215,8 @@ metadata/_tab_index = 2
 [connection signal="color_selected" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinColorPalette" to="." method="_on_skin_color_palette_color_selected"]
 [connection signal="color_selected" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/PatternColorPalette" to="." method="_on_pattern_color_palette_color_selected"]
 [connection signal="color_selected" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/PupilColorPalette" to="." method="_on_pupil_color_palette_color_selected"]
+[connection signal="toggled" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/EyelashesToggle" to="." method="_on_eyelashes_toggle_toggled"]
+[connection signal="toggled" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/HBoxContainer/MatchSkinColor" to="." method="_on_match_skin_color_toggled"]
+[connection signal="color_selected" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/LipColorPalette" to="." method="_on_lip_color_palette_color_selected"]
 
 [editable path="CharacterPivot/AlienPreviewCharacter"]
