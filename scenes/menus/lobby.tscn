@@ -563,7 +563,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.060545325, -1.1920929e-07, 
 [node name="area_51_door_right" parent="area_51_training/area_51_door_frame" unique_id=1543727790 instance=ExtResource("16_aenqt")]
 
 [node name="OmniLight3D" type="OmniLight3D" parent="area_51_training" unique_id=230118621]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4160917, 2.7677212, 1.8107512)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7191777, 2.7677212, 1.8107512)
 light_color = Color(0.8317963, 0.7783159, 0.5508097, 1)
 light_energy = 4.0
 shadow_enabled = true
