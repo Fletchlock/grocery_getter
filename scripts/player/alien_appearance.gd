@@ -117,6 +117,14 @@ func _process(_delta: float) -> void:
 
 
 func set_head_style(index: int) -> void:
+	if head == null:
+		return
+
+	if index == -1:
+		head.visible = false
+		return
+
+	head.visible = true
 	_set_equipment(head, head_meshes, index)
 
 

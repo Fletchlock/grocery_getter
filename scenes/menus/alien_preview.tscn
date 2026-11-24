@@ -50,6 +50,34 @@ texture_margin_top = 13.0
 texture_margin_right = 13.0
 texture_margin_bottom = 13.0
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jnx5h"]
+texture = ExtResource("7_vw6n4")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_x2sd4"]
+texture = ExtResource("5_5wj15")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jpjk7"]
+texture = ExtResource("7_5wj15")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hkern"]
+texture = ExtResource("7_5wj15")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
 [node name="AlienPreview" type="Node3D" unique_id=656249219]
 script = ExtResource("1_0hbd3")
 
@@ -59,7 +87,7 @@ script = ExtResource("1_0hbd3")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 
 [node name="PreviewCamera" type="Camera3D" parent="." unique_id=943909725]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9922744, 4.414827)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.90038776, 3.9674134)
 current = true
 fov = 35.0
 
@@ -114,16 +142,15 @@ layout_mode = 2
 [node name="TabContainer" type="TabContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer" unique_id=1971109812]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_f4xs7")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 24
 theme_override_styles/panel = SubResource("StyleBoxTexture_67ah5")
 theme_override_styles/tab_unselected = SubResource("StyleBoxTexture_sqrrf")
 theme_override_styles/tab_hovered = SubResource("StyleBoxTexture_vw6n4")
 theme_override_styles/tab_selected = SubResource("StyleBoxTexture_hn5qx")
 theme_override_styles/tab_focus = SubResource("StyleBoxTexture_vw6n4")
-current_tab = 1
+current_tab = 0
 
 [node name="Body" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=481228399]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 15
 metadata/_tab_index = 0
@@ -160,7 +187,9 @@ text = "Pattern Color"
 layout_mode = 2
 
 [node name="Head" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=1181320693]
+visible = false
 layout_mode = 2
+theme_override_constants/separation = 15
 metadata/_tab_index = 1
 
 [node name="PupilColorLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head" unique_id=79980578]
@@ -205,9 +234,48 @@ size_flags_horizontal = 10
 layout_mode = 2
 colors = Array[Color]([Color(0, 0, 0, 1), Color(0.7958817, 0.12435455, 0.44531918, 1), Color(0.7248389, 0.213391, 0.5795022, 1), Color(0.60132307, 0.22382993, 0.9369615, 1), Color(0.63617563, 0.3442438, 0.15303299, 1), Color(0.30153355, 0.62521166, 0.27087367, 1), Color(0.14177936, 0.5254863, 0.7758417, 1), Color(0.3332895, 0.04504867, 0.48410565, 1), Color(0.24307254, 0.13818839, 0.65288055, 1), Color(0.060066827, 0.2688614, 0.57134324, 1), Color(0.07355829, 0.42536393, 0.47116035, 1), Color(0.1323241, 0.40957794, 0.27328622, 1)])
 
+[node name="HeadStyleLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head" unique_id=1295917615]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_1gve1")
+theme_override_font_sizes/font_size = 24
+text = "Antenna Style"
+
+[node name="HeadStyleRow" type="HBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head" unique_id=1611390775]
+layout_mode = 2
+
+[node name="PreviousHead" type="Button" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/HeadStyleRow" unique_id=1250239426]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_1gve1")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_jnx5h")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_x2sd4")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jpjk7")
+theme_override_styles/focus = SubResource("StyleBoxTexture_hkern")
+text = "<"
+
+[node name="HeadStyleValue" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/HeadStyleRow" unique_id=1875748974]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_1gve1")
+theme_override_font_sizes/font_size = 24
+text = "None"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NextHead" type="Button" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/HeadStyleRow" unique_id=1741455905]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_1gve1")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_jnx5h")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_x2sd4")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jpjk7")
+theme_override_styles/focus = SubResource("StyleBoxTexture_hkern")
+text = ">"
+
 [node name="Clothing" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=1300217043]
 visible = false
 layout_mode = 2
+theme_override_constants/separation = 15
 metadata/_tab_index = 2
 
 [connection signal="value_changed" from="CanvasLayer/RotationSlider" to="." method="_on_rotation_slider_value_changed"]
@@ -218,5 +286,7 @@ metadata/_tab_index = 2
 [connection signal="toggled" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/EyelashesToggle" to="." method="_on_eyelashes_toggle_toggled"]
 [connection signal="toggled" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/HBoxContainer/MatchSkinColor" to="." method="_on_match_skin_color_toggled"]
 [connection signal="color_selected" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/LipColorPalette" to="." method="_on_lip_color_palette_color_selected"]
+[connection signal="pressed" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/HeadStyleRow/PreviousHead" to="." method="_on_previous_head_pressed"]
+[connection signal="pressed" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/HeadStyleRow/NextHead" to="." method="_on_next_head_pressed"]
 
 [editable path="CharacterPivot/AlienPreviewCharacter"]
