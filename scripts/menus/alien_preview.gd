@@ -7,6 +7,7 @@ extends Node3D
 @onready var weight_slider: HSlider = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/WeightSlider
 @onready var skin_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinColorPalette
 @onready var pattern_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/PatternColorPalette
+@onready var pupil_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/PupilColorPalette
 
 
 func _ready() -> void:
@@ -16,6 +17,7 @@ func _ready() -> void:
 		)
 	skin_color_palette.select_color(alien_appearance.skin_color)
 	pattern_color_palette.select_color(alien_appearance.pattern_color)
+	pupil_color_palette.select_color(alien_appearance.pupil_color)
 
 func set_character_rotation(value: float) -> void:
 	character_pivot.rotation_degrees.y = value
@@ -33,3 +35,6 @@ func _on_skin_color_palette_color_selected(color: Color) -> void:
 	
 func _on_pattern_color_palette_color_selected(color: Color) -> void:
 	alien_appearance.set_pattern_color(color)
+
+func _on_pupil_color_palette_color_selected(color: Color) -> void:
+	alien_appearance.set_pupil_color(color)

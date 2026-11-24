@@ -163,6 +163,16 @@ visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
+[node name="PupilColorLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head" unique_id=79980578]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_1gve1")
+theme_override_font_sizes/font_size = 20
+text = "Eye Color"
+
+[node name="PupilColorPalette" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head" unique_id=1729303346 instance=ExtResource("10_x2sd4")]
+layout_mode = 2
+colors = Array[Color]([Color(0, 0, 0, 1), Color(0.35434595, 0.37381774, 0.096162684, 1), Color(0.19933689, 0.21041715, 0.043527097, 1), Color(0.26245895, 0.15723896, 0.02320037, 1), Color(0.42907402, 0.1401926, 0.09760616, 1), Color(0.54530436, 0.0848941, 0.21628559, 1), Color(0.43733862, 0.028771864, 0.3451998, 1), Color(0.3332895, 0.04504867, 0.48410565, 1), Color(0.24307254, 0.13818839, 0.65288055, 1), Color(0.060066827, 0.2688614, 0.57134324, 1), Color(0.07355829, 0.42536393, 0.47116035, 1), Color(0.1323241, 0.40957794, 0.27328622, 1)])
+
 [node name="Clothing" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=1300217043]
 visible = false
 layout_mode = 2
@@ -172,5 +182,6 @@ metadata/_tab_index = 2
 [connection signal="value_changed" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/WeightSlider" to="." method="_on_weight_slider_value_changed"]
 [connection signal="color_selected" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinColorPalette" to="." method="_on_skin_color_palette_color_selected"]
 [connection signal="color_selected" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/PatternColorPalette" to="." method="_on_pattern_color_palette_color_selected"]
+[connection signal="color_selected" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/PupilColorPalette" to="." method="_on_pupil_color_palette_color_selected"]
 
 [editable path="CharacterPivot/AlienPreviewCharacter"]
