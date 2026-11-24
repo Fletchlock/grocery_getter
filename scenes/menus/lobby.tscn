@@ -215,6 +215,7 @@ stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=1015604292]
 handle_input_locally = false
+size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport" unique_id=1839875564]
@@ -477,7 +478,24 @@ script = ExtResource("11_djew5")
 normal_font_size = 30
 highlighted_font_size = 34
 
+[node name="CustomizeButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer" unique_id=2131636208]
+custom_minimum_size = Vector2(330, 110)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_fonts/font = ExtResource("8_87k40")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
+theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
+text = "Customize
+Alien"
+script = ExtResource("11_djew5")
+normal_font_size = 30
+highlighted_font_size = 34
+
 [node name="InviteFriendsButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer" unique_id=1424807495]
+visible = false
 custom_minimum_size = Vector2(330, 80)
 layout_mode = 2
 size_flags_vertical = 4
@@ -595,6 +613,7 @@ shadow_enabled = true
 
 [connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/ReadyButton" to="." method="_on_ready_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/CustomizeButton" to="." method="_on_customize_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/CharacterSelection/RedButton" to="." method="_on_red_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/CharacterSelection/GreenButton" to="." method="_on_green_button_pressed"]
