@@ -223,6 +223,49 @@ func load_game() -> bool:
 	return true
 
 
+func load_players_for_lobby() -> bool:
+	
+	var save_path: String = get_slot_path(selected_slot)
+
+	if save_path.is_empty() or not FileAccess.file_exists(save_path):
+		return false
+
+	var file: FileAccess = FileAccess.open_encrypted(
+		save_path,
+		FileAccess.READ,
+		_get_encryption_key()
+	)
+
+	if file == null:
+		push_error("PLAYER DATA: Failed to open save slot.")
+		return false
+
+	var json: JSON = JSON.new()
+	var error: Error = json.parse(file.get_as_text())
+	file.close()
+
+	if error != OK or not json.data is Dictionary:
+		push_error("PLAYER DATA: Invalid save data.")
+		return false
+
+	var save_data: Dictionary = json.data
+
+	if int(save_data.get("save_version", 0)) != SAVE_VERSION:
+		push_error("PLAYER DATA: Unsupported save version.")
+		return false
+
+	_load_players_save_data(save_data.get("players", {}))
+
+	print(
+		"PLAYER DATA: Loaded ",
+		players.size(),
+		" player records from Slot ",
+		selected_slot
+	)
+
+	return true
+
+
 func has_save() -> bool:
 	return slot_has_save(selected_slot)
 

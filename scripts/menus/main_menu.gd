@@ -313,6 +313,13 @@ func _on_continue_game_button_pressed() -> void:
 
 
 func _host_game() -> void:
+	if GameManager.game_start_mode == GameManager.GameStartMode.CONTINUE_GAME:
+		if not SaveManager.load_players_for_lobby():
+			push_error("MainMenu: Failed to load player records.")
+			return
+	else:
+		SaveManager.clear_players()
+
 	get_parent().get_parent().open_lobby()
 	GameManager.set_game_state(GameManager.GameState.LOBBY)
 
