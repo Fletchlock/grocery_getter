@@ -326,6 +326,18 @@ func get_player_steam_id(peer_id: int) -> int:
 	return players[peer_id]["steam_id"]
 
 
+func get_saved_player(peer_id: int) -> PlayerData:
+	if not multiplayer.is_server():
+		return null
+
+	var steam_id: int = get_player_steam_id(peer_id)
+
+	if steam_id <= 0:
+		return null
+
+	return SaveManager.get_player(steam_id)
+
+
 @rpc("any_peer", "reliable")
 func request_set_player_name(
 	player_name: String,
