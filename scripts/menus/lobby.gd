@@ -34,6 +34,8 @@ const ALIEN_PREVIEW_SCENE: PackedScene = preload(
 )
 
 var customization_scene: Node3D = null
+var hidden_lobby_3d_nodes: Array[Node3D] = []
+var local_alien_appearance: AlienAppearanceData = null
 
 
 func _ready() -> void:
@@ -364,9 +366,13 @@ func _on_customize_button_pressed() -> void:
 		_on_customization_confirmed
 	)
 
+	_hide_lobby_3d()
+
 	get_tree().root.add_child(customization_scene)
 
 	hide()
+	$CanvasLayer.hide()
+	$SubViewportContainer.hide()
 
 	print("LOBBY: Alien customization opened.")
 
@@ -378,11 +384,41 @@ func _on_customization_confirmed(appearance: AlienAppearanceData) -> void:
 		" | Weight: ",
 		appearance.body_weight
 	)
+	
+	local_alien_appearance = appearance.duplicate(true) as AlienAppearanceData
 
+	var display: Node3D = player_displays[0]
+	display.set_appearance(local_alien_appearance)
+	
 	if customization_scene != null:
 		customization_scene.queue_free()
 		customization_scene = null
 
+	_restore_lobby_3d()
+
 	show()
+	$CanvasLayer.show()
+	$SubViewportContainer.show()
+
 	_update_ready_button()
 	_focus_primary_action()
+
+
+func _hide_lobby_3d() -> void:
+	hidden_lobby_3d_nodes.clear()
+
+	for child: Node in get_children():
+		if child is Node3D:
+			var node_3d: Node3D = child as Node3D
+
+			if node_3d.visible:
+				node_3d.hide()
+				hidden_lobby_3d_nodes.append(node_3d)
+
+
+func _restore_lobby_3d() -> void:
+	for node_3d: Node3D in hidden_lobby_3d_nodes:
+		if is_instance_valid(node_3d):
+			node_3d.show()
+
+	hidden_lobby_3d_nodes.clear()
