@@ -315,6 +315,13 @@ func set_player_name(
 				steam_id
 			)
 
+			if saved_player.appearance != null:
+				_set_player_appearance(
+					peer_id,
+					saved_player.appearance.to_dict()
+				)
+			
+
 	lobby_player_updated.emit(peer_id)
 	lobby_state_changed.emit()
 
@@ -424,6 +431,21 @@ func _set_player_appearance(peer_id: int, data: Dictionary) -> void:
 	var validated_data: Dictionary = appearance.to_dict()
 
 	players[peer_id]["appearance"] = validated_data
+	
+
+	# Update the player's saved data in memory.
+	var steam_id: int = get_player_steam_id(peer_id)
+
+	if steam_id > 0:
+		var player_data: PlayerData = SaveManager.get_player(steam_id)
+
+		if player_data == null:
+			player_data = PlayerData.new()
+			player_data.steam_id = steam_id
+			SaveManager.add_player(player_data)
+
+		player_data.appearance = appearance.duplicate(true) as AlienAppearanceData
+	
 
 	lobby_player_updated.emit(peer_id)
 	lobby_state_changed.emit()
