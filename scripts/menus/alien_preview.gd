@@ -28,8 +28,15 @@ var current_bottom_style: int = 0
 var current_top_style: int = 0
 var current_head_style: int = 0
 
+var initial_appearance: AlienAppearanceData = null
+
 
 func _ready() -> void:
+	
+	if initial_appearance != null:
+		alien_appearance.appearance_data = initial_appearance.duplicate(true) as AlienAppearanceData
+		alien_appearance.apply_appearance(alien_appearance.appearance_data)
+
 	if alien_appearance.appearance_data != null:
 		weight_slider.set_value_no_signal(
 			alien_appearance.appearance_data.body_weight
