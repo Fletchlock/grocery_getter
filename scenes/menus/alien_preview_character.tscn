@@ -3,8 +3,6 @@
 [ext_resource type="Script" uid="uid://b5kr7aoertyln" path="res://scripts/player/alien_appearance.gd" id="1_3yr5r"]
 [ext_resource type="ArrayMesh" uid="uid://dgc11mv3qflco" path="res://assets/models/characters/alien/alien mesh/alien_character_alien_character_mesh.res" id="1_hy43d"]
 [ext_resource type="Resource" uid="uid://bues032exn7ak" path="res://resources/player/default_alien_appearance.tres" id="2_3a2i6"]
-[ext_resource type="Shader" uid="uid://dqofm6ao1shxq" path="res://assets/shaders/alien_skin.gdshader" id="2_3yr5r"]
-[ext_resource type="Texture2D" uid="uid://bgtan2jpyfrm2" path="res://assets/models/characters/alien/alien_character_alien_pattern_01.png" id="3_3a2i6"]
 [ext_resource type="ArrayMesh" uid="uid://bf200hkkir7o3" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_antennas_01.res" id="3_jnx5h"]
 [ext_resource type="ArrayMesh" uid="uid://bqh25w0r8kdil" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_antennas_02.res" id="4_h34pi"]
 [ext_resource type="ArrayMesh" uid="uid://d1yq4a1r2anja" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_antennas_03.res" id="4_u37dy"]
@@ -18,6 +16,7 @@
 [ext_resource type="ArrayMesh" uid="uid://coeet74vueuhw" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_pants_03.res" id="11_b5whp"]
 [ext_resource type="ArrayMesh" uid="uid://dnalmq70mgho3" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_shoes_01.res" id="12_lwul0"]
 [ext_resource type="ArrayMesh" uid="uid://bb6cm14i20mjg" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_shoes_02.res" id="13_l7m07"]
+[ext_resource type="Material" uid="uid://yf1v4oic3fut" path="res://assets/materials/alien_skin.tres" id="17_ur2bq"]
 
 [sub_resource type="Animation" id="Animation_5wda0"]
 length = 0.001
@@ -121,15 +120,6 @@ bind/15/name = &"foot.R"
 bind/15/bone = -1
 bind/15/pose = Transform3D(-0.9912653, -0.13188432, -0.0032896977, 0.05094052, -0.35967278, -0.9316881, 0.12169454, -0.9237112, 0.3632487, 0.18645559, 0.066212416, 0.066198505)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ur2bq"]
-render_priority = 0
-shader = ExtResource("2_3yr5r")
-shader_parameter/skin_color = Color(0.25, 0.75, 0.35, 1)
-shader_parameter/pattern_color = Color(0.05, 0.25, 0.1, 1)
-shader_parameter/pattern_texture = ExtResource("3_3a2i6")
-shader_parameter/pattern_strength = 1.0
-shader_parameter/roughness = 0.8
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mptrd"]
 resource_name = "m_color.007"
 cull_mode = 2
@@ -206,15 +196,6 @@ bind/14/pose = Transform3D(-0.9992821, -0.038032126, -0.00034166934, 0.03670322,
 bind/15/name = &"foot.R"
 bind/15/bone = -1
 bind/15/pose = Transform3D(-0.9912653, -0.13188432, -0.0032896977, 0.05094052, -0.35967278, -0.9316881, 0.12169454, -0.9237112, 0.3632487, 0.18645559, 0.066212416, 0.066198505)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_iuphn"]
-render_priority = 0
-shader = ExtResource("2_3yr5r")
-shader_parameter/skin_color = Color(0.25, 0.75, 0.35, 1)
-shader_parameter/pattern_color = Color(0.05, 0.25, 0.1, 1)
-shader_parameter/pattern_texture = ExtResource("3_3a2i6")
-shader_parameter/pattern_strength = 1.0
-shader_parameter/roughness = 0.8
 
 [node name="AlienPreviewCharacter" type="Node3D" unique_id=1396413471]
 
@@ -362,7 +343,7 @@ skeleton = NodePath("..")
 blend_shapes/Blink = 0.0
 blend_shapes/Heavy = 0.0
 blend_shapes/Slim = 0.0
-surface_material_override/0 = SubResource("ShaderMaterial_ur2bq")
+surface_material_override/0 = ExtResource("17_ur2bq")
 
 [node name="Eyelashes" type="MeshInstance3D" parent="Armature/Skeleton3D/AlienBody" unique_id=832163130]
 mesh = SubResource("ArrayMesh_jnx5h")
@@ -373,7 +354,6 @@ skeleton = NodePath("../..")
 mesh = ExtResource("4_u37dy")
 skin = SubResource("Skin_h34pi")
 skeleton = NodePath("..")
-surface_material_override/0 = SubResource("ShaderMaterial_iuphn")
 
 [node name="Top" type="MeshInstance3D" parent="Armature/Skeleton3D" unique_id=821716172]
 mesh = ExtResource("5_i0dli")

@@ -7,14 +7,17 @@ class_name AlienAppearance
 
 enum ClothingColor {
 	BLACK,
-	RED,
-	GREEN,
-	BLUE,
-	YELLOW,
-	BROWN,
-	ORANGE,
 	WHITE,
-	GREY
+	GREY,
+	LBLUE,
+	DBLUE,
+	GREEN,
+	YELLOW,
+	ORANGE,
+	BROWN,
+	RED,
+	PINK,
+	PURPLE
 }
 
 const CLOTHING_COLORS: Array[Color] = [
@@ -33,7 +36,7 @@ const CLOTHING_COLORS: Array[Color] = [
 ]
 
 var top_color: int = ClothingColor.WHITE
-var bottom_color: int = ClothingColor.BLUE
+var bottom_color: int = ClothingColor.DBLUE
 var feet_color: int = ClothingColor.BLACK
 var sole_color: int = ClothingColor.WHITE
 
@@ -106,7 +109,7 @@ func _ready() -> void:
 	_setup_face_materials()
 	
 	set_top_color(ClothingColor.ORANGE)
-	set_bottom_color(ClothingColor.BLUE)
+	set_bottom_color(ClothingColor.DBLUE)
 	set_feet_color(ClothingColor.BROWN)
 	set_sole_color(ClothingColor.BLACK)
 	
@@ -132,6 +135,14 @@ func set_head_style(index: int) -> void:
 
 
 func set_top_style(index: int) -> void:
+	if top == null:
+		return
+
+	if index == -1:
+		top.visible = false
+		return
+
+	top.visible = true
 	_set_equipment(top, top_meshes, index)
 
 
