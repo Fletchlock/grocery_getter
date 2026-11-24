@@ -119,7 +119,9 @@ func start_game() -> void:
 			if not SaveManager.load_game():
 				push_error("GameManager: Failed to load saved game.")
 				return
-
+	
+	check_saved_lobby_players()
+	
 	# Notify connected clients when hosting multiplayer.
 	if not NetworkManager.is_single_player:
 		start_multiplayer_game_rpc.rpc()
@@ -266,3 +268,28 @@ func complete_late_join() -> void:
 	print("GameManager: Late join complete.")
 
 	set_game_state(GameState.PLAYING)
+
+
+func check_saved_lobby_players() -> void:
+	if not multiplayer.is_server():
+		return
+
+	for peer_id_variant: Variant in LobbyManager.get_players():
+		var peer_id: int = int(peer_id_variant)
+		var steam_id: int = LobbyManager.get_player_steam_id(peer_id)
+
+		if steam_id <= 0:
+			print("PLAYER DATA: No Steam ID for peer ", peer_id)
+			continue
+
+		var player_data: PlayerData = LobbyManager.get_saved_player(peer_id)
+
+		if player_data == null:
+			print("PLAYER DATA: NEW PLAYER | Peer: ", peer_id)
+		else:
+			print(
+				"PLAYER DATA: RETURNING PLAYER | Peer: ",
+				peer_id,
+				" | Steam ID: ",
+				steam_id
+			)
