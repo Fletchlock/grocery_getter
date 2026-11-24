@@ -20,6 +20,7 @@ var inspection_camera_active: bool = false
 
 @onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/AlienBody
 
+@onready var alien_appearance: AlienAppearance = $AlienAppearance
 @onready var alien_head: MeshInstance3D = $Armature/Skeleton3D/Head
 @onready var alien_top: MeshInstance3D = $Armature/Skeleton3D/Top
 @onready var alien_bottom: MeshInstance3D = $Armature/Skeleton3D/Bottom
@@ -349,6 +350,8 @@ func _ready() -> void:
 	# If found safely, initialize visibility states cleanly
 	if sync_node != null and is_multiplayer_authority():
 		sync_node.public_visibility = true
+		
+	_apply_player_appearance()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -3861,3 +3864,13 @@ func _update_alien_visibility() -> void:
 		should_show = not _first_person or inspection_camera_active
 
 	_set_alien_visible(should_show)
+
+
+func _apply_player_appearance() -> void:
+	var peer_id: int = get_multiplayer_authority()
+	var appearance: AlienAppearanceData = LobbyManager.get_player_appearance(peer_id)
+
+	if appearance == null:
+		return
+
+	alien_appearance.apply_appearance(appearance)
