@@ -387,8 +387,14 @@ func _on_customization_confirmed(appearance: AlienAppearanceData) -> void:
 	
 	local_alien_appearance = appearance.duplicate(true) as AlienAppearanceData
 
-	var display: Node3D = player_displays[0]
-	display.set_appearance(local_alien_appearance)
+	
+	var display: Node3D = _get_local_player_display()
+
+	if display != null:
+		display.set_appearance(local_alien_appearance)
+	else:
+		push_warning("LOBBY: Could not find local player display.")
+
 	
 	if customization_scene != null:
 		customization_scene.queue_free()
@@ -422,3 +428,14 @@ func _restore_lobby_3d() -> void:
 			node_3d.show()
 
 	hidden_lobby_3d_nodes.clear()
+
+
+func _get_local_player_display() -> Node3D:
+	var peer_id: int = multiplayer.get_unique_id()
+	var players: Dictionary = LobbyManager.get_players()
+	var player_index: int = players.keys().find(peer_id)
+
+	if player_index < 0 or player_index >= player_displays.size():
+		return null
+
+	return player_displays[player_index]
