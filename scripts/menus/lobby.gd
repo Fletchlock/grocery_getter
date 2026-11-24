@@ -259,7 +259,10 @@ func _update_character_displays() -> void:
 			else:
 				name_label.modulate = Color(1.0, 1.0, 1.0)
 				
-			display.set_character(LobbyManager.get_character(peer_id))
+			var appearance: AlienAppearanceData = LobbyManager.get_player_appearance(peer_id)
+
+			if appearance != null:
+				display.set_appearance(appearance)
 		else:
 			display.visible = false
 			name_label.visible = false
@@ -386,6 +389,7 @@ func _on_customization_confirmed(appearance: AlienAppearanceData) -> void:
 	)
 	
 	local_alien_appearance = appearance.duplicate(true) as AlienAppearanceData
+	LobbyManager.request_set_appearance(local_alien_appearance)
 
 	
 	var display: Node3D = _get_local_player_display()

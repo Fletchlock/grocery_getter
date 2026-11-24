@@ -96,7 +96,8 @@ func add_player(peer_id: int) -> void:
 		"name": "",
 		"steam_id": 0,
 		"character": "red",
-		"ready": false
+		"ready": false,
+		"appearance": {}
 	}
 	
 	# Check for single player
@@ -380,6 +381,75 @@ func sync_player_info(
 
 	players[peer_id]["name"] = player_name
 	players[peer_id]["steam_id"] = steam_id
+
+	lobby_player_updated.emit(peer_id)
+	lobby_state_changed.emit()
+
+
+func get_player_appearance(peer_id: int) -> AlienAppearanceData:
+	if not players.has(peer_id):
+		return null
+
+	var data: Dictionary = players[peer_id].get("appearance", {})
+
+	if data.is_empty():
+		return null
+
+	return AlienAppearanceData.from_dict(data)
+
+
+func request_set_appearance(appearance: AlienAppearanceData) -> void:
+	if appearance == null:
+		return
+
+	var data: Dictionary = appearance.to_dict()
+
+	if multiplayer.is_server():
+		_set_player_appearance(multiplayer.get_unique_id(), data)
+	else:
+		request_appearance_change.rpc_id(1, data)
+
+
+func _set_player_appearance(peer_id: int, data: Dictionary) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if not players.has(peer_id):
+		return
+
+	if players[peer_id]["ready"]:
+		return
+
+	var appearance: AlienAppearanceData = AlienAppearanceData.from_dict(data)
+	var validated_data: Dictionary = appearance.to_dict()
+
+	players[peer_id]["appearance"] = validated_data
+
+	lobby_player_updated.emit(peer_id)
+	lobby_state_changed.emit()
+
+	sync_player_appearance.rpc(peer_id, validated_data)
+
+
+@rpc("any_peer", "reliable")
+func request_appearance_change(data: Dictionary) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var peer_id: int = multiplayer.get_remote_sender_id()
+
+	_set_player_appearance(peer_id, data)
+
+
+@rpc("authority", "reliable")
+func sync_player_appearance(peer_id: int, data: Dictionary) -> void:
+	if multiplayer.is_server():
+		return
+
+	if not players.has(peer_id):
+		return
+
+	players[peer_id]["appearance"] = data.duplicate(true)
 
 	lobby_player_updated.emit(peer_id)
 	lobby_state_changed.emit()
