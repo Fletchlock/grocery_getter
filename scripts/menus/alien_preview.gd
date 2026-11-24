@@ -13,9 +13,16 @@ extends Node3D
 @onready var lip_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/LipColorPalette
 @onready var eyelashes_toggle: CheckButton = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/EyelashesToggle
 @onready var head_style_value: Label = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/HeadStyleRow/HeadStyleValue
-@onready var top_style_value: Label = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/TopStyleRow/TopStyleValue
+@onready var top_style_value: Label = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/HBoxContainer/TopStyleRow/TopStyleValue
 @onready var top_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/TopColorPalette
+@onready var bottom_style_value: Label = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/HBoxContainer2/BottomStyleRow/BottomStyleValue
+@onready var bottom_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/BottomColorPalette
+@onready var feet_style_value: Label = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/HBoxContainer3/FeetStyleRow/FeetStyleValue
+@onready var feet_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/FeetColorPalette
+@onready var sole_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/SoleColorPalette
 
+var current_feet_style: int = 0
+var current_bottom_style: int = 0
 var current_top_style: int = 0
 var current_head_style: int = 0
 
@@ -27,7 +34,9 @@ func _ready() -> void:
 		)
 		current_head_style = alien_appearance.appearance_data.head_style
 		current_top_style = alien_appearance.appearance_data.top_style
-	
+		current_bottom_style = alien_appearance.appearance_data.bottom_style
+		current_feet_style = alien_appearance.appearance_data.feet_style
+		
 	skin_color_palette.select_color(alien_appearance.skin_color)
 	pattern_color_palette.select_color(alien_appearance.pattern_color)
 	pupil_color_palette.select_color(alien_appearance.pupil_color)
@@ -38,10 +47,22 @@ func _ready() -> void:
 	_update_lip_controls()
 	_update_head_style_display()
 	_update_top_style_display()
+	_update_bottom_style_display()
+	_update_feet_style_display()
 	
 	top_color_palette.select_color(
-	AlienAppearance.CLOTHING_COLORS[alien_appearance.top_color]
-)
+		AlienAppearance.CLOTHING_COLORS[alien_appearance.top_color]
+	)
+	bottom_color_palette.select_color(
+		AlienAppearance.CLOTHING_COLORS[alien_appearance.bottom_color]
+	)
+	feet_color_palette.select_color(
+		AlienAppearance.CLOTHING_COLORS[alien_appearance.feet_color]
+	)
+
+	sole_color_palette.select_color(
+		AlienAppearance.CLOTHING_COLORS[alien_appearance.sole_color]
+	)
 
 func set_character_rotation(value: float) -> void:
 	character_pivot.rotation_degrees.y = value
@@ -164,3 +185,90 @@ func _on_top_color_palette_color_selected(color: Color) -> void:
 			return
 
 	print("No matching clothing color found!")
+
+func _on_previous_bottom_pressed() -> void:
+	_change_bottom_style(-1)
+
+func _on_next_bottom_pressed() -> void:
+	_change_bottom_style(1)
+
+func _change_bottom_style(direction: int) -> void:
+	var style_count: int = alien_appearance.bottom_meshes.size()
+
+	if style_count == 0:
+		return
+
+	current_bottom_style = wrapi(
+		current_bottom_style + direction + 1,
+		0,
+		style_count + 1
+	) - 1
+
+	alien_appearance.set_bottom_style(current_bottom_style)
+	_update_bottom_style_display()
+
+func _update_bottom_style_display() -> void:
+	var style_count: int = alien_appearance.bottom_meshes.size()
+
+	if current_bottom_style == -1:
+		bottom_style_value.text = "None"
+	elif style_count == 0:
+		bottom_style_value.text = "No Styles"
+	else:
+		bottom_style_value.text = "%d / %d" % [
+			current_bottom_style + 1,
+			style_count
+		]
+
+func _on_bottom_color_palette_color_selected(color: Color) -> void:
+	for i: int in range(AlienAppearance.CLOTHING_COLORS.size()):
+		if AlienAppearance.CLOTHING_COLORS[i].to_html(false) == color.to_html(false):
+			alien_appearance.set_bottom_color(i)
+			return
+
+func _on_previous_feet_pressed() -> void:
+	_change_feet_style(-1)
+
+
+func _on_next_feet_pressed() -> void:
+	_change_feet_style(1)
+
+func _change_feet_style(direction: int) -> void:
+	var style_count: int = alien_appearance.feet_meshes.size()
+
+	if style_count == 0:
+		return
+
+	current_feet_style = wrapi(
+		current_feet_style + direction + 1,
+		0,
+		style_count + 1
+	) - 1
+
+	alien_appearance.set_feet_style(current_feet_style)
+	_update_feet_style_display()
+
+func _update_feet_style_display() -> void:
+	var style_count: int = alien_appearance.feet_meshes.size()
+
+	if current_feet_style == -1:
+		feet_style_value.text = "None"
+	elif style_count == 0:
+		feet_style_value.text = "No Styles"
+	else:
+		feet_style_value.text = "%d / %d" % [
+			current_feet_style + 1,
+			style_count
+		]
+
+func _on_feet_color_palette_color_selected(color: Color) -> void:
+	for i: int in range(AlienAppearance.CLOTHING_COLORS.size()):
+		if AlienAppearance.CLOTHING_COLORS[i].to_html(false) == color.to_html(false):
+			alien_appearance.set_feet_color(i)
+			return
+
+func _on_sole_color_palette_color_selected(color: Color) -> void:
+	for i: int in range(AlienAppearance.CLOTHING_COLORS.size()):
+		if AlienAppearance.CLOTHING_COLORS[i].to_html(false) == color.to_html(false):
+			alien_appearance.set_sole_color(i)
+			return
