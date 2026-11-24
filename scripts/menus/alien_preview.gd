@@ -1,5 +1,7 @@
 extends Node3D
 
+signal customization_confirmed(appearance: AlienAppearanceData)
+
 @export var rotation_speed: float = 0.5
 
 @onready var character_pivot: Node3D = $CharacterPivot
@@ -272,3 +274,35 @@ func _on_sole_color_palette_color_selected(color: Color) -> void:
 		if AlienAppearance.CLOTHING_COLORS[i].to_html(false) == color.to_html(false):
 			alien_appearance.set_sole_color(i)
 			return
+
+func get_current_appearance() -> AlienAppearanceData:
+	var data: AlienAppearanceData = AlienAppearanceData.new()
+
+	data.body_weight = alien_appearance.body_weight
+	data.skin_color = alien_appearance.skin_color
+	data.pattern_color = alien_appearance.pattern_color
+
+	data.pupil_color = alien_appearance.pupil_color
+	data.lips_use_skin_color = alien_appearance.lips_use_skin_color
+	data.lip_color = alien_appearance.lip_color
+	data.eyelashes_enabled = alien_appearance.eyelashes_enabled
+
+	data.head_style = current_head_style
+	data.top_style = current_top_style
+	data.bottom_style = current_bottom_style
+	data.feet_style = current_feet_style
+
+	data.top_color = alien_appearance.top_color
+	data.bottom_color = alien_appearance.bottom_color
+	data.feet_color = alien_appearance.feet_color
+	data.sole_color = alien_appearance.sole_color
+
+	if alien_appearance.appearance_data != null:
+		data.pattern_index = alien_appearance.appearance_data.pattern_index
+
+	return data
+
+
+func confirm_customization() -> void:
+	var appearance: AlienAppearanceData = get_current_appearance()
+	customization_confirmed.emit(appearance)
