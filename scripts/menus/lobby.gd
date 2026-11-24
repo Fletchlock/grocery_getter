@@ -6,6 +6,7 @@ extends Control
 @onready var ready_button: Button = $CanvasLayer/MarginContainer/VBoxContainer/ReadyButton
 @onready var main_menu_button: Button = $CanvasLayer/MarginContainer/VBoxContainer/MainMenuButton
 @onready var invite_friends_button: Button = $CanvasLayer/MarginContainer/VBoxContainer/InviteFriendsButton
+@onready var customize_button: Button = $CanvasLayer/MarginContainer/VBoxContainer/CustomizeButton
 
 @onready var red_button: Button = $VBoxContainer/CharacterSelection/RedButton
 @onready var green_button: Button = $VBoxContainer/CharacterSelection/GreenButton
@@ -153,6 +154,7 @@ func _setup_lobby_focus() -> void:
 		play_button,
 		ready_button,
 		invite_friends_button,
+		customize_button,
 		main_menu_button,
 		red_button,
 		green_button,
@@ -287,9 +289,12 @@ func _update_ready_button() -> void:
 	ready_button.text = "Unready" if is_ready else "Ready"
 	ready_button.disabled = selection_locked
 
+	customize_button.disabled = is_ready
+
 	red_button.disabled = selection_locked
 	green_button.disabled = selection_locked
 	blue_button.disabled = selection_locked
+
 	_setup_lobby_focus()
 
 
@@ -329,3 +334,12 @@ func _on_invite_friends_button_pressed() -> void:
 	print("Lobby: Opening Steam invitation overlay.")
 
 	Steam.activateGameOverlayInviteDialog(lobby_id)
+
+
+func _on_customize_button_pressed() -> void:
+	var peer_id: int = multiplayer.get_unique_id()
+
+	if LobbyManager.is_ready(peer_id):
+		return
+
+	print("LOBBY: Customize Character pressed.")
