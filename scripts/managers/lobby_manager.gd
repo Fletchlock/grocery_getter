@@ -296,6 +296,24 @@ func set_player_name(
 	players[peer_id]["name"] = player_name
 	players[peer_id]["steam_id"] = steam_id
 
+	if multiplayer.is_server() and steam_id > 0:
+		var saved_player: PlayerData = SaveManager.get_player(steam_id)
+
+		if saved_player == null:
+			print(
+				"LOBBY PLAYER DATA: NEW PLAYER | ",
+				player_name,
+				" | Steam ID: ",
+				steam_id
+			)
+		else:
+			print(
+				"LOBBY PLAYER DATA: RETURNING PLAYER | ",
+				player_name,
+				" | Steam ID: ",
+				steam_id
+			)
+
 	lobby_player_updated.emit(peer_id)
 	lobby_state_changed.emit()
 
