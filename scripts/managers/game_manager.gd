@@ -96,6 +96,7 @@ func start_game() -> void:
 		GameStartMode.NEW_GAME:
 			print("GameManager: Starting NEW GAME.")
 			
+			SaveManager.clear_players()
 			SaveManager.reset_creation_date_on_save = true
 			StoreManager.reset_store()
 			StockOrderManager.reset_stock_orders()
