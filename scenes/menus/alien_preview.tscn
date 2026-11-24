@@ -87,22 +87,25 @@ script = ExtResource("1_0hbd3")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 
 [node name="PreviewCamera" type="Camera3D" parent="." unique_id=943909725]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.90038776, 3.9674134)
+transform = Transform3D(1, 0, 0, 0, 0.9969238, 0.07837658, 0, -0.07837658, 0.9969238, 0, 1.2613515, 3.9594183)
 current = true
 fov = 35.0
 
 [node name="KeyLight" type="DirectionalLight3D" parent="." unique_id=1176618301]
 transform = Transform3D(0.8660253, 0.13958144, -0.48012188, 0, 0.9602438, 0.27916288, 0.5, -0.24176213, 0.83159554, 0, 0, 0)
+light_color = Color(0.71050996, 0.8975098, 0.95195943, 1)
 light_energy = 1.2
 shadow_enabled = true
 
 [node name="FillLight" type="DirectionalLight3D" parent="." unique_id=1258292294]
 transform = Transform3D(0.74825644, -0.24328882, 0.6171895, 0, 0.9303294, 0.3667249, -0.6634096, -0.2744043, 0.696125, 0, 0, 0)
+light_color = Color(0.71050996, 0.8975098, 0.95195943, 1)
 light_energy = 0.5
 shadow_enabled = true
 
 [node name="BackLight" type="DirectionalLight3D" parent="." unique_id=1565506206]
 transform = Transform3D(-0.99781847, 0.06597686, 0.002375299, 0.055381753, 0.8169125, 0.5740968, 0.035936646, 0.5729758, -0.818784, 0, 0, 0)
+light_color = Color(0.71050996, 0.8975098, 0.95195943, 1)
 light_energy = 0.25
 shadow_enabled = true
 
