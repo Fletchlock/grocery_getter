@@ -18,15 +18,18 @@ enum ClothingColor {
 }
 
 const CLOTHING_COLORS: Array[Color] = [
-	Color("#202020"), # Black 0
-	Color("#c83a3a"), # Red 1
-	Color("#459b55"), # Green 2
-	Color("#377ac4"), # Blue 3
-	Color("#e8c63b"), # Yellow 4
-	Color("#795438"), # Brown 5
-	Color("#e78b35"), # Orange 6
-	Color("#f1f1ed"), # White 7
-	Color("#888888")  # Grey 8
+	Color("#080708"), # Black 0
+	Color("#f2f0f0"), # White 1
+	Color("#989898"), # Grey 2
+	Color("#31cefb"), # Lt.Blue 3
+	Color("#0071eb"), # Dk.Blue 4
+	Color("#00c26c"), # Green 5
+	Color("#ebcf29"), # Yellow 6
+	Color("#ec792e"), # Orange 7
+	Color("#915e13"),  # Brown 8
+	Color("#de3363"),  # Red 9
+	Color("#e868c7"),  # Pink 10
+	Color("#8937dc")  # Purple 11
 ]
 
 var top_color: int = ClothingColor.WHITE
