@@ -306,3 +306,9 @@ func get_current_appearance() -> AlienAppearanceData:
 func confirm_customization() -> void:
 	var appearance: AlienAppearanceData = get_current_appearance()
 	customization_confirmed.emit(appearance)
+
+
+func _on_confirm_button_pressed() -> void:
+	confirm_customization()
+
+	print("ALIEN CUSTOMIZATION: Character confirmed.")
