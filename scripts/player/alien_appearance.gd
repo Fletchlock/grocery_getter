@@ -147,10 +147,26 @@ func set_top_style(index: int) -> void:
 
 
 func set_bottom_style(index: int) -> void:
+	if bottom == null:
+		return
+
+	if index == -1:
+		bottom.visible = false
+		return
+
+	bottom.visible = true
 	_set_equipment(bottom, bottom_meshes, index)
 
 
 func set_feet_style(index: int) -> void:
+	if feet == null:
+		return
+
+	if index == -1:
+		feet.visible = false
+		return
+
+	feet.visible = true
 	_set_equipment(feet, feet_meshes, index)
 
 
