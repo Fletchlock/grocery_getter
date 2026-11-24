@@ -13,6 +13,7 @@ var selected_slot: int = 1
 var reset_creation_date_on_save: bool = false
 
 var players: Dictionary = {}
+var preserve_lobby_players: bool = false
 
 func get_slot_path(slot: int) -> String:
 	if slot < 1 or slot > MAX_SAVE_SLOTS:
@@ -207,9 +208,10 @@ func load_game() -> bool:
 		save_data.get("product_unlocks", {})
 	)
 	
-	_load_players_save_data(
-		save_data.get("players", {})
-	)
+	if not preserve_lobby_players:
+		_load_players_save_data(
+			save_data.get("players", {})
+		)
 
 	StoreManager.sync_finances()
 
