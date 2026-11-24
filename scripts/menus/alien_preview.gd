@@ -13,7 +13,10 @@ extends Node3D
 @onready var lip_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/LipColorPalette
 @onready var eyelashes_toggle: CheckButton = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/EyelashesToggle
 @onready var head_style_value: Label = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/HeadStyleRow/HeadStyleValue
+@onready var top_style_value: Label = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/TopStyleRow/TopStyleValue
+@onready var top_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/TopColorPalette
 
+var current_top_style: int = 0
 var current_head_style: int = 0
 
 
@@ -23,6 +26,7 @@ func _ready() -> void:
 			alien_appearance.appearance_data.body_weight
 		)
 		current_head_style = alien_appearance.appearance_data.head_style
+		current_top_style = alien_appearance.appearance_data.top_style
 	
 	skin_color_palette.select_color(alien_appearance.skin_color)
 	pattern_color_palette.select_color(alien_appearance.pattern_color)
@@ -33,6 +37,11 @@ func _ready() -> void:
 
 	_update_lip_controls()
 	_update_head_style_display()
+	_update_top_style_display()
+	
+	top_color_palette.select_color(
+	AlienAppearance.CLOTHING_COLORS[alien_appearance.top_color]
+)
 
 func set_character_rotation(value: float) -> void:
 	character_pivot.rotation_degrees.y = value
@@ -107,3 +116,42 @@ func _update_head_style_display() -> void:
 			current_head_style + 1,
 			style_count
 		]
+
+func _on_previous_top_pressed() -> void:
+	_change_top_style(-1)
+
+
+func _on_next_top_pressed() -> void:
+	_change_top_style(1)
+
+func _change_top_style(direction: int) -> void:
+	var style_count: int = alien_appearance.top_meshes.size()
+
+	if style_count == 0:
+		return
+
+	current_top_style = wrapi(
+		current_top_style + direction,
+		0,
+		style_count
+	)
+
+	alien_appearance.set_top_style(current_top_style)
+	_update_top_style_display()
+
+func _update_top_style_display() -> void:
+	var style_count: int = alien_appearance.top_meshes.size()
+
+	if style_count == 0:
+		top_style_value.text = "No Styles"
+		return
+
+	top_style_value.text = "%d / %d" % [
+		current_top_style + 1,
+		style_count
+	]
+func _on_top_color_palette_color_selected(color: Color) -> void:
+	for i: int in range(AlienAppearance.CLOTHING_COLORS.size()):
+		if AlienAppearance.CLOTHING_COLORS[i].to_html(false) == color.to_html(false):
+			alien_appearance.set_top_color(i)
+			return
