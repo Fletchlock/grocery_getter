@@ -96,7 +96,6 @@ func start_game() -> void:
 		GameStartMode.NEW_GAME:
 			print("GameManager: Starting NEW GAME.")
 			
-			SaveManager.clear_players()
 			SaveManager.reset_creation_date_on_save = true
 			StoreManager.reset_store()
 			StockOrderManager.reset_stock_orders()
@@ -114,9 +113,15 @@ func start_game() -> void:
 			
 		GameStartMode.CONTINUE_GAME:
 			print("GameManager: Continuing saved game.")
-			
+
 			SaveManager.reset_creation_date_on_save = false
-			if not SaveManager.load_game():
+			SaveManager.preserve_lobby_players = true
+
+			var loaded: bool = SaveManager.load_game()
+
+			SaveManager.preserve_lobby_players = false
+
+			if not loaded:
 				push_error("GameManager: Failed to load saved game.")
 				return
 	
