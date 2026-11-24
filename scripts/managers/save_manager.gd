@@ -12,6 +12,7 @@ const SAVE_ENCRYPTION_KEY_HEX: String = "27248985251193d115ad1c8dc8ca62ee65c83ba
 var selected_slot: int = 1
 var reset_creation_date_on_save: bool = false
 
+var players: Dictionary = {}
 
 func get_slot_path(slot: int) -> String:
 	if slot < 1 or slot > MAX_SAVE_SLOTS:
@@ -23,6 +24,9 @@ func get_slot_path(slot: int) -> String:
 func select_slot(slot: int) -> bool:
 	if slot < 1 or slot > MAX_SAVE_SLOTS:
 		return false
+
+	if selected_slot != slot:
+		clear_players()
 
 	selected_slot = slot
 	return true
@@ -107,7 +111,8 @@ func save_game() -> bool:
 		"stock_orders": StockOrderManager.get_save_data(),
 		"day": DayManager.get_save_data(),
 		"reputation": ReputationManager.get_save_data(),
-		"product_unlocks": ProductUnlockManager.get_save_data()
+		"product_unlocks": ProductUnlockManager.get_save_data(),
+		"players": _get_players_save_data()
 	}
 
 	var file: FileAccess = FileAccess.open_encrypted(
@@ -200,6 +205,10 @@ func load_game() -> bool:
 
 	ProductUnlockManager.load_save_data(
 		save_data.get("product_unlocks", {})
+	)
+	
+	_load_players_save_data(
+		save_data.get("players", {})
 	)
 
 	StoreManager.sync_finances()
@@ -294,6 +303,57 @@ func delete_slot(slot: int) -> bool:
 	if error != OK:
 		push_error("Failed to delete save slot %d: %s" % [slot, error_string(error)])
 		return false
-
+	
+	if slot == selected_slot:
+		clear_players()
+	
 	print("SAVE DELETED: Slot ", slot)
 	return true
+
+# ================ Player Saves ========================
+
+func has_player(steam_id: int) -> bool:
+	return players.has(str(steam_id))
+
+
+func get_player(steam_id: int) -> PlayerData:
+	return players.get(str(steam_id)) as PlayerData
+
+
+func add_player(player: PlayerData) -> void:
+	if player == null or player.steam_id <= 0:
+		return
+
+	players[str(player.steam_id)] = player
+
+
+func clear_players() -> void:
+	players.clear()
+
+
+func _get_players_save_data() -> Dictionary:
+	var data: Dictionary = {}
+
+	for steam_id: String in players:
+		var player: PlayerData = players[steam_id]
+
+		if player != null:
+			data[steam_id] = player.get_save_data()
+
+	return data
+
+
+
+func _load_players_save_data(data: Dictionary) -> void:
+	players.clear()
+
+	for steam_id: String in data:
+		var player_dict: Dictionary = data[steam_id]
+
+		var player: PlayerData = PlayerData.new()
+		player.load_save_data(player_dict)
+
+		# Use the dictionary key as the authoritative Steam ID.
+		player.steam_id = int(steam_id)
+
+		players[steam_id] = player

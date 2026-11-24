@@ -20,7 +20,7 @@ class_name PlayerData
 
 func get_save_data() -> Dictionary:
 	return {
-		"steam_id": steam_id,
+		"steam_id": str(steam_id),
 		"appearance": _get_appearance_save_data(),
 		"reputation": reputation,
 		"money": money,
