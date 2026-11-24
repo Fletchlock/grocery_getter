@@ -131,10 +131,10 @@ func _change_top_style(direction: int) -> void:
 		return
 
 	current_top_style = wrapi(
-		current_top_style + direction,
+		current_top_style + direction + 1,
 		0,
-		style_count
-	)
+		style_count + 1
+	) - 1
 
 	alien_appearance.set_top_style(current_top_style)
 	_update_top_style_display()
@@ -142,16 +142,25 @@ func _change_top_style(direction: int) -> void:
 func _update_top_style_display() -> void:
 	var style_count: int = alien_appearance.top_meshes.size()
 
-	if style_count == 0:
+	if current_top_style == -1:
+		top_style_value.text = "None"
+	elif style_count == 0:
 		top_style_value.text = "No Styles"
-		return
-
-	top_style_value.text = "%d / %d" % [
-		current_top_style + 1,
-		style_count
-	]
+	else:
+		top_style_value.text = "%d / %d" % [
+			current_top_style + 1,
+			style_count
+		]
+	
 func _on_top_color_palette_color_selected(color: Color) -> void:
+	print("Selected top color: ", color.to_html(false))
+
 	for i: int in range(AlienAppearance.CLOTHING_COLORS.size()):
-		if AlienAppearance.CLOTHING_COLORS[i].to_html(false) == color.to_html(false):
+		var available_color: Color = AlienAppearance.CLOTHING_COLORS[i]
+
+		if available_color.to_html(false) == color.to_html(false):
+			print("Matched clothing color index: ", i)
 			alien_appearance.set_top_color(i)
 			return
+
+	print("No matching clothing color found!")

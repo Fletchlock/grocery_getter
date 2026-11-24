@@ -1,0 +1,13 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://yf1v4oic3fut"]
+
+[ext_resource type="Shader" uid="uid://dqofm6ao1shxq" path="res://assets/shaders/alien_skin.gdshader" id="1_rikbe"]
+[ext_resource type="Texture2D" uid="uid://bgtan2jpyfrm2" path="res://assets/models/characters/alien/alien_character_alien_pattern_01.png" id="2_pyk0x"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_rikbe")
+shader_parameter/skin_color = Color(0.25, 0.75, 0.35, 1)
+shader_parameter/pattern_color = Color(0.05, 0.25, 0.1, 1)
+shader_parameter/pattern_texture = ExtResource("2_pyk0x")
+shader_parameter/pattern_strength = 1.0
+shader_parameter/roughness = 0.8

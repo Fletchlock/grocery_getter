@@ -20,7 +20,6 @@
 [ext_resource type="ArrayMesh" uid="uid://c65bt42fdeft6" path="res://assets/models/characters/grocery_green_Cube_004.res" id="9_jpc7a"]
 [ext_resource type="ArrayMesh" uid="uid://r1sjnapx3ua" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_pants_02.res" id="10_m072t"]
 [ext_resource type="AnimationNodeStateMachine" uid="uid://k24dl8h4178k" path="res://assets/animations/character_state_machine.tres" id="10_wgmio"]
-[ext_resource type="Texture2D" uid="uid://bgtan2jpyfrm2" path="res://assets/models/characters/alien/alien_character_alien_pattern_01.png" id="11_6qrow"]
 [ext_resource type="ArrayMesh" uid="uid://dgc11mv3qflco" path="res://assets/models/characters/alien/alien mesh/alien_character_alien_character_mesh.res" id="11_jvdk3"]
 [ext_resource type="ArrayMesh" uid="uid://coeet74vueuhw" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_pants_03.res" id="11_sgrja"]
 [ext_resource type="AudioStream" uid="uid://bxk6rpou86l15" path="res://assets/sounds/footstep-on-stone-2.wav" id="11_ws0fb"]
@@ -28,7 +27,7 @@
 [ext_resource type="Script" uid="uid://bu6nohragxh0l" path="res://scripts/utilities/interact_raycast_3d.gd" id="12_o85ja"]
 [ext_resource type="ArrayMesh" uid="uid://bb6cm14i20mjg" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_shoes_02.res" id="13_u7qxw"]
 [ext_resource type="ArrayMesh" uid="uid://bgnt0ieu18huh" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_shoes_03.res" id="14_h278e"]
-[ext_resource type="Shader" uid="uid://dqofm6ao1shxq" path="res://assets/shaders/alien_skin.gdshader" id="24_7mdse"]
+[ext_resource type="Material" uid="uid://yf1v4oic3fut" path="res://assets/materials/alien_skin.tres" id="25_7mdse"]
 
 [sub_resource type="Animation" id="Animation_5wda0"]
 length = 0.001
@@ -448,15 +447,6 @@ bind/15/name = &"foot.R"
 bind/15/bone = -1
 bind/15/pose = Transform3D(-0.9912653, -0.13188432, -0.0032896977, 0.05094052, -0.35967278, -0.9316881, 0.12169454, -0.9237112, 0.3632487, 0.18645559, 0.066212416, 0.066198505)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_tbhfr"]
-render_priority = 0
-shader = ExtResource("24_7mdse")
-shader_parameter/skin_color = Color(0.25, 0.75, 0.35, 1)
-shader_parameter/pattern_color = Color(0.05, 0.25, 0.1, 1)
-shader_parameter/pattern_texture = ExtResource("11_6qrow")
-shader_parameter/pattern_strength = 1.0
-shader_parameter/roughness = 0.8
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mptrd"]
 resource_name = "m_color.007"
 cull_mode = 2
@@ -533,15 +523,6 @@ bind/14/pose = Transform3D(-0.9992821, -0.038032126, -0.00034166934, 0.03670322,
 bind/15/name = &"foot.R"
 bind/15/bone = -1
 bind/15/pose = Transform3D(-0.9912653, -0.13188432, -0.0032896977, 0.05094052, -0.35967278, -0.9316881, 0.12169454, -0.9237112, 0.3632487, 0.18645559, 0.066212416, 0.066198505)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ayy4v"]
-render_priority = 0
-shader = ExtResource("24_7mdse")
-shader_parameter/skin_color = Color(0.25, 0.75, 0.35, 1)
-shader_parameter/pattern_color = Color(0.05, 0.25, 0.1, 1)
-shader_parameter/pattern_texture = ExtResource("11_6qrow")
-shader_parameter/pattern_strength = 1.0
-shader_parameter/roughness = 0.8
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_2jhue"]
 properties/0/path = NodePath(".:network_anim_blend")
@@ -869,7 +850,7 @@ skeleton = NodePath("..")
 blend_shapes/Blink = 0.0
 blend_shapes/Heavy = 0.0
 blend_shapes/Slim = 0.0
-surface_material_override/0 = SubResource("ShaderMaterial_tbhfr")
+surface_material_override/0 = ExtResource("25_7mdse")
 
 [node name="Eyelashes" type="MeshInstance3D" parent="Armature/Skeleton3D/AlienBody" unique_id=645660563]
 mesh = SubResource("ArrayMesh_m6uoq")
@@ -880,7 +861,6 @@ skeleton = NodePath("../..")
 mesh = ExtResource("5_jpc7a")
 skin = SubResource("Skin_wgmio")
 skeleton = NodePath("..")
-surface_material_override/0 = SubResource("ShaderMaterial_ayy4v")
 
 [node name="Top" type="MeshInstance3D" parent="Armature/Skeleton3D" unique_id=215130797]
 mesh = ExtResource("6_xup6m")
