@@ -364,7 +364,12 @@ func _on_customize_button_pressed() -> void:
 	if customization_scene == null:
 		push_error("LOBBY: Failed to instantiate alien customization.")
 		return
+		
+	var current_appearance: AlienAppearanceData = LobbyManager.get_player_appearance(peer_id)
 
+	if current_appearance != null:
+		customization_scene.initial_appearance = current_appearance.duplicate(true)
+		
 	customization_scene.customization_confirmed.connect(
 		_on_customization_confirmed
 	)
