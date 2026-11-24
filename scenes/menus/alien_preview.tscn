@@ -106,25 +106,47 @@ script = ExtResource("1_0hbd3")
 [node name="AlienPreviewCharacter" parent="CharacterPivot" unique_id=1396413471 instance=ExtResource("1_xbhp8")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 
+[node name="AlienBody" parent="CharacterPivot/AlienPreviewCharacter/Armature/Skeleton3D" parent_id_path=PackedInt32Array(1396413471, 126573212) index="0" unique_id=1358288656]
+layers = 2
+
+[node name="Eyelashes" parent="CharacterPivot/AlienPreviewCharacter/Armature/Skeleton3D/AlienBody" index="0" unique_id=832163130]
+layers = 2
+
+[node name="Head" parent="CharacterPivot/AlienPreviewCharacter/Armature/Skeleton3D" parent_id_path=PackedInt32Array(1396413471, 126573212) index="1" unique_id=267737487]
+layers = 2
+
+[node name="Top" parent="CharacterPivot/AlienPreviewCharacter/Armature/Skeleton3D" parent_id_path=PackedInt32Array(1396413471, 126573212) index="2" unique_id=821716172]
+layers = 2
+
+[node name="Bottom" parent="CharacterPivot/AlienPreviewCharacter/Armature/Skeleton3D" parent_id_path=PackedInt32Array(1396413471, 126573212) index="3" unique_id=423077733]
+layers = 2
+
+[node name="Feet" parent="CharacterPivot/AlienPreviewCharacter/Armature/Skeleton3D" parent_id_path=PackedInt32Array(1396413471, 126573212) index="4" unique_id=1107500196]
+layers = 2
+
 [node name="PreviewCamera" type="Camera3D" parent="." unique_id=943909725]
-transform = Transform3D(1, 0, 0, 0, 0.9969238, 0.07837658, 0, -0.07837658, 0.9969238, 0, 1.2613515, 3.9594183)
+transform = Transform3D(1, 0, 0, 0, 0.9969238, 0.07837658, 0, -0.07837658, 0.9969238, 0, 1.2576741, 3.9544659)
+cull_mask = 1048574
 current = true
 fov = 35.0
 
 [node name="KeyLight" type="DirectionalLight3D" parent="." unique_id=1176618301]
 transform = Transform3D(0.8660253, 0.13958144, -0.48012188, 0, 0.9602438, 0.27916288, 0.5, -0.24176213, 0.83159554, 0, 0, 0)
+layers = 3
 light_color = Color(0.71050996, 0.8975098, 0.95195943, 1)
 light_energy = 1.2
 shadow_enabled = true
 
 [node name="FillLight" type="DirectionalLight3D" parent="." unique_id=1258292294]
 transform = Transform3D(0.74825644, -0.24328882, 0.6171895, 0, 0.9303294, 0.3667249, -0.6634096, -0.2744043, 0.696125, 0, 0, 0)
+layers = 3
 light_color = Color(0.71050996, 0.8975098, 0.95195943, 1)
 light_energy = 0.5
 shadow_enabled = true
 
 [node name="BackLight" type="DirectionalLight3D" parent="." unique_id=1565506206]
 transform = Transform3D(-0.99781847, 0.06597686, 0.002375299, 0.055381753, 0.8169125, 0.5740968, 0.035936646, 0.5729758, -0.818784, 0, 0, 0)
+layers = 3
 light_color = Color(0.71050996, 0.8975098, 0.95195943, 1)
 light_energy = 0.25
 shadow_enabled = true

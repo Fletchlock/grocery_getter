@@ -7,6 +7,8 @@ extends Node3D
 @onready var character_red: MeshInstance3D = $LobbyCharacter/Armature/Skeleton3D/GroceryRed
 @onready var character_red_hat: MeshInstance3D = $LobbyCharacter/Armature/Skeleton3D/GroceryRed/Hat
 
+@onready var alien_appearance: AlienAppearance = $AlienCharacter/AlienAppearance
+
 
 func _ready() -> void:
 	set_character("red")
@@ -32,3 +34,9 @@ func set_character(character: String) -> void:
 		"blue":
 			character_blue.visible = true
 			character_blue_hat.visible = true
+
+func set_appearance(data: AlienAppearanceData) -> void:
+	if data == null:
+		return
+
+	alien_appearance.apply_appearance(data)

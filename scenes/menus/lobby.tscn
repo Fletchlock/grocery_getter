@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://dmuwgtn8i7s7e"]
 
 [ext_resource type="Script" uid="uid://cd2y7021vwfqm" path="res://scripts/menus/lobby.gd" id="1_1gv48"]
-[ext_resource type="Material" uid="uid://d1hkly2uqnv52" path="res://assets/materials/Material.002.tres" id="2_w0bhe"]
 [ext_resource type="Script" uid="uid://h3uh444aun6j" path="res://scripts/player/lobby_character_display.gd" id="3_g7oat"]
 [ext_resource type="PackedScene" uid="uid://cvpqemsd1xgdg" path="res://scenes/menus/lobby_character.tscn" id="4_cbhut"]
 [ext_resource type="ArrayMesh" uid="uid://r2s70fshqswd" path="res://assets/models/characters/alien_character_Cube_035.res" id="5_mb6ek"]
 [ext_resource type="ArrayMesh" uid="uid://c81ei1hc8p5vd" path="res://assets/models/characters/alien_character_hat_Cube_036.res" id="6_22xsj"]
+[ext_resource type="PackedScene" uid="uid://vbrfacp83r7p" path="res://scenes/menus/alien_preview_character.tscn" id="6_w0bhe"]
 [ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="7_fv84f"]
 [ext_resource type="FontFile" uid="uid://c5smmmli4hgm" path="res://assets/fonts/Atmospheric/aAtmospheric.ttf" id="7_s1tg1"]
 [ext_resource type="FontFile" uid="uid://bnba6vpbcdga7" path="res://assets/fonts/Space/a_space/A-Space Italic Demo.otf" id="8_87k40"]
@@ -18,39 +18,11 @@
 [ext_resource type="PackedScene" uid="uid://dhk7lotlv15x0" path="res://assets/models/buildings/area_51_door_left.glb" id="15_px7up"]
 [ext_resource type="PackedScene" uid="uid://bdjs5bujwx7tp" path="res://assets/models/buildings/area_51_door_right.glb" id="16_aenqt"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cbhut"]
-sky_top_color = Color(0.18223205, 0.53926927, 0.85265213, 1)
-sky_horizon_color = Color(0.546725, 0.64984107, 0.9197462, 1)
-ground_bottom_color = Color(0.22864196, 0.5390008, 0.3478575, 1)
-ground_horizon_color = Color(0.1966261, 0.44908684, 0.46944505, 1)
+[sub_resource type="Environment" id="Environment_uupr0"]
+background_mode = 1
+background_color = Color(0.08603018, 0.00012282968, 0.20758206, 1)
 
-[sub_resource type="Sky" id="Sky_hd853"]
-sky_material = SubResource("ProceduralSkyMaterial_cbhut")
-
-[sub_resource type="Environment" id="Environment_6aigx"]
-background_mode = 2
-background_color = Color(0.75615865, 0.86162215, 0.92888236, 1)
-background_energy_multiplier = 1.51
-sky = SubResource("Sky_hd853")
-ambient_light_source = 3
-ambient_light_color = Color(0.7684908, 0.86593753, 0.97207254, 1)
-ambient_light_sky_contribution = 0.7
-ambient_light_energy = 2.39
-ssao_enabled = true
-ssil_enabled = true
-fog_mode = 1
-fog_light_color = Color(0.4457872, 0.72341436, 0.829803, 1)
-fog_density = 0.7583
-fog_sky_affect = 0.65
-fog_depth_begin = 25.0
-fog_depth_end = 1000.0
-
-[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_sq421"]
-exposure_multiplier = 1.25
-dof_blur_far_distance = 53.37
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_uupr0"]
-height = 1.0
+[sub_resource type="Environment" id="Environment_w0bhe"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vr0hv"]
 texture = ExtResource("7_fv84f")
@@ -88,6 +60,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_1gv48")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=761650370]
+environment = SubResource("Environment_uupr0")
 
 [node name="SubViewportContainer_SubViewport_player1_Armature#_Skeleton3D_77709" type="Skeleton3D" parent="." unique_id=1783149630]
 visible = false
@@ -218,47 +193,18 @@ handle_input_locally = false
 size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport" unique_id=1839875564]
-transform = Transform3D(0.94721025, 0.078106135, -0.31095353, 0, 0.969872, 0.24361502, 0.32061297, -0.23075464, 0.9186727, 4.1579533, 2.5029657, 1.0003548)
-light_color = Color(0.8828012, 0.47000504, 0.41843548, 1)
-light_energy = 2.0
-light_specular = 0.0
-light_bake_mode = 1
-shadow_enabled = true
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport" unique_id=228101620]
-environment = SubResource("Environment_6aigx")
-camera_attributes = SubResource("CameraAttributesPractical_sq421")
-
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport" unique_id=197713457]
-transform = Transform3D(1, 0, 0, 0, 0.99533665, 0.09646289, 0, -0.09646289, 0.99533665, -0.5744265, 2.500683, 0.46447778)
+transform = Transform3D(1, 0, 0, 0, 0.99533665, 0.09646289, 0, -0.09646289, 0.99533665, -0.5744265, 1.8863807, 1.6364162)
+environment = SubResource("Environment_w0bhe")
 current = true
-
-[node name="CSGMesh3D" type="CSGMesh3D" parent="SubViewportContainer/SubViewport" unique_id=1465622006]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -3.7556458)
-mesh = SubResource("CylinderMesh_uupr0")
-material = ExtResource("2_w0bhe")
-
-[node name="CSGMesh3D4" type="CSGMesh3D" parent="SubViewportContainer/SubViewport" unique_id=1526881132]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -3.7556458)
-mesh = SubResource("CylinderMesh_uupr0")
-material = ExtResource("2_w0bhe")
-
-[node name="CSGMesh3D2" type="CSGMesh3D" parent="SubViewportContainer/SubViewport" unique_id=409183176]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -3.7556458)
-mesh = SubResource("CylinderMesh_uupr0")
-material = ExtResource("2_w0bhe")
-
-[node name="CSGMesh3D3" type="CSGMesh3D" parent="SubViewportContainer/SubViewport" unique_id=563304780]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -3.7556458)
-mesh = SubResource("CylinderMesh_uupr0")
-material = ExtResource("2_w0bhe")
+fov = 50.0
 
 [node name="Player1" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=584775007]
-transform = Transform3D(-0.8741838, 0, -0.48559523, 0, 1, 0, 0.48559523, 0, -0.8741838, -3, 0.5, -3.7)
+transform = Transform3D(-0.8741838, 0, -0.48559523, 0, 1, 0, 0.48559523, 0, -0.8741838, -2.25, 0.006, -3.194)
 script = ExtResource("3_g7oat")
 
 [node name="LobbyCharacter" parent="SubViewportContainer/SubViewport/Player1" unique_id=1612602312 instance=ExtResource("4_cbhut")]
+visible = false
 
 [node name="GroceryBlue" parent="SubViewportContainer/SubViewport/Player1/LobbyCharacter/Armature/Skeleton3D" parent_id_path=PackedInt32Array(1612602312, 593121485) index="1" unique_id=1419311906]
 mesh = ExtResource("5_mb6ek")
@@ -267,12 +213,14 @@ blend_shapes/Blink = 0.0
 [node name="Hat" parent="SubViewportContainer/SubViewport/Player1/LobbyCharacter/Armature/Skeleton3D/GroceryBlue" index="0" unique_id=799742904]
 mesh = ExtResource("6_22xsj")
 
+[node name="AlienCharacter" parent="SubViewportContainer/SubViewport/Player1" unique_id=1396413471 instance=ExtResource("6_w0bhe")]
+
 [node name="PlayerNameLabel" type="Label3D" parent="SubViewportContainer/SubViewport/Player1" unique_id=1620203797]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.5, 0)
 text = "Player 1"
 
 [node name="Player2" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=421643147]
-transform = Transform3D(-0.9964399, 0, -0.08430601, 0, 1, 0, 0.08430601, 0, -0.9964399, -1, 0.5, -3.7)
+transform = Transform3D(-0.9964399, 0, -0.08430601, 0, 1, 0, 0.08430601, 0, -0.9964399, -0.75, 0.006, -3.7)
 script = ExtResource("3_g7oat")
 
 [node name="LobbyCharacter" parent="SubViewportContainer/SubViewport/Player2" unique_id=1242521985 instance=ExtResource("4_cbhut")]
@@ -289,7 +237,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2
 text = "Player 2"
 
 [node name="Player3" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=376685257]
-transform = Transform3D(-0.9755908, 0, 0.21959627, 0, 1, 0, -0.21959627, 0, -0.9755908, 1, 0.5, -3.7)
+transform = Transform3D(-0.9755908, 0, 0.21959627, 0, 1, 0, -0.21959627, 0, -0.9755908, 0.75, 0.006, -3.7)
 script = ExtResource("3_g7oat")
 
 [node name="LobbyCharacter" parent="SubViewportContainer/SubViewport/Player3" unique_id=817015640 instance=ExtResource("4_cbhut")]
@@ -306,7 +254,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2
 text = "Player 3"
 
 [node name="Player4" type="Node3D" parent="SubViewportContainer/SubViewport" unique_id=585442441]
-transform = Transform3D(-0.7371719, 0, 0.6757053, 0, 1, 0, -0.6757053, 0, -0.7371719, 3, 0.5, -3.7)
+transform = Transform3D(-0.7371719, 0, 0.6757053, 0, 1, 0, -0.6757053, 0, -0.7371719, 2.25, 0.006, -3.194)
 script = ExtResource("3_g7oat")
 
 [node name="LobbyCharacter" parent="SubViewportContainer/SubViewport/Player4" unique_id=145185328 instance=ExtResource("4_cbhut")]
@@ -596,7 +544,7 @@ normal_font_size = 30
 highlighted_font_size = 34
 
 [node name="area_51_training" parent="." unique_id=727572012 instance=ExtResource("13_uupr0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.335292, 0.0059666634, -3.4734886)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.8842843)
 
 [node name="area_51_door_frame" parent="area_51_training" unique_id=124354247 instance=ExtResource("14_w0bhe")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.060545325, -1.1920929e-07, -4.0943537)
@@ -606,7 +554,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.060545325, -1.1920929e-07, 
 [node name="area_51_door_right" parent="area_51_training/area_51_door_frame" unique_id=1543727790 instance=ExtResource("16_aenqt")]
 
 [node name="OmniLight3D" type="OmniLight3D" parent="area_51_training" unique_id=230118621]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.52763903, 2.9805846, 3.2497344)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4160917, 2.7677212, 1.8107512)
+light_color = Color(0.8317963, 0.7783159, 0.5508097, 1)
+light_energy = 4.0
+shadow_enabled = true
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="area_51_training" unique_id=1833311635]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8285805, 2.767721, 1.8107512)
+light_color = Color(0.8317963, 0.7783159, 0.5508097, 1)
+light_energy = 4.0
+shadow_enabled = true
+
+[node name="OmniLight3D3" type="OmniLight3D" parent="area_51_training" unique_id=529012983]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06847072, 3.6699712, -2.4348333)
 light_color = Color(0.8317963, 0.7783159, 0.5508097, 1)
 light_energy = 4.0
 shadow_enabled = true
