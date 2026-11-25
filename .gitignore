@@ -2,3 +2,7 @@
 .godot/
 /android/
 godot/
+# Godot exported builds
+*.x86_64
+*.exe
+*.pck
