@@ -99,9 +99,16 @@ func spawn_player(peer_id: int) -> void:
 	)
 
 	# Send the chosen index to every client.
+	var appearance: AlienAppearanceData = LobbyManager.get_player_appearance(peer_id)
+	var appearance_data: Dictionary = {}
+
+	if appearance != null:
+		appearance_data = appearance.to_dict()
+
 	multiplayer_spawner.spawn({
 		"peer_id": peer_id,
-		"spawn_index": spawn_index
+		"spawn_index": spawn_index,
+		"appearance": appearance_data
 	})
 
 
@@ -131,6 +138,12 @@ func _spawn_player(data: Variant) -> Node:
 
 	player.name = str(peer_id)
 	player.set_multiplayer_authority(peer_id)
+	
+	var appearance_data: Dictionary = spawn_data.get("appearance", {})
+
+	if not appearance_data.is_empty():
+		var appearance_node: AlienAppearance = player.get_node("AlienAppearance") as AlienAppearance
+		appearance_node.appearance_data = AlienAppearanceData.from_dict(appearance_data)
 
 	if spawn_index < 0 or spawn_index >= spawn_points.size():
 		push_error("SpawnManager: Invalid spawn index!")

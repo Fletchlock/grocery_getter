@@ -61,9 +61,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_1gv48")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=761650370]
-environment = SubResource("Environment_uupr0")
-
 [node name="SubViewportContainer_SubViewport_player1_Armature#_Skeleton3D_77709" type="Skeleton3D" parent="." unique_id=1783149630]
 visible = false
 bones/0/name = "pelvis"
@@ -189,9 +186,13 @@ grow_vertical = 2
 stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=1015604292]
+own_world_3d = true
 handle_input_locally = false
 size = Vector2i(1920, 1080)
 render_target_update_mode = 4
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport" unique_id=761650370]
+environment = SubResource("Environment_uupr0")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport" unique_id=197713457]
 transform = Transform3D(1, 0, 0, 0, 0.99533665, 0.09646289, 0, -0.09646289, 0.99533665, -0.5744265, 1.8863807, 1.6364162)
@@ -278,6 +279,34 @@ mesh = ExtResource("6_22xsj")
 [node name="PlayerNameLabel" type="Label3D" parent="SubViewportContainer/SubViewport/Player4" unique_id=2045366705]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.5, 0)
 text = "Player 4"
+
+[node name="area_51_training" parent="SubViewportContainer/SubViewport" unique_id=727572012 instance=ExtResource("13_uupr0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.8842843)
+
+[node name="area_51_door_frame" parent="SubViewportContainer/SubViewport/area_51_training" unique_id=124354247 instance=ExtResource("14_w0bhe")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.060545325, -1.1920929e-07, -4.0943537)
+
+[node name="area_51_door_left" parent="SubViewportContainer/SubViewport/area_51_training/area_51_door_frame" unique_id=983007606 instance=ExtResource("15_px7up")]
+
+[node name="area_51_door_right" parent="SubViewportContainer/SubViewport/area_51_training/area_51_door_frame" unique_id=1543727790 instance=ExtResource("16_aenqt")]
+
+[node name="OmniLight3D" type="OmniLight3D" parent="SubViewportContainer/SubViewport/area_51_training" unique_id=230118621]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7191777, 2.7677212, 1.8107512)
+light_color = Color(0.8317963, 0.7783159, 0.5508097, 1)
+light_energy = 4.0
+shadow_enabled = true
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="SubViewportContainer/SubViewport/area_51_training" unique_id=1833311635]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8285805, 2.767721, 1.8107512)
+light_color = Color(0.8317963, 0.7783159, 0.5508097, 1)
+light_energy = 4.0
+shadow_enabled = true
+
+[node name="OmniLight3D3" type="OmniLight3D" parent="SubViewportContainer/SubViewport/area_51_training" unique_id=529012983]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06847072, 3.6699712, -2.4348333)
+light_color = Color(0.8317963, 0.7783159, 0.5508097, 1)
+light_energy = 4.0
+shadow_enabled = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1903265211]
 
@@ -551,34 +580,6 @@ text = "Paul"
 script = ExtResource("11_djew5")
 normal_font_size = 30
 highlighted_font_size = 34
-
-[node name="area_51_training" parent="." unique_id=727572012 instance=ExtResource("13_uupr0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.8842843)
-
-[node name="area_51_door_frame" parent="area_51_training" unique_id=124354247 instance=ExtResource("14_w0bhe")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.060545325, -1.1920929e-07, -4.0943537)
-
-[node name="area_51_door_left" parent="area_51_training/area_51_door_frame" unique_id=983007606 instance=ExtResource("15_px7up")]
-
-[node name="area_51_door_right" parent="area_51_training/area_51_door_frame" unique_id=1543727790 instance=ExtResource("16_aenqt")]
-
-[node name="OmniLight3D" type="OmniLight3D" parent="area_51_training" unique_id=230118621]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7191777, 2.7677212, 1.8107512)
-light_color = Color(0.8317963, 0.7783159, 0.5508097, 1)
-light_energy = 4.0
-shadow_enabled = true
-
-[node name="OmniLight3D2" type="OmniLight3D" parent="area_51_training" unique_id=1833311635]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8285805, 2.767721, 1.8107512)
-light_color = Color(0.8317963, 0.7783159, 0.5508097, 1)
-light_energy = 4.0
-shadow_enabled = true
-
-[node name="OmniLight3D3" type="OmniLight3D" parent="area_51_training" unique_id=529012983]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06847072, 3.6699712, -2.4348333)
-light_color = Color(0.8317963, 0.7783159, 0.5508097, 1)
-light_energy = 4.0
-shadow_enabled = true
 
 [connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/ReadyButton" to="." method="_on_ready_button_pressed"]
