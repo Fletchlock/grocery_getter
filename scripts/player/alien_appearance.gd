@@ -44,9 +44,14 @@ var sole_color: int = ClothingColor.WHITE
 @export var default_pattern_color: Color = Color("#0d401a")
 
 var skin_color: Color
-var pattern_color: Color
-
 var skin_material: ShaderMaterial
+
+@export_group("Skin Pattern Options")
+@export var skin_patterns: Array[Texture2D] = []
+@export var default_skin_pattern: int = 0
+
+var skin_pattern: int = 0
+var pattern_color: Color
 
 @export_group("Eye Customization")
 @export var default_pupil_color: Color = Color("#240c38")
@@ -115,7 +120,6 @@ func _ready() -> void:
 	
 	if appearance_data != null:
 		apply_appearance(appearance_data)
-	
 
 
 func _process(_delta: float) -> void:
@@ -342,6 +346,8 @@ func _setup_skin_material() -> void:
 
 	skin_color = default_skin_color
 	pattern_color = default_pattern_color
+	
+	set_skin_pattern(default_skin_pattern)
 
 	set_skin_color(skin_color)
 	set_pattern_color(pattern_color)
@@ -373,6 +379,24 @@ func _update_head_material() -> void:
 		return
 
 	head.set_surface_override_material(0, skin_material)
+
+
+func set_skin_pattern(index: int) -> void:
+	if index < 0 or index >= skin_patterns.size():
+		push_warning("Invalid skin pattern index: %d" % index)
+		return
+
+	if skin_patterns[index] == null:
+		push_warning("Skin pattern texture is missing: %d" % index)
+		return
+
+	skin_pattern = index
+
+	if skin_material != null:
+		skin_material.set_shader_parameter(
+			"pattern_texture",
+			skin_patterns[skin_pattern]
+		)
 
 
 func _setup_face_materials() -> void:
@@ -432,6 +456,7 @@ func apply_appearance(data: AlienAppearanceData) -> void:
 
 	set_skin_color(data.skin_color)
 	set_pattern_color(data.pattern_color)
+	set_skin_pattern(data.pattern_index)
 
 	set_pupil_color(data.pupil_color)
 	set_lip_color(data.lip_color)

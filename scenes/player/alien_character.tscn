@@ -6,19 +6,26 @@
 [ext_resource type="ArrayMesh" uid="uid://bf200hkkir7o3" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_antennas_01.res" id="3_2qh24"]
 [ext_resource type="Resource" uid="uid://bues032exn7ak" path="res://resources/player/default_alien_appearance.tres" id="3_6hhmx"]
 [ext_resource type="AnimationLibrary" uid="uid://ct7ahx325bsdu" path="res://assets/animations/player/player_anims.res" id="3_6qrow"]
+[ext_resource type="Texture2D" uid="uid://d0hm1ffndu8g8" path="res://assets/models/characters/alien/alien_pattern_00.png" id="4_h278e"]
 [ext_resource type="ArrayMesh" uid="uid://df2nob5vtwlxg" path="res://assets/models/characters/grocery_character_Cube_001.res" id="4_jvdk3"]
 [ext_resource type="ArrayMesh" uid="uid://bqh25w0r8kdil" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_antennas_02.res" id="4_kerxl"]
+[ext_resource type="Texture2D" uid="uid://d2cnp4hoym83d" path="res://assets/models/characters/alien/alien_pattern_01.png" id="5_fp2s3"]
 [ext_resource type="ArrayMesh" uid="uid://d1yq4a1r2anja" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_antennas_03.res" id="5_jpc7a"]
 [ext_resource type="ArrayMesh" uid="uid://br0auko3rjpx7" path="res://assets/models/characters/grocery_character_Cube_006.res" id="5_m6uoq"]
 [ext_resource type="ArrayMesh" uid="uid://r2s70fshqswd" path="res://assets/models/characters/alien_character_Cube_035.res" id="6_bgod0"]
+[ext_resource type="Texture2D" uid="uid://bdtfsnm2ntihs" path="res://assets/models/characters/alien/alien_pattern_02.png" id="6_wx646"]
 [ext_resource type="ArrayMesh" uid="uid://d08uc4srggmx7" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_shirt_01.res" id="6_xup6m"]
 [ext_resource type="ArrayMesh" uid="uid://c81ei1hc8p5vd" path="res://assets/models/characters/alien_character_hat_Cube_036.res" id="7_2qh24"]
 [ext_resource type="ArrayMesh" uid="uid://di4nwv3f5wyfh" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_shirt_02.res" id="7_7mdse"]
+[ext_resource type="Texture2D" uid="uid://dogjkaqjhmtq0" path="res://assets/models/characters/alien/alien_pattern_03.png" id="7_fmoyg"]
 [ext_resource type="ArrayMesh" uid="uid://cj6e560hwjhn" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_shirt_03.res" id="8_6hhmx"]
+[ext_resource type="Texture2D" uid="uid://cuw23x5k61ysj" path="res://assets/models/characters/alien/alien_pattern_04.png" id="8_h2lj1"]
 [ext_resource type="ArrayMesh" uid="uid://x3mrwfu43k44" path="res://assets/models/characters/grocery_green_Cube_003.res" id="8_kerxl"]
+[ext_resource type="Texture2D" uid="uid://cweivho8xlfkj" path="res://assets/models/characters/alien/alien_pattern_05.png" id="9_36cg2"]
 [ext_resource type="ArrayMesh" uid="uid://bu5ka0514exaj" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_pants_01.res" id="9_ijv2g"]
 [ext_resource type="ArrayMesh" uid="uid://c65bt42fdeft6" path="res://assets/models/characters/grocery_green_Cube_004.res" id="9_jpc7a"]
 [ext_resource type="ArrayMesh" uid="uid://r1sjnapx3ua" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_pants_02.res" id="10_m072t"]
+[ext_resource type="Texture2D" uid="uid://w7x3rhhxxcvp" path="res://assets/models/characters/alien/alien_pattern_06.png" id="10_rto72"]
 [ext_resource type="AnimationNodeStateMachine" uid="uid://k24dl8h4178k" path="res://assets/animations/character_state_machine.tres" id="10_wgmio"]
 [ext_resource type="ArrayMesh" uid="uid://dgc11mv3qflco" path="res://assets/models/characters/alien/alien mesh/alien_character_alien_character_mesh.res" id="11_jvdk3"]
 [ext_resource type="ArrayMesh" uid="uid://coeet74vueuhw" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_pants_03.res" id="11_sgrja"]
@@ -584,6 +591,7 @@ script = ExtResource("2_kerxl")
 appearance_data = ExtResource("3_6hhmx")
 default_skin_color = Color(0.33382058, 0.85620034, 0.5880719, 1)
 default_pattern_color = Color(0.56365716, 0.48217386, 1, 1)
+skin_patterns = Array[Texture2D]([ExtResource("4_h278e"), ExtResource("5_fp2s3"), ExtResource("6_wx646"), ExtResource("7_fmoyg"), ExtResource("8_h2lj1"), ExtResource("9_36cg2"), ExtResource("10_rto72")])
 default_pupil_color = Color(0.4711781, 0.022007257, 0.14841804, 1)
 body = NodePath("../Armature/Skeleton3D/AlienBody")
 eyelashes = NodePath("../Armature/Skeleton3D/AlienBody/Eyelashes")

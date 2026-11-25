@@ -225,6 +225,45 @@ text = "Skin Color"
 [node name="SkinColorPalette" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=395454386 instance=ExtResource("10_x2sd4")]
 layout_mode = 2
 
+[node name="SkinPatternLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=123696441]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_1gve1")
+theme_override_font_sizes/font_size = 20
+text = "Pattern Style"
+
+[node name="SkinPatternRow" type="HBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=583120375]
+layout_mode = 2
+
+[node name="PreviousPattern" type="Button" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinPatternRow" unique_id=2029566526]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_1gve1")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_jnx5h")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_x2sd4")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jpjk7")
+theme_override_styles/focus = SubResource("StyleBoxTexture_hkern")
+text = "<"
+
+[node name="SkinPatternValue" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinPatternRow" unique_id=1769709306]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("5_1gve1")
+theme_override_font_sizes/font_size = 24
+text = "None"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NextPattern" type="Button" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinPatternRow" unique_id=1656279487]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_1gve1")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_jnx5h")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_x2sd4")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jpjk7")
+theme_override_styles/focus = SubResource("StyleBoxTexture_hkern")
+text = ">"
+
 [node name="PatternColorLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=2037252574]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_1gve1")
@@ -528,6 +567,8 @@ text = "CONFIRM CHARACTER"
 [connection signal="value_changed" from="CanvasLayer/RotationSlider" to="." method="_on_rotation_slider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/WeightSlider" to="." method="_on_weight_slider_value_changed"]
 [connection signal="color_selected" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinColorPalette" to="." method="_on_skin_color_palette_color_selected"]
+[connection signal="pressed" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinPatternRow/PreviousPattern" to="." method="_on_previous_pattern_pressed"]
+[connection signal="pressed" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinPatternRow/NextPattern" to="." method="_on_next_pattern_pressed"]
 [connection signal="color_selected" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/PatternColorPalette" to="." method="_on_pattern_color_palette_color_selected"]
 [connection signal="color_selected" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/PupilColorPalette" to="." method="_on_pupil_color_palette_color_selected"]
 [connection signal="toggled" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/EyelashesToggle" to="." method="_on_eyelashes_toggle_toggled"]
