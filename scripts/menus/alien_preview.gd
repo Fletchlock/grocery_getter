@@ -1,6 +1,7 @@
 extends Node3D
 
 signal customization_confirmed(appearance: AlienAppearanceData)
+signal customization_cancelled
 
 @export var rotation_speed: float = 0.5
 
@@ -23,6 +24,10 @@ signal customization_confirmed(appearance: AlienAppearanceData)
 @onready var feet_style_value: Label = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/HBoxContainer3/FeetStyleRow/FeetStyleValue
 @onready var feet_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/FeetColorPalette
 @onready var sole_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/SoleColorPalette
+
+@onready var tab_container: TabContainer = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer
+@onready var confirm_button: Button = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Confirm/ConfirmButton
+@onready var cancel_button: Button = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Confirm/CancelButton
 
 var current_feet_style: int = 0
 var current_bottom_style: int = 0
@@ -74,6 +79,41 @@ func _ready() -> void:
 	sole_color_palette.select_color(
 		AlienAppearance.CLOTHING_COLORS[alien_appearance.sole_color]
 	)
+	
+	_setup_gamepad_navigation()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel") and not event.is_echo():
+		get_viewport().set_input_as_handled()
+		cancel_customization()
+		return
+
+	if event is InputEventJoypadButton:
+		if not event.pressed:
+			return
+
+		if event.button_index == JOY_BUTTON_LEFT_SHOULDER:
+			_change_tab(-1)
+			get_viewport().set_input_as_handled()
+
+		elif event.button_index == JOY_BUTTON_RIGHT_SHOULDER:
+			_change_tab(1)
+			get_viewport().set_input_as_handled()
+
+
+func _change_tab(direction: int) -> void:
+	var tab_count: int = tab_container.get_tab_count()
+
+	if tab_count == 0:
+		return
+
+	tab_container.current_tab = wrapi(
+		tab_container.current_tab + direction,
+		0,
+		tab_count
+	)
+
 
 func set_character_rotation(value: float) -> void:
 	character_pivot.rotation_degrees.y = value
@@ -362,3 +402,40 @@ func _on_confirm_button_pressed() -> void:
 	confirm_customization()
 
 	print("ALIEN CUSTOMIZATION: Character confirmed.")
+
+
+func _setup_gamepad_navigation() -> void:
+	tab_container.tab_changed.connect(_on_customization_tab_changed)
+
+	_focus_current_tab.call_deferred()
+
+
+func _on_customization_tab_changed(_tab_index: int) -> void:
+	_focus_current_tab.call_deferred()
+
+
+func _focus_current_tab() -> void:
+	if not is_inside_tree():
+		return
+
+	match tab_container.current_tab:
+		0:
+			weight_slider.grab_focus()
+
+		1:
+			eyelashes_toggle.grab_focus()
+
+		2:
+			var top_button: Button = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/HBoxContainer/TopStyleRow/PreviousTop
+			top_button.grab_focus()
+
+		3:
+			confirm_button.grab_focus()
+
+
+func cancel_customization() -> void:
+	customization_cancelled.emit()
+
+
+func _on_cancel_button_pressed() -> void:
+	cancel_customization()
