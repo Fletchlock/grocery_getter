@@ -9,6 +9,7 @@ signal customization_confirmed(appearance: AlienAppearanceData)
 @onready var weight_slider: HSlider = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/WeightSlider
 @onready var skin_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinColorPalette
 @onready var pattern_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/PatternColorPalette
+@onready var skin_pattern_value: Label = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinPatternRow/SkinPatternValue
 @onready var pupil_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/PupilColorPalette
 @onready var match_skin_color: CheckButton = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/HBoxContainer/MatchSkinColor
 @onready var lip_color_label: Label = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/HBoxContainer/LipColorLabel
@@ -54,6 +55,7 @@ func _ready() -> void:
 	eyelashes_toggle.set_pressed_no_signal(alien_appearance.eyelashes_enabled)
 
 	_update_lip_controls()
+	_update_skin_pattern_display()
 	_update_head_style_display()
 	_update_top_style_display()
 	_update_bottom_style_display()
@@ -89,6 +91,44 @@ func _on_skin_color_palette_color_selected(color: Color) -> void:
 	
 func _on_pattern_color_palette_color_selected(color: Color) -> void:
 	alien_appearance.set_pattern_color(color)
+
+
+func _on_previous_pattern_pressed() -> void:
+	_change_skin_pattern(-1)
+
+
+func _on_next_pattern_pressed() -> void:
+	_change_skin_pattern(1)
+
+
+func _change_skin_pattern(direction: int) -> void:
+	var pattern_count: int = alien_appearance.skin_patterns.size()
+
+	if pattern_count == 0:
+		return
+
+	var index: int = wrapi(
+		alien_appearance.skin_pattern + direction,
+		0,
+		pattern_count
+	)
+
+	alien_appearance.set_skin_pattern(index)
+	_update_skin_pattern_display()
+
+
+func _update_skin_pattern_display() -> void:
+	var pattern_count: int = alien_appearance.skin_patterns.size()
+
+	if pattern_count == 0:
+		skin_pattern_value.text = "No Patterns"
+		return
+
+	skin_pattern_value.text = "%d / %d" % [
+		alien_appearance.skin_pattern + 1,
+		pattern_count
+	]
+
 
 func _on_pupil_color_palette_color_selected(color: Color) -> void:
 	alien_appearance.set_pupil_color(color)
@@ -305,7 +345,7 @@ func get_current_appearance() -> AlienAppearanceData:
 	data.sole_color = alien_appearance.sole_color
 
 	if alien_appearance.appearance_data != null:
-		data.pattern_index = alien_appearance.appearance_data.pattern_index
+		data.pattern_index = alien_appearance.skin_pattern
 
 	return data
 
