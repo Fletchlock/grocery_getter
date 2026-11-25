@@ -226,8 +226,6 @@ tab_3/title = "CONFIRM"
 
 [node name="Body" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=481228399]
 layout_mode = 2
-focus_neighbor_right = NodePath("../Head")
-focus_neighbor_bottom = NodePath("WeightSlider")
 theme_override_constants/separation = 15
 metadata/_tab_index = 0
 metadata/_tab_name = "BODY"
@@ -241,24 +239,18 @@ text = "Body Weight"
 [node name="WeightSlider" type="HSlider" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=1008276733]
 layout_mode = 2
 size_flags_vertical = 3
-focus_neighbor_top = NodePath("..")
-focus_neighbor_bottom = NodePath("../SkinColorLabel")
 max_value = 1.0
 step = 0.01
 value = 0.5
 
 [node name="SkinColorLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=1658922341]
 layout_mode = 2
-focus_neighbor_top = NodePath("../WeightSlider")
-focus_neighbor_bottom = NodePath("../SkinPatternRow/NextPattern")
 theme_override_fonts/font = ExtResource("5_1gve1")
 theme_override_font_sizes/font_size = 20
 text = "Skin Color"
 
 [node name="SkinColorPalette" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=395454386 instance=ExtResource("10_x2sd4")]
 layout_mode = 2
-focus_neighbor_top = NodePath("../SkinColorLabel")
-focus_neighbor_bottom = NodePath("../SkinPatternRow/NextPattern")
 
 [node name="SkinPatternLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=123696441]
 layout_mode = 2
@@ -272,9 +264,7 @@ layout_mode = 2
 [node name="PreviousPattern" type="Button" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinPatternRow" unique_id=2029566526]
 layout_mode = 2
 focus_neighbor_left = NodePath("../NextPattern")
-focus_neighbor_top = NodePath("../../SkinColorLabel")
 focus_neighbor_right = NodePath("../NextPattern")
-focus_neighbor_bottom = NodePath("../../PatternColorLabel")
 theme_override_fonts/font = ExtResource("5_1gve1")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxTexture_jnx5h")
@@ -296,9 +286,7 @@ vertical_alignment = 1
 [node name="NextPattern" type="Button" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinPatternRow" unique_id=1656279487]
 layout_mode = 2
 focus_neighbor_left = NodePath("../PreviousPattern")
-focus_neighbor_top = NodePath("../../SkinColorLabel")
 focus_neighbor_right = NodePath("../PreviousPattern")
-focus_neighbor_bottom = NodePath("../../PatternColorLabel")
 theme_override_fonts/font = ExtResource("5_1gve1")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxTexture_jnx5h")
@@ -319,8 +307,6 @@ layout_mode = 2
 [node name="Head" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=1181320693]
 visible = false
 layout_mode = 2
-focus_neighbor_left = NodePath("../Body")
-focus_neighbor_right = NodePath("../Clothing")
 theme_override_constants/separation = 15
 metadata/_tab_index = 1
 metadata/_tab_name = "HEAD"
@@ -409,8 +395,6 @@ text = ">"
 [node name="Clothing" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=1300217043]
 visible = false
 layout_mode = 2
-focus_neighbor_left = NodePath("../Head")
-focus_neighbor_right = NodePath("../Confirm")
 theme_override_constants/separation = 15
 metadata/_tab_index = 2
 metadata/_tab_name = "CLOTHING"
@@ -431,6 +415,8 @@ size_flags_horizontal = 8
 
 [node name="PreviousTop" type="Button" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/HBoxContainer/TopStyleRow" unique_id=556520388]
 layout_mode = 2
+focus_neighbor_left = NodePath("../NextTop")
+focus_neighbor_right = NodePath("../NextTop")
 theme_override_fonts/font = ExtResource("5_1gve1")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxTexture_jnx5h")
@@ -451,6 +437,8 @@ vertical_alignment = 1
 
 [node name="NextTop" type="Button" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/HBoxContainer/TopStyleRow" unique_id=758137041]
 layout_mode = 2
+focus_neighbor_left = NodePath("../PreviousTop")
+focus_neighbor_right = NodePath("../PreviousTop")
 theme_override_fonts/font = ExtResource("5_1gve1")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxTexture_jnx5h")
@@ -487,6 +475,8 @@ layout_mode = 2
 
 [node name="PreviousBottom" type="Button" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/HBoxContainer2/BottomStyleRow" unique_id=762039128]
 layout_mode = 2
+focus_neighbor_left = NodePath("../NextBottom")
+focus_neighbor_right = NodePath("../NextBottom")
 theme_override_fonts/font = ExtResource("5_1gve1")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxTexture_jnx5h")
@@ -507,6 +497,8 @@ vertical_alignment = 1
 
 [node name="NextBottom" type="Button" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/HBoxContainer2/BottomStyleRow" unique_id=1752277882]
 layout_mode = 2
+focus_neighbor_left = NodePath("../PreviousBottom")
+focus_neighbor_right = NodePath("../PreviousBottom")
 theme_override_fonts/font = ExtResource("5_1gve1")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxTexture_jnx5h")
@@ -543,6 +535,8 @@ layout_mode = 2
 
 [node name="PreviousFeet" type="Button" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/HBoxContainer3/FeetStyleRow" unique_id=1107938160]
 layout_mode = 2
+focus_neighbor_left = NodePath("../NextFeet")
+focus_neighbor_right = NodePath("../NextFeet")
 theme_override_fonts/font = ExtResource("5_1gve1")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxTexture_jnx5h")
@@ -563,6 +557,8 @@ vertical_alignment = 1
 
 [node name="NextFeet" type="Button" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/HBoxContainer3/FeetStyleRow" unique_id=508600728]
 layout_mode = 2
+focus_neighbor_left = NodePath("../PreviousFeet")
+focus_neighbor_right = NodePath("../PreviousFeet")
 theme_override_fonts/font = ExtResource("5_1gve1")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxTexture_jnx5h")
@@ -594,8 +590,6 @@ colors = Array[Color]([Color(0.03137255, 0.02745098, 0.03137255, 1), Color(0.949
 [node name="Confirm" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=1963104753]
 visible = false
 layout_mode = 2
-focus_neighbor_left = NodePath("../Clothing")
-focus_neighbor_bottom = NodePath("ConfirmButton")
 theme_override_constants/separation = 15
 metadata/_tab_index = 3
 metadata/_tab_name = "CONFIRM"
@@ -646,5 +640,6 @@ text = "CANCEL
 [connection signal="color_selected" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/FeetColorPalette" to="." method="_on_feet_color_palette_color_selected"]
 [connection signal="color_selected" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/SoleColorPalette" to="." method="_on_sole_color_palette_color_selected"]
 [connection signal="pressed" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Confirm/ConfirmButton" to="." method="_on_confirm_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Confirm/CancelButton" to="." method="_on_cancel_button_pressed"]
 
 [editable path="CharacterPivot/AlienPreviewCharacter"]

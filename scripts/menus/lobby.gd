@@ -373,6 +373,9 @@ func _on_customize_button_pressed() -> void:
 	customization_scene.customization_confirmed.connect(
 		_on_customization_confirmed
 	)
+	customization_scene.customization_cancelled.connect(
+		_on_customization_cancelled
+	)
 
 	_hide_lobby_3d()
 
@@ -417,6 +420,21 @@ func _on_customization_confirmed(appearance: AlienAppearanceData) -> void:
 
 	_update_ready_button()
 	_focus_primary_action()
+
+
+func _on_customization_cancelled() -> void:
+	if customization_scene != null:
+		customization_scene.queue_free()
+		customization_scene = null
+
+	_restore_lobby_3d()
+
+	show()
+	$CanvasLayer.show()
+	$SubViewportContainer.show()
+
+	_update_ready_button()
+	customize_button.grab_focus.call_deferred()
 
 
 func _hide_lobby_3d() -> void:
