@@ -388,6 +388,70 @@ func _get_players_save_data() -> Dictionary:
 	return data
 
 
+func save_player_appearance(steam_id: int) -> bool:
+	if not multiplayer.is_server():
+		return false
+
+	if steam_id <= 0:
+		return false
+
+	var save_path: String = get_slot_path(selected_slot)
+
+	if save_path.is_empty() or not FileAccess.file_exists(save_path):
+		return false
+
+	var player: PlayerData = get_player(steam_id)
+
+	if player == null or player.appearance == null:
+		return false
+
+	var file: FileAccess = FileAccess.open_encrypted(
+		save_path,
+		FileAccess.READ,
+		_get_encryption_key()
+	)
+
+	if file == null:
+		return false
+
+	var json: JSON = JSON.new()
+	var error: Error = json.parse(file.get_as_text())
+	file.close()
+
+	if error != OK or not json.data is Dictionary:
+		return false
+
+	var save_data: Dictionary = json.data
+
+	if int(save_data.get("save_version", 0)) != SAVE_VERSION:
+		return false
+
+	var saved_players: Dictionary = save_data.get("players", {})
+	var player_key: String = str(steam_id)
+
+	if not saved_players.has(player_key):
+		saved_players[player_key] = player.get_save_data()
+	else:
+		saved_players[player_key]["appearance"] = player.appearance.to_dict()
+
+	save_data["players"] = saved_players
+
+	file = FileAccess.open_encrypted(
+		save_path,
+		FileAccess.WRITE,
+		_get_encryption_key()
+	)
+
+	if file == null:
+		push_error("Failed to save player appearance.")
+		return false
+
+	file.store_string(JSON.stringify(save_data, "\t"))
+	file.close()
+
+	print("PLAYER APPEARANCE SAVED: ", steam_id)
+	return true
+
 
 func _load_players_save_data(data: Dictionary) -> void:
 	players.clear()

@@ -11,4 +11,4 @@ shader_parameter/pattern_color = Color(0.05, 0.25, 0.1, 1)
 shader_parameter/pattern_texture = ExtResource("2_pyk0x")
 shader_parameter/pattern_strength = 1.0
 shader_parameter/roughness = 0.8
-shader_parameter/emission_strength = 1.999999955296
+shader_parameter/emission_strength = 0.999999977648

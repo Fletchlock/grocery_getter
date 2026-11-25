@@ -352,6 +352,9 @@ func get_current_appearance() -> AlienAppearanceData:
 
 func confirm_customization() -> void:
 	var appearance: AlienAppearanceData = get_current_appearance()
+
+	print("CUSTOMIZATION CONFIRMED: ", appearance.to_dict())
+
 	customization_confirmed.emit(appearance)
 
 
