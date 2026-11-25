@@ -20,7 +20,7 @@ signal color_selected(color: Color)
 	Color("#4e8791")
 ]
 
-@export var swatch_size: Vector2 = Vector2(40.0, 40.0)
+@export var swatch_size: Vector2 = Vector2(40.0, 50.0)
 @export var corner_radius: int = 8
 
 @onready var grid: GridContainer = $GridContainer
@@ -41,6 +41,8 @@ func _create_swatches() -> void:
 		var button: Button = Button.new()
 
 		button.custom_minimum_size = swatch_size
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		button.focus_mode = Control.FOCUS_ALL
 		button.toggle_mode = true
 		button.button_group = button_group
@@ -55,8 +57,8 @@ func _create_swatches() -> void:
 
 		var focus_style: StyleBoxFlat = StyleBoxFlat.new()
 		focus_style.bg_color = Color.TRANSPARENT
-		focus_style.border_color = Color.YELLOW
-		focus_style.set_border_width_all(2)
+		focus_style.border_color = Color(1.0, 0.65, 0.0, 1.0)
+		focus_style.set_border_width_all(4)
 		focus_style.set_corner_radius_all(corner_radius)
 
 		button.add_theme_stylebox_override("normal", normal_style)

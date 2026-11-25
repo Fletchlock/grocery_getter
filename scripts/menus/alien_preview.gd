@@ -4,6 +4,9 @@ signal customization_confirmed(appearance: AlienAppearanceData)
 signal customization_cancelled
 
 @export var rotation_speed: float = 0.5
+@export var gamepad_rotation_speed: float = 120.0
+@export var gamepad_rotation_deadzone: float = 0.2
+@onready var rotation_slider: HSlider = $CanvasLayer/RotationSlider
 
 @onready var character_pivot: Node3D = $CharacterPivot
 @onready var alien_appearance: AlienAppearance = $CharacterPivot/AlienPreviewCharacter/AlienAppearance
@@ -12,8 +15,8 @@ signal customization_cancelled
 @onready var pattern_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/PatternColorPalette
 @onready var skin_pattern_value: Label = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinPatternRow/SkinPatternValue
 @onready var pupil_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/PupilColorPalette
-@onready var match_skin_color: CheckButton = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/HBoxContainer/MatchSkinColor
-@onready var lip_color_label: Label = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/HBoxContainer/LipColorLabel
+@onready var match_skin_color: CheckButton = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/MatchSkinColor
+@onready var lip_color_label: Label = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/LipColorLabel
 @onready var lip_color_palette: AlienColorPalette = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/LipColorPalette
 @onready var eyelashes_toggle: CheckButton = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/EyelashesToggle
 @onready var head_style_value: Label = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Head/HeadStyleRow/HeadStyleValue
@@ -100,6 +103,26 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.button_index == JOY_BUTTON_RIGHT_SHOULDER:
 			_change_tab(1)
 			get_viewport().set_input_as_handled()
+
+
+func _process(delta: float) -> void:
+	for device_id: int in Input.get_connected_joypads():
+		var rotation_input: float = Input.get_joy_axis(
+			device_id,
+			JOY_AXIS_RIGHT_X
+		)
+
+		if absf(rotation_input) < gamepad_rotation_deadzone:
+			continue
+
+		rotation_slider.value = wrapf(
+			rotation_slider.value
+			+ rotation_input * gamepad_rotation_speed * delta,
+			-180.0,
+			180.0
+		)
+
+		break
 
 
 func _change_tab(direction: int) -> void:
@@ -408,6 +431,7 @@ func _setup_gamepad_navigation() -> void:
 	tab_container.tab_changed.connect(_on_customization_tab_changed)
 
 	_focus_current_tab.call_deferred()
+	_setup_clothing_focus()
 
 
 func _on_customization_tab_changed(_tab_index: int) -> void:
@@ -423,7 +447,8 @@ func _focus_current_tab() -> void:
 			weight_slider.grab_focus()
 
 		1:
-			eyelashes_toggle.grab_focus()
+			var first_swatch: Button = pupil_color_palette.grid.get_child(0) as Button
+			first_swatch.grab_focus()
 
 		2:
 			var top_button: Button = $CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/HBoxContainer/TopStyleRow/PreviousTop
@@ -439,3 +464,110 @@ func cancel_customization() -> void:
 
 func _on_cancel_button_pressed() -> void:
 	cancel_customization()
+
+
+func _connect_palette_focus(
+	palette: AlienColorPalette,
+	above: Control,
+	below: Control
+) -> void:
+	var grid: GridContainer = palette.grid
+	var count: int = grid.get_child_count()
+	var columns: int = grid.columns
+
+	if count == 0:
+		return
+
+	for i: int in range(count):
+		var button: Button = grid.get_child(i) as Button
+
+		# Top row
+		if i < columns:
+			button.focus_neighbor_top = button.get_path_to(above)
+		else:
+			button.focus_neighbor_top = button.get_path_to(
+				grid.get_child(i - columns)
+			)
+
+		# Bottom row
+		if i + columns >= count:
+			button.focus_neighbor_bottom = button.get_path_to(below)
+		else:
+			button.focus_neighbor_bottom = button.get_path_to(
+				grid.get_child(i + columns)
+			)
+
+	# Connect the surrounding controls back to the palette.
+	above.focus_neighbor_bottom = above.get_path_to(
+		grid.get_child(0)
+	)
+
+	below.focus_neighbor_top = below.get_path_to(
+		grid.get_child(count - 1)
+	)
+	
+func _setup_clothing_focus() -> void:
+	var clothing: Control = tab_container.get_node("Clothing")
+
+	var previous_top: Button = clothing.get_node(
+		"HBoxContainer/TopStyleRow/PreviousTop"
+	)
+	var next_top: Button = clothing.get_node(
+		"HBoxContainer/TopStyleRow/NextTop"
+	)
+
+	var previous_bottom: Button = clothing.get_node(
+		"HBoxContainer2/BottomStyleRow/PreviousBottom"
+	)
+	var next_bottom: Button = clothing.get_node(
+		"HBoxContainer2/BottomStyleRow/NextBottom"
+	)
+
+	var previous_feet: Button = clothing.get_node(
+		"HBoxContainer3/FeetStyleRow/PreviousFeet"
+	)
+	var next_feet: Button = clothing.get_node(
+		"HBoxContainer3/FeetStyleRow/NextFeet"
+	)
+
+	_connect_palette_focus(
+		top_color_palette,
+		previous_top,
+		previous_bottom
+	)
+
+	_connect_palette_focus(
+		bottom_color_palette,
+		previous_bottom,
+		previous_feet
+	)
+
+	_connect_palette_focus(
+		feet_color_palette,
+		previous_feet,
+		sole_color_palette.grid.get_child(0) as Control
+	)
+
+	_connect_palette_focus(
+		sole_color_palette,
+		feet_color_palette.grid.get_child(
+			feet_color_palette.grid.get_child_count() - 1
+		) as Control,
+		$CanvasLayer/RotationSlider
+	)
+
+	# Give the right arrows the same vertical neighbours.
+	for button: Button in [next_top, next_bottom, next_feet]:
+		var previous: Control = button.get_node(
+			button.focus_neighbor_left
+		) as Control
+
+		if not previous.focus_neighbor_top.is_empty():
+			button.focus_neighbor_top = button.get_path_to(
+				previous.get_node(previous.focus_neighbor_top)
+			)
+
+		if not previous.focus_neighbor_bottom.is_empty():
+			button.focus_neighbor_bottom = button.get_path_to(
+				previous.get_node(previous.focus_neighbor_bottom)
+			)
