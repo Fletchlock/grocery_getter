@@ -412,12 +412,15 @@ func request_set_appearance(appearance: AlienAppearanceData) -> void:
 	var data: Dictionary = appearance.to_dict()
 
 	if multiplayer.is_server():
-		_set_player_appearance(multiplayer.get_unique_id(), data)
+		_set_player_appearance(multiplayer.get_unique_id(), data, true)
 	else:
 		request_appearance_change.rpc_id(1, data)
 
-
-func _set_player_appearance(peer_id: int, data: Dictionary) -> void:
+func _set_player_appearance(
+		peer_id: int,
+		data: Dictionary,
+		save_to_disk: bool = false
+	) -> void:
 	if not multiplayer.is_server():
 		return
 
@@ -445,6 +448,9 @@ func _set_player_appearance(peer_id: int, data: Dictionary) -> void:
 			SaveManager.add_player(player_data)
 
 		player_data.appearance = appearance.duplicate(true) as AlienAppearanceData
+		
+		if save_to_disk:
+			SaveManager.save_player_appearance(steam_id)
 	
 
 	lobby_player_updated.emit(peer_id)
@@ -460,7 +466,7 @@ func request_appearance_change(data: Dictionary) -> void:
 
 	var peer_id: int = multiplayer.get_remote_sender_id()
 
-	_set_player_appearance(peer_id, data)
+	_set_player_appearance(peer_id, data, true)
 
 
 @rpc("authority", "reliable")
