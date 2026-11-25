@@ -3,12 +3,16 @@
 [ext_resource type="Script" uid="uid://b1txrtj4yyhkc" path="res://scripts/menus/alien_preview.gd" id="1_0hbd3"]
 [ext_resource type="PackedScene" uid="uid://vbrfacp83r7p" path="res://scenes/menus/alien_preview_character.tscn" id="1_xbhp8"]
 [ext_resource type="Texture2D" uid="uid://byiqbpxrirkiv" path="res://assets/images/menu_button_pressed_grey.png" id="3_58mn1"]
+[ext_resource type="FontFile" uid="uid://c5smmmli4hgm" path="res://assets/fonts/Atmospheric/aAtmospheric.ttf" id="4_jpjk7"]
 [ext_resource type="FontFile" uid="uid://cvhmb0bcpx5ks" path="res://assets/fonts/Space/a_space/A-Space Regular Demo.otf" id="5_1gve1"]
 [ext_resource type="Texture2D" uid="uid://dqk5gqqlf23bk" path="res://assets/images/menu_button_pressed.png" id="5_5wj15"]
 [ext_resource type="Texture2D" uid="uid://t2dedkvcii" path="res://assets/images/menu_button_disabled_grey.png" id="6_5wj15"]
 [ext_resource type="Texture2D" uid="uid://bsysnmakp5egq" path="res://assets/images/menu_button_hoverl.png" id="7_5wj15"]
 [ext_resource type="Texture2D" uid="uid://c30brmkng2f7g" path="res://assets/images/menu_button_normal.png" id="7_vw6n4"]
+[ext_resource type="Texture2D" uid="uid://dbtw4audil258" path="res://assets/images/menu_button_normal_red.png" id="10_hn5qx"]
 [ext_resource type="PackedScene" uid="uid://cgv5bp55bjc57" path="res://scenes/menus/alien_color_palette.tscn" id="10_x2sd4"]
+[ext_resource type="Texture2D" uid="uid://m13fo55dyq7n" path="res://assets/images/menu_button_pressed_red.png" id="11_sqrrf"]
+[ext_resource type="Texture2D" uid="uid://bi2qa748k4nhk" path="res://assets/images/menu_button_hover_red.png" id="12_sqrrf"]
 
 [sub_resource type="Environment" id="Environment_6aigx"]
 background_mode = 1
@@ -98,6 +102,27 @@ texture_margin_top = 13.0
 texture_margin_right = 13.0
 texture_margin_bottom = 13.0
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_thfss"]
+texture = ExtResource("10_hn5qx")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_laqni"]
+texture = ExtResource("11_sqrrf")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_v5km4"]
+texture = ExtResource("12_sqrrf")
+texture_margin_left = 13.0
+texture_margin_top = 13.0
+texture_margin_right = 13.0
+texture_margin_bottom = 13.0
+
 [node name="AlienPreview" type="Node3D" unique_id=656249219]
 script = ExtResource("1_0hbd3")
 
@@ -174,7 +199,7 @@ min_value = -180.0
 max_value = 180.0
 
 [node name="CustomizationPanel" type="PanelContainer" parent="CanvasLayer" unique_id=2125156809]
-custom_minimum_size = Vector2(500, 750)
+custom_minimum_size = Vector2(525, 750)
 offset_left = 50.0
 offset_top = 50.0
 offset_right = 450.0
@@ -186,7 +211,8 @@ layout_mode = 2
 
 [node name="TabContainer" type="TabContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer" unique_id=1971109812]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_fonts/font = ExtResource("4_jpjk7")
+theme_override_font_sizes/font_size = 18
 theme_override_styles/panel = SubResource("StyleBoxTexture_67ah5")
 theme_override_styles/tab_unselected = SubResource("StyleBoxTexture_sqrrf")
 theme_override_styles/tab_hovered = SubResource("StyleBoxTexture_vw6n4")
@@ -196,9 +222,12 @@ current_tab = 0
 tab_0/title = "BODY"
 tab_1/title = "HEAD"
 tab_2/title = "CLOTHING"
+tab_3/title = "CONFIRM"
 
 [node name="Body" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=481228399]
 layout_mode = 2
+focus_neighbor_right = NodePath("../Head")
+focus_neighbor_bottom = NodePath("WeightSlider")
 theme_override_constants/separation = 15
 metadata/_tab_index = 0
 metadata/_tab_name = "BODY"
@@ -212,18 +241,24 @@ text = "Body Weight"
 [node name="WeightSlider" type="HSlider" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=1008276733]
 layout_mode = 2
 size_flags_vertical = 3
+focus_neighbor_top = NodePath("..")
+focus_neighbor_bottom = NodePath("../SkinColorLabel")
 max_value = 1.0
 step = 0.01
 value = 0.5
 
 [node name="SkinColorLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=1658922341]
 layout_mode = 2
+focus_neighbor_top = NodePath("../WeightSlider")
+focus_neighbor_bottom = NodePath("../SkinPatternRow/NextPattern")
 theme_override_fonts/font = ExtResource("5_1gve1")
 theme_override_font_sizes/font_size = 20
 text = "Skin Color"
 
 [node name="SkinColorPalette" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=395454386 instance=ExtResource("10_x2sd4")]
 layout_mode = 2
+focus_neighbor_top = NodePath("../SkinColorLabel")
+focus_neighbor_bottom = NodePath("../SkinPatternRow/NextPattern")
 
 [node name="SkinPatternLabel" type="Label" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body" unique_id=123696441]
 layout_mode = 2
@@ -236,6 +271,10 @@ layout_mode = 2
 
 [node name="PreviousPattern" type="Button" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinPatternRow" unique_id=2029566526]
 layout_mode = 2
+focus_neighbor_left = NodePath("../NextPattern")
+focus_neighbor_top = NodePath("../../SkinColorLabel")
+focus_neighbor_right = NodePath("../NextPattern")
+focus_neighbor_bottom = NodePath("../../PatternColorLabel")
 theme_override_fonts/font = ExtResource("5_1gve1")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxTexture_jnx5h")
@@ -256,6 +295,10 @@ vertical_alignment = 1
 
 [node name="NextPattern" type="Button" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/SkinPatternRow" unique_id=1656279487]
 layout_mode = 2
+focus_neighbor_left = NodePath("../PreviousPattern")
+focus_neighbor_top = NodePath("../../SkinColorLabel")
+focus_neighbor_right = NodePath("../PreviousPattern")
+focus_neighbor_bottom = NodePath("../../PatternColorLabel")
 theme_override_fonts/font = ExtResource("5_1gve1")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxTexture_jnx5h")
@@ -276,6 +319,8 @@ layout_mode = 2
 [node name="Head" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=1181320693]
 visible = false
 layout_mode = 2
+focus_neighbor_left = NodePath("../Body")
+focus_neighbor_right = NodePath("../Clothing")
 theme_override_constants/separation = 15
 metadata/_tab_index = 1
 metadata/_tab_name = "HEAD"
@@ -364,6 +409,8 @@ text = ">"
 [node name="Clothing" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=1300217043]
 visible = false
 layout_mode = 2
+focus_neighbor_left = NodePath("../Head")
+focus_neighbor_right = NodePath("../Confirm")
 theme_override_constants/separation = 15
 metadata/_tab_index = 2
 metadata/_tab_name = "CLOTHING"
@@ -544,25 +591,37 @@ text = "Sole Color"
 layout_mode = 2
 colors = Array[Color]([Color(0.03137255, 0.02745098, 0.03137255, 1), Color(0.9490196, 0.9411765, 0.9411765, 1), Color(0.59607846, 0.59607846, 0.59607846, 1), Color(0.19215687, 0.80784315, 0.9843137, 1), Color(0, 0.44313726, 0.92156863, 1), Color(0, 0.7607843, 0.42352942, 1), Color(0.92156863, 0.8117647, 0.16078432, 1), Color(0.9254902, 0.4745098, 0.18039216, 1), Color(0.5686275, 0.36862746, 0.07450981, 1), Color(0.87058824, 0.2, 0.3882353, 1), Color(0.9098039, 0.40784314, 0.78039217, 1), Color(0.5372549, 0.21568628, 0.8627451, 1)])
 
-[node name="ConfirmButton" type="Button" parent="CanvasLayer" unique_id=892649131]
+[node name="Confirm" type="VBoxContainer" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer" unique_id=1963104753]
+visible = false
+layout_mode = 2
+focus_neighbor_left = NodePath("../Clothing")
+focus_neighbor_bottom = NodePath("ConfirmButton")
+theme_override_constants/separation = 15
+metadata/_tab_index = 3
+metadata/_tab_name = "CONFIRM"
+
+[node name="ConfirmButton" type="Button" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Confirm" unique_id=892649131]
 custom_minimum_size = Vector2(300, 50)
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -320.0
-offset_top = -110.0
-offset_right = -70.0
-offset_bottom = -60.0
-grow_horizontal = 0
-grow_vertical = 0
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_jpjk7")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxTexture_ng0o5")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_8r73w")
 theme_override_styles/hover = SubResource("StyleBoxTexture_1hnlc")
 theme_override_styles/focus = SubResource("StyleBoxTexture_1hnlc")
 text = "CONFIRM CHARACTER"
+
+[node name="CancelButton" type="Button" parent="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Confirm" unique_id=985916741]
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_jpjk7")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxTexture_thfss")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_laqni")
+theme_override_styles/hover = SubResource("StyleBoxTexture_v5km4")
+theme_override_styles/focus = SubResource("StyleBoxTexture_v5km4")
+text = "CANCEL
+"
 
 [connection signal="value_changed" from="CanvasLayer/RotationSlider" to="." method="_on_rotation_slider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Body/WeightSlider" to="." method="_on_weight_slider_value_changed"]
@@ -586,6 +645,6 @@ text = "CONFIRM CHARACTER"
 [connection signal="pressed" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/HBoxContainer3/FeetStyleRow/NextFeet" to="." method="_on_next_feet_pressed"]
 [connection signal="color_selected" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/FeetColorPalette" to="." method="_on_feet_color_palette_color_selected"]
 [connection signal="color_selected" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Clothing/SoleColorPalette" to="." method="_on_sole_color_palette_color_selected"]
-[connection signal="pressed" from="CanvasLayer/ConfirmButton" to="." method="_on_confirm_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/CustomizationPanel/VBoxContainer/TabContainer/Confirm/ConfirmButton" to="." method="_on_confirm_button_pressed"]
 
 [editable path="CharacterPivot/AlienPreviewCharacter"]
