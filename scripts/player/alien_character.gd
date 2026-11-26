@@ -291,10 +291,9 @@ var server_cleaning_started_usec: int = 0
 
 
 # ============================================================
-# CHECKOUT STATE
+# CHECKOUT INTERFACE
 # ============================================================
 
-# Checkout mode interface.
 var checkout_mode_active: bool:
 	get:
 		return player_checkout.checkout_mode_active
@@ -307,70 +306,15 @@ var active_checkout: Checkout:
 	set(value):
 		player_checkout.active_checkout = value
 
-
-# Checkout product cursor interface.
 var checkout_cursor_visual: MeshInstance3D:
 	get:
 		return player_checkout.checkout_cursor_visual
 
-var checkout_cursor_sensor: Area3D:
-	get:
-		return player_checkout.checkout_cursor_sensor
-
-# Virtual mouse and controller cursor interface.
-var checkout_virtual_mouse_position: Vector2:
-	get:
-		return player_checkout.checkout_virtual_mouse_position
-	set(value):
-		player_checkout.checkout_virtual_mouse_position = value
-
-var checkout_virtual_mouse_initialized: bool:
-	get:
-		return player_checkout.checkout_virtual_mouse_initialized
-	set(value):
-		player_checkout.checkout_virtual_mouse_initialized = value
-
-var checkout_last_mouse_position: Vector2:
-	get:
-		return player_checkout.checkout_last_mouse_position
-	set(value):
-		player_checkout.checkout_last_mouse_position = value
-
-var checkout_using_controller_cursor: bool:
-	get:
-		return player_checkout.checkout_using_controller_cursor
-	set(value):
-		player_checkout.checkout_using_controller_cursor = value
-
-
-# Held product rotation interface.
-var rotating_held_product: bool:
-	get:
-		return player_product_rotation.rotating_held_product
-	set(value):
-		player_product_rotation.rotating_held_product = value
-
-var checkout_rotation_mouse_position: Vector2:
-	get:
-		return player_product_rotation.checkout_rotation_mouse_position
-
-var checkout_rotation_previous_mouse_mode: Input.MouseMode:
-	get:
-		return player_product_rotation.checkout_rotation_previous_mouse_mode
-
-
-# Checkout interaction state interface.
 var checkout_scanned_product_path: String:
 	get:
 		return player_checkout.checkout_scanned_product_path
 	set(value):
 		player_checkout.checkout_scanned_product_path = value
-
-var checkout_auto_bag_hover_active: bool:
-	get:
-		return player_checkout.checkout_auto_bag_hover_active
-	set(value):
-		player_checkout.checkout_auto_bag_hover_active = value
 
 var checkout_barcode_product_path: String = ""
 
@@ -572,7 +516,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event is InputEventMouseMotion:
 			player_checkout.handle_mouse_motion(
 				event,
-				rotating_held_product,
+				player_product_rotation.rotating_held_product,
 				checkout_mouse_sensitivity
 			)
 
@@ -985,7 +929,7 @@ func _update_checkout_frame(delta: float) -> void:
 
 	player_checkout.update_checkout_pointer(
 		holding_checkout_product,
-		rotating_held_product
+		player_product_rotation.rotating_held_product
 	)
 
 	player_checkout.update_checkout_hover()
@@ -1100,7 +1044,7 @@ func _get_gamepad_look_input() -> Vector2:
 
 	if (
 		checkout_mode_active
-		or rotating_held_product
+		or player_product_rotation.rotating_held_product
 		or controller_rotating_product
 	):
 		gamepad_look = Vector2.ZERO
@@ -2831,7 +2775,7 @@ func _clear_held_item() -> void:
 	player_product_rotation.stop_held_product_rotation()
 
 	# Stop any active product rotation.
-	rotating_held_product = false
+	player_product_rotation.rotating_held_product = false
 
 	# Remove checkout cursor preview.
 	player_checkout.clear_checkout_cursor_visual()
@@ -2890,7 +2834,7 @@ func receive_product(
 	held_item_origin = origin
 	held_item_order_id = order_id
 
-	rotating_held_product = false
+	player_product_rotation.rotating_held_product = false
 
 	player_equipment.remove_local_product_visual(held_item_visual)
 
