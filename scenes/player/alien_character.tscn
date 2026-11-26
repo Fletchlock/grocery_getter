@@ -28,6 +28,7 @@
 [ext_resource type="Script" uid="uid://bu6nohragxh0l" path="res://scripts/utilities/interact_raycast_3d.gd" id="12_o85ja"]
 [ext_resource type="ArrayMesh" uid="uid://bb6cm14i20mjg" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_shoes_02.res" id="13_u7qxw"]
 [ext_resource type="ArrayMesh" uid="uid://bgnt0ieu18huh" path="res://assets/models/characters/alien/clothing mesh/alien_character_alien_shoes_03.res" id="14_h278e"]
+[ext_resource type="Script" uid="uid://s1w7x23w0oek" path="res://scripts/player/player_checkout.gd" id="24_ijv2g"]
 [ext_resource type="Material" uid="uid://yf1v4oic3fut" path="res://assets/materials/alien_skin.tres" id="25_7mdse"]
 
 [sub_resource type="Animation" id="Animation_5wda0"]
@@ -289,6 +290,9 @@ default_weight = 0.3
 
 [node name="PlayerEquipment" type="Node" parent="." unique_id=1954454111]
 script = ExtResource("2_1ekrp")
+
+[node name="PlayerCheckout" type="Node" parent="." unique_id=1060606765]
+script = ExtResource("24_ijv2g")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2138151857]
 libraries/ = SubResource("AnimationLibrary_s7efu")
