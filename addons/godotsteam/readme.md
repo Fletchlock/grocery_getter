@@ -28,11 +28,9 @@ Current Build
 ---
 You can [download pre-compiled versions of this repo here](https://codeberg.org/godotsteam/godotsteam/releases).
 
-**Version 4.22.1 Changes**
+**Version 4.24 Changes**
 
-- Added: link to GodotSteam site in in-editor docs, ***thanks to RTalaro***
-- Fixed: missing ! in singleton check in MultiplayerPeer close function
-
+- Fixed: peer ID claim during setup and bad peer rejection; thanks to ***bearlikelion*** and ***bitbutter***
 
 [You can read more change-logs here](https://godotsteam.com/changelog/godot4/).
 
