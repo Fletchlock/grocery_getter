@@ -398,6 +398,21 @@ func can_pickup_equipment() -> bool:
 	
 
 # ============================================================
+# MULTIPLAYER VALIDATION HELPERS
+# ============================================================
+
+func _is_valid_server_request(requesting_peer_id: int) -> bool:
+	return (
+		multiplayer.is_server()
+		and get_multiplayer_authority() == requesting_peer_id
+	)	
+
+
+func _is_server_rpc() -> bool:
+	return multiplayer.get_remote_sender_id() == 1
+	
+
+# ============================================================
 # PLAYER INITIALIZATION
 # ============================================================
 
@@ -1855,12 +1870,9 @@ func try_pickup_restock_box(box: RestockBox) -> void:
 
 @rpc("any_peer", "call_remote", "reliable")
 func request_pickup_restock_box(box_path: NodePath) -> void:
-	if not multiplayer.is_server():
-		return
-
 	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
 
-	if get_multiplayer_authority() != requesting_peer_id:
+	if not _is_valid_server_request(requesting_peer_id):
 		return
 
 	_server_pickup_restock_box(
@@ -1873,10 +1885,7 @@ func _server_pickup_restock_box(
 	box_path: NodePath,
 	requesting_peer_id: int
 ) -> void:
-	if not multiplayer.is_server():
-		return
-
-	if get_multiplayer_authority() != requesting_peer_id:
+	if not _is_valid_server_request(requesting_peer_id):
 		return
 
 	if not server_restock_product_path.is_empty():
@@ -1944,7 +1953,7 @@ func receive_restock_box(
 	product_path: String,
 	box_quantity: int
 ) -> void:
-	if multiplayer.get_remote_sender_id() != 1:
+	if not _is_server_rpc():
 		return
 
 	if not is_multiplayer_authority():
@@ -2000,12 +2009,9 @@ func request_pickup_mop(mop: Node3D) -> void:
 
 @rpc("any_peer", "call_remote", "reliable")
 func request_pickup_mop_rpc(mop_path: NodePath) -> void:
-	if not multiplayer.is_server():
-		return
-
 	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
 
-	if get_multiplayer_authority() != requesting_peer_id:
+	if not _is_valid_server_request(requesting_peer_id):
 		return
 
 	_server_pickup_mop(mop_path, requesting_peer_id)
@@ -2015,10 +2021,7 @@ func _server_pickup_mop(
 	mop_path: NodePath,
 	requesting_peer_id: int
 ) -> void:
-	if not multiplayer.is_server():
-		return
-
-	if get_multiplayer_authority() != requesting_peer_id:
+	if not _is_valid_server_request(requesting_peer_id):
 		return
 
 	if not can_pickup_equipment():
@@ -2095,10 +2098,7 @@ func _server_return_mop(
 	mop_path: NodePath,
 	requesting_peer_id: int
 ) -> void:
-	if not multiplayer.is_server():
-		return
-
-	if get_multiplayer_authority() != requesting_peer_id:
+	if not _is_valid_server_request(requesting_peer_id):
 		return
 
 	if not server_holding_mop:
@@ -2285,10 +2285,7 @@ func _server_begin_spill_cleaning(
 	spill_path: NodePath,
 	requesting_peer_id: int
 ) -> void:
-	if not multiplayer.is_server():
-		return
-
-	if get_multiplayer_authority() != requesting_peer_id:
+	if not _is_valid_server_request(requesting_peer_id):
 		return
 
 	if not server_holding_mop:
@@ -2333,10 +2330,7 @@ func _server_finish_spill_cleaning(
 	spill_path: NodePath,
 	requesting_peer_id: int
 ) -> void:
-	if not multiplayer.is_server():
-		return
-
-	if get_multiplayer_authority() != requesting_peer_id:
+	if not _is_valid_server_request(requesting_peer_id):
 		return
 
 	if spill_path != server_cleaning_spill_path:
@@ -2382,10 +2376,7 @@ func _request_cancel_spill_cleaning() -> void:
 func _server_cancel_spill_cleaning(
 	requesting_peer_id: int
 ) -> void:
-	if not multiplayer.is_server():
-		return
-
-	if get_multiplayer_authority() != requesting_peer_id:
+	if not _is_valid_server_request(requesting_peer_id):
 		return
 
 	if not server_cleaning_spill_path.is_empty():
@@ -2444,12 +2435,9 @@ func request_pickup_restock_scanner(scanner: Node3D) -> void:
 func request_pickup_restock_scanner_rpc(
 	scanner_path: NodePath
 ) -> void:
-	if not multiplayer.is_server():
-		return
-
 	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
 
-	if get_multiplayer_authority() != requesting_peer_id:
+	if not _is_valid_server_request(requesting_peer_id):
 		return
 
 	_server_pickup_restock_scanner(
@@ -2462,10 +2450,7 @@ func _server_pickup_restock_scanner(
 	scanner_path: NodePath,
 	requesting_peer_id: int
 ) -> void:
-	if not multiplayer.is_server():
-		return
-
-	if get_multiplayer_authority() != requesting_peer_id:
+	if not _is_valid_server_request(requesting_peer_id):
 		return
 
 	if not can_pickup_equipment():
@@ -2501,22 +2486,16 @@ func request_return_restock_scanner() -> void:
 
 @rpc("any_peer", "call_remote", "reliable")
 func request_return_restock_scanner_rpc() -> void:
-	if not multiplayer.is_server():
-		return
-
 	var requesting_peer_id: int = multiplayer.get_remote_sender_id()
 
-	if get_multiplayer_authority() != requesting_peer_id:
+	if not _is_valid_server_request(requesting_peer_id):
 		return
 
 	_server_return_restock_scanner(requesting_peer_id)
 
 
 func _server_return_restock_scanner(requesting_peer_id: int) -> void:
-	if not multiplayer.is_server():
-		return
-
-	if get_multiplayer_authority() != requesting_peer_id:
+	if not _is_valid_server_request(requesting_peer_id):
 		return
 
 	if held_restock_scanner_holder == null:
@@ -3227,7 +3206,7 @@ func get_checkout_cursor_collision_position(
 
 @rpc("any_peer", "call_remote", "reliable")
 func clear_held_restock_box() -> void:
-	if multiplayer.get_remote_sender_id() != 1:
+	if not _is_server_rpc():
 		return
 
 	_clear_held_restock_box()
@@ -3235,7 +3214,7 @@ func clear_held_restock_box() -> void:
 
 @rpc("any_peer", "call_remote", "reliable")
 func clear_held_item() -> void:
-	if multiplayer.get_remote_sender_id() != 1:
+	if not _is_server_rpc():
 		return
 
 	_clear_held_item()
@@ -3361,7 +3340,7 @@ func apply_conveyor_knockback(impulse: Vector3) -> void:
 	if not is_multiplayer_authority():
 		return
 
-	if multiplayer.get_remote_sender_id() != 1:
+	if not _is_server_rpc():
 		return
 
 	knockback_velocity += impulse
