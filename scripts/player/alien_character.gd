@@ -16,17 +16,15 @@ var inspection_camera_active: bool = false
 @onready var _spring_arm_pivot: Node3D = $SpringArmPivot
 @onready var _first_person_pivot: Node3D = $FirstPersonCameraPivot
 @onready var armature_node: Node3D = $Armature
-@onready var skeleton: Skeleton3D = $Armature/Skeleton3D
 
 @onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/AlienBody
 
-@onready var alien_appearance: AlienAppearance = $AlienAppearance
 @onready var alien_head: MeshInstance3D = $Armature/Skeleton3D/Head
 @onready var alien_top: MeshInstance3D = $Armature/Skeleton3D/Top
 @onready var alien_bottom: MeshInstance3D = $Armature/Skeleton3D/Bottom
 @onready var alien_feet: MeshInstance3D = $Armature/Skeleton3D/Feet
 
-@onready var anim_tree = $AnimationTree
+@onready var anim_tree: AnimationTree = $AnimationTree
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 @onready var cart_pusher: RigidBody3D = $CartPusher
 @onready var _mesh_default_y: float = $Armature.position.y
@@ -42,7 +40,6 @@ const FOOTSTEP_COOLDOWN_MS: int = 180
 
 @export_group("Cart")
 @export var strafe_rotation := 35.0
-var nearby_carts: Array[RigidBody3D] = []
 @export var attached_cart: RigidBody3D = null
 
 
@@ -55,7 +52,6 @@ var nearby_carts: Array[RigidBody3D] = []
 
 # === Configuration Properties ===
 @export_group("Camera")
-@export var cart_release_fade_alpha: float = 0.25
 @export_range(0.0, 1.0, 0.0001) var mouse_sensitivity: float = 0.0017 ## Mouse camera sensitivity.
 @export_range(0.0, 100.0, 1.0)
 var mouse_smoothing: float = 25.0
@@ -246,13 +242,6 @@ var cleaning_progress: float = 0.0
 var server_holding_mop: bool = false
 var server_cleaning_spill_path: NodePath = NodePath()
 var server_cleaning_started_usec: int = 0
-
-@onready var held_item_hand_target: Node3D = $Armature/HeldItemHandTarget
-@onready var held_item_target: Node3D = $Armature/HeldItemTarget
-@onready var held_item_network_visual: MeshInstance3D = $Armature/HeldItemTarget/HeldItemNetworkVisual
-@onready var held_box_hand_target_right: Node3D = $Armature/HeldBoxHandTargetRight
-@onready var held_box_hand_target_left: Node3D = $Armature/HeldBoxHandTargetLeft
-
 
 @export var network_holding_item: bool = false
 @export var network_held_item_path: String = ""
