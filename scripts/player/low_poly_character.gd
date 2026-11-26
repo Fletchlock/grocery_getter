@@ -34,7 +34,7 @@ var attached_cart: RigidBody3D = null
 
 @export_group("Camera")
 @export_range(0.0, 1.0) var mouse_sensitivity := 0.25 ## Mouse camera sensitivity.
-@export var gamepad_sensitivty := 3.0 ## Gamepad camera sensitivity.
+@export var gamepad_sensitivity := 3.0 ## Gamepad camera sensitivity.
 @export var zoom_speed := 1.0 ## Mouse camera zoom speed.
 @export var gamepad_zoom_speed := 2.0 ## Gamepad camera zoom speed.
 @export var min_zoom := 2.0 ## Minimum camera distance.
@@ -478,7 +478,7 @@ func _physics_process(delta: float) -> void:
 		# Normal camera orbit.
 		if gamepad_look.length() > 0.05:
 			_camera_input_direction += (
-				gamepad_look * gamepad_sensitivty
+				gamepad_look * gamepad_sensitivity
 			)
 
 		_camera_origin.rotation.x -= (
