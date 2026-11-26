@@ -559,7 +559,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				Input.is_action_just_pressed_by_event("interact", event))
 	
 	# Handle local held-product rotation before other input.
-	if _handle_held_product_rotation_input(event):
+	if player_product_rotation.handle_held_product_rotation_input(event):
 		return
 	
 	if checkout_mode_active:
@@ -596,7 +596,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		# E interacts with the product/scanner under the cursor.
 		# Interact once per button press.
 		if Input.is_action_just_pressed_by_event("interact", event):
-			handle_checkout_interaction()
+			player_checkout.handle_checkout_interaction()
 			get_viewport().set_input_as_handled()
 			return
 
@@ -606,7 +606,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			and event.pressed
 			and event.button_index == MOUSE_BUTTON_LEFT
 		):
-			handle_checkout_interaction()
+			player_checkout.handle_checkout_interaction()
 			get_viewport().set_input_as_handled()
 			return
 
@@ -967,17 +967,29 @@ func _update_equipment_ik(delta: float) -> void:
 # ============================================================
 
 func _update_checkout_frame(delta: float) -> void:
-	update_checkout_controller_cursor(delta)
-	update_controller_product_rotation(delta)
-	update_checkout_cursor_visual()
-	update_checkout_pointer()
+	player_checkout.update_checkout_controller_cursor(
+		delta,
+		is_multiplayer_authority(),
+		gamepad_cursor_speed,
+		checkout_controller_sensitivity
+	)
 
-	_update_checkout_hover()
+	player_product_rotation.update_controller_product_rotation(delta)
 
+	player_checkout.update_checkout_cursor_visual()
 
-func _update_checkout_hover() -> void:
+	var holding_checkout_product: bool = (
+		held_item != null
+		and held_item_origin == ItemOrigin.CHECKOUT_GRID
+	)
+
+	player_checkout.update_checkout_pointer(
+		holding_checkout_product,
+		rotating_held_product
+	)
+
 	player_checkout.update_checkout_hover()
-	
+
 
 # ============================================================
 # PHYSICS PROCESS
@@ -2816,13 +2828,13 @@ func interact_with_item(item: Node3D) -> void:
 # Held item functions
 func _clear_held_item() -> void:
 
-	_stop_held_product_rotation()
+	player_product_rotation.stop_held_product_rotation()
 
 	# Stop any active product rotation.
 	rotating_held_product = false
 
 	# Remove checkout cursor preview.
-	clear_checkout_cursor_visual()
+	player_checkout.clear_checkout_cursor_visual()
 
 	player_equipment.remove_local_product_visual(held_item_visual)
 	held_item_visual = null
@@ -2840,26 +2852,6 @@ func _clear_held_restock_box() -> void:
 	network_holding_restock_box = false
 	network_restock_box_product_path = ""
 	network_restock_box_quantity = 0
-
-
-# ============================================================
-# 3D PRODUCT CURSOR INTERFACE
-# ============================================================
-
-func create_checkout_cursor_visual() -> void:
-	player_checkout.create_checkout_cursor_visual()
-
-
-func update_checkout_cursor_visual() -> void:
-	player_checkout.update_checkout_cursor_visual()
-
-
-func clear_checkout_cursor_visual() -> void:
-	player_checkout.clear_checkout_cursor_visual()
-
-
-func get_checkout_cursor_screen_position() -> Vector2:
-	return player_checkout.get_checkout_cursor_screen_position()
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -2908,7 +2900,7 @@ func receive_product(
 	)
 
 	if checkout_mode_active:
-		create_checkout_cursor_visual()
+		player_checkout.create_checkout_cursor_visual()
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -3075,82 +3067,8 @@ func exit_checkout_mode() -> void:
 	player_checkout.exit_checkout_mode()
 
 
-func handle_checkout_interaction() -> void:
-	player_checkout.handle_checkout_interaction()
-
-
-func _handle_held_product_rotation_input(event: InputEvent) -> bool:
-	return player_product_rotation.handle_held_product_rotation_input(
-		event
-	)
-
-
-# ============================================================
-# CHECKOUT CURSOR INPUT INTERFACE
-# ============================================================
-
-func update_checkout_mouse_cursor() -> void:
-	player_checkout.update_checkout_mouse_cursor(
-		checkout_mode_active
-	)
-
-
-func update_checkout_controller_cursor(delta: float) -> void:
-	player_checkout.update_checkout_controller_cursor(
-		delta,
-		is_multiplayer_authority(),
-		checkout_mode_active,
-		gamepad_cursor_speed,
-		checkout_controller_sensitivity
-	)
-
-
-# ============================================================
-# CHECKOUT POINTER INTERFACE
-# ============================================================
-
-func create_checkout_pointer() -> void:
-	player_checkout.create_checkout_pointer()
-
-
-func remove_checkout_pointer() -> void:
-	player_checkout.remove_checkout_pointer()
-
-
-func update_checkout_pointer() -> void:
-	var holding_checkout_product: bool = (
-		held_item != null
-		and held_item_origin == ItemOrigin.CHECKOUT_GRID
-	)
-
-	player_checkout.update_checkout_pointer(
-		checkout_mode_active,
-		holding_checkout_product,
-		rotating_held_product
-	)
-
-
-# ============================================================
-# PRODUCT ROTATION INTERFACE
-# ============================================================
-
-func _apply_held_product_rotation(
-	mouse_delta: Vector2,
-	roll_rotation: bool = false
-) -> void:
-
-	player_product_rotation.apply_held_product_rotation(
-		mouse_delta,
-		roll_rotation
-	)
-
-
-func update_controller_product_rotation(delta: float) -> void:
-	player_product_rotation.update_controller_product_rotation(delta)
-
-
-func _stop_held_product_rotation() -> void:
-	player_product_rotation.stop_held_product_rotation()
+func get_checkout_cursor_screen_position() -> Vector2:
+	return player_checkout.get_checkout_cursor_screen_position()
 
 
 # ============================================================

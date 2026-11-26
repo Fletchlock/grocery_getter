@@ -144,9 +144,7 @@ func handle_mouse_motion(
 	_move_cursor(mouse_delta)
 
 
-func update_checkout_mouse_cursor(
-	checkout_mode_active: bool
-) -> void:
+func update_checkout_mouse_cursor() -> void:
 	if not checkout_mode_active:
 		return
 
@@ -163,7 +161,6 @@ func update_checkout_mouse_cursor(
 func update_checkout_controller_cursor(
 	delta: float,
 	is_local_player: bool,
-	checkout_mode_active: bool,
 	cursor_speed: float,
 	controller_sensitivity: float
 ) -> void:
@@ -228,7 +225,6 @@ func remove_checkout_pointer() -> void:
 
 
 func update_checkout_pointer(
-	checkout_mode_active: bool,
 	holding_checkout_product: bool,
 	rotating_held_product: bool
 ) -> void:
@@ -325,7 +321,7 @@ func create_checkout_cursor_visual() -> void:
 
 
 func update_checkout_cursor_visual() -> void:
-	update_checkout_mouse_cursor(checkout_mode_active)
+	update_checkout_mouse_cursor()
 
 	if not checkout_mode_active:
 		return
@@ -977,7 +973,7 @@ func exit_checkout_mode() -> void:
 	if player.held_item != null or player.network_holding_item:
 		return
 
-	player._stop_held_product_rotation()
+	player.player_product_rotation.stop_held_product_rotation()
 
 	var checkout_to_release: Checkout = active_checkout
 
