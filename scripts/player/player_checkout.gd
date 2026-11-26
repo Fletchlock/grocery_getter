@@ -43,6 +43,13 @@ var checkout_cursor_last_safe_position: Vector3 = Vector3.ZERO
 var checkout_cursor_has_safe_position: bool = false
 
 # ============================================================
+# CHECKOUT INTERACTION STATE
+# ============================================================
+
+var checkout_scanned_product_path: String = ""
+var checkout_auto_bag_hover_active: bool = false
+
+# ============================================================
 # CURSOR INITIALIZATION
 # ============================================================
 
@@ -370,7 +377,7 @@ func update_checkout_cursor_visual() -> void:
 			if (
 				product != null
 				and product.product_category != "produce"
-				and player.checkout_scanned_product_path != product.resource_path
+				and checkout_scanned_product_path != product.resource_path
 				and player.active_checkout.is_barcode_aligned(
 					product,
 					checkout_cursor_visual
@@ -752,3 +759,129 @@ func get_checkout_cursor_collision_position(
 		checkout_cursor_has_safe_position = true
 
 	return result_position
+
+
+# ============================================================
+# CHECKOUT HOVER
+# ============================================================
+
+func update_checkout_hover() -> void:
+	if not player.checkout_mode_active:
+		return
+
+	if not is_instance_valid(player.active_checkout):
+		return
+
+	var mouse_position: Vector2 = (
+		_get_checkout_hover_position()
+	)
+
+	player.active_checkout.update_checkout_hover_outline(
+		mouse_position,
+		not player.is_holding_equipment()
+	)
+
+	_update_checkout_auto_bag(mouse_position)
+
+
+func _get_checkout_hover_position() -> Vector2:
+	# Align hover detection with the held product's actual position.
+	if (
+		player.held_item != null
+		and player.held_item_origin == player.ItemOrigin.CHECKOUT_GRID
+	):
+		return get_checkout_cursor_screen_position()
+
+	return checkout_virtual_mouse_position
+
+
+# ============================================================
+# AUTOMATIC BAGGING
+# ============================================================
+
+func _can_auto_bag_checkout_product(
+	mouse_position: Vector2
+) -> bool:
+
+	if not player.is_multiplayer_authority():
+		return false
+
+	if player.held_item == null:
+		return false
+
+	if player.held_item_origin != player.ItemOrigin.CHECKOUT_GRID:
+		return false
+
+	if not player.active_checkout.is_mouse_over_bag(mouse_position):
+		return false
+
+	return (
+		checkout_scanned_product_path
+		== player.held_item.resource_path
+	)
+
+
+func _update_checkout_auto_bag(
+	mouse_position: Vector2
+) -> void:
+
+	var should_auto_bag: bool = (
+		_can_auto_bag_checkout_product(mouse_position)
+	)
+
+	if should_auto_bag and not checkout_auto_bag_hover_active:
+		checkout_auto_bag_hover_active = true
+
+		player.active_checkout.bag_grid.request_interact(
+			player
+		)
+
+	elif not should_auto_bag:
+		checkout_auto_bag_hover_active = false
+
+
+# ============================================================
+# CHECKOUT INTERACTION
+# ============================================================
+
+func handle_checkout_interaction() -> void:
+	if not player.checkout_mode_active:
+		return
+
+	if not is_instance_valid(player.active_checkout):
+		return
+
+	var mouse_position: Vector2 = (
+		checkout_virtual_mouse_position
+	)
+
+	# Handle a product already held by the player.
+	if player.held_item != null:
+		if player.held_item_origin != player.ItemOrigin.CHECKOUT_GRID:
+			return
+
+		mouse_position = get_checkout_cursor_screen_position()
+
+		# Interact with the scanner.
+		if player.active_checkout.is_mouse_over_scanner(mouse_position):
+			player.active_checkout.interact(player)
+			return
+
+		# Interact with the bagging area.
+		if player.active_checkout.is_mouse_over_bag(mouse_position):
+			player.active_checkout.bag_grid.request_interact(
+				player
+			)
+			return
+
+		return
+
+	# Prevent picking up products while holding equipment.
+	if player.is_holding_equipment():
+		return
+
+	# Pick up the targeted checkout product.
+	player.active_checkout.checkout_grid.request_take_item_at_mouse(
+		player,
+		mouse_position
+	)
