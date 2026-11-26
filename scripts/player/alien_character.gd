@@ -269,13 +269,6 @@ var _network_restock_box_product_path_last_received: String = ""
 var _network_restock_box_quantity_last_received: int = 0
 
 
-# === Player Scene Reference ===
-const PLAYER_SCENE = preload(
-	"res://scenes/player/low_poly_character_FP.tscn"
-	
-)
-
-
 func _enter_tree() -> void:
 	# Convert your node's string name (e.g. "933642306") into its real integer peer ID 
 	# and claim network authority BEFORE any child nodes initialize!
@@ -308,8 +301,7 @@ func _ready() -> void:
 	# Initialize the AnimationTree.
 	anim_tree.advance_expression_base_node = get_path()
 	anim_tree.active = true
-		
-	# Apply the current selection and listen for late lobby updates.
+
 
 	if is_multiplayer_authority():
 		var orange_survival: bool = (
