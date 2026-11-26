@@ -57,17 +57,7 @@ func spawn_ready_player(peer_id: int) -> void:
 	if not LobbyManager.is_ready(peer_id):
 		return
 
-	var character: String = LobbyManager.get_character(peer_id)
-
-	if character not in ["red", "blue", "green"]:
-		return
-
-	print(
-		"SpawnManager: Spawning ready player ",
-		peer_id,
-		" with character ",
-		character
-	)
+	print("SpawnManager: Spawning ready player ", peer_id)
 
 	spawn_player(peer_id)
 

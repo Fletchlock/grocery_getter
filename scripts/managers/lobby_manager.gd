@@ -95,7 +95,6 @@ func add_player(peer_id: int) -> void:
 		"peer_id": peer_id,
 		"name": "",
 		"steam_id": 0,
-		"character": "red",
 		"ready": false,
 		"appearance": {}
 	}
@@ -128,29 +127,6 @@ func get_players() -> Dictionary:
 	return players
 
 
-#func get_player_name(peer_id: int) -> String:
-	#return Steam.getFriendPersonaName(peer_id)
-	
-	
-func set_character(peer_id: int, character: String) -> void:
-	if not players.has(peer_id):
-		return
-
-	players[peer_id]["character"] = character
-	lobby_player_updated.emit(peer_id)
-	lobby_state_changed.emit()
-	
-	if multiplayer.is_server():
-		sync_player_state.rpc(peer_id, character, players[peer_id]["ready"])
-
-	print(
-		"LobbyManager: Player ",
-		peer_id,
-		" selected character: ",
-		character
-	)
-
-
 func clear_players() -> void:
 	players.clear()
 	lobby_state_changed.emit()
@@ -168,11 +144,7 @@ func set_ready(peer_id: int, player_is_ready: bool) -> void:
 	lobby_player_updated.emit(peer_id)
 	lobby_state_changed.emit()
 
-	sync_player_state.rpc(
-		peer_id,
-		players[peer_id]["character"],
-		player_is_ready
-	)
+	sync_player_state.rpc(peer_id, player_is_ready)
 
 	print(
 		"LobbyManager: Player ",
@@ -190,13 +162,6 @@ func set_ready(peer_id: int, player_is_ready: bool) -> void:
 		return
 
 	SpawnManager.spawn_ready_player(peer_id)
-
-
-func get_character(peer_id: int) -> String:
-	if not players.has(peer_id):
-		return ""
-
-	return players[peer_id]["character"]
 
 
 func is_ready(peer_id: int) -> bool:
@@ -218,26 +183,6 @@ func all_players_ready() -> bool:
 	
 # RPC Section **********
 
-#Host request character change (Select Character in Lobby UI)
-@rpc("any_peer", "reliable")
-func request_character_change(character: String) -> void:
-	if not multiplayer.is_server():
-		return
-
-	var peer_id := multiplayer.get_remote_sender_id()
-
-	set_character(peer_id, character)
-
-
-#Client request Host character change
-func request_set_character(character: String) -> void:
-	if multiplayer.is_server():
-		set_character(multiplayer.get_unique_id(), character)
-		return
-
-	request_character_change.rpc_id(1, character)
-	
-	
 # Host request ready change (Ready up in lobby UI)
 @rpc("any_peer", "reliable")
 func request_ready_change(player_is_ready: bool) -> void:
@@ -260,11 +205,10 @@ func request_set_ready(player_is_ready: bool) -> void:
 
 # Host will call to have players receive the requested changes in state.
 @rpc("authority", "reliable")
-func sync_player_state(peer_id: int, character: String, player_is_ready: bool) -> void:
+func sync_player_state(peer_id: int, player_is_ready: bool) -> void:
 	if not players.has(peer_id):
 		return
 
-	players[peer_id]["character"] = character
 	players[peer_id]["ready"] = player_is_ready
 
 	lobby_player_updated.emit(peer_id)
