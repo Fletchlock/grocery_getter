@@ -14,7 +14,6 @@ var inspection_camera_active: bool = false
 @onready var held_item_holder: Node3D = $FirstPersonCameraPivot/HeldItemHolder
 @onready var held_box_holder: Node3D = $FirstPersonCameraPivot/HeldBoxHolder
 @onready var _spring_arm_pivot: Node3D = $SpringArmPivot
-@onready var _first_person_pivot: Node3D = $FirstPersonCameraPivot
 @onready var armature_node: Node3D = $Armature
 @onready var skeleton: Skeleton3D = $Armature/Skeleton3D
 @onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/GroceryRed
@@ -54,7 +53,7 @@ var nearby_carts: Array[RigidBody3D] = []
 @export_range(0.0, 1.0, 0.0001) var mouse_sensitivity: float = 0.0017 ## Mouse camera sensitivity.
 @export_range(0.0, 100.0, 1.0)
 var mouse_smoothing: float = 25.0
-@export var gamepad_sensitivty := 3.0 ## Gamepad camera sensitivity.
+@export var gamepad_sensitivity := 3.0 ## Gamepad camera sensitivity.
 @export var zoom_speed := 1.0 ## Mouse camera zoom speed.
 @export var gamepad_zoom_speed := 2.0 ## Gamepad camera zoom speed.
 @export var min_zoom := 2.0 ## Minimum camera distance.
@@ -358,7 +357,7 @@ func _on_lobby_player_updated(peer_id: int) -> void:
 
 
 func _refresh_character_selection() -> void:
-	var character: String = LobbyManager.get_character(
+	var character: String = (
 		get_multiplayer_authority()
 	)
 
@@ -556,14 +555,14 @@ func _set_perspective(first_person: bool) -> void:
 
 	if _first_person:
 		rotation.y = _spring_arm_pivot.global_rotation.y
-		_first_person_pivot.rotation.x = _spring_arm_pivot.rotation.x
+		first_person_camera_pivot.rotation.x = _spring_arm_pivot.rotation.x
 		_first_person_camera.make_current()
 		if interact_raycast_3d:
 			interact_raycast_3d.enabled = true
 
 	else:
 		_spring_arm_pivot.global_rotation.y = rotation.y
-		_spring_arm_pivot.rotation.x = _first_person_pivot.rotation.x
+		_spring_arm_pivot.rotation.x = first_person_camera_pivot.rotation.x
 		var camera_yaw: float = _spring_arm_pivot.global_rotation.y
 		var flat_camera_forward: Vector3 = (
 			Vector3.FORWARD.rotated(
@@ -960,7 +959,7 @@ func _physics_process(delta: float) -> void:
 		if gamepad_look.length() > 0.05:
 			_camera_input_direction += (
 				gamepad_look
-				* gamepad_sensitivty
+				* gamepad_sensitivity
 			)
 
 	# Convert accumulated mouse displacement into a rotation rate.
@@ -995,11 +994,11 @@ func _physics_process(delta: float) -> void:
 	if _first_person:
 		rotation.y -= look_rotation.x
 
-		_first_person_pivot.rotation.x -= look_rotation.y
+		first_person_camera_pivot.rotation.x -= look_rotation.y
 
 		# First person look up/down limits
-		_first_person_pivot.rotation.x = clamp(
-			_first_person_pivot.rotation.x,
+		first_person_camera_pivot.rotation.x = clamp(
+			first_person_camera_pivot.rotation.x,
 			deg_to_rad(-80.0),
 			deg_to_rad(80.0)
 		)
@@ -3535,7 +3534,7 @@ func exit_checkout_mode() -> void:
 			global_rotation.y = checkout_rotation.y
 
 			# Vertical look direction.
-			_first_person_pivot.rotation.x = clampf(
+			first_person_camera_pivot.rotation.x = clampf(
 				checkout_rotation.x,
 				deg_to_rad(-80.0),
 				deg_to_rad(80.0)

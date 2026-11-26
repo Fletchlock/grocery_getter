@@ -1,200 +1,11 @@
+
 extends CharacterBody3D
 
-# === Node References ===
-@onready var _third_person_camera: Camera3D = $SpringArmPivot/SpringArm3D/Camera3D
-@onready var _first_person_camera: Camera3D = $FirstPersonCameraPivot/FirstPersonCamera
-@onready var first_person_camera_pivot: Node3D = $FirstPersonCameraPivot
-@onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
 
-# Inspection Camera for setting hand targets etc.
-@onready var inspection_camera: Camera3D = $InspectionCameraPivot/InspectionCamera
-var inspection_camera_active: bool = false
+# ============================================================
+# ENUMS
+# ============================================================
 
-@onready var interact_raycast_3d: RayCast3D = $FirstPersonCameraPivot/FirstPersonCamera/InteractRaycast3D
-@onready var held_item_holder: Node3D = $FirstPersonCameraPivot/HeldItemHolder
-@onready var held_box_holder: Node3D = $FirstPersonCameraPivot/HeldBoxHolder
-@onready var _spring_arm_pivot: Node3D = $SpringArmPivot
-@onready var _first_person_pivot: Node3D = $FirstPersonCameraPivot
-@onready var armature_node: Node3D = $Armature
-
-@onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/AlienBody
-
-@onready var alien_head: MeshInstance3D = $Armature/Skeleton3D/Head
-@onready var alien_top: MeshInstance3D = $Armature/Skeleton3D/Top
-@onready var alien_bottom: MeshInstance3D = $Armature/Skeleton3D/Bottom
-@onready var alien_feet: MeshInstance3D = $Armature/Skeleton3D/Feet
-
-@onready var anim_tree: AnimationTree = $AnimationTree
-@onready var collision_shape: CollisionShape3D = $CollisionShape3D
-@onready var cart_pusher: RigidBody3D = $CartPusher
-@onready var _mesh_default_y: float = $Armature.position.y
-@onready var crosshair: Control = $FirstPersonCameraPivot/FirstPersonCamera/UI/Crosshair
-@onready var player_equipment: PlayerEquipment = $PlayerEquipment
-
-# Audio
-@onready var footstep_player: AudioStreamPlayer3D = $FirstPersonCameraPivot/FirstPersonCamera/FootstepPlayer
-@onready var audio_listener: AudioListener3D = $AudioListener3D
-var last_footstep_time: int = 0
-const FOOTSTEP_COOLDOWN_MS: int = 180
-
-
-@export_group("Cart")
-@export var strafe_rotation := 35.0
-@export var attached_cart: RigidBody3D = null
-
-
-# Cart IK refs
-@onready var left_hand_ik: TwoBoneIK3D = $Armature/Skeleton3D/LeftTwoBoneIK3D
-@onready var right_hand_ik: TwoBoneIK3D = $Armature/Skeleton3D/RightTwoBoneIK3D
-@onready var left_hand_rot: CopyTransformModifier3D = $Armature/Skeleton3D/LeftHandRotationModifier
-@onready var right_hand_rot: CopyTransformModifier3D = $Armature/Skeleton3D/RightHandRotatioinModifier
-
-
-# === Configuration Properties ===
-@export_group("Camera")
-@export_range(0.0, 1.0, 0.0001) var mouse_sensitivity: float = 0.0017 ## Mouse camera sensitivity.
-@export_range(0.0, 100.0, 1.0)
-var mouse_smoothing: float = 25.0
-@export var gamepad_sensitivty := 3.0 ## Gamepad camera sensitivity.
-@export var zoom_speed := 1.0 ## Mouse camera zoom speed.
-@export var gamepad_zoom_speed := 2.0 ## Gamepad camera zoom speed.
-@export var min_zoom := 2.0 ## Minimum camera distance.
-@export var max_zoom := 8.0 ## Maximum camera distance.
-
-
-@export_group("Movement")
-@export var walk_speed : float = 3.5 ## Speed while walking.
-@export var sprint_speed : float = 6.0 ## Speed while sprinting
-@export var crouch_speed: float = 2.0 ## Speed while crouching
-@export var acceleration : float= 36.0 ## Ground movement acceleration.
-@export var rotation_speed : float= 12.0 ## Character rotation speed.
-@export var jump_strength : float= 10.0 ## Initial upward force when jumping.
-@export_range(0.1, 1.0, 0.05)
-var jump_release_multiplier: float = 0.40
-@export var air_acceleration : float= 3.0 ## Movement acceleration while airborne.
-
-var knockback_velocity: Vector3 = Vector3.ZERO
-
-@export_group("Knockback")
-@export var knockback_decay: float = 8.0
-
-@export_group("Network Replication")
-@export var network_position := Vector3.ZERO
-@export var network_velocity := Vector3.ZERO
-@export var network_rotation_y : float = 0.0
-@export var network_anim_blend : float = 0.0
-@export var network_is_falling : bool = false
-@export var network_is_grounded : bool = true
-@export var network_is_crouching: bool = false
-@export var network_on_moving_platform : bool = false
-@export var network_is_pushing_cart: bool = false
-@export var network_first_person: bool = false
-
-var _network_position_history: Array[Dictionary] = []
-var _network_position_last_received := Vector3.ZERO
-var _network_velocity_last_received := Vector3.ZERO
-var _network_rotation_y_last_received : float = 0.0
-var _network_velocity_received_time : float = 0.0
-var _network_position_initialized : bool = false
-var _network_first_person_last_received: bool = false
-
-const NORMAL_INTERPOLATION_DELAY := 0.07
-const PLATFORM_INTERPOLATION_DELAY := 0.05
-
-@export_group("UI Navigation")
-@export var gamepad_cursor_speed: float = 500.0 #base spped
-
-@export_group("Checkout Cursor")
-@export_range(1.0, 5.0, 0.1) 
-var checkout_controller_sensitivity: float = 2.0 #base speed multiplier
-@export_range(0.5, 5.0, 0.1)
-var checkout_mouse_sensitivity: float = 1.4
-
-@export_group("Blink")
-@export var blink_min_time: float = 2.5 ## Minimum time to wait before a blink.
-@export var blink_max_time: float = 6.5 ## Maximum time to wait before a blink.
-@export var blink_duration: float = 0.14 ## How long it takes for the eyes to close and reopen.
-@export var blink_min_value: float = 0.32 ## Shape key value when the eyes are normally open.
-@export var blink_max_value: float = 1.65 ## Shape key value when the eyes are fully closed.
-@export_range(0.0, 1.0) var double_blink_chance: float = 0.08 ## Chance of a second blink after a normal blink.
-@export var double_blink_delay: float = 0.10 ## Delay between the first and second blink.
-
-var blink_timer := 0.0
-var blink_progress := -1.0
-var double_blink_pending := false
-
-
-@export_group("Idle Look")
-@export var look_distance: float = 5.0 ## Maximum distance to look at another player.
-@export var look_speed: float = 5.0 ## Speed at which the head turns toward another player.
-@export_range(0.0, 180.0) var look_angle: float = 90.0 ## Maximum angle from forward that the character will look.
-@onready var look_at_modifier: LookAtModifier3D = $Armature/Skeleton3D/LookAtModifier3D
-var look_target: Node3D = null
-
-# === Internal State Variables ===
-var _camera_input_direction := Vector2.ZERO
-var _mouse_input_direction: Vector2 = Vector2.ZERO
-var _smoothed_mouse_velocity: Vector2 = Vector2.ZERO
-var _last_movement_direction := Vector3.FORWARD
-var is_sprinting: bool = false
-var is_crouching: bool = false
-var _gravity := -30.0
-var _was_airborne := false
-var _target_zoom := 2.0
-var _first_person: bool = true
-var _smoothed_sprint_blend: float = 0.0
-var _smoothed_crouch_blend: float = 0.0
-var camera_fade_tween: Tween = null
-var movement_locked: bool = false
-
-# === Checkout mode ===
-
-var checkout_mode_active: bool = false
-var active_checkout: Checkout = null
-var checkout_previous_camera: Camera3D = null
-var checkout_previous_mouse_mode: Input.MouseMode = Input.MOUSE_MODE_CAPTURED
-var checkout_previous_movement_locked: bool = false
-var checkout_previous_raycast_enabled: bool = true
-var checkout_previous_held_item_visibility: bool = true
-var held_item: ProductData = null
-var held_item_visual: MeshInstance3D = null
-var held_item_origin: ItemOrigin = ItemOrigin.NONE
-var held_item_order_id: int = -1
-var checkout_cursor_visual: MeshInstance3D = null
-var checkout_cursor_last_safe_position: Vector3 = Vector3.ZERO
-var checkout_cursor_has_safe_position: bool = false
-var checkout_cursor_sensor: Area3D = null
-var rotating_held_product: bool = false
-var checkout_rotation_mouse_position: Vector2 = Vector2.ZERO
-var checkout_last_mouse_position: Vector2 = Vector2.ZERO
-var checkout_rotation_previous_mouse_mode: Input.MouseMode = Input.MOUSE_MODE_VISIBLE
-var checkout_scanned_product_path: String = ""
-var checkout_auto_bag_hover_active: bool = false
-var checkout_barcode_product_path: String = ""
-var checkout_virtual_mouse_position: Vector2 = Vector2.ZERO
-var checkout_virtual_mouse_initialized: bool = false
-var checkout_pointer_layer: CanvasLayer = null
-var checkout_pointer: Sprite2D = null
-
-var checkout_using_controller_cursor: bool = false
-
-const CHECKOUT_POINTER_TEXTURE: Texture2D = preload(
-	"res://assets/images/hand_pointer_32px.png"
-)
-
-func can_process_gameplay_input() -> bool:
-	return (
-		is_multiplayer_authority()
-		and GameManager.current_state == GameManager.GameState.PLAYING
-	)
-
-var block_movement_until_keys_released := false
-
-
-# Conveyor Belt Testing
-var conveyor_velocity: Vector3 = Vector3.ZERO
-
-# === Held Item Variables ===
 enum ItemOrigin {
 	NONE,
 	PRODUCT_DISPLAY,
@@ -203,60 +14,376 @@ enum ItemOrigin {
 	ORDER_GRID
 }
 
+
+# ============================================================
+# CONSTANTS
+# ============================================================
+
+const FOOTSTEP_COOLDOWN_MS: int = 180
+
+const NORMAL_INTERPOLATION_DELAY: float = 0.07
+const PLATFORM_INTERPOLATION_DELAY: float = 0.05
+
+const CHECKOUT_POINTER_TEXTURE: Texture2D = preload(
+	"res://assets/images/hand_pointer_32px.png"
+)
+
+
+# ============================================================
+# EXPORTED CONFIGURATION
+# ============================================================
+
+@export_group("Movement")
+@export var walk_speed: float = 3.5 ## Speed while walking.
+@export var sprint_speed: float = 6.0 ## Speed while sprinting.
+@export var crouch_speed: float = 2.0 ## Speed while crouching.
+@export var acceleration: float = 36.0 ## Ground movement acceleration.
+@export var rotation_speed: float = 12.0 ## Character rotation speed.
+@export var jump_strength: float = 10.0 ## Initial upward force when jumping.
+@export_range(0.1, 1.0, 0.05)
+var jump_release_multiplier: float = 0.40
+@export var air_acceleration: float = 3.0 ## Movement acceleration while airborne.
+
+
+@export_group("Camera")
+@export_range(0.0, 1.0, 0.0001)
+var mouse_sensitivity: float = 0.0017 ## Mouse camera sensitivity.
+@export_range(0.0, 100.0, 1.0)
+var mouse_smoothing: float = 25.0
+@export var gamepad_sensitivity: float = 3.0 ## Gamepad camera sensitivity.
+@export var zoom_speed: float = 1.0 ## Mouse camera zoom speed.
+@export var gamepad_zoom_speed: float = 2.0 ## Gamepad camera zoom speed.
+@export var min_zoom: float = 2.0 ## Minimum camera distance.
+@export var max_zoom: float = 8.0 ## Maximum camera distance.
+
+
+@export_group("Cart")
+@export var strafe_rotation: float = 35.0
+@export var attached_cart: RigidBody3D = null
+
+
+@export_group("Knockback")
+@export var knockback_decay: float = 8.0
+
+
+@export_group("Blink")
+@export var blink_min_time: float = 2.5 ## Minimum time between blinks.
+@export var blink_max_time: float = 6.5 ## Maximum time between blinks.
+@export var blink_duration: float = 0.14 ## Duration of a complete blink.
+@export var blink_min_value: float = 0.32 ## Open eye blend shape value.
+@export var blink_max_value: float = 1.65 ## Closed eye blend shape value.
+@export_range(0.0, 1.0)
+var double_blink_chance: float = 0.08 ## Chance of a second blink.
+@export var double_blink_delay: float = 0.10 ## Delay before the second blink.
+
+
+@export_group("Idle Look")
+@export var look_distance: float = 5.0 ## Maximum distance to another player.
+@export var look_speed: float = 5.0 ## Head turning speed.
+@export_range(0.0, 180.0)
+var look_angle: float = 90.0 ## Maximum look angle from forward.
+
+
+@export_group("UI Navigation")
+@export var gamepad_cursor_speed: float = 500.0
+
+
+@export_group("Checkout Cursor")
+@export_range(1.0, 5.0, 0.1)
+var checkout_controller_sensitivity: float = 2.0
+@export_range(0.5, 5.0, 0.1)
+var checkout_mouse_sensitivity: float = 1.4
+
+
 @export_group("Checkout Cursor Item")
-@export var checkout_cursor_offset: Vector2 = Vector2(0.0, 0.0)
+@export var checkout_cursor_offset: Vector2 = Vector2.ZERO
 @export var checkout_cursor_depth: float = 1.0
+
 
 @export_group("Held Product Rotation")
 @export var held_product_rotation_sensitivity: float = 0.008
 
-# === Held Restock Box Variables ===
-var held_restock_box: RestockBox = null
-# Server-authoritative contents of the carried box.
-var server_restock_product_path: String = ""
-var server_restock_quantity: int = 0
 
-# === Held Restock Scanner Variables ===
-@export var network_holding_restock_scanner: bool = false
-var held_restock_scanner: Node3D = null
-var held_restock_scanner_holder: Node3D = null
-var last_restock_wheel_time_usec: int = 0
-var _network_holding_restock_scanner_last_received: bool = false
-
-# === Held Mop Variables
 @export_group("Held Mop")
-@export var mop_hold_position: Vector3 = Vector3(0.25, 0.00, 0.00)
+@export var mop_hold_position: Vector3 = Vector3(0.25, 0.0, 0.0)
 @export var mop_hold_rotation: Vector3 = Vector3(110.0, 0.0, -25.0)
-@export var network_holding_mop: bool = false
-@export var network_is_cleaning_spill: bool = false
 
-var _network_is_cleaning_spill_last_received: bool = false
-var _network_holding_mop_last_received: bool = false
-var held_mop: Node3D = null
 
 @export_group("Spill Cleaning")
 @export var spill_cleaning_distance: float = 3.0
 
-var cleaning_spill: Spill = null
-var cleaning_progress: float = 0.0
-var server_holding_mop: bool = false
-var server_cleaning_spill_path: NodePath = NodePath()
-var server_cleaning_started_usec: int = 0
 
+# ============================================================
+# NETWORK REPLICATION
+# ============================================================
+
+@export_group("Network Replication")
+
+# Movement and perspective.
+@export var network_position: Vector3 = Vector3.ZERO
+@export var network_velocity: Vector3 = Vector3.ZERO
+@export var network_rotation_y: float = 0.0
+@export var network_first_person: bool = false
+@export var network_on_moving_platform: bool = false
+
+# Animation.
+@export var network_anim_blend: float = 0.0
+@export var network_is_falling: bool = false
+@export var network_is_grounded: bool = true
+@export var network_is_crouching: bool = false
+@export var network_is_pushing_cart: bool = false
+
+# Held product.
 @export var network_holding_item: bool = false
 @export var network_held_item_path: String = ""
 
-var _network_holding_item_last_received: bool = false
-var _network_held_item_path_last_received: String = ""
-
+# Restock box.
 @export var network_holding_restock_box: bool = false
 @export var network_restock_box_product_path: String = ""
 @export var network_restock_box_quantity: int = 0
 
+# Restock scanner.
+@export var network_holding_restock_scanner: bool = false
+
+# Mop and spill cleaning.
+@export var network_holding_mop: bool = false
+@export var network_is_cleaning_spill: bool = false
+
+
+# ============================================================
+# NODE REFERENCES
+# ============================================================
+
+# Cameras and pivots.
+@onready var _third_person_camera: Camera3D = $SpringArmPivot/SpringArm3D/Camera3D
+@onready var _first_person_camera: Camera3D = $FirstPersonCameraPivot/FirstPersonCamera
+@onready var _spring_arm: SpringArm3D = $SpringArmPivot/SpringArm3D
+@onready var _spring_arm_pivot: Node3D = $SpringArmPivot
+@onready var first_person_camera_pivot: Node3D = $FirstPersonCameraPivot
+@onready var inspection_camera: Camera3D = $InspectionCameraPivot/InspectionCamera
+
+# Character and animation.
+@onready var armature_node: Node3D = $Armature
+@onready var anim_tree: AnimationTree = $AnimationTree
+@onready var collision_shape: CollisionShape3D = $CollisionShape3D
+@onready var _mesh_default_y: float = $Armature.position.y
+
+# Alien meshes.
+@onready var body_mesh: MeshInstance3D = $Armature/Skeleton3D/AlienBody
+@onready var alien_head: MeshInstance3D = $Armature/Skeleton3D/Head
+@onready var alien_top: MeshInstance3D = $Armature/Skeleton3D/Top
+@onready var alien_bottom: MeshInstance3D = $Armature/Skeleton3D/Bottom
+@onready var alien_feet: MeshInstance3D = $Armature/Skeleton3D/Feet
+
+# Skeleton modifiers and IK.
+@onready var look_at_modifier: LookAtModifier3D = $Armature/Skeleton3D/LookAtModifier3D
+@onready var left_hand_ik: TwoBoneIK3D = $Armature/Skeleton3D/LeftTwoBoneIK3D
+@onready var right_hand_ik: TwoBoneIK3D = $Armature/Skeleton3D/RightTwoBoneIK3D
+@onready var left_hand_rot: CopyTransformModifier3D = $Armature/Skeleton3D/LeftHandRotationModifier
+@onready var right_hand_rot: CopyTransformModifier3D = $Armature/Skeleton3D/RightHandRotationModifier
+
+# Interaction and equipment.
+@onready var interact_raycast_3d: RayCast3D = $FirstPersonCameraPivot/FirstPersonCamera/InteractRaycast3D
+@onready var held_item_holder: Node3D = $FirstPersonCameraPivot/HeldItemHolder
+@onready var held_box_holder: Node3D = $FirstPersonCameraPivot/HeldBoxHolder
+@onready var player_equipment: PlayerEquipment = $PlayerEquipment
+@onready var cart_pusher: RigidBody3D = $CartPusher
+
+# User interface.
+@onready var crosshair: Control = $FirstPersonCameraPivot/FirstPersonCamera/UI/Crosshair
+
+# Audio.
+@onready var footstep_player: AudioStreamPlayer3D = $FirstPersonCameraPivot/FirstPersonCamera/FootstepPlayer
+@onready var audio_listener: AudioListener3D = $AudioListener3D
+
+
+# ============================================================
+# MOVEMENT STATE
+# ============================================================
+
+var is_sprinting: bool = false
+var is_crouching: bool = false
+var movement_locked: bool = false
+var block_movement_until_keys_released: bool = false
+
+var _gravity: float = -30.0
+var _last_movement_direction: Vector3 = Vector3.FORWARD
+var _was_airborne: bool = false
+
+var knockback_velocity: Vector3 = Vector3.ZERO
+var conveyor_velocity: Vector3 = Vector3.ZERO
+
+
+# ============================================================
+# CAMERA STATE
+# ============================================================
+
+var _first_person: bool = true
+var _target_zoom: float = 2.0
+
+var _camera_input_direction: Vector2 = Vector2.ZERO
+var _mouse_input_direction: Vector2 = Vector2.ZERO
+var _smoothed_mouse_velocity: Vector2 = Vector2.ZERO
+
+var camera_fade_tween: Tween = null
+var inspection_camera_active: bool = false
+
+
+# ============================================================
+# ANIMATION AND VISUAL STATE
+# ============================================================
+
+var _smoothed_sprint_blend: float = 0.0
+var _smoothed_crouch_blend: float = 0.0
+
+# Blinking.
+var blink_timer: float = 0.0
+var blink_progress: float = -1.0
+var double_blink_pending: bool = false
+
+# Idle head tracking.
+var look_target: Node3D = null
+
+# Footsteps.
+var last_footstep_time: int = 0
+
+
+# ============================================================
+# HELD PRODUCT STATE
+# ============================================================
+
+var held_item: ProductData = null
+var held_item_visual: MeshInstance3D = null
+var held_item_origin: ItemOrigin = ItemOrigin.NONE
+var held_item_order_id: int = -1
+
+
+# ============================================================
+# RESTOCK BOX STATE
+# ============================================================
+
+var held_restock_box: RestockBox = null
+
+# Server-authoritative contents of the carried box.
+var server_restock_product_path: String = ""
+var server_restock_quantity: int = 0
+
+
+# ============================================================
+# RESTOCK SCANNER STATE
+# ============================================================
+
+var held_restock_scanner: Node3D = null
+var held_restock_scanner_holder: Node3D = null
+var last_restock_wheel_time_usec: int = 0
+
+
+# ============================================================
+# MOP AND SPILL CLEANING STATE
+# ============================================================
+
+var held_mop: Node3D = null
+var cleaning_spill: Spill = null
+var cleaning_progress: float = 0.0
+
+# Server-authoritative cleaning state.
+var server_holding_mop: bool = false
+var server_cleaning_spill_path: NodePath = NodePath()
+var server_cleaning_started_usec: int = 0
+
+
+# ============================================================
+# CHECKOUT STATE
+# ============================================================
+
+# Active checkout.
+var checkout_mode_active: bool = false
+var active_checkout: Checkout = null
+
+# Previous player state.
+var checkout_previous_camera: Camera3D = null
+var checkout_previous_mouse_mode: Input.MouseMode = Input.MOUSE_MODE_CAPTURED
+var checkout_previous_movement_locked: bool = false
+var checkout_previous_raycast_enabled: bool = true
+var checkout_previous_held_item_visibility: bool = true
+
+# Checkout cursor.
+var checkout_cursor_visual: MeshInstance3D = null
+var checkout_cursor_sensor: Area3D = null
+var checkout_cursor_last_safe_position: Vector3 = Vector3.ZERO
+var checkout_cursor_has_safe_position: bool = false
+
+# Virtual mouse and controller cursor.
+var checkout_virtual_mouse_position: Vector2 = Vector2.ZERO
+var checkout_virtual_mouse_initialized: bool = false
+var checkout_last_mouse_position: Vector2 = Vector2.ZERO
+var checkout_using_controller_cursor: bool = false
+
+# Checkout pointer.
+var checkout_pointer_layer: CanvasLayer = null
+var checkout_pointer: Sprite2D = null
+
+# Held product rotation.
+var rotating_held_product: bool = false
+var checkout_rotation_mouse_position: Vector2 = Vector2.ZERO
+var checkout_rotation_previous_mouse_mode: Input.MouseMode = Input.MOUSE_MODE_VISIBLE
+
+# Product scanning and bagging.
+var checkout_scanned_product_path: String = ""
+var checkout_barcode_product_path: String = ""
+var checkout_auto_bag_hover_active: bool = false
+
+
+# ============================================================
+# NETWORK INTERPOLATION STATE
+# ============================================================
+
+var _network_position_history: Array[Dictionary] = []
+
+var _network_position_last_received: Vector3 = Vector3.ZERO
+var _network_velocity_last_received: Vector3 = Vector3.ZERO
+var _network_rotation_y_last_received: float = 0.0
+var _network_first_person_last_received: bool = false
+
+var _network_velocity_received_time: float = 0.0
+var _network_position_initialized: bool = false
+
+
+# ============================================================
+# NETWORK EQUIPMENT STATE
+# ============================================================
+
+# Held product.
+var _network_holding_item_last_received: bool = false
+var _network_held_item_path_last_received: String = ""
+
+# Restock box.
 var _network_holding_restock_box_last_received: bool = false
 var _network_restock_box_product_path_last_received: String = ""
 var _network_restock_box_quantity_last_received: int = 0
 
+# Restock scanner.
+var _network_holding_restock_scanner_last_received: bool = false
+
+# Mop and spill cleaning.
+var _network_holding_mop_last_received: bool = false
+var _network_is_cleaning_spill_last_received: bool = false
+
+
+# ============================================================
+# GAMEPLAY INPUT HELPERS
+# ============================================================
+
+func can_process_gameplay_input() -> bool:
+	return (
+		is_multiplayer_authority()
+		and GameManager.current_state == GameManager.GameState.PLAYING
+	)
+
+
+# ============================================================
+# PLAYER INITIALIZATION
+# ============================================================
 
 func _enter_tree() -> void:
 	# Convert your node's string name (e.g. "933642306") into its real integer peer ID 
@@ -503,14 +630,14 @@ func _set_perspective(first_person: bool) -> void:
 
 	if _first_person:
 		rotation.y = _spring_arm_pivot.global_rotation.y
-		_first_person_pivot.rotation.x = _spring_arm_pivot.rotation.x
+		first_person_camera_pivot.rotation.x = _spring_arm_pivot.rotation.x
 		_first_person_camera.make_current()
 		if interact_raycast_3d:
 			interact_raycast_3d.enabled = true
 
 	else:
 		_spring_arm_pivot.global_rotation.y = rotation.y
-		_spring_arm_pivot.rotation.x = _first_person_pivot.rotation.x
+		_spring_arm_pivot.rotation.x = first_person_camera_pivot.rotation.x
 		var camera_yaw: float = _spring_arm_pivot.global_rotation.y
 		var flat_camera_forward: Vector3 = (
 			Vector3.FORWARD.rotated(
@@ -909,7 +1036,7 @@ func _physics_process(delta: float) -> void:
 		if gamepad_look.length() > 0.05:
 			_camera_input_direction += (
 				gamepad_look
-				* gamepad_sensitivty
+				* gamepad_sensitivity
 			)
 
 	# Convert accumulated mouse displacement into a rotation rate.
@@ -944,11 +1071,11 @@ func _physics_process(delta: float) -> void:
 	if _first_person:
 		rotation.y -= look_rotation.x
 
-		_first_person_pivot.rotation.x -= look_rotation.y
+		first_person_camera_pivot.rotation.x -= look_rotation.y
 
 		# First person look up/down limits
-		_first_person_pivot.rotation.x = clamp(
-			_first_person_pivot.rotation.x,
+		first_person_camera_pivot.rotation.x = clamp(
+			first_person_camera_pivot.rotation.x,
 			deg_to_rad(-80.0),
 			deg_to_rad(80.0)
 		)
@@ -3449,7 +3576,7 @@ func exit_checkout_mode() -> void:
 			global_rotation.y = checkout_rotation.y
 
 			# Vertical look direction.
-			_first_person_pivot.rotation.x = clampf(
+			first_person_camera_pivot.rotation.x = clampf(
 				checkout_rotation.x,
 				deg_to_rad(-80.0),
 				deg_to_rad(80.0)

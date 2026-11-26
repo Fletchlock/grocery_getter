@@ -38,7 +38,7 @@ var standing_box_hand_target_right_position: Vector3
 	$"../Armature/Skeleton3D/LeftHandRotationModifier"
 )
 @onready var right_hand_rotation: CopyTransformModifier3D = (
-	$"../Armature/Skeleton3D/RightHandRotatioinModifier"
+	$"../Armature/Skeleton3D/RightHandRotationModifier"
 )
 var left_ik_owner: StringName = &""
 var right_ik_owner: StringName = &""
