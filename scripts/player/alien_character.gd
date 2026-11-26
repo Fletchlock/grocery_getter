@@ -424,71 +424,87 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
-	audio_listener.current = is_multiplayer_authority()
-	
-	if not is_multiplayer_authority():
-		crosshair.hide()
-	
-	print(
-		"PLAYER READY: ",
-		name,
-		" authority=",
-		get_multiplayer_authority(),
-		" local_id=",
-		multiplayer.get_unique_id()
-	)
-	
-	if is_multiplayer_authority():
+	_initialize_player_authority()
+	_initialize_animation()
+	_initialize_perspective()
+	_initialize_network_state()
+	_initialize_network_synchronizer()
+
+
+# ============================================================
+# PLAYER INITIALIZATION HELPERS
+# ============================================================
+
+func _initialize_player_authority() -> void:
+	var is_local_player: bool = is_multiplayer_authority()
+
+	audio_listener.current = is_local_player
+
+	if is_local_player:
 		add_to_group("local_player")
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-		
-	
+	else:
+		crosshair.hide()
+
+
+func _initialize_animation() -> void:
 	blink_timer = randf_range(blink_min_time, blink_max_time)
-	
-	# Initialize the AnimationTree.
+
 	anim_tree.advance_expression_base_node = get_path()
 	anim_tree.active = true
 
 
-	if is_multiplayer_authority():
-		var orange_survival: bool = (
-			get_parent().get_parent().name in [
-				"OrangeSurvival",
-				"ConveyorShowdown"
-				]
-		)
-				
-		_set_perspective(not orange_survival)
-		
-		_update_alien_visibility()
-		
-		if orange_survival:
-			_target_zoom = max_zoom
-			_spring_arm.spring_length = max_zoom
+func _initialize_perspective() -> void:
+	if not is_multiplayer_authority():
+		return
 
+	# These minigames start in third-person perspective.
+	var starts_in_third_person: bool = (
+		get_parent().get_parent().name in [
+			"OrangeSurvival",
+			"ConveyorShowdown"
+		]
+	)
+
+	_set_perspective(not starts_in_third_person)
+	_update_alien_visibility()
+
+	if starts_in_third_person:
+		_target_zoom = max_zoom
+		_spring_arm.spring_length = max_zoom
+
+
+func _initialize_network_state() -> void:
 	_network_position_last_received = network_position
 	_network_velocity_last_received = network_velocity
 	_network_rotation_y_last_received = network_rotation_y
-	_network_velocity_received_time = (Time.get_ticks_usec() / 1000000.0)
+
+	_network_velocity_received_time = (
+		Time.get_ticks_usec() / 1000000.0
+	)
+
 	_network_position_initialized = false
 
-	# --- FIXED MULTIPLAYER SYNCHRONIZER TIMING BUFFER ---
-	# We search through the entire character folder hierarchy dynamically, 
-	# completely preventing "null instance" layout crashes if paths change!
+
+func _initialize_network_synchronizer() -> void:
 	var sync_node: MultiplayerSynchronizer = null
-	
+
 	if has_node("MultiplayerSynchronizer"):
 		sync_node = $MultiplayerSynchronizer
 	else:
-		# Fallback: Loop through your child nodes to locate it dynamically
+		# Fall back to searching the player's direct children.
 		for child in get_children():
 			if child is MultiplayerSynchronizer:
 				sync_node = child
 				break
-				
-	# If found safely, initialize visibility states cleanly
+
 	if sync_node != null and is_multiplayer_authority():
 		sync_node.public_visibility = true
+
+
+# ============================================================
+# PLAYER INPUT
+# ============================================================
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -838,94 +854,164 @@ func _find_active_push_cart() -> RigidBody3D:
 	return null
 
 
+# ============================================================
+# FRAME PROCESS
+# ============================================================
+
 func _process(delta: float) -> void:
-	# Blink
+	_update_blink(delta)
+	update_idle_look(delta)
+	_update_equipment_ik(delta)
+	_update_checkout_frame(delta)
+
+
+# ============================================================
+# CHARACTER BLINKING
+# ============================================================
+
+func _update_blink(delta: float) -> void:
+	# Wait until the next blink.
 	if blink_progress < 0.0:
 		blink_timer -= delta
 
 		if blink_timer <= 0.0:
 			blink_progress = 0.0
-	else:
-		blink_progress += delta / blink_duration
 
-		var blink_amount: float = lerp(
-			blink_min_value,
-			blink_max_value,
-			1.0 - abs(blink_progress * 2.0 - 1.0)
+		return
+
+	# Advance the active blink.
+	blink_progress += delta / blink_duration
+
+	var blink_amount: float = lerp(
+		blink_min_value,
+		blink_max_value,
+		1.0 - abs(blink_progress * 2.0 - 1.0)
+	)
+
+	_apply_blink_amount(blink_amount)
+
+	if blink_progress >= 1.0:
+		blink_progress = -1.0
+		_schedule_next_blink()
+
+
+func _apply_blink_amount(blink_amount: float) -> void:
+	var blend_shape_count: int = (
+		body_mesh.mesh.get_blend_shape_count()
+	)
+
+	for i: int in range(blend_shape_count):
+		if body_mesh.mesh.get_blend_shape_name(i) == &"Blink":
+			body_mesh.set_blend_shape_value(i, blink_amount)
+			break
+
+
+func _schedule_next_blink() -> void:
+	if double_blink_pending:
+		double_blink_pending = false
+		blink_timer = double_blink_delay
+
+	elif randf() < double_blink_chance:
+		double_blink_pending = true
+		blink_timer = double_blink_delay
+
+	else:
+		blink_timer = randf_range(
+			blink_min_time,
+			blink_max_time
 		)
 
-		var blink_index: int = body_mesh.mesh.get_blend_shape_count()
 
-		for i: int in range(blink_index):
-			if body_mesh.mesh.get_blend_shape_name(i) == &"Blink":
-				body_mesh.set_blend_shape_value(i, blink_amount)
-				break
+# ============================================================
+# EQUIPMENT IK
+# ============================================================
 
-		if blink_progress >= 1.0:
-			blink_progress = -1.0
+func _update_equipment_ik(delta: float) -> void:
+	player_equipment.update_hand_targets(
+		delta,
+		network_is_crouching
+	)
 
-			if double_blink_pending:
-				double_blink_pending = false
-				blink_timer = double_blink_delay
-			elif randf() < double_blink_chance:
-				double_blink_pending = true
-				blink_timer = double_blink_delay
-			else:
-				blink_timer = randf_range(blink_min_time, blink_max_time)
-
-	update_idle_look(delta)
-	player_equipment.update_hand_targets(delta, network_is_crouching)
 	player_equipment.update_mop_right_hand_target(delta)
+
+
+# ============================================================
+# CHECKOUT FRAME UPDATES
+# ============================================================
+
+func _update_checkout_frame(delta: float) -> void:
 	update_checkout_controller_cursor(delta)
 	update_controller_product_rotation(delta)
 	update_checkout_cursor_visual()
 	update_checkout_pointer()
 
-	# Update checkout hover outlines.
-	if checkout_mode_active and is_instance_valid(active_checkout):
-		var mouse_position: Vector2 = checkout_virtual_mouse_position
+	_update_checkout_hover()
 
-		# Products can only be highlighted when we're not holding anything.
-		var can_hover_products: bool = (
-			held_item == null
-			and not is_holding_equipment()
-		)
 
-		# Keep hover detection aligned with the product's actual position.
-		if (
-			held_item != null
-			and held_item_origin == ItemOrigin.CHECKOUT_GRID
-		):
-			mouse_position = get_checkout_cursor_screen_position()
+func _update_checkout_hover() -> void:
+	if not checkout_mode_active:
+		return
 
-		active_checkout.update_checkout_hover_outline(
-			mouse_position,
-			can_hover_products
-		)
+	if not is_instance_valid(active_checkout):
+		return
 
-		# Automatically bag successfully scanned products on hover.
-		var should_auto_bag: bool = false
+	var mouse_position: Vector2 = (
+		_get_checkout_hover_position()
+	)
 
-		if (
-			is_multiplayer_authority()
-			and held_item != null
-			and held_item_origin == ItemOrigin.CHECKOUT_GRID
-			and active_checkout.is_mouse_over_bag(mouse_position)
-		):
-			var held_product: ProductData = held_item as ProductData
+	active_checkout.update_checkout_hover_outline(
+		mouse_position,
+		not is_holding_equipment()
+	)
 
-			if held_product != null:
-				should_auto_bag = (
-					checkout_scanned_product_path
-					== held_product.resource_path
-				)
+	_update_checkout_auto_bag(mouse_position)
 
-		if should_auto_bag and not checkout_auto_bag_hover_active:
-			checkout_auto_bag_hover_active = true
-			active_checkout.bag_grid.request_interact(self)
 
-		elif not should_auto_bag:
-			checkout_auto_bag_hover_active = false
+func _get_checkout_hover_position() -> Vector2:
+	# Align hover detection with the held product's actual position.
+	if (
+		held_item != null
+		and held_item_origin == ItemOrigin.CHECKOUT_GRID
+	):
+		return get_checkout_cursor_screen_position()
+
+	return checkout_virtual_mouse_position
+
+
+func _can_auto_bag_checkout_product(
+	mouse_position: Vector2
+) -> bool:
+	if not is_multiplayer_authority():
+		return false
+
+	if held_item == null:
+		return false
+
+	if held_item_origin != ItemOrigin.CHECKOUT_GRID:
+		return false
+
+	if not active_checkout.is_mouse_over_bag(mouse_position):
+		return false
+
+	return (
+		checkout_scanned_product_path
+		== held_item.resource_path
+	)
+
+
+func _update_checkout_auto_bag(
+	mouse_position: Vector2
+) -> void:
+	var should_auto_bag: bool = (
+		_can_auto_bag_checkout_product(mouse_position)
+	)
+
+	if should_auto_bag and not checkout_auto_bag_hover_active:
+		checkout_auto_bag_hover_active = true
+		active_checkout.bag_grid.request_interact(self)
+
+	elif not should_auto_bag:
+		checkout_auto_bag_hover_active = false
 
 
 # ============================================================
@@ -1172,10 +1258,13 @@ func _apply_camera_rotation(look_rotation: Vector2) -> void:
 func _update_camera_zoom(delta: float) -> void:
 	if can_process_gameplay_input() and Input.is_action_pressed("zoom_in"):
 		_target_zoom -= gamepad_zoom_speed * delta
-
+		_target_zoom = clamp(
+			_target_zoom,
+			min_zoom,
+			max_zoom
+		)
 	elif can_process_gameplay_input() and Input.is_action_pressed("zoom_out"):
 		_target_zoom += gamepad_zoom_speed * delta
-
 		_target_zoom = clamp(
 			_target_zoom,
 			min_zoom,
