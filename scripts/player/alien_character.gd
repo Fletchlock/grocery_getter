@@ -928,65 +928,93 @@ func _process(delta: float) -> void:
 			checkout_auto_bag_hover_active = false
 
 
+# ============================================================
+# PHYSICS PROCESS
+# ============================================================
+
 func _physics_process(delta: float) -> void:
-
-	# ============================================================
-	# REMOTE PLAYER
-	# ============================================================
-
 	if not is_multiplayer_authority():
-		set_anim_tree()
-		
-		_update_remote_equipment_visuals()
-		
-		# Detect a new received network state...
-		if (
-			not _network_position_initialized
-			or network_position != _network_position_last_received
-			or network_velocity != _network_velocity_last_received
-			or network_rotation_y != _network_rotation_y_last_received
-			or network_first_person != _network_first_person_last_received
-		):
-
-
-			var current_time := (
-				Time.get_ticks_usec() / 1000000.0
-			)
-
-			_network_position_history.append({
-				"time": current_time,
-				"position": network_position,
-				"velocity": network_velocity,
-				"rotation_y": network_rotation_y,
-				"first_person": network_first_person
-			})
-
-			_network_position_last_received = network_position
-			_network_velocity_last_received = network_velocity
-			_network_rotation_y_last_received = network_rotation_y
-			_network_first_person_last_received = network_first_person
-			_network_velocity_received_time = current_time
-
-			while _network_position_history.size() > 10:
-				_network_position_history.pop_front()
-
-			if not _network_position_initialized:
-				global_position = network_position
-				_network_position_initialized = true
-
-		_update_network_position()
-
+		_process_remote_player()
 		return
 
-
-	# ============================================================
-	# LOCAL PLAYER
-	# ============================================================
-	
 	_update_spill_cleaning(delta)
-	
-	# === 1. Camera / Look ===
 
+	_update_camera_look(delta)
+	_update_camera_zoom(delta)
+
+	var raw_input: Vector2 = _get_movement_input()
+	var move_direction: Vector3 = _get_movement_direction(raw_input)
+
+	_update_movement_velocity(raw_input, move_direction, delta)
+	_update_movement_animation()
+
+	var is_starting_jump: bool = _update_jump()
+
+	_update_landing_effect(delta)
+	_apply_physics_movement(is_starting_jump, delta)
+
+	_update_network_movement_state()
+	_update_character_rotation(raw_input, move_direction, delta)
+	_update_network_held_item_state()
+
+
+# ============================================================
+# REMOTE PLAYER PHYSICS
+# ============================================================
+
+func _process_remote_player() -> void:
+	set_anim_tree()
+	_update_remote_equipment_visuals()
+	_record_network_state()
+	_update_network_position()
+
+
+func _record_network_state() -> void:
+	# Detect a newly received network state.
+	if not (
+		not _network_position_initialized
+		or network_position != _network_position_last_received
+		or network_velocity != _network_velocity_last_received
+		or network_rotation_y != _network_rotation_y_last_received
+		or network_first_person != _network_first_person_last_received
+	):
+		return
+
+	var current_time: float = Time.get_ticks_usec() / 1000000.0
+
+	_network_position_history.append({
+		"time": current_time,
+		"position": network_position,
+		"velocity": network_velocity,
+		"rotation_y": network_rotation_y,
+		"first_person": network_first_person
+	})
+
+	_network_position_last_received = network_position
+	_network_velocity_last_received = network_velocity
+	_network_rotation_y_last_received = network_rotation_y
+	_network_first_person_last_received = network_first_person
+	_network_velocity_received_time = current_time
+
+	while _network_position_history.size() > 10:
+		_network_position_history.pop_front()
+
+	if not _network_position_initialized:
+		global_position = network_position
+		_network_position_initialized = true
+
+
+# ============================================================
+# CAMERA PHYSICS
+# ============================================================
+
+func _clear_camera_input() -> void:
+	_camera_input_direction = Vector2.ZERO
+	_mouse_input_direction = Vector2.ZERO
+	_smoothed_mouse_velocity = Vector2.ZERO
+
+
+func _get_gamepad_look_input() -> Vector2:
 	var gamepad_look: Vector2 = Vector2.ZERO
 
 	if can_process_gameplay_input():
@@ -997,11 +1025,8 @@ func _physics_process(delta: float) -> void:
 			"look_down"
 		)
 	else:
-		_camera_input_direction = Vector2.ZERO
-		_mouse_input_direction = Vector2.ZERO
-		_smoothed_mouse_velocity = Vector2.ZERO
+		_clear_camera_input()
 
-	
 	var controller_rotating_product: bool = (
 		held_item != null
 		and (
@@ -1016,94 +1041,116 @@ func _physics_process(delta: float) -> void:
 		or controller_rotating_product
 	):
 		gamepad_look = Vector2.ZERO
-		_camera_input_direction = Vector2.ZERO
-		_mouse_input_direction = Vector2.ZERO
-		_smoothed_mouse_velocity = Vector2.ZERO
+		_clear_camera_input()
 
-	# First person camera pivot move when crouching
-	var target_camera_y: float = 1.308 if is_crouching else 1.708
-	
-	first_person_camera_pivot.position.y = lerp(
-		first_person_camera_pivot.position.y,
-		target_camera_y,
-		1.0 - exp(-10.0 * delta)
-	)
+	return gamepad_look
+
+
+func _update_camera_look(delta: float) -> void:
+	var gamepad_look: Vector2 = _get_gamepad_look_input()
+
+	_update_crouch_camera(delta)
 
 	if Input.mouse_mode == Input.MOUSE_MODE_HIDDEN:
-
-		if gamepad_look.length() > 0.05:
-			var current_mouse_pos: Vector2 = (
-				get_viewport().get_mouse_position()
-			)
-
-			var new_mouse_pos: Vector2 = (
-				current_mouse_pos
-				+ gamepad_look
-				* gamepad_cursor_speed
-				* delta
-			)
-
-			var window_size: Vector2 = (
-				get_viewport().get_visible_rect().size
-			)
-
-			new_mouse_pos.x = clamp(
-				new_mouse_pos.x,
-				0.0,
-				window_size.x
-			)
-
-			new_mouse_pos.y = clamp(
-				new_mouse_pos.y,
-				0.0,
-				window_size.y
-			)
-
-			get_viewport().warp_mouse(new_mouse_pos)
-
+		_update_gamepad_ui_cursor(gamepad_look, delta)
 	else:
-
 		if gamepad_look.length() > 0.05:
 			_camera_input_direction += (
 				gamepad_look
 				* gamepad_sensitivity
 			)
 
-	# Convert accumulated mouse displacement into a rotation rate.
-	var mouse_velocity: Vector2 = _mouse_input_direction / delta
+	_update_mouse_smoothing(delta)
 
-	if mouse_smoothing <= 0.0:
-		# No smoothing: immediate mouse response.
-		_smoothed_mouse_velocity = mouse_velocity
-	else:
-		# Higher percentage = stronger smoothing.
-		var smoothing_speed: float = lerpf(
-			100.0,
-			5.0,
-			mouse_smoothing / 100.0
-		)
-
-		var smoothing_factor: float = (
-			1.0 - exp(-smoothing_speed * delta)
-		)
-
-		_smoothed_mouse_velocity = _smoothed_mouse_velocity.lerp(
-			mouse_velocity,
-			smoothing_factor
-		)
-
-	# Combine mouse and gamepad rotation.
 	var look_rotation: Vector2 = (
 		_smoothed_mouse_velocity * delta
 		+ _camera_input_direction * delta
 	)
 
+	_apply_camera_rotation(look_rotation)
+
+	# Clear accumulated input after applying rotation.
+	_camera_input_direction = Vector2.ZERO
+	_mouse_input_direction = Vector2.ZERO
+
+
+func _update_crouch_camera(delta: float) -> void:
+	var target_camera_y: float = 1.308 if is_crouching else 1.708
+
+	first_person_camera_pivot.position.y = lerp(
+		first_person_camera_pivot.position.y,
+		target_camera_y,
+		1.0 - exp(-10.0 * delta)
+	)
+
+
+func _update_gamepad_ui_cursor(
+	gamepad_look: Vector2,
+	delta: float
+) -> void:
+	if gamepad_look.length() <= 0.05:
+		return
+
+	var current_mouse_pos: Vector2 = (
+		get_viewport().get_mouse_position()
+	)
+
+	var new_mouse_pos: Vector2 = (
+		current_mouse_pos
+		+ gamepad_look
+		* gamepad_cursor_speed
+		* delta
+	)
+
+	var window_size: Vector2 = (
+		get_viewport().get_visible_rect().size
+	)
+
+	new_mouse_pos.x = clamp(
+		new_mouse_pos.x,
+		0.0,
+		window_size.x
+	)
+
+	new_mouse_pos.y = clamp(
+		new_mouse_pos.y,
+		0.0,
+		window_size.y
+	)
+
+	get_viewport().warp_mouse(new_mouse_pos)
+
+
+func _update_mouse_smoothing(delta: float) -> void:
+	# Convert accumulated mouse displacement into a rotation rate.
+	var mouse_velocity: Vector2 = _mouse_input_direction / delta
+
+	if mouse_smoothing <= 0.0:
+		_smoothed_mouse_velocity = mouse_velocity
+		return
+
+	# Higher percentage = stronger smoothing.
+	var smoothing_speed: float = lerpf(
+		100.0,
+		5.0,
+		mouse_smoothing / 100.0
+	)
+
+	var smoothing_factor: float = (
+		1.0 - exp(-smoothing_speed * delta)
+	)
+
+	_smoothed_mouse_velocity = _smoothed_mouse_velocity.lerp(
+		mouse_velocity,
+		smoothing_factor
+	)
+
+
+func _apply_camera_rotation(look_rotation: Vector2) -> void:
 	if _first_person:
 		rotation.y -= look_rotation.x
-
 		first_person_camera_pivot.rotation.x -= look_rotation.y
 
-		# First person look up/down limits
 		first_person_camera_pivot.rotation.x = clamp(
 			first_person_camera_pivot.rotation.x,
 			deg_to_rad(-80.0),
@@ -1113,7 +1160,6 @@ func _physics_process(delta: float) -> void:
 	else:
 		_spring_arm_pivot.rotation.x -= look_rotation.y
 
-		# Third person look up/down limits
 		_spring_arm_pivot.rotation.x = clamp(
 			_spring_arm_pivot.rotation.x,
 			deg_to_rad(-65.0),
@@ -1122,13 +1168,8 @@ func _physics_process(delta: float) -> void:
 
 		_spring_arm_pivot.rotation.y -= look_rotation.x
 
-	# Clear accumulated input after applying camera rotation.
-	_camera_input_direction = Vector2.ZERO
-	_mouse_input_direction = Vector2.ZERO
 
-	# Camera Zoom for TPP
-	
-		
+func _update_camera_zoom(delta: float) -> void:
 	if can_process_gameplay_input() and Input.is_action_pressed("zoom_in"):
 		_target_zoom -= gamepad_zoom_speed * delta
 
@@ -1147,15 +1188,12 @@ func _physics_process(delta: float) -> void:
 		8.0 * delta
 	)
 
-	# === 2. Directional Movement ===
-	if checkout_mode_active:
-		if Input.get_vector("left", "right", "up", "down").length() > 0.15:
-			print(
-				"CHECKOUT: movement_locked=", movement_locked,
-				" | velocity=", velocity,
-				" | position=", global_position
-			)
-	
+
+# ============================================================
+# MOVEMENT INPUT
+# ============================================================
+
+func _get_movement_input() -> Vector2:
 	var raw_input: Vector2 = Vector2.ZERO
 
 	if can_process_gameplay_input() and not movement_locked:
@@ -1179,6 +1217,10 @@ func _physics_process(delta: float) -> void:
 	):
 		block_movement_until_keys_released = false
 
+	return raw_input
+
+
+func _get_movement_direction(raw_input: Vector2) -> Vector3:
 	# Movement is relative to the player's horizontal facing.
 	var camera_yaw: float
 
@@ -1197,16 +1239,21 @@ func _physics_process(delta: float) -> void:
 		PI / 2.0
 	)
 
-	var move_direction: Vector3 = (
+	return (
 		forward * raw_input.y
 		+ right * raw_input.x
 	).normalized()
 
-	# === 3. Velocity and Kinematics ===
-	
-	# This checks whether a scene/node is in the group disable_player_sprint.
-	# If so, it disables sprint. This is currently used in mini games.
-	var sprint_allowed: bool = not get_tree().has_group("disable_player_sprint")
+
+# ============================================================
+# MOVEMENT VELOCITY
+# ============================================================
+
+func _update_sprint_state(raw_input: Vector2) -> void:
+	# Minigames can disable sprinting using this group.
+	var sprint_allowed: bool = (
+		not get_tree().has_group("disable_player_sprint")
+	)
 
 	is_sprinting = (
 		Input.is_action_pressed("sprint")
@@ -1218,17 +1265,28 @@ func _physics_process(delta: float) -> void:
 			and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT)
 		)
 	)
-		
-	var target_move_speed: float = (
-		crouch_speed
-		if is_crouching
-		else sprint_speed
-		if is_sprinting
-		else walk_speed
-	)
-	
-	var y_velocity: float = velocity.y
 
+
+func _get_target_movement_speed() -> float:
+	if is_crouching:
+		return crouch_speed
+
+	if is_sprinting:
+		return sprint_speed
+
+	return walk_speed
+
+
+func _update_movement_velocity(
+	raw_input: Vector2,
+	move_direction: Vector3,
+	delta: float
+) -> void:
+	_update_sprint_state(raw_input)
+
+	var target_move_speed: float = _get_target_movement_speed()
+
+	var y_velocity: float = velocity.y
 	velocity.y = 0.0
 
 	var current_acceleration: float = (
@@ -1249,8 +1307,11 @@ func _physics_process(delta: float) -> void:
 	velocity.y = y_velocity + _gravity * delta
 
 
-	# === 4. Animation State ===
+# ============================================================
+# MOVEMENT ANIMATION
+# ============================================================
 
+func _update_movement_animation() -> void:
 	var horizontal_speed: float = Vector3(
 		velocity.x,
 		0.0,
@@ -1287,15 +1348,16 @@ func _physics_process(delta: float) -> void:
 	network_is_falling = not is_on_floor()
 	network_is_grounded = is_on_floor()
 	network_is_crouching = is_crouching
-	network_is_pushing_cart = (
-		attached_cart != null
-	)
+	network_is_pushing_cart = attached_cart != null
 
 	set_anim_tree()
 
 
-	# === 5. Variable Height Jump ===
+# ============================================================
+# JUMPING AND LANDING
+# ============================================================
 
+func _update_jump() -> bool:
 	var is_starting_jump: bool = (
 		can_process_gameplay_input()
 		and Input.is_action_just_pressed("jump")
@@ -1307,7 +1369,7 @@ func _physics_process(delta: float) -> void:
 	if is_starting_jump:
 		velocity.y = jump_strength
 
-	# Releasing Jump early cuts the upward velocity.
+	# Releasing jump early cuts the upward velocity.
 	if (
 		can_process_gameplay_input()
 		and Input.is_action_just_released("jump")
@@ -1315,33 +1377,30 @@ func _physics_process(delta: float) -> void:
 	):
 		velocity.y *= jump_release_multiplier
 
+	return is_starting_jump
 
-	# === 6. Landing / Visual Effects ===
 
+func _update_landing_effect(delta: float) -> void:
 	if is_on_floor() and _was_airborne:
-
-		body_mesh.position.y = (
-			_mesh_default_y - 0.3
-		)
-
+		body_mesh.position.y = _mesh_default_y - 0.3
 		_was_airborne = false
 
 	elif not is_on_floor():
-
 		_was_airborne = true
 
 	if body_mesh.position.y < _mesh_default_y:
-
 		body_mesh.position.y = move_toward(
 			body_mesh.position.y,
 			_mesh_default_y,
 			5.0 * delta
 		)
 
+
 # ============================================================
-# CONVEYOR BELT MOVEMENT
+# CONVEYOR BELTS AND KNOCKBACK
 # ============================================================
-	
+
+func _update_conveyor_velocity(is_starting_jump: bool) -> void:
 	var belt: ConveyorBelt = null
 
 	if has_meta("conveyor_belt"):
@@ -1351,6 +1410,13 @@ func _physics_process(delta: float) -> void:
 
 	if is_instance_valid(belt) and is_on_floor() and not is_starting_jump:
 		conveyor_velocity = belt.get_belt_velocity()
+
+
+func _apply_physics_movement(
+	is_starting_jump: bool,
+	delta: float
+) -> void:
+	_update_conveyor_velocity(is_starting_jump)
 
 	knockback_velocity = knockback_velocity.move_toward(
 		Vector3.ZERO,
@@ -1364,7 +1430,131 @@ func _physics_process(delta: float) -> void:
 
 	velocity -= conveyor_velocity
 	velocity -= knockback_velocity
-	
+
+
+# ============================================================
+# CHARACTER ROTATION
+# ============================================================
+
+func _get_strafe_angle(raw_input: Vector2) -> float:
+	if raw_input.x == 0.0:
+		return 0.0
+
+	return -raw_input.x * deg_to_rad(strafe_rotation)
+
+
+func _update_character_rotation(
+	raw_input: Vector2,
+	move_direction: Vector3,
+	delta: float
+) -> void:
+	if _first_person:
+		_update_first_person_rotation(raw_input, delta)
+	else:
+		_update_third_person_rotation(
+			raw_input,
+			move_direction,
+			delta
+		)
+
+	network_rotation_y = armature_node.global_rotation.y
+
+
+func _update_first_person_rotation(
+	raw_input: Vector2,
+	delta: float
+) -> void:
+	var strafe_angle: float = _get_strafe_angle(raw_input)
+
+	armature_node.rotation.y = lerp_angle(
+		armature_node.rotation.y,
+		strafe_angle,
+		rotation_speed * delta
+	)
+
+
+func _update_third_person_rotation(
+	raw_input: Vector2,
+	move_direction: Vector3,
+	delta: float
+) -> void:
+	if body_mesh:
+		body_mesh.rotation.y = 0.0
+
+	if attached_cart == null:
+		_update_free_movement_rotation(move_direction, delta)
+	else:
+		_update_cart_movement_rotation(raw_input, delta)
+
+
+func _update_free_movement_rotation(
+	move_direction: Vector3,
+	delta: float
+) -> void:
+	if move_direction.length() > 0.2:
+		_last_movement_direction = move_direction
+
+	var local_movement_dir: Vector3 = (
+		global_transform.basis.inverse()
+		* _last_movement_direction
+	)
+
+	var target_angle: float = Vector3.FORWARD.signed_angle_to(
+		local_movement_dir,
+		Vector3.UP
+	)
+
+	armature_node.rotation.y = lerp_angle(
+		armature_node.rotation.y,
+		target_angle,
+		rotation_speed * delta
+	)
+
+
+func _update_cart_movement_rotation(
+	raw_input: Vector2,
+	delta: float
+) -> void:
+	var camera_yaw: float = _spring_arm_pivot.global_rotation.y
+
+	var flat_camera_forward: Vector3 = (
+		Vector3.FORWARD.rotated(
+			Vector3.UP,
+			camera_yaw
+		).normalized()
+	)
+
+	var local_camera_dir: Vector3 = (
+		global_transform.basis.inverse()
+		* flat_camera_forward
+	)
+
+	var target_camera_angle: float = (
+		Vector3.FORWARD.signed_angle_to(
+			local_camera_dir,
+			Vector3.UP
+		)
+	)
+
+	var strafe_angle: float = _get_strafe_angle(raw_input)
+
+	var target_angle: float = (
+		target_camera_angle
+		+ strafe_angle
+	)
+
+	armature_node.rotation.y = lerp_angle(
+		armature_node.rotation.y,
+		target_angle,
+		rotation_speed * delta
+	)
+
+
+# ============================================================
+# NETWORK PHYSICS STATE
+# ============================================================
+
+func _update_network_movement_state() -> void:
 	network_position = global_position
 	network_velocity = velocity
 
@@ -1373,97 +1563,8 @@ func _physics_process(delta: float) -> void:
 		and get_platform_velocity().length() > 0.1
 	)
 
-	# === 9. Character Rotation ===
 
-	if _first_person:
-		var strafe_angle: float = 0.0
-
-		if raw_input.x != 0.0:
-			strafe_angle = (
-				-raw_input.x
-				* deg_to_rad(strafe_rotation)
-			)
-
-		armature_node.rotation.y = lerp_angle(
-			armature_node.rotation.y,
-			strafe_angle,
-			rotation_speed * delta
-		)
-
-		network_rotation_y = armature_node.global_rotation.y
-
-	else:
-
-		# Third person: preserve the original armature-based rotation.
-		if body_mesh:
-			body_mesh.rotation.y = 0.0
-
-		if attached_cart == null:
-
-			if move_direction.length() > 0.2:
-				_last_movement_direction = move_direction
-
-			var local_movement_dir: Vector3 = (
-				global_transform.basis.inverse()
-				* _last_movement_direction
-			)
-
-			var target_angle: float = Vector3.FORWARD.signed_angle_to(
-				local_movement_dir,
-				Vector3.UP
-			)
-
-			armature_node.rotation.y = lerp_angle(
-				armature_node.rotation.y,
-				target_angle,
-				rotation_speed * delta
-			)
-
-		else:
-			
-			camera_yaw = _spring_arm_pivot.global_rotation.y
-			
-			var flat_camera_forward: Vector3 = (
-				Vector3.FORWARD.rotated(
-					Vector3.UP,
-					camera_yaw
-				).normalized()
-			)
-
-			var local_camera_dir: Vector3 = (
-				global_transform.basis.inverse()
-				* flat_camera_forward
-			)
-
-			var target_camera_angle: float = (
-				Vector3.FORWARD.signed_angle_to(
-					local_camera_dir,
-					Vector3.UP
-				)
-			)
-
-			var strafe_angle: float = 0.0
-
-			if raw_input.x != 0.0:
-				strafe_angle = (
-					-raw_input.x
-					* deg_to_rad(strafe_rotation)
-				)
-
-			var target_angle: float = (
-				target_camera_angle
-				+ strafe_angle
-			)
-
-			armature_node.rotation.y = lerp_angle(
-				armature_node.rotation.y,
-				target_angle,
-				rotation_speed * delta
-			)
-
-		network_rotation_y = armature_node.global_rotation.y
-
-	# Network held item visual
+func _update_network_held_item_state() -> void:
 	network_holding_item = held_item != null
 
 	if held_item != null:
