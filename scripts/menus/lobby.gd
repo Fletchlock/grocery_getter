@@ -8,10 +8,6 @@ extends Control
 @onready var invite_friends_button: Button = $CanvasLayer/MarginContainer/VBoxContainer/InviteFriendsButton
 @onready var customize_button: Button = $CanvasLayer/MarginContainer/VBoxContainer/CustomizeButton
 
-@onready var red_button: Button = $VBoxContainer/CharacterSelection/RedButton
-@onready var green_button: Button = $VBoxContainer/CharacterSelection/GreenButton
-@onready var blue_button: Button = $VBoxContainer/CharacterSelection/BlueButton
-
 @onready var lobby_viewport: SubViewport = $SubViewportContainer/SubViewport
 @onready var lobby_camera: Camera3D = $SubViewportContainer/SubViewport/Camera3D
 
@@ -151,57 +147,41 @@ func _focus_primary_action() -> void:
 	_get_primary_action_button().grab_focus.call_deferred()
 
 
-func _focus_first_character() -> void:
-	for button: Button in [red_button, green_button, blue_button]:
-		if not button.disabled:
-			button.grab_focus.call_deferred()
-			return
-
-	_focus_primary_action()
-
-
 func _setup_lobby_focus() -> void:
 	var buttons: Array[Button] = [
 		play_button,
 		ready_button,
-		invite_friends_button,
 		customize_button,
-		main_menu_button,
-		red_button,
-		green_button,
-		blue_button
+		invite_friends_button,
+		main_menu_button
 	]
 
-	for button: Button in buttons:
-		button.focus_mode = (
-			Control.FOCUS_NONE if button.disabled
-			else Control.FOCUS_ALL
-		)
+	var available_buttons: Array[Button] = []
 
-	# Clear any existing manual focus neighbours.
 	for button: Button in buttons:
 		button.focus_neighbor_top = NodePath("")
 		button.focus_neighbor_bottom = NodePath("")
 		button.focus_neighbor_left = NodePath("")
 		button.focus_neighbor_right = NodePath("")
 
-	# Character selection: horizontal movement only.
-	red_button.focus_neighbor_right = red_button.get_path_to(green_button)
-	green_button.focus_neighbor_left = green_button.get_path_to(red_button)
-	green_button.focus_neighbor_right = green_button.get_path_to(blue_button)
-	blue_button.focus_neighbor_left = blue_button.get_path_to(green_button)
+		if button.disabled or not button.visible:
+			button.focus_mode = Control.FOCUS_NONE
+		else:
+			button.focus_mode = Control.FOCUS_ALL
+			available_buttons.append(button)
 
-	# Character selection returns to the primary action.
-	for button: Button in [red_button, green_button, blue_button]:
-		button.focus_neighbor_bottom = button.get_path_to(_get_primary_action_button())
+	for i: int in range(available_buttons.size()):
+		var button: Button = available_buttons[i]
 
-	# Up from Ready or Play enters character selection at Alex.
-	if play_button.visible and not play_button.disabled:
-		ready_button.focus_neighbor_top = ready_button.get_path_to(play_button)
-	else:
-		ready_button.focus_neighbor_top = ready_button.get_path_to(red_button)
+		if i > 0:
+			button.focus_neighbor_top = button.get_path_to(
+				available_buttons[i - 1]
+			)
 
-	play_button.focus_neighbor_top = play_button.get_path_to(red_button)
+		if i < available_buttons.size() - 1:
+			button.focus_neighbor_bottom = button.get_path_to(
+				available_buttons[i + 1]
+			)
 		
 		
 func _on_play_button_pressed() -> void:
@@ -225,18 +205,6 @@ func _on_main_menu_button_pressed() -> void:
 	print("Lobby: Returning to Main Menu")
 
 	await GameManager.leave_lobby()
-
-
-func _on_red_button_pressed() -> void:
-	LobbyManager.request_set_character("red")
-
-
-func _on_green_button_pressed() -> void:
-	LobbyManager.request_set_character("green")
-
-
-func _on_blue_button_pressed() -> void:
-	LobbyManager.request_set_character("blue")
 
 
 func _update_character_displays() -> void:
@@ -298,16 +266,11 @@ func _is_late_join_waiting() -> bool:
 func _update_ready_button() -> void:
 	var peer_id: int = multiplayer.get_unique_id()
 	var is_ready: bool = LobbyManager.is_ready(peer_id)
-	var selection_locked: bool = is_ready and _is_late_join_waiting()
 
 	ready_button.text = "Unready" if is_ready else "Ready"
-	ready_button.disabled = selection_locked
+	ready_button.disabled = is_ready and _is_late_join_waiting()
 
 	customize_button.disabled = is_ready
-
-	red_button.disabled = selection_locked
-	green_button.disabled = selection_locked
-	blue_button.disabled = selection_locked
 
 	_setup_lobby_focus()
 
@@ -318,6 +281,8 @@ func _update_invite_button() -> void:
 		and NetworkManager.peer != null
 		and NetworkManager.current_lobby_id != 0
 	)
+
+	_setup_lobby_focus()
 
 
 func _ensure_lobby_focus() -> void:
