@@ -340,7 +340,6 @@ var checkout_using_controller_cursor: bool:
 		player_checkout.checkout_using_controller_cursor = value
 
 
-
 # Held product rotation interface.
 var rotating_held_product: bool:
 	get:
@@ -357,11 +356,20 @@ var checkout_rotation_previous_mouse_mode: Input.MouseMode:
 		return player_product_rotation.checkout_rotation_previous_mouse_mode
 
 
-# Product scanning and bagging.
-var checkout_scanned_product_path: String = ""
-var checkout_barcode_product_path: String = ""
-var checkout_auto_bag_hover_active: bool = false
+# Checkout interaction state interface.
+var checkout_scanned_product_path: String:
+	get:
+		return player_checkout.checkout_scanned_product_path
+	set(value):
+		player_checkout.checkout_scanned_product_path = value
 
+var checkout_auto_bag_hover_active: bool:
+	get:
+		return player_checkout.checkout_auto_bag_hover_active
+	set(value):
+		player_checkout.checkout_auto_bag_hover_active = value
+
+var checkout_barcode_product_path: String = ""
 
 # ============================================================
 # NETWORK INTERPOLATION STATE
@@ -965,70 +973,8 @@ func _update_checkout_frame(delta: float) -> void:
 
 
 func _update_checkout_hover() -> void:
-	if not checkout_mode_active:
-		return
-
-	if not is_instance_valid(active_checkout):
-		return
-
-	var mouse_position: Vector2 = (
-		_get_checkout_hover_position()
-	)
-
-	active_checkout.update_checkout_hover_outline(
-		mouse_position,
-		not is_holding_equipment()
-	)
-
-	_update_checkout_auto_bag(mouse_position)
-
-
-func _get_checkout_hover_position() -> Vector2:
-	# Align hover detection with the held product's actual position.
-	if (
-		held_item != null
-		and held_item_origin == ItemOrigin.CHECKOUT_GRID
-	):
-		return get_checkout_cursor_screen_position()
-
-	return checkout_virtual_mouse_position
-
-
-func _can_auto_bag_checkout_product(
-	mouse_position: Vector2
-) -> bool:
-	if not is_multiplayer_authority():
-		return false
-
-	if held_item == null:
-		return false
-
-	if held_item_origin != ItemOrigin.CHECKOUT_GRID:
-		return false
-
-	if not active_checkout.is_mouse_over_bag(mouse_position):
-		return false
-
-	return (
-		checkout_scanned_product_path
-		== held_item.resource_path
-	)
-
-
-func _update_checkout_auto_bag(
-	mouse_position: Vector2
-) -> void:
-	var should_auto_bag: bool = (
-		_can_auto_bag_checkout_product(mouse_position)
-	)
-
-	if should_auto_bag and not checkout_auto_bag_hover_active:
-		checkout_auto_bag_hover_active = true
-		active_checkout.bag_grid.request_interact(self)
-
-	elif not should_auto_bag:
-		checkout_auto_bag_hover_active = false
-
+	player_checkout.update_checkout_hover()
+	
 
 # ============================================================
 # PHYSICS PROCESS
@@ -3250,39 +3196,7 @@ func exit_checkout_mode() -> void:
 
 
 func handle_checkout_interaction() -> void:
-	if not checkout_mode_active:
-		return
-
-	if active_checkout == null:
-		return
-
-	var mouse_position: Vector2 = (
-		checkout_virtual_mouse_position
-	)
-
-	if held_item != null:
-		if held_item_origin != ItemOrigin.CHECKOUT_GRID:
-			return
-
-		mouse_position = get_checkout_cursor_screen_position()
-
-		if active_checkout.is_mouse_over_scanner(mouse_position):
-			active_checkout.interact(self)
-			return
-
-		if active_checkout.is_mouse_over_bag(mouse_position):
-			active_checkout.bag_grid.request_interact(self)
-			return
-
-		return
-
-	if is_holding_equipment():
-		return
-
-	active_checkout.checkout_grid.request_take_item_at_mouse(
-		self,
-		mouse_position
-	)
+	player_checkout.handle_checkout_interaction()
 
 
 func _handle_held_product_rotation_input(event: InputEvent) -> bool:
