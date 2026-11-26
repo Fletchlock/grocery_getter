@@ -184,6 +184,7 @@ var checkout_mouse_sensitivity: float = 1.4
 @onready var held_box_holder: Node3D = $FirstPersonCameraPivot/HeldBoxHolder
 @onready var player_equipment: PlayerEquipment = $PlayerEquipment
 @onready var player_checkout: PlayerCheckout = $PlayerCheckout
+@onready var player_product_rotation: PlayerProductRotation = $PlayerProductRotation
 @onready var cart_pusher: RigidBody3D = $CartPusher
 
 # User interface.
@@ -339,10 +340,22 @@ var checkout_using_controller_cursor: bool:
 		player_checkout.checkout_using_controller_cursor = value
 
 
-# Held product rotation.
-var rotating_held_product: bool = false
-var checkout_rotation_mouse_position: Vector2 = Vector2.ZERO
-var checkout_rotation_previous_mouse_mode: Input.MouseMode = Input.MOUSE_MODE_VISIBLE
+
+# Held product rotation interface.
+var rotating_held_product: bool:
+	get:
+		return player_product_rotation.rotating_held_product
+	set(value):
+		player_product_rotation.rotating_held_product = value
+
+var checkout_rotation_mouse_position: Vector2:
+	get:
+		return player_product_rotation.checkout_rotation_mouse_position
+
+var checkout_rotation_previous_mouse_mode: Input.MouseMode:
+	get:
+		return player_product_rotation.checkout_rotation_previous_mouse_mode
+
 
 # Product scanning and bagging.
 var checkout_scanned_product_path: String = ""
@@ -3273,55 +3286,9 @@ func handle_checkout_interaction() -> void:
 
 
 func _handle_held_product_rotation_input(event: InputEvent) -> bool:
-
-	# Only products can be rotated.
-	if held_item == null:
-		if rotating_held_product:
-			_stop_held_product_rotation()
-		return false
-
-	# Handle right mouse button press and release.
-	if (
-		event is InputEventMouseButton
-		and event.button_index == MOUSE_BUTTON_RIGHT
-	):
-		if event.pressed:
-			# Start rotating only while right mouse is held.
-			rotating_held_product = true
-
-			# Freeze the checkout cursor position while rotating.
-			if checkout_mode_active:
-				checkout_rotation_mouse_position = checkout_last_mouse_position
-				checkout_rotation_previous_mouse_mode = Input.mouse_mode
-				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-
-			# Clear any pending camera movement.
-			_mouse_input_direction = Vector2.ZERO
-			_smoothed_mouse_velocity = Vector2.ZERO
-			_camera_input_direction = Vector2.ZERO
-
-		else:
-			# Stop immediately when right mouse is released.
-			_stop_held_product_rotation()
-
-		get_viewport().set_input_as_handled()
-		return true
-
-	# Rotate the product only while right mouse is held.
-	if event is InputEventMouseMotion and rotating_held_product:
-
-		var mouse_delta: Vector2 = event.screen_relative
-
-		# Apply rotation relative to the active camera's axes.
-		_apply_held_product_rotation(
-			mouse_delta,
-			event.shift_pressed
-		)
-
-		get_viewport().set_input_as_handled()
-		return true
-
-	return false
+	return player_product_rotation.handle_held_product_rotation_input(
+		event
+	)
 
 
 # ============================================================
@@ -3369,163 +3336,33 @@ func update_checkout_pointer() -> void:
 	)
 
 
-func _set_product_rotation_around_center(
-	product_mesh: MeshInstance3D,
-	rotation_camera: Camera3D,
-	mouse_delta: Vector2,
-	roll_rotation: bool = false
-) -> void:
-
-	if not is_instance_valid(product_mesh):
-		return
-
-	# Use the camera's fixed world-space directions.
-	# These remain camera-relative regardless of product rotation.
-	var camera_basis: Basis = (
-		rotation_camera.global_basis.orthonormalized()
-	)
-
-	# Vertical movement always controls pitch.
-	var vertical_rotation: Quaternion = Quaternion(
-		camera_basis.x,
-		mouse_delta.y * held_product_rotation_sensitivity
-	)
-
-	var horizontal_axis: Vector3 = camera_basis.y
-
-	# Roll modifier changes horizontal rotation from yaw to roll.
-	if roll_rotation:
-		horizontal_axis = -camera_basis.z
-
-	var horizontal_rotation: Quaternion = Quaternion(
-		horizontal_axis,
-		mouse_delta.x * held_product_rotation_sensitivity
-	)
-
-	var world_rotation: Quaternion = (
-		horizontal_rotation * vertical_rotation
-	)
-
-	# Preserve the visual center while rotating.
-	var product_transform: Transform3D = product_mesh.global_transform
-	var mesh_center: Vector3 = product_mesh.get_aabb().get_center()
-	var world_center: Vector3 = product_transform * mesh_center
-
-	product_transform.basis = (
-		Basis(world_rotation) * product_transform.basis
-	)
-
-	product_transform.origin = (
-		world_center - product_transform.basis * mesh_center
-	)
-
-	product_mesh.global_transform = product_transform
-
+# ============================================================
+# PRODUCT ROTATION INTERFACE
+# ============================================================
 
 func _apply_held_product_rotation(
 	mouse_delta: Vector2,
 	roll_rotation: bool = false
 ) -> void:
 
-	var rotation_camera: Camera3D = null
-
-	# Explicitly use the checkout camera while scanning.
-	if (
-		checkout_mode_active
-		and is_instance_valid(active_checkout)
-		and is_instance_valid(active_checkout.checkout_camera)
-	):
-		rotation_camera = active_checkout.checkout_camera
-	else:
-		rotation_camera = get_viewport().get_camera_3d()
-
-	if not is_instance_valid(rotation_camera):
-		rotation_camera = _first_person_camera
-
-	if not is_instance_valid(rotation_camera):
-		return
-
-	# Rotate the first-person held product.
-	if is_instance_valid(held_item_visual):
-		_set_product_rotation_around_center(
-			held_item_visual,
-			rotation_camera,
-			mouse_delta,
-			roll_rotation
-		)
-
-	# Rotate the checkout cursor preview.
-	if is_instance_valid(checkout_cursor_visual):
-		_set_product_rotation_around_center(
-			checkout_cursor_visual,
-			rotation_camera,
-			mouse_delta,
-			roll_rotation
-		)
-
-
-func update_controller_product_rotation(delta: float) -> void:
-	if not is_multiplayer_authority():
-		return
-
-	if not can_process_gameplay_input():
-		return
-
-	if held_item == null:
-		return
-
-	if not checkout_mode_active and not Input.is_action_pressed("product_rotate"):
-		return
-
-	var stick_input: Vector2 = Input.get_vector(
-		"look_left",
-		"look_right",
-		"look_up",
-		"look_down"
-	)
-
-	if stick_input.length() < 0.15:
-		return
-
-	var rotation_delta: Vector2 = stick_input * 500.0 * delta
-
-	var roll_rotation: bool = (
-		Input.is_action_pressed("product_rotate")
-		if checkout_mode_active
-		else Input.is_action_pressed("product_roll")
-	)
-
-	_apply_held_product_rotation(
-		rotation_delta,
+	player_product_rotation.apply_held_product_rotation(
+		mouse_delta,
 		roll_rotation
 	)
 
 
+func update_controller_product_rotation(delta: float) -> void:
+	player_product_rotation.update_controller_product_rotation(delta)
+
+
 func _stop_held_product_rotation() -> void:
+	player_product_rotation.stop_held_product_rotation()
 
-	# Only restore the mouse if rotation was actually active.
-	# This prevents scanning an item from using an old position.
-	if not rotating_held_product:
-		return
 
-	rotating_held_product = false
+# ============================================================
+# ALIEN HELPER FUNCTIONS
+# ============================================================
 
-	# Restore the mouse when leaving product rotation in checkout mode.
-	if checkout_mode_active:
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-
-		# Return the cursor to where the product was when rotation began.
-		get_viewport().warp_mouse(checkout_rotation_mouse_position)
-
-		# Restore the previous mouse visibility state.
-		Input.mouse_mode = checkout_rotation_previous_mouse_mode
-
-	# Clear any pending camera movement.
-	_mouse_input_direction = Vector2.ZERO
-	_smoothed_mouse_velocity = Vector2.ZERO
-	_camera_input_direction = Vector2.ZERO
-
-# =============== ALIEN HELPER FUNCTIONS =======================
 func _set_alien_visible(visible_state: bool) -> void:
 	body_mesh.visible = visible_state
 	alien_head.visible = visible_state
