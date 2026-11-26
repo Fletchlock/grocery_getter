@@ -349,12 +349,12 @@ func update_checkout_cursor_visual() -> void:
 		return
 
 	var mouse_position: Vector2 = (
-		player.checkout_rotation_mouse_position
-		if player.rotating_held_product
+		player.player_product_rotation.checkout_rotation_mouse_position
+		if player.player_product_rotation.rotating_held_product
 		else checkout_virtual_mouse_position
 	)
 
-	if not player.rotating_held_product:
+	if not player.player_product_rotation.rotating_held_product:
 		checkout_last_mouse_position = mouse_position
 
 	mouse_position += player.checkout_cursor_offset

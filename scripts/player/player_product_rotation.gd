@@ -70,7 +70,7 @@ func start_held_product_rotation() -> void:
 	# Freeze the checkout cursor while rotating.
 	if player.checkout_mode_active:
 		checkout_rotation_mouse_position = (
-			player.checkout_last_mouse_position
+			player.player_checkout.checkout_last_mouse_position
 		)
 
 		checkout_rotation_previous_mouse_mode = Input.mouse_mode
