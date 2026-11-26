@@ -310,11 +310,30 @@ var checkout_cursor_sensor: Area3D = null
 var checkout_cursor_last_safe_position: Vector3 = Vector3.ZERO
 var checkout_cursor_has_safe_position: bool = false
 
-# Virtual mouse and controller cursor.
-var checkout_virtual_mouse_position: Vector2 = Vector2.ZERO
-var checkout_virtual_mouse_initialized: bool = false
-var checkout_last_mouse_position: Vector2 = Vector2.ZERO
-var checkout_using_controller_cursor: bool = false
+# Virtual mouse and controller cursor interface.
+var checkout_virtual_mouse_position: Vector2:
+	get:
+		return player_checkout.checkout_virtual_mouse_position
+	set(value):
+		player_checkout.checkout_virtual_mouse_position = value
+
+var checkout_virtual_mouse_initialized: bool:
+	get:
+		return player_checkout.checkout_virtual_mouse_initialized
+	set(value):
+		player_checkout.checkout_virtual_mouse_initialized = value
+
+var checkout_last_mouse_position: Vector2:
+	get:
+		return player_checkout.checkout_last_mouse_position
+	set(value):
+		player_checkout.checkout_last_mouse_position = value
+
+var checkout_using_controller_cursor: bool:
+	get:
+		return player_checkout.checkout_using_controller_cursor
+	set(value):
+		player_checkout.checkout_using_controller_cursor = value
 
 
 # Held product rotation.
@@ -521,31 +540,18 @@ func _unhandled_input(event: InputEvent) -> void:
 			exit_checkout_mode()
 			get_viewport().set_input_as_handled()
 			return
+
 		# Track captured mouse movement in viewport coordinates.
 		if event is InputEventMouseMotion:
-			if not rotating_held_product:
-				var mouse_delta: Vector2 = (
-					event.screen_relative * checkout_mouse_sensitivity
-				)
-
-				if mouse_delta.length_squared() > 0.0:
-					checkout_using_controller_cursor = false
-
-					checkout_virtual_mouse_position += mouse_delta
-
-					checkout_virtual_mouse_position = (
-						checkout_virtual_mouse_position.clamp(
-							Vector2.ZERO,
-							get_viewport().get_visible_rect().size
-						)
-					)
-
-					checkout_last_mouse_position = (
-						checkout_virtual_mouse_position
-					)
+			player_checkout.handle_mouse_motion(
+				event,
+				rotating_held_product,
+				checkout_mouse_sensitivity
+			)
 
 			get_viewport().set_input_as_handled()
 			return
+
 		# Escape (or q) exits checkout mode.
 		if (
 			event is InputEventKey
@@ -2894,12 +2900,7 @@ func create_checkout_cursor_visual() -> void:
 	# Remove any previous preview.
 	clear_checkout_cursor_visual()
 
-	# Initialize the virtual cursor from the actual mouse position.
-	if not checkout_virtual_mouse_initialized:
-		checkout_virtual_mouse_position = (
-			get_viewport().get_mouse_position()
-		)
-		checkout_virtual_mouse_initialized = true
+	player_checkout.ensure_cursor_initialized()
 
 	if held_item_visual == null:
 		return
@@ -3641,13 +3642,7 @@ func _activate_checkout_mode(checkout: Checkout) -> void:
 	crosshair.hide()
 
 	# Initialize the virtual checkout pointer at screen center.
-	var viewport_size: Vector2 = get_viewport().get_visible_rect().size
-
-	checkout_virtual_mouse_position = viewport_size * 0.5
-	checkout_last_mouse_position = checkout_virtual_mouse_position
-	checkout_virtual_mouse_initialized = true
-	checkout_using_controller_cursor = false
-
+	player_checkout.initialize_cursor()
 	create_checkout_pointer()
 
 	# Capture the physical cursor while using our virtual pointer.
@@ -3818,55 +3813,24 @@ func _handle_held_product_rotation_input(event: InputEvent) -> bool:
 	return false
 
 
+# ============================================================
+# CHECKOUT CURSOR INPUT INTERFACE
+# ============================================================
+
 func update_checkout_mouse_cursor() -> void:
-	if not checkout_mode_active:
-		return
-
-	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-
-	checkout_virtual_mouse_initialized = true
+	player_checkout.update_checkout_mouse_cursor(
+		checkout_mode_active
+	)
 
 
 func update_checkout_controller_cursor(delta: float) -> void:
-	if not is_multiplayer_authority():
-		return
-
-	if not checkout_mode_active:
-		return
-
-	var stick_input: Vector2 = Input.get_vector(
-		"checkout_cursor_left",
-		"checkout_cursor_right",
-		"checkout_cursor_up",
-		"checkout_cursor_down"
+	player_checkout.update_checkout_controller_cursor(
+		delta,
+		is_multiplayer_authority(),
+		checkout_mode_active,
+		gamepad_cursor_speed,
+		checkout_controller_sensitivity
 	)
-
-	if stick_input.length() < 0.15:
-		return
-
-	checkout_using_controller_cursor = true
-
-	var viewport_size: Vector2 = (
-		get_viewport().get_visible_rect().size
-	)
-
-	checkout_virtual_mouse_position += (
-		stick_input
-		* gamepad_cursor_speed
-		* checkout_controller_sensitivity
-		* delta
-	)
-
-	checkout_virtual_mouse_position = (
-		checkout_virtual_mouse_position.clamp(
-			Vector2.ZERO,
-			viewport_size
-		)
-	)
-
-	checkout_last_mouse_position = checkout_virtual_mouse_position
-	checkout_virtual_mouse_initialized = true
 
 
 # ============================================================
@@ -3879,7 +3843,6 @@ func create_checkout_pointer() -> void:
 
 func remove_checkout_pointer() -> void:
 	player_checkout.remove_checkout_pointer()
-	checkout_using_controller_cursor = false
 
 
 func update_checkout_pointer() -> void:
@@ -3891,8 +3854,7 @@ func update_checkout_pointer() -> void:
 	player_checkout.update_checkout_pointer(
 		checkout_mode_active,
 		holding_checkout_product,
-		rotating_held_product,
-		checkout_virtual_mouse_position
+		rotating_held_product
 	)
 
 
