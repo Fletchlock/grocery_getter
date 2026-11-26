@@ -1951,9 +1951,9 @@ func get_camera_forward() -> Vector3:
 	return forward_dir
 
 
-# A shared equipment check function to limit redundant checks
-
-	
+# ============================================================
+# RESTOCK BOX MANAGEMENT
+# ============================================================
 
 func try_pickup_restock_box(box: RestockBox) -> void:
 	if not is_multiplayer_authority():
@@ -2102,7 +2102,10 @@ func _receive_restock_box(
 	network_restock_box_quantity = box_quantity
 
 
-# Mop pick up
+# ============================================================
+# MOP MANAGEMENT
+# ============================================================
+
 func request_pickup_mop(mop: Node3D) -> void:
 	if mop == null:
 		return
@@ -2257,6 +2260,10 @@ func _clear_mop() -> void:
 	held_mop = null
 	network_holding_mop = false
 
+
+# ============================================================
+# SPILL CLEANING
+# ============================================================
 
 func _start_spill_cleaning() -> bool:
 	if held_mop == null:
@@ -2521,6 +2528,10 @@ func _server_can_clean_spill(spill: Spill) -> bool:
 	return true
 
 
+# ============================================================
+# RESTOCK SCANNER MANAGEMENT
+# ============================================================
+
 func request_pickup_restock_scanner(scanner: Node3D) -> void:
 	if scanner == null:
 		return
@@ -2752,6 +2763,10 @@ func handle_restock_scanner_input(event: InputEvent) -> bool:
 	return false
 
 
+# ============================================================
+# ITEM INTERACTION
+# ============================================================
+
 func interact_with_item(item: Node3D) -> void:
 	if item == null:
 		return
@@ -2769,13 +2784,12 @@ func interact_with_item(item: Node3D) -> void:
 		item.interact(self)
 
 
-# Held item functions
+# ============================================================
+# HELD ITEM MANAGEMENT
+# ============================================================
+
 func _clear_held_item() -> void:
-
 	player_product_rotation.stop_held_product_rotation()
-
-	# Stop any active product rotation.
-	player_product_rotation.rotating_held_product = false
 
 	# Remove checkout cursor preview.
 	player_checkout.clear_checkout_cursor_visual()
@@ -2871,6 +2885,10 @@ func _clear_cancelled_order_item_local(order_id: int) -> void:
 	_clear_held_item()
 
 
+# ============================================================
+# FOOTSTEP AUDIO
+# ============================================================
+
 func play_footstep() -> void:
 	if not is_multiplayer_authority():
 		return
@@ -2909,6 +2927,10 @@ func network_play_footstep(volume: float, pitch: float) -> void:
 		footstep_player.play()
 
 
+# ============================================================
+# MOVEMENT LOCKING
+# ============================================================
+
 func set_movement_locked(locked: bool) -> void:
 	if checkout_mode_active and not locked:
 		print("Movement unlock ignored: checkout is active")
@@ -2921,7 +2943,11 @@ func set_movement_locked(locked: bool) -> void:
 		velocity.z = 0.0
 		block_movement_until_keys_released = true
 
-# Knockback during minigames
+
+# ============================================================
+# KNOCKBACK
+# ============================================================
+
 func receive_conveyor_knockback(impulse: Vector3) -> void:
 	if not is_multiplayer_authority():
 		return
@@ -2939,7 +2965,11 @@ func apply_conveyor_knockback(impulse: Vector3) -> void:
 
 	knockback_velocity += impulse
 
-# Inspector Camera Functions for hand target use.
+
+# ============================================================
+# INSPECTION CAMERA
+# ============================================================
+
 func toggle_inspection_camera() -> void:
 	if not is_multiplayer_authority():
 		return

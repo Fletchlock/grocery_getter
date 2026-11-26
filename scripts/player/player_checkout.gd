@@ -44,7 +44,6 @@ var checkout_previous_held_item_visibility: bool = true
 var checkout_virtual_mouse_position: Vector2 = Vector2.ZERO
 var checkout_virtual_mouse_initialized: bool = false
 var checkout_last_mouse_position: Vector2 = Vector2.ZERO
-var checkout_using_controller_cursor: bool = false
 
 
 # ============================================================
@@ -74,6 +73,191 @@ var checkout_auto_bag_hover_active: bool = false
 
 
 # ============================================================
+# CHECKOUT MODE MANAGEMENT
+# ============================================================
+
+func enter_checkout_mode(checkout: Checkout) -> void:
+	if not player.is_multiplayer_authority():
+		return
+
+	if checkout_mode_active:
+		return
+
+	if checkout == null:
+		return
+
+	if checkout.checkout_camera == null:
+		push_warning("Checkout has no CheckoutCamera!")
+		return
+
+	# Ask the server for permission before entering.
+	checkout.request_scanner_access(player)
+
+
+func activate_checkout_mode(checkout: Checkout) -> void:
+	if not player.is_multiplayer_authority():
+		return
+
+	if checkout_mode_active:
+		return
+
+	if checkout == null:
+		return
+
+	if checkout.checkout_camera == null:
+		return
+
+	checkout_mode_active = true
+	active_checkout = checkout
+
+	_save_previous_player_state()
+	_apply_checkout_player_state()
+
+	# Initialize the virtual checkout pointer.
+	initialize_cursor()
+	create_checkout_pointer()
+
+	# Capture the physical cursor.
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+	# Activate the checkout camera.
+	checkout.checkout_camera.make_current()
+
+	# Show instructions and controls.
+	checkout.show_checkout_instructions()
+
+	# Create the checkout product cursor.
+	create_checkout_cursor_visual()
+
+
+func exit_checkout_mode() -> void:
+	if not checkout_mode_active:
+		return
+
+	# Do not allow checkout mode to be exited while holding a product.
+	if player.held_item != null or player.network_holding_item:
+		return
+
+	player.player_product_rotation.stop_held_product_rotation()
+
+	var checkout_to_release: Checkout = active_checkout
+
+	if is_instance_valid(checkout_to_release):
+		checkout_to_release.clear_checkout_hover_outlines()
+		checkout_to_release.hide_checkout_instructions()
+
+	checkout_mode_active = false
+
+	# Match the player's view to the checkout camera.
+	_restore_player_view_direction(checkout_to_release)
+
+	# Restore the player's previous state.
+	_restore_previous_player_state()
+
+	active_checkout = null
+	checkout_previous_camera = null
+
+	clear_checkout_cursor_visual()
+
+	# Release the scanner so another player can use it.
+	if is_instance_valid(checkout_to_release):
+		checkout_to_release.release_scanner_access(player)
+
+
+# ============================================================
+# PLAYER STATE MANAGEMENT
+# ============================================================
+
+func _save_previous_player_state() -> void:
+	checkout_previous_camera = get_viewport().get_camera_3d()
+
+	checkout_previous_mouse_mode = Input.mouse_mode
+
+	checkout_previous_movement_locked = (
+		player.movement_locked
+	)
+
+	checkout_previous_raycast_enabled = (
+		player.interact_raycast_3d.enabled
+	)
+
+	checkout_previous_held_item_visibility = (
+		player.held_item_holder.visible
+	)
+
+
+func _apply_checkout_player_state() -> void:
+	# Lock player movement.
+	player.movement_locked = true
+
+	# Hide the first-person held item.
+	player.held_item_holder.hide()
+
+	# Disable normal first-person interaction.
+	player.interact_raycast_3d.enabled = false
+
+	# Hide the normal crosshair.
+	player.crosshair.hide()
+
+
+func _restore_previous_player_state() -> void:
+	# Restore the previous camera.
+	if is_instance_valid(checkout_previous_camera):
+		checkout_previous_camera.make_current()
+	else:
+		player._first_person_camera.make_current()
+
+	# Restore player movement.
+	player.movement_locked = checkout_previous_movement_locked
+
+	# Restore normal interaction.
+	player.interact_raycast_3d.enabled = (
+		checkout_previous_raycast_enabled
+	)
+
+	# Restore first-person held item visibility.
+	player.held_item_holder.visible = (
+		checkout_previous_held_item_visibility
+	)
+
+	# Restore mouse state.
+	remove_checkout_pointer()
+	Input.mouse_mode = checkout_previous_mouse_mode
+
+	# Restore the crosshair.
+	player.crosshair.visible = (
+		player.is_multiplayer_authority()
+		and player._first_person
+	)
+
+
+# ============================================================
+# PLAYER VIEW RESTORATION
+# ============================================================
+
+func _restore_player_view_direction(checkout: Checkout) -> void:
+	if not is_instance_valid(checkout):
+		return
+
+	if not is_instance_valid(checkout.checkout_camera):
+		return
+
+	var checkout_rotation: Vector3 = (
+		checkout.checkout_camera.global_rotation
+	)
+
+	# Horizontal facing direction.
+	player.global_rotation.y = checkout_rotation.y
+
+	# Vertical look direction.
+	player.first_person_camera_pivot.rotation.x = clampf(
+		checkout_rotation.x,
+		deg_to_rad(-80.0),
+		deg_to_rad(80.0)
+	)
+
+
+# ============================================================
 # CURSOR INITIALIZATION
 # ============================================================
 
@@ -85,7 +269,6 @@ func initialize_cursor() -> void:
 	checkout_virtual_mouse_position = viewport_size * 0.5
 	checkout_last_mouse_position = checkout_virtual_mouse_position
 	checkout_virtual_mouse_initialized = true
-	checkout_using_controller_cursor = false
 
 
 func ensure_cursor_initialized() -> void:
@@ -139,7 +322,6 @@ func handle_mouse_motion(
 	if mouse_delta.length_squared() <= 0.0:
 		return
 
-	checkout_using_controller_cursor = false
 
 	_move_cursor(mouse_delta)
 
@@ -180,7 +362,6 @@ func update_checkout_controller_cursor(
 	if stick_input.length() < 0.15:
 		return
 
-	checkout_using_controller_cursor = true
 
 	var cursor_delta: Vector2 = (
 		stick_input
@@ -221,7 +402,6 @@ func remove_checkout_pointer() -> void:
 	checkout_pointer_layer = null
 	checkout_pointer = null
 
-	checkout_using_controller_cursor = false
 
 
 func update_checkout_pointer(
@@ -904,189 +1084,4 @@ func handle_checkout_interaction() -> void:
 	active_checkout.checkout_grid.request_take_item_at_mouse(
 		player,
 		mouse_position
-	)
-
-
-# ============================================================
-# CHECKOUT MODE MANAGEMENT
-# ============================================================
-
-func enter_checkout_mode(checkout: Checkout) -> void:
-	if not player.is_multiplayer_authority():
-		return
-
-	if checkout_mode_active:
-		return
-
-	if checkout == null:
-		return
-
-	if checkout.checkout_camera == null:
-		push_warning("Checkout has no CheckoutCamera!")
-		return
-
-	# Ask the server for permission before entering.
-	checkout.request_scanner_access(player)
-
-
-func activate_checkout_mode(checkout: Checkout) -> void:
-	if not player.is_multiplayer_authority():
-		return
-
-	if checkout_mode_active:
-		return
-
-	if checkout == null:
-		return
-
-	if checkout.checkout_camera == null:
-		return
-
-	checkout_mode_active = true
-	active_checkout = checkout
-
-	_save_previous_player_state()
-	_apply_checkout_player_state()
-
-	# Initialize the virtual checkout pointer.
-	initialize_cursor()
-	create_checkout_pointer()
-
-	# Capture the physical cursor.
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-
-	# Activate the checkout camera.
-	checkout.checkout_camera.make_current()
-
-	# Show instructions and controls.
-	checkout.show_checkout_instructions()
-
-	# Create the checkout product cursor.
-	create_checkout_cursor_visual()
-
-
-func exit_checkout_mode() -> void:
-	if not checkout_mode_active:
-		return
-
-	# Do not allow checkout mode to be exited while holding a product.
-	if player.held_item != null or player.network_holding_item:
-		return
-
-	player.player_product_rotation.stop_held_product_rotation()
-
-	var checkout_to_release: Checkout = active_checkout
-
-	if is_instance_valid(checkout_to_release):
-		checkout_to_release.clear_checkout_hover_outlines()
-		checkout_to_release.hide_checkout_instructions()
-
-	checkout_mode_active = false
-
-	# Match the player's view to the checkout camera.
-	_restore_player_view_direction(checkout_to_release)
-
-	# Restore the player's previous state.
-	_restore_previous_player_state()
-
-	active_checkout = null
-	checkout_previous_camera = null
-
-	clear_checkout_cursor_visual()
-
-	# Release the scanner so another player can use it.
-	if is_instance_valid(checkout_to_release):
-		checkout_to_release.release_scanner_access(player)
-
-
-# ============================================================
-# PLAYER STATE MANAGEMENT
-# ============================================================
-
-func _save_previous_player_state() -> void:
-	checkout_previous_camera = get_viewport().get_camera_3d()
-
-	checkout_previous_mouse_mode = Input.mouse_mode
-
-	checkout_previous_movement_locked = (
-		player.movement_locked
-	)
-
-	checkout_previous_raycast_enabled = (
-		player.interact_raycast_3d.enabled
-	)
-
-	checkout_previous_held_item_visibility = (
-		player.held_item_holder.visible
-	)
-
-
-func _apply_checkout_player_state() -> void:
-	# Lock player movement.
-	player.movement_locked = true
-
-	# Hide the first-person held item.
-	player.held_item_holder.hide()
-
-	# Disable normal first-person interaction.
-	player.interact_raycast_3d.enabled = false
-
-	# Hide the normal crosshair.
-	player.crosshair.hide()
-
-
-func _restore_previous_player_state() -> void:
-	# Restore the previous camera.
-	if is_instance_valid(checkout_previous_camera):
-		checkout_previous_camera.make_current()
-	else:
-		player._first_person_camera.make_current()
-
-	# Restore player movement.
-	player.movement_locked = checkout_previous_movement_locked
-
-	# Restore normal interaction.
-	player.interact_raycast_3d.enabled = (
-		checkout_previous_raycast_enabled
-	)
-
-	# Restore first-person held item visibility.
-	player.held_item_holder.visible = (
-		checkout_previous_held_item_visibility
-	)
-
-	# Restore mouse state.
-	remove_checkout_pointer()
-	Input.mouse_mode = checkout_previous_mouse_mode
-
-	# Restore the crosshair.
-	player.crosshair.visible = (
-		player.is_multiplayer_authority()
-		and player._first_person
-	)
-
-
-# ============================================================
-# PLAYER VIEW RESTORATION
-# ============================================================
-
-func _restore_player_view_direction(checkout: Checkout) -> void:
-	if not is_instance_valid(checkout):
-		return
-
-	if not is_instance_valid(checkout.checkout_camera):
-		return
-
-	var checkout_rotation: Vector3 = (
-		checkout.checkout_camera.global_rotation
-	)
-
-	# Horizontal facing direction.
-	player.global_rotation.y = checkout_rotation.y
-
-	# Vertical look direction.
-	player.first_person_camera_pivot.rotation.x = clampf(
-		checkout_rotation.x,
-		deg_to_rad(-80.0),
-		deg_to_rad(80.0)
 	)
