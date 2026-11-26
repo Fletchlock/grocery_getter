@@ -24,10 +24,6 @@ const FOOTSTEP_COOLDOWN_MS: int = 180
 const NORMAL_INTERPOLATION_DELAY: float = 0.07
 const PLATFORM_INTERPOLATION_DELAY: float = 0.05
 
-const CHECKOUT_POINTER_TEXTURE: Texture2D = preload(
-	"res://assets/images/hand_pointer_32px.png"
-)
-
 
 # ============================================================
 # EXPORTED CONFIGURATION
@@ -187,6 +183,7 @@ var checkout_mouse_sensitivity: float = 1.4
 @onready var held_item_holder: Node3D = $FirstPersonCameraPivot/HeldItemHolder
 @onready var held_box_holder: Node3D = $FirstPersonCameraPivot/HeldBoxHolder
 @onready var player_equipment: PlayerEquipment = $PlayerEquipment
+@onready var player_checkout: PlayerCheckout = $PlayerCheckout
 @onready var cart_pusher: RigidBody3D = $CartPusher
 
 # User interface.
@@ -319,9 +316,6 @@ var checkout_virtual_mouse_initialized: bool = false
 var checkout_last_mouse_position: Vector2 = Vector2.ZERO
 var checkout_using_controller_cursor: bool = false
 
-# Checkout pointer.
-var checkout_pointer_layer: CanvasLayer = null
-var checkout_pointer: Sprite2D = null
 
 # Held product rotation.
 var rotating_held_product: bool = false
@@ -3875,49 +3869,31 @@ func update_checkout_controller_cursor(delta: float) -> void:
 	checkout_virtual_mouse_initialized = true
 
 
+# ============================================================
+# CHECKOUT POINTER INTERFACE
+# ============================================================
+
 func create_checkout_pointer() -> void:
-	if is_instance_valid(checkout_pointer_layer):
-		return
-
-	checkout_pointer_layer = CanvasLayer.new()
-	checkout_pointer_layer.layer = 100
-	add_child(checkout_pointer_layer)
-
-	checkout_pointer = Sprite2D.new()
-	checkout_pointer.texture = CHECKOUT_POINTER_TEXTURE
-	checkout_pointer.centered = false
-	checkout_pointer.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-
-	checkout_pointer_layer.add_child(checkout_pointer)
+	player_checkout.create_checkout_pointer()
 
 
 func remove_checkout_pointer() -> void:
-	if is_instance_valid(checkout_pointer_layer):
-		checkout_pointer_layer.queue_free()
-
-	checkout_pointer_layer = null
-	checkout_pointer = null
+	player_checkout.remove_checkout_pointer()
 	checkout_using_controller_cursor = false
 
 
 func update_checkout_pointer() -> void:
-	if not checkout_mode_active:
-		return
-
-	if not is_instance_valid(checkout_pointer):
-		return
-
 	var holding_checkout_product: bool = (
 		held_item != null
 		and held_item_origin == ItemOrigin.CHECKOUT_GRID
 	)
 
-	checkout_pointer.visible = (
-		not holding_checkout_product
-		and not rotating_held_product
+	player_checkout.update_checkout_pointer(
+		checkout_mode_active,
+		holding_checkout_product,
+		rotating_held_product,
+		checkout_virtual_mouse_position
 	)
-
-	checkout_pointer.position = checkout_virtual_mouse_position
 
 
 func _set_product_rotation_around_center(
