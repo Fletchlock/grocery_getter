@@ -323,22 +323,6 @@ script = ExtResource("11_djew5")
 normal_font_size = 30
 highlighted_font_size = 34
 
-[node name="InviteFriendsButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer" unique_id=1424807495]
-visible = false
-custom_minimum_size = Vector2(330, 80)
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_fonts/font = ExtResource("8_87k40")
-theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxTexture_vr0hv")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_a3hrp")
-theme_override_styles/hover = SubResource("StyleBoxTexture_25m6f")
-theme_override_styles/focus = SubResource("StyleBoxTexture_25m6f")
-text = "Invite Friends"
-script = ExtResource("11_djew5")
-normal_font_size = 30
-highlighted_font_size = 34
-
 [node name="MainMenuButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer" unique_id=1792943070]
 custom_minimum_size = Vector2(330, 80)
 layout_mode = 2
