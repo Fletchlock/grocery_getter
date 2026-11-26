@@ -381,6 +381,22 @@ func can_process_gameplay_input() -> bool:
 	)
 
 
+func is_holding_equipment() -> bool:
+	return (
+		held_item != null
+		or held_restock_box != null
+		or held_restock_scanner != null
+		or held_mop != null
+	)
+
+
+func can_pickup_equipment() -> bool:
+	return (
+		not is_holding_equipment()
+		and attached_cart == null
+	)
+	
+
 # ============================================================
 # PLAYER INITIALIZATION
 # ============================================================
@@ -979,7 +995,6 @@ func _physics_process(delta: float) -> void:
 		)
 	)
 
-
 	if (
 		checkout_mode_active
 		or rotating_held_product
@@ -1117,7 +1132,6 @@ func _physics_process(delta: float) -> void:
 		8.0 * delta
 	)
 
-
 	# === 2. Directional Movement ===
 	if checkout_mode_active:
 		if Input.get_vector("left", "right", "up", "down").length() > 0.15:
@@ -1126,7 +1140,6 @@ func _physics_process(delta: float) -> void:
 				" | velocity=", velocity,
 				" | position=", global_position
 			)
-	
 	
 	var raw_input: Vector2 = Vector2.ZERO
 
@@ -1173,7 +1186,6 @@ func _physics_process(delta: float) -> void:
 		forward * raw_input.y
 		+ right * raw_input.x
 	).normalized()
-
 
 	# === 3. Velocity and Kinematics ===
 	
@@ -1311,7 +1323,6 @@ func _physics_process(delta: float) -> void:
 			5.0 * delta
 		)
 
-
 # ============================================================
 # CONVEYOR BELT MOVEMENT
 # ============================================================
@@ -1338,8 +1349,6 @@ func _physics_process(delta: float) -> void:
 
 	velocity -= conveyor_velocity
 	velocity -= knockback_velocity
-
-	
 	
 	network_position = global_position
 	network_velocity = velocity
@@ -1348,7 +1357,6 @@ func _physics_process(delta: float) -> void:
 		is_on_floor()
 		and get_platform_velocity().length() > 0.1
 	)
-
 
 	# === 9. Character Rotation ===
 
@@ -1818,13 +1826,7 @@ func get_camera_forward() -> Vector3:
 
 
 # A shared equipment check function to limit redundant checks
-func is_holding_equipment() -> bool:
-	return (
-		held_item != null
-		or held_restock_box != null
-		or held_restock_scanner != null
-		or held_mop != null
-	)
+
 	
 
 func try_pickup_restock_box(box: RestockBox) -> void:
@@ -1834,10 +1836,7 @@ func try_pickup_restock_box(box: RestockBox) -> void:
 	if not is_instance_valid(box):
 		return
 
-	if is_holding_equipment():
-		return
-
-	if attached_cart != null:
+	if not can_pickup_equipment():
 		return
 
 	if box.product_data == null:
@@ -1988,10 +1987,7 @@ func request_pickup_mop(mop: Node3D) -> void:
 	if mop == null:
 		return
 		
-	if is_holding_equipment():
-		return
-	
-	if attached_cart != null:
+	if not can_pickup_equipment():
 		return
 
 	var mop_path: NodePath = mop.get_path()
@@ -2025,10 +2021,7 @@ func _server_pickup_mop(
 	if get_multiplayer_authority() != requesting_peer_id:
 		return
 
-	if is_holding_equipment():
-		return
-
-	if attached_cart != null:
+	if not can_pickup_equipment():
 		return
 
 	var mop_node: Mop = get_node_or_null(mop_path) as Mop
@@ -2288,7 +2281,6 @@ func _request_begin_spill_cleaning(
 	)
 
 
-
 func _server_begin_spill_cleaning(
 	spill_path: NodePath,
 	requesting_peer_id: int
@@ -2431,10 +2423,7 @@ func request_pickup_restock_scanner(scanner: Node3D) -> void:
 	if scanner == null:
 		return
 
-	if is_holding_equipment():
-		return
-
-	if attached_cart != null:
+	if not can_pickup_equipment():
 		return
 
 	var scanner_path: NodePath = scanner.get_path()
@@ -2479,10 +2468,7 @@ func _server_pickup_restock_scanner(
 	if get_multiplayer_authority() != requesting_peer_id:
 		return
 
-	if is_holding_equipment():
-		return
-
-	if attached_cart != null:
+	if not can_pickup_equipment():
 		return
 
 	var scanner_node: Node = get_node_or_null(scanner_path)
@@ -2681,12 +2667,9 @@ func interact_with_item(item: Node3D) -> void:
 		return
 
 	if item is RigidBody3D and item.has_method("grab_cart"):
-		if held_item != null:
+		if is_holding_equipment():
 			return
-		
-		if held_restock_box != null:
-			return
-		
+			
 		try_grab_cart(item as RigidBody3D)
 		return
 
@@ -2704,38 +2687,8 @@ func _clear_held_item() -> void:
 	# Stop any active product rotation.
 	rotating_held_product = false
 
-	# Remember where the product preview was on screen.
-	#var restore_mouse_position := false
-	#var last_product_screen_position: Vector2 = Vector2.ZERO
-#
-	#if is_instance_valid(checkout_cursor_visual):
-		#if is_instance_valid(active_checkout):
-			#var camera: Camera3D = active_checkout.checkout_camera
-#
-			#if is_instance_valid(camera):
-				#var product_bounds: AABB = (
-					#checkout_cursor_visual.get_aabb()
-				#)
-#
-				#var product_center: Vector3 = (
-					#checkout_cursor_visual.global_position
-					#+ checkout_cursor_visual.global_transform.basis
-					#* product_bounds.get_center()
-				#)
-#
-				#last_product_screen_position = (
-					#camera.unproject_position(product_center)
-				#)
-#
-				#restore_mouse_position = true
-
 	# Remove checkout cursor preview.
 	clear_checkout_cursor_visual()
-
-	# Snap the actual mouse pointer to the last preview position.
-	#if restore_mouse_position:
-		#Input.warp_mouse(last_product_screen_position)
-		#checkout_last_mouse_position = last_product_screen_position
 
 	player_equipment.remove_local_product_visual(held_item_visual)
 	held_item_visual = null
