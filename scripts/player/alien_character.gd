@@ -1,7 +1,6 @@
 
 extends CharacterBody3D
 
-
 # ============================================================
 # ENUMS
 # ============================================================
@@ -14,7 +13,6 @@ enum ItemOrigin {
 	ORDER_GRID
 }
 
-
 # ============================================================
 # CONSTANTS
 # ============================================================
@@ -23,7 +21,6 @@ const FOOTSTEP_COOLDOWN_MS: int = 180
 
 const NORMAL_INTERPOLATION_DELAY: float = 0.07
 const PLATFORM_INTERPOLATION_DELAY: float = 0.05
-
 
 # ============================================================
 # EXPORTED CONFIGURATION
@@ -108,7 +105,6 @@ var checkout_mouse_sensitivity: float = 1.4
 @export_group("Spill Cleaning")
 @export var spill_cleaning_distance: float = 3.0
 
-
 # ============================================================
 # NETWORK REPLICATION
 # ============================================================
@@ -144,7 +140,6 @@ var checkout_mouse_sensitivity: float = 1.4
 # Mop and spill cleaning.
 @export var network_holding_mop: bool = false
 @export var network_is_cleaning_spill: bool = false
-
 
 # ============================================================
 # NODE REFERENCES
@@ -194,7 +189,6 @@ var checkout_mouse_sensitivity: float = 1.4
 @onready var footstep_player: AudioStreamPlayer3D = $FirstPersonCameraPivot/FirstPersonCamera/FootstepPlayer
 @onready var audio_listener: AudioListener3D = $AudioListener3D
 
-
 # ============================================================
 # MOVEMENT STATE
 # ============================================================
@@ -211,7 +205,6 @@ var _was_airborne: bool = false
 var knockback_velocity: Vector3 = Vector3.ZERO
 var conveyor_velocity: Vector3 = Vector3.ZERO
 
-
 # ============================================================
 # CAMERA STATE
 # ============================================================
@@ -225,7 +218,6 @@ var _smoothed_mouse_velocity: Vector2 = Vector2.ZERO
 
 var camera_fade_tween: Tween = null
 var inspection_camera_active: bool = false
-
 
 # ============================================================
 # ANIMATION AND VISUAL STATE
@@ -245,7 +237,6 @@ var look_target: Node3D = null
 # Footsteps.
 var last_footstep_time: int = 0
 
-
 # ============================================================
 # HELD PRODUCT STATE
 # ============================================================
@@ -254,7 +245,6 @@ var held_item: ProductData = null
 var held_item_visual: MeshInstance3D = null
 var held_item_origin: ItemOrigin = ItemOrigin.NONE
 var held_item_order_id: int = -1
-
 
 # ============================================================
 # RESTOCK BOX STATE
@@ -266,7 +256,6 @@ var held_restock_box: RestockBox = null
 var server_restock_product_path: String = ""
 var server_restock_quantity: int = 0
 
-
 # ============================================================
 # RESTOCK SCANNER STATE
 # ============================================================
@@ -274,7 +263,6 @@ var server_restock_quantity: int = 0
 var held_restock_scanner: Node3D = null
 var held_restock_scanner_holder: Node3D = null
 var last_restock_wheel_time_usec: int = 0
-
 
 # ============================================================
 # MOP AND SPILL CLEANING STATE
@@ -288,7 +276,6 @@ var cleaning_progress: float = 0.0
 var server_holding_mop: bool = false
 var server_cleaning_spill_path: NodePath = NodePath()
 var server_cleaning_started_usec: int = 0
-
 
 # ============================================================
 # CHECKOUT INTERFACE
@@ -332,7 +319,6 @@ var _network_first_person_last_received: bool = false
 var _network_velocity_received_time: float = 0.0
 var _network_position_initialized: bool = false
 
-
 # ============================================================
 # NETWORK EQUIPMENT STATE
 # ============================================================
@@ -352,7 +338,6 @@ var _network_holding_restock_scanner_last_received: bool = false
 # Mop and spill cleaning.
 var _network_holding_mop_last_received: bool = false
 var _network_is_cleaning_spill_last_received: bool = false
-
 
 # ============================================================
 # GAMEPLAY INPUT HELPERS
@@ -380,7 +365,6 @@ func can_pickup_equipment() -> bool:
 		and attached_cart == null
 	)
 	
-
 # ============================================================
 # MULTIPLAYER VALIDATION HELPERS
 # ============================================================
@@ -395,7 +379,6 @@ func _is_valid_server_request(requesting_peer_id: int) -> bool:
 func _is_server_rpc() -> bool:
 	return multiplayer.get_remote_sender_id() == 1
 	
-
 # ============================================================
 # PLAYER INITIALIZATION
 # ============================================================
@@ -413,7 +396,6 @@ func _ready() -> void:
 	_initialize_perspective()
 	_initialize_network_state()
 	_initialize_network_synchronizer()
-
 
 # ============================================================
 # PLAYER INITIALIZATION HELPERS
@@ -484,7 +466,6 @@ func _initialize_network_synchronizer() -> void:
 
 	if sync_node != null and is_multiplayer_authority():
 		sync_node.public_visibility = true
-
 
 # ============================================================
 # PLAYER INPUT
@@ -824,7 +805,6 @@ func _find_active_push_cart() -> RigidBody3D:
 			
 	return null
 
-
 # ============================================================
 # FRAME PROCESS
 # ============================================================
@@ -834,7 +814,6 @@ func _process(delta: float) -> void:
 	update_idle_look(delta)
 	_update_equipment_ik(delta)
 	_update_checkout_frame(delta)
-
 
 # ============================================================
 # CHARACTER BLINKING
@@ -892,7 +871,6 @@ func _schedule_next_blink() -> void:
 			blink_max_time
 		)
 
-
 # ============================================================
 # EQUIPMENT IK
 # ============================================================
@@ -904,7 +882,6 @@ func _update_equipment_ik(delta: float) -> void:
 	)
 
 	player_equipment.update_mop_right_hand_target(delta)
-
 
 # ============================================================
 # CHECKOUT FRAME UPDATES
@@ -934,7 +911,6 @@ func _update_checkout_frame(delta: float) -> void:
 
 	player_checkout.update_checkout_hover()
 
-
 # ============================================================
 # PHYSICS PROCESS
 # ============================================================
@@ -963,7 +939,6 @@ func _physics_process(delta: float) -> void:
 	_update_network_movement_state()
 	_update_character_rotation(raw_input, move_direction, delta)
 	_update_network_held_item_state()
-
 
 # ============================================================
 # REMOTE PLAYER PHYSICS
@@ -1009,7 +984,6 @@ func _record_network_state() -> void:
 	if not _network_position_initialized:
 		global_position = network_position
 		_network_position_initialized = true
-
 
 # ============================================================
 # CAMERA PHYSICS
@@ -1198,7 +1172,6 @@ func _update_camera_zoom(delta: float) -> void:
 		8.0 * delta
 	)
 
-
 # ============================================================
 # MOVEMENT INPUT
 # ============================================================
@@ -1253,7 +1226,6 @@ func _get_movement_direction(raw_input: Vector2) -> Vector3:
 		forward * raw_input.y
 		+ right * raw_input.x
 	).normalized()
-
 
 # ============================================================
 # MOVEMENT VELOCITY
@@ -1316,7 +1288,6 @@ func _update_movement_velocity(
 
 	velocity.y = y_velocity + _gravity * delta
 
-
 # ============================================================
 # MOVEMENT ANIMATION
 # ============================================================
@@ -1362,7 +1333,6 @@ func _update_movement_animation() -> void:
 
 	set_anim_tree()
 
-
 # ============================================================
 # JUMPING AND LANDING
 # ============================================================
@@ -1405,7 +1375,6 @@ func _update_landing_effect(delta: float) -> void:
 			5.0 * delta
 		)
 
-
 # ============================================================
 # CONVEYOR BELTS AND KNOCKBACK
 # ============================================================
@@ -1440,7 +1409,6 @@ func _apply_physics_movement(
 
 	velocity -= conveyor_velocity
 	velocity -= knockback_velocity
-
 
 # ============================================================
 # CHARACTER ROTATION
@@ -1558,7 +1526,6 @@ func _update_cart_movement_rotation(
 		target_angle,
 		rotation_speed * delta
 	)
-
 
 # ============================================================
 # NETWORK PHYSICS STATE
@@ -2527,7 +2494,6 @@ func _server_can_clean_spill(spill: Spill) -> bool:
 
 	return true
 
-
 # ============================================================
 # RESTOCK SCANNER MANAGEMENT
 # ============================================================
@@ -2762,7 +2728,6 @@ func handle_restock_scanner_input(event: InputEvent) -> bool:
 
 	return false
 
-
 # ============================================================
 # ITEM INTERACTION
 # ============================================================
@@ -2782,7 +2747,6 @@ func interact_with_item(item: Node3D) -> void:
 		item.request_interact(self)
 	elif item.has_method("interact"):
 		item.interact(self)
-
 
 # ============================================================
 # HELD ITEM MANAGEMENT
@@ -2884,7 +2848,6 @@ func _clear_cancelled_order_item_local(order_id: int) -> void:
 
 	_clear_held_item()
 
-
 # ============================================================
 # FOOTSTEP AUDIO
 # ============================================================
@@ -2926,7 +2889,6 @@ func network_play_footstep(volume: float, pitch: float) -> void:
 		footstep_player.pitch_scale = pitch
 		footstep_player.play()
 
-
 # ============================================================
 # MOVEMENT LOCKING
 # ============================================================
@@ -2942,7 +2904,6 @@ func set_movement_locked(locked: bool) -> void:
 		velocity.x = 0.0
 		velocity.z = 0.0
 		block_movement_until_keys_released = true
-
 
 # ============================================================
 # KNOCKBACK
@@ -2964,7 +2925,6 @@ func apply_conveyor_knockback(impulse: Vector3) -> void:
 		return
 
 	knockback_velocity += impulse
-
 
 # ============================================================
 # INSPECTION CAMERA
@@ -3024,7 +2984,6 @@ func _stop_mop_inspection() -> void:
 	if is_instance_valid(held_mop):
 		held_mop.show()
 
-
 # ============================================================
 # CHECKOUT MODE INTERFACE
 # ============================================================
@@ -3043,7 +3002,6 @@ func exit_checkout_mode() -> void:
 
 func get_checkout_cursor_screen_position() -> Vector2:
 	return player_checkout.get_checkout_cursor_screen_position()
-
 
 # ============================================================
 # ALIEN HELPER FUNCTIONS
