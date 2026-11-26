@@ -294,16 +294,19 @@ var server_cleaning_started_usec: int = 0
 # CHECKOUT STATE
 # ============================================================
 
-# Active checkout.
-var checkout_mode_active: bool = false
-var active_checkout: Checkout = null
+# Checkout mode interface.
+var checkout_mode_active: bool:
+	get:
+		return player_checkout.checkout_mode_active
+	set(value):
+		player_checkout.checkout_mode_active = value
 
-# Previous player state.
-var checkout_previous_camera: Camera3D = null
-var checkout_previous_mouse_mode: Input.MouseMode = Input.MOUSE_MODE_CAPTURED
-var checkout_previous_movement_locked: bool = false
-var checkout_previous_raycast_enabled: bool = true
-var checkout_previous_held_item_visibility: bool = true
+var active_checkout: Checkout:
+	get:
+		return player_checkout.active_checkout
+	set(value):
+		player_checkout.active_checkout = value
+
 
 # Checkout product cursor interface.
 var checkout_cursor_visual: MeshInstance3D:
@@ -3056,143 +3059,20 @@ func _stop_mop_inspection() -> void:
 		held_mop.show()
 
 
-# CHECKOUT MODE
+# ============================================================
+# CHECKOUT MODE INTERFACE
+# ============================================================
 
 func enter_checkout_mode(checkout: Checkout) -> void:
-	if not is_multiplayer_authority():
-		return
-
-	if checkout_mode_active:
-		return
-
-	if checkout == null:
-		return
-
-	if checkout.checkout_camera == null:
-		push_warning("Checkout has no CheckoutCamera!")
-		return
-
-	# Ask the server for permission before entering.
-	checkout.request_scanner_access(self)
+	player_checkout.enter_checkout_mode(checkout)
 
 
 func _activate_checkout_mode(checkout: Checkout) -> void:
-	if not is_multiplayer_authority():
-		return
-
-	if checkout_mode_active:
-		return
-
-	if checkout == null:
-		return
-
-	if checkout.checkout_camera == null:
-		return
-
-	checkout_mode_active = true
-	active_checkout = checkout
-
-	# Remember the current state.
-	checkout_previous_camera = get_viewport().get_camera_3d()
-	checkout_previous_mouse_mode = Input.mouse_mode
-	checkout_previous_movement_locked = movement_locked
-	checkout_previous_raycast_enabled = interact_raycast_3d.enabled
-
-	# Lock player movement.
-	movement_locked = true
-
-	# Hide the first-person held item during checkout mode.
-	checkout_previous_held_item_visibility = held_item_holder.visible
-	held_item_holder.hide()
-
-	# Disable normal first-person interaction.
-	interact_raycast_3d.enabled = false
-
-	# Hide the normal crosshair.
-	crosshair.hide()
-
-	# Initialize the virtual checkout pointer at screen center.
-	player_checkout.initialize_cursor()
-	create_checkout_pointer()
-
-	# Capture the physical cursor while using our virtual pointer.
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-
-	# Activate the checkout camera.
-	checkout.checkout_camera.make_current()
-
-	# Show instructions/controls UI.
-	checkout.show_checkout_instructions()
-
-	# Create the checkout cursor visual.
-	create_checkout_cursor_visual()
+	player_checkout.activate_checkout_mode(checkout)
 
 
 func exit_checkout_mode() -> void:
-	if not checkout_mode_active:
-		return
-
-	# Do not allow checkout mode to be exited while holding a product.
-	if held_item != null or network_holding_item:
-		return
-
-	_stop_held_product_rotation()
-
-	var checkout_to_release: Checkout = active_checkout
-
-	if is_instance_valid(checkout_to_release):
-		checkout_to_release.clear_checkout_hover_outlines()
-		checkout_to_release.hide_checkout_instructions()
-
-	checkout_mode_active = false
-
-	# Match the player's view direction to the checkout camera.
-	if is_instance_valid(checkout_to_release):
-		if is_instance_valid(checkout_to_release.checkout_camera):
-			var checkout_rotation: Vector3 = (
-				checkout_to_release.checkout_camera.global_rotation
-			)
-
-			# Horizontal facing direction.
-			global_rotation.y = checkout_rotation.y
-
-			# Vertical look direction.
-			first_person_camera_pivot.rotation.x = clampf(
-				checkout_rotation.x,
-				deg_to_rad(-80.0),
-				deg_to_rad(80.0)
-			)
-
-	# Restore the previous camera.
-	if is_instance_valid(checkout_previous_camera):
-		checkout_previous_camera.make_current()
-	else:
-		_first_person_camera.make_current()
-
-	# Restore player movement state.
-	movement_locked = checkout_previous_movement_locked
-
-	# Restore normal interaction.
-	interact_raycast_3d.enabled = checkout_previous_raycast_enabled
-
-	# Restore first-person held item visibility.
-	held_item_holder.visible = checkout_previous_held_item_visibility
-
-	# Restore mouse state.
-	remove_checkout_pointer()
-	Input.mouse_mode = checkout_previous_mouse_mode
-
-	# Restore crosshair.
-	crosshair.visible = is_multiplayer_authority() and _first_person
-
-	active_checkout = null
-	checkout_previous_camera = null
-
-	clear_checkout_cursor_visual()
-
-	# Release the scanner so another player can use it.
-	if is_instance_valid(checkout_to_release):
-		checkout_to_release.release_scanner_access(self)
+	player_checkout.exit_checkout_mode()
 
 
 func handle_checkout_interaction() -> void:

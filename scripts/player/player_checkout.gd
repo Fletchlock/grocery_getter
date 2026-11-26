@@ -17,6 +17,26 @@ const CHECKOUT_POINTER_TEXTURE: Texture2D = preload(
 
 @onready var player: CharacterBody3D = get_parent() as CharacterBody3D
 
+
+# ============================================================
+# CHECKOUT MODE STATE
+# ============================================================
+
+var checkout_mode_active: bool = false
+var active_checkout: Checkout = null
+
+
+# ============================================================
+# PREVIOUS PLAYER STATE
+# ============================================================
+
+var checkout_previous_camera: Camera3D = null
+var checkout_previous_mouse_mode: Input.MouseMode = Input.MOUSE_MODE_CAPTURED
+var checkout_previous_movement_locked: bool = false
+var checkout_previous_raycast_enabled: bool = true
+var checkout_previous_held_item_visibility: bool = true
+
+
 # ============================================================
 # VIRTUAL CURSOR STATE
 # ============================================================
@@ -26,12 +46,14 @@ var checkout_virtual_mouse_initialized: bool = false
 var checkout_last_mouse_position: Vector2 = Vector2.ZERO
 var checkout_using_controller_cursor: bool = false
 
+
 # ============================================================
 # CHECKOUT POINTER STATE
 # ============================================================
 
 var checkout_pointer_layer: CanvasLayer = null
 var checkout_pointer: Sprite2D = null
+
 
 # ============================================================
 # 3D PRODUCT CURSOR STATE
@@ -42,12 +64,14 @@ var checkout_cursor_sensor: Area3D = null
 var checkout_cursor_last_safe_position: Vector3 = Vector3.ZERO
 var checkout_cursor_has_safe_position: bool = false
 
+
 # ============================================================
 # CHECKOUT INTERACTION STATE
 # ============================================================
 
 var checkout_scanned_product_path: String = ""
 var checkout_auto_bag_hover_active: bool = false
+
 
 # ============================================================
 # CURSOR INITIALIZATION
@@ -230,7 +254,7 @@ func create_checkout_cursor_visual() -> void:
 	if not player.is_multiplayer_authority():
 		return
 
-	if not player.checkout_mode_active:
+	if not checkout_mode_active:
 		return
 
 	if player.held_item == null:
@@ -239,10 +263,10 @@ func create_checkout_cursor_visual() -> void:
 	if player.held_item_origin != player.ItemOrigin.CHECKOUT_GRID:
 		return
 
-	if not is_instance_valid(player.active_checkout):
+	if not is_instance_valid(active_checkout):
 		return
 
-	var camera: Camera3D = player.active_checkout.checkout_camera
+	var camera: Camera3D = active_checkout.checkout_camera
 
 	if not is_instance_valid(camera):
 		return
@@ -301,9 +325,9 @@ func create_checkout_cursor_visual() -> void:
 
 
 func update_checkout_cursor_visual() -> void:
-	update_checkout_mouse_cursor(player.checkout_mode_active)
+	update_checkout_mouse_cursor(checkout_mode_active)
 
-	if not player.checkout_mode_active:
+	if not checkout_mode_active:
 		return
 
 	if player.held_item == null:
@@ -320,10 +344,10 @@ func update_checkout_cursor_visual() -> void:
 	if not is_instance_valid(checkout_cursor_visual):
 		return
 
-	if not is_instance_valid(player.active_checkout):
+	if not is_instance_valid(active_checkout):
 		return
 
-	var camera: Camera3D = player.active_checkout.checkout_camera
+	var camera: Camera3D = active_checkout.checkout_camera
 
 	if not is_instance_valid(camera):
 		return
@@ -369,7 +393,7 @@ func update_checkout_cursor_visual() -> void:
 			player.is_multiplayer_authority()
 			and player.held_item != null
 			and player.held_item_origin == player.ItemOrigin.CHECKOUT_GRID
-			and is_instance_valid(player.active_checkout)
+			and is_instance_valid(active_checkout)
 			and is_instance_valid(checkout_cursor_visual)
 		):
 			var product: ProductData = player.held_item as ProductData
@@ -378,12 +402,12 @@ func update_checkout_cursor_visual() -> void:
 				product != null
 				and product.product_category != "produce"
 				and checkout_scanned_product_path != product.resource_path
-				and player.active_checkout.is_barcode_aligned(
+				and active_checkout.is_barcode_aligned(
 					product,
 					checkout_cursor_visual
 				)
 			):
-				player.active_checkout.interact(player)
+				active_checkout.interact(player)
 
 
 func clear_checkout_cursor_visual() -> void:
@@ -404,10 +428,10 @@ func create_checkout_cursor_sensor() -> void:
 	if not is_instance_valid(checkout_cursor_visual):
 		return
 
-	if not is_instance_valid(player.active_checkout):
+	if not is_instance_valid(active_checkout):
 		return
 
-	if not is_instance_valid(player.active_checkout.scan_area):
+	if not is_instance_valid(active_checkout.scan_area):
 		return
 
 	var product_bounds: AABB = checkout_cursor_visual.get_aabb()
@@ -421,7 +445,7 @@ func create_checkout_cursor_sensor() -> void:
 	# Detect the scanner without becoming a target.
 	checkout_cursor_sensor.collision_layer = 0
 	checkout_cursor_sensor.collision_mask = (
-		player.active_checkout.scan_area.collision_layer
+		active_checkout.scan_area.collision_layer
 	)
 
 	checkout_cursor_sensor.monitoring = true
@@ -443,13 +467,13 @@ func create_checkout_cursor_sensor() -> void:
 
 
 func _on_checkout_product_sensor_area_entered(area: Area3D) -> void:
-	if not player.checkout_mode_active:
+	if not checkout_mode_active:
 		return
 
-	if not is_instance_valid(player.active_checkout):
+	if not is_instance_valid(active_checkout):
 		return
 
-	if area != player.active_checkout.scan_area:
+	if area != active_checkout.scan_area:
 		return
 
 	if player.held_item == null:
@@ -458,7 +482,7 @@ func _on_checkout_product_sensor_area_entered(area: Area3D) -> void:
 	if player.held_item_origin != player.ItemOrigin.CHECKOUT_GRID:
 		return
 
-	player.active_checkout.interact(player)
+	active_checkout.interact(player)
 
 
 # ============================================================
@@ -492,10 +516,10 @@ func get_checkout_cursor_screen_position() -> Vector2:
 	if not is_instance_valid(checkout_cursor_visual):
 		return checkout_virtual_mouse_position
 
-	if not is_instance_valid(player.active_checkout):
+	if not is_instance_valid(active_checkout):
 		return checkout_virtual_mouse_position
 
-	var camera: Camera3D = player.active_checkout.checkout_camera
+	var camera: Camera3D = active_checkout.checkout_camera
 
 	if not is_instance_valid(camera):
 		return checkout_virtual_mouse_position
@@ -527,10 +551,10 @@ func get_checkout_cursor_shape_query(
 	if product_bounds.size.is_zero_approx():
 		return null
 
-	if not is_instance_valid(player.active_checkout):
+	if not is_instance_valid(active_checkout):
 		return null
 
-	var camera: Camera3D = player.active_checkout.checkout_camera
+	var camera: Camera3D = active_checkout.checkout_camera
 
 	if not is_instance_valid(camera):
 		return null
@@ -617,10 +641,10 @@ func find_checkout_cursor_safe_position(
 	if not is_instance_valid(checkout_cursor_visual):
 		return false
 
-	if not is_instance_valid(player.active_checkout):
+	if not is_instance_valid(active_checkout):
 		return false
 
-	var camera: Camera3D = player.active_checkout.checkout_camera
+	var camera: Camera3D = active_checkout.checkout_camera
 
 	if not is_instance_valid(camera):
 		return false
@@ -654,10 +678,10 @@ func get_checkout_cursor_collision_position(
 	if not is_instance_valid(checkout_cursor_visual):
 		return target_position
 
-	if not is_instance_valid(player.active_checkout):
+	if not is_instance_valid(active_checkout):
 		return target_position
 
-	var camera: Camera3D = player.active_checkout.checkout_camera
+	var camera: Camera3D = active_checkout.checkout_camera
 
 	if not is_instance_valid(camera):
 		return target_position
@@ -766,17 +790,17 @@ func get_checkout_cursor_collision_position(
 # ============================================================
 
 func update_checkout_hover() -> void:
-	if not player.checkout_mode_active:
+	if not checkout_mode_active:
 		return
 
-	if not is_instance_valid(player.active_checkout):
+	if not is_instance_valid(active_checkout):
 		return
 
 	var mouse_position: Vector2 = (
 		_get_checkout_hover_position()
 	)
 
-	player.active_checkout.update_checkout_hover_outline(
+	active_checkout.update_checkout_hover_outline(
 		mouse_position,
 		not player.is_holding_equipment()
 	)
@@ -812,7 +836,7 @@ func _can_auto_bag_checkout_product(
 	if player.held_item_origin != player.ItemOrigin.CHECKOUT_GRID:
 		return false
 
-	if not player.active_checkout.is_mouse_over_bag(mouse_position):
+	if not active_checkout.is_mouse_over_bag(mouse_position):
 		return false
 
 	return (
@@ -832,7 +856,7 @@ func _update_checkout_auto_bag(
 	if should_auto_bag and not checkout_auto_bag_hover_active:
 		checkout_auto_bag_hover_active = true
 
-		player.active_checkout.bag_grid.request_interact(
+		active_checkout.bag_grid.request_interact(
 			player
 		)
 
@@ -845,10 +869,10 @@ func _update_checkout_auto_bag(
 # ============================================================
 
 func handle_checkout_interaction() -> void:
-	if not player.checkout_mode_active:
+	if not checkout_mode_active:
 		return
 
-	if not is_instance_valid(player.active_checkout):
+	if not is_instance_valid(active_checkout):
 		return
 
 	var mouse_position: Vector2 = (
@@ -863,13 +887,13 @@ func handle_checkout_interaction() -> void:
 		mouse_position = get_checkout_cursor_screen_position()
 
 		# Interact with the scanner.
-		if player.active_checkout.is_mouse_over_scanner(mouse_position):
-			player.active_checkout.interact(player)
+		if active_checkout.is_mouse_over_scanner(mouse_position):
+			active_checkout.interact(player)
 			return
 
 		# Interact with the bagging area.
-		if player.active_checkout.is_mouse_over_bag(mouse_position):
-			player.active_checkout.bag_grid.request_interact(
+		if active_checkout.is_mouse_over_bag(mouse_position):
+			active_checkout.bag_grid.request_interact(
 				player
 			)
 			return
@@ -881,7 +905,192 @@ func handle_checkout_interaction() -> void:
 		return
 
 	# Pick up the targeted checkout product.
-	player.active_checkout.checkout_grid.request_take_item_at_mouse(
+	active_checkout.checkout_grid.request_take_item_at_mouse(
 		player,
 		mouse_position
+	)
+
+
+# ============================================================
+# CHECKOUT MODE MANAGEMENT
+# ============================================================
+
+func enter_checkout_mode(checkout: Checkout) -> void:
+	if not player.is_multiplayer_authority():
+		return
+
+	if checkout_mode_active:
+		return
+
+	if checkout == null:
+		return
+
+	if checkout.checkout_camera == null:
+		push_warning("Checkout has no CheckoutCamera!")
+		return
+
+	# Ask the server for permission before entering.
+	checkout.request_scanner_access(player)
+
+
+func activate_checkout_mode(checkout: Checkout) -> void:
+	if not player.is_multiplayer_authority():
+		return
+
+	if checkout_mode_active:
+		return
+
+	if checkout == null:
+		return
+
+	if checkout.checkout_camera == null:
+		return
+
+	checkout_mode_active = true
+	active_checkout = checkout
+
+	_save_previous_player_state()
+	_apply_checkout_player_state()
+
+	# Initialize the virtual checkout pointer.
+	initialize_cursor()
+	create_checkout_pointer()
+
+	# Capture the physical cursor.
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+	# Activate the checkout camera.
+	checkout.checkout_camera.make_current()
+
+	# Show instructions and controls.
+	checkout.show_checkout_instructions()
+
+	# Create the checkout product cursor.
+	create_checkout_cursor_visual()
+
+
+func exit_checkout_mode() -> void:
+	if not checkout_mode_active:
+		return
+
+	# Do not allow checkout mode to be exited while holding a product.
+	if player.held_item != null or player.network_holding_item:
+		return
+
+	player._stop_held_product_rotation()
+
+	var checkout_to_release: Checkout = active_checkout
+
+	if is_instance_valid(checkout_to_release):
+		checkout_to_release.clear_checkout_hover_outlines()
+		checkout_to_release.hide_checkout_instructions()
+
+	checkout_mode_active = false
+
+	# Match the player's view to the checkout camera.
+	_restore_player_view_direction(checkout_to_release)
+
+	# Restore the player's previous state.
+	_restore_previous_player_state()
+
+	active_checkout = null
+	checkout_previous_camera = null
+
+	clear_checkout_cursor_visual()
+
+	# Release the scanner so another player can use it.
+	if is_instance_valid(checkout_to_release):
+		checkout_to_release.release_scanner_access(player)
+
+
+# ============================================================
+# PLAYER STATE MANAGEMENT
+# ============================================================
+
+func _save_previous_player_state() -> void:
+	checkout_previous_camera = get_viewport().get_camera_3d()
+
+	checkout_previous_mouse_mode = Input.mouse_mode
+
+	checkout_previous_movement_locked = (
+		player.movement_locked
+	)
+
+	checkout_previous_raycast_enabled = (
+		player.interact_raycast_3d.enabled
+	)
+
+	checkout_previous_held_item_visibility = (
+		player.held_item_holder.visible
+	)
+
+
+func _apply_checkout_player_state() -> void:
+	# Lock player movement.
+	player.movement_locked = true
+
+	# Hide the first-person held item.
+	player.held_item_holder.hide()
+
+	# Disable normal first-person interaction.
+	player.interact_raycast_3d.enabled = false
+
+	# Hide the normal crosshair.
+	player.crosshair.hide()
+
+
+func _restore_previous_player_state() -> void:
+	# Restore the previous camera.
+	if is_instance_valid(checkout_previous_camera):
+		checkout_previous_camera.make_current()
+	else:
+		player._first_person_camera.make_current()
+
+	# Restore player movement.
+	player.movement_locked = checkout_previous_movement_locked
+
+	# Restore normal interaction.
+	player.interact_raycast_3d.enabled = (
+		checkout_previous_raycast_enabled
+	)
+
+	# Restore first-person held item visibility.
+	player.held_item_holder.visible = (
+		checkout_previous_held_item_visibility
+	)
+
+	# Restore mouse state.
+	remove_checkout_pointer()
+	Input.mouse_mode = checkout_previous_mouse_mode
+
+	# Restore the crosshair.
+	player.crosshair.visible = (
+		player.is_multiplayer_authority()
+		and player._first_person
+	)
+
+
+# ============================================================
+# PLAYER VIEW RESTORATION
+# ============================================================
+
+func _restore_player_view_direction(checkout: Checkout) -> void:
+	if not is_instance_valid(checkout):
+		return
+
+	if not is_instance_valid(checkout.checkout_camera):
+		return
+
+	var checkout_rotation: Vector3 = (
+		checkout.checkout_camera.global_rotation
+	)
+
+	# Horizontal facing direction.
+	player.global_rotation.y = checkout_rotation.y
+
+	# Vertical look direction.
+	player.first_person_camera_pivot.rotation.x = clampf(
+		checkout_rotation.x,
+		deg_to_rad(-80.0),
+		deg_to_rad(80.0)
 	)

@@ -5,7 +5,6 @@ extends Control
 @onready var play_button: Button = $CanvasLayer/MarginContainer/VBoxContainer/PlayButton
 @onready var ready_button: Button = $CanvasLayer/MarginContainer/VBoxContainer/ReadyButton
 @onready var main_menu_button: Button = $CanvasLayer/MarginContainer/VBoxContainer/MainMenuButton
-@onready var invite_friends_button: Button = $CanvasLayer/MarginContainer/VBoxContainer/InviteFriendsButton
 @onready var customize_button: Button = $CanvasLayer/MarginContainer/VBoxContainer/CustomizeButton
 
 @onready var lobby_viewport: SubViewport = $SubViewportContainer/SubViewport
@@ -41,10 +40,8 @@ func _ready() -> void:
 	LobbyManager.lobby_player_updated.connect(_on_player_changed)
 	LobbyManager.lobby_state_changed.connect(_update_play_button)
 	LobbyManager.player_avatar_loaded.connect(_on_player_avatar_loaded)
-	NetworkManager.host_created.connect(_update_invite_button)
 	NetworkManager.lobby_joined.connect(_on_network_lobby_joined)
-		
-	invite_friends_button.pressed.connect(_on_invite_friends_button_pressed)
+
 	
 	if multiplayer.multiplayer_peer == null:
 		play_button.hide()
@@ -152,7 +149,6 @@ func _setup_lobby_focus() -> void:
 		play_button,
 		ready_button,
 		customize_button,
-		invite_friends_button,
 		main_menu_button
 	]
 
@@ -275,16 +271,6 @@ func _update_ready_button() -> void:
 	_setup_lobby_focus()
 
 
-func _update_invite_button() -> void:
-	invite_friends_button.visible = (
-		multiplayer.is_server()
-		and NetworkManager.peer != null
-		and NetworkManager.current_lobby_id != 0
-	)
-
-	_setup_lobby_focus()
-
-
 func _ensure_lobby_focus() -> void:
 	await get_tree().process_frame
 
@@ -300,7 +286,7 @@ func _ensure_lobby_focus() -> void:
 
 
 func _on_network_lobby_joined(_lobby_id: int) -> void:
-	_update_invite_button()
+	pass
 
 
 func _on_invite_friends_button_pressed() -> void:
