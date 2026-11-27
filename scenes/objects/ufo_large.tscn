@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cjctdojxtbv71"]
 
 [ext_resource type="PackedScene" uid="uid://de718ikkox61t" path="res://assets/models/objects/ufo_large.glb" id="1_86ldf"]
-[ext_resource type="PackedScene" uid="uid://dn2e6iinluhp1" path="res://assets/models/characters/alien_character.glb" id="2_jh1os"]
+[ext_resource type="PackedScene" uid="uid://vbrfacp83r7p" path="res://scenes/menus/alien_preview_character.tscn" id="2_jh1os"]
 
 [node name="ufo_large" unique_id=1014804490 instance=ExtResource("1_86ldf")]
 
@@ -77,5 +77,5 @@ light_specular = 0.0
 omni_range = 3.4
 omni_attenuation = -10.0
 
-[node name="alien_character" parent="." index="10" unique_id=837364832 instance=ExtResource("2_jh1os")]
+[node name="alien_character" parent="." index="10" unique_id=281075138 instance=ExtResource("2_jh1os")]
 transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, -0.3198913, -1.1167817)

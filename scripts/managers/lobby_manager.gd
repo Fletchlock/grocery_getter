@@ -12,12 +12,16 @@ var avatar_requests: Dictionary = {}
 
 
 func _ready() -> void:
-	Steam.avatar_loaded.connect(_on_avatar_loaded)
+	if NetworkManager.steam_initialized:
+		Steam.avatar_loaded.connect(_on_avatar_loaded)
 
 
 func get_player_avatar(peer_id: int) -> Texture2D:
 	if player_avatars.has(peer_id):
 		return player_avatars[peer_id]
+
+	if not NetworkManager.steam_initialized:
+		return null
 
 	if avatar_requests.has(peer_id):
 		return null
@@ -100,7 +104,11 @@ func add_player(peer_id: int) -> void:
 	}
 	
 	# Check for single player
-	if peer_id == multiplayer.get_unique_id() and not NetworkManager.is_single_player:
+	if (
+		peer_id == multiplayer.get_unique_id()
+		and not NetworkManager.is_single_player
+		and NetworkManager.steam_initialized
+	):
 		players[peer_id]["steam_id"] = Steam.getSteamID()
 
 	print("LobbyManager: Player added: ", peer_id)
@@ -241,30 +249,67 @@ func set_player_name(
 	players[peer_id]["name"] = player_name
 	players[peer_id]["steam_id"] = steam_id
 
-	if multiplayer.is_server() and steam_id > 0:
-		var saved_player: PlayerData = SaveManager.get_player(steam_id)
-
-		if saved_player == null:
-			print(
-				"LOBBY PLAYER DATA: NEW PLAYER | ",
-				player_name,
-				" | Steam ID: ",
-				steam_id
+	if multiplayer.is_server():
+		# Use the save-slot appearance for single-player,
+		# and for the host continuing that save as multiplayer.
+		var should_use_slot_appearance: bool = (
+			NetworkManager.is_single_player
+			or (
+				peer_id == multiplayer.get_unique_id()
+				and GameManager.game_start_mode
+				== GameManager.GameStartMode.CONTINUE_GAME
 			)
-		else:
-			print(
-				"LOBBY PLAYER DATA: RETURNING PLAYER | ",
-				player_name,
-				" | Steam ID: ",
-				steam_id
+		)
+
+		var restored_slot_appearance: bool = false
+
+		if should_use_slot_appearance:
+			var saved_appearance: Dictionary = (
+				SaveManager.get_single_player_appearance()
 			)
 
-			if saved_player.appearance != null:
-				_set_player_appearance(
-					peer_id,
-					saved_player.appearance.to_dict()
+			if not saved_appearance.is_empty():
+				players[peer_id]["appearance"] = (
+					saved_appearance.duplicate(true)
 				)
-			
+
+				sync_player_appearance.rpc(
+					peer_id,
+					saved_appearance
+				)
+
+				restored_slot_appearance = true
+
+				print(
+					"LOBBY PLAYER DATA: Restored save-slot appearance for peer ",
+					peer_id
+				)
+
+		# If no slot appearance was available, or this is another
+		# multiplayer player, use their normal Steam-ID record.
+		if not restored_slot_appearance and not NetworkManager.is_single_player:
+			var saved_player: PlayerData = SaveManager.get_player(steam_id)
+
+			if saved_player == null:
+				print(
+					"LOBBY PLAYER DATA: NEW PLAYER | ",
+					player_name,
+					" | Player ID: ",
+					steam_id
+				)
+			else:
+				print(
+					"LOBBY PLAYER DATA: RETURNING PLAYER | ",
+					player_name,
+					" | Player ID: ",
+					steam_id
+				)
+
+				if saved_player.appearance != null:
+					_set_player_appearance(
+						peer_id,
+						saved_player.appearance.to_dict()
+					)
 
 	lobby_player_updated.emit(peer_id)
 	lobby_state_changed.emit()
@@ -301,9 +346,6 @@ func get_saved_player(peer_id: int) -> PlayerData:
 		return null
 
 	var steam_id: int = get_player_steam_id(peer_id)
-
-	if steam_id <= 0:
-		return null
 
 	return SaveManager.get_player(steam_id)
 
@@ -374,16 +416,23 @@ func _set_player_appearance(
 	if players[peer_id]["ready"]:
 		return
 
-	var appearance: AlienAppearanceData = AlienAppearanceData.from_dict(data)
+	var appearance: AlienAppearanceData = (
+		AlienAppearanceData.from_dict(data)
+	)
+
 	var validated_data: Dictionary = appearance.to_dict()
 
 	players[peer_id]["appearance"] = validated_data
-	
 
-	# Update the player's saved data in memory.
-	var steam_id: int = get_player_steam_id(peer_id)
+	if NetworkManager.is_single_player:
+		# Single-player: save against the selected save slot.
+		SaveManager.set_single_player_appearance(validated_data)
 
-	if steam_id > 0:
+		if save_to_disk:
+			SaveManager.save_single_player_appearance(validated_data)
+	else:
+		# Multiplayer: retain the existing Steam-ID player records.
+		var steam_id: int = get_player_steam_id(peer_id)
 		var player_data: PlayerData = SaveManager.get_player(steam_id)
 
 		if player_data == null:
@@ -391,11 +440,12 @@ func _set_player_appearance(
 			player_data.steam_id = steam_id
 			SaveManager.add_player(player_data)
 
-		player_data.appearance = appearance.duplicate(true) as AlienAppearanceData
-		
+		player_data.appearance = (
+			appearance.duplicate(true) as AlienAppearanceData
+		)
+
 		if save_to_disk:
 			SaveManager.save_player_appearance(steam_id)
-	
 
 	lobby_player_updated.emit(peer_id)
 	lobby_state_changed.emit()

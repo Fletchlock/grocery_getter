@@ -76,32 +76,40 @@ var pending_overwrite_slot: int = -1
 
 var is_transitioning_to_game: bool = false
 
+const ALIEN_PREVIEW_SCENE: PackedScene = preload(
+	"res://scenes/menus/alien_preview.tscn"
+)
+
+var customization_scene: Node3D = null
+
 
 func _ready() -> void:
 	# Menu music
 	MusicManager.player.stream = MusicManager.intro
 	MusicManager.player.play()
-	
+
+	# Load the previously selected character into the UFO.
+	_load_ufo_character_preview()
+
 	# Focus on this button
 	new_game_button.grab_focus.call_deferred()
-	
+
 	# Options
-	
+
 	single_player_button.pressed.connect(_on_single_player_button_pressed)
 	multiplayer_button.pressed.connect(_on_multiplayer_button_pressed)
-	
+
 	continue_game_button.visible = _any_save_exists()
 
-	#Save game slots
+	# Save game slots
 	save_slot_panel.hide()
 	host_privacy_panel.hide()
-	
+
 	# Menu navigation
 	play_mode_panel.hide()
-
 	save_slot_back_button.pressed.connect(_on_save_slot_back_pressed)
 	play_mode_back_button.pressed.connect(_on_play_mode_back_pressed)
-	
+
 	friends_button.pressed.connect(_on_friends_button_pressed)
 	invite_button.pressed.connect(_on_invite_button_pressed)
 	privacy_back_button.pressed.connect(_on_privacy_back_button_pressed)
@@ -110,7 +118,7 @@ func _ready() -> void:
 	overwrite_confirmation.get_label().add_theme_font_size_override("font_size", 24)
 	overwrite_confirmation.get_ok_button().add_theme_font_size_override("font_size", 24)
 	overwrite_confirmation.get_cancel_button().add_theme_font_size_override("font_size", 24)
-	
+
 	var submenu_panels: Array[Control] = [
 		save_slot_panel,
 		play_mode_panel,
@@ -130,7 +138,7 @@ func _ready() -> void:
 
 	menu_blur.show()
 	menu_blur.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	
+
 	for i: int in range(delete_buttons.size()):
 		var slot: int = i + 1
 		delete_buttons[i].pressed.connect(_on_delete_slot_pressed.bind(slot))
@@ -280,12 +288,38 @@ func _on_single_player_button_pressed() -> void:
 	if is_transitioning_to_game:
 		return
 
-	is_transitioning_to_game = true
+	SaveManager.remember_last_played_slot()
 
 	print("MainMenu: Starting single player.")
 	print("MainMenu: Selected save slot: ", SaveManager.selected_slot)
 
-	NetworkManager.start_single_player()
+	var is_new_game: bool = (
+		GameManager.game_start_mode
+		== GameManager.GameStartMode.NEW_GAME
+	)
+
+	# Prepare the player data for the selected save slot.
+	if is_new_game:
+		SaveManager.clear_players()
+	else:
+		if not SaveManager.load_players_for_lobby():
+			push_error("MainMenu: Failed to load player records.")
+			return
+
+	var require_customization: bool = is_new_game
+
+	NetworkManager.start_single_player(require_customization)
+
+	if require_customization:
+		# Customization is opened directly from the main menu.
+		# Prevent the lobby from trying to open it later.
+		NetworkManager.open_customization_when_lobby_opens = false
+
+		_open_single_player_customization()
+		return
+
+	# Existing saves continue directly into gameplay.
+	is_transitioning_to_game = true
 
 	_set_main_menu_focus_enabled(false)
 	get_viewport().gui_release_focus()
@@ -313,17 +347,39 @@ func _on_continue_game_button_pressed() -> void:
 
 
 func _host_game() -> void:
-	if GameManager.game_start_mode == GameManager.GameStartMode.CONTINUE_GAME:
+	if is_transitioning_to_game:
+		return
+
+	var is_new_game: bool = (
+		GameManager.game_start_mode == GameManager.GameStartMode.NEW_GAME
+	)
+
+	if not is_new_game:
 		if not SaveManager.load_players_for_lobby():
 			push_error("MainMenu: Failed to load player records.")
 			return
 	else:
 		SaveManager.clear_players()
 
+		# New multiplayer games use the default character
+		# during the UFO departure animation.
+		_apply_default_ufo_character_preview()
+
+	is_transitioning_to_game = true
+
+	_set_main_menu_focus_enabled(false)
+	get_viewport().gui_release_focus()
+
+	_hide_menu_ui_for_transition()
+
+	# Play the UFO departure before opening the multiplayer lobby.
+	await space_ufo.call("begin_warp_departure")
+
+	# Preserve the existing lobby creation order.
 	get_parent().get_parent().open_lobby()
+
 	GameManager.set_game_state(GameManager.GameState.LOBBY)
 
-	# Public lobbies only during development.
 	NetworkManager.host_lobby()
 
 
@@ -510,6 +566,12 @@ func _select_save_slot(slot: int) -> void:
 		return
 
 	print("SELECTED SAVE SLOT: ", slot)
+
+	# Only refresh the UFO appearance when continuing an existing game.
+	# New games retain the last-played character preview.
+	if GameManager.game_start_mode == GameManager.GameStartMode.CONTINUE_GAME:
+		_load_ufo_character_preview()
+
 	_show_play_mode()
 
 
@@ -730,3 +792,220 @@ func _hide_menu_ui_for_transition() -> void:
 	menu_back_buffer.hide()
 	overwrite_confirmation.hide()
 	delete_confirmation.hide()
+
+
+func _load_ufo_character_preview() -> void:
+	print(
+		"MAIN MENU: Loading character preview for Slot ",
+		SaveManager.selected_slot
+	)
+
+	var appearance_node: AlienAppearance = (
+		space_ufo.find_child("AlienAppearance", true, false)
+		as AlienAppearance
+	)
+
+	if appearance_node == null:
+		push_warning(
+			"MAIN MENU: Could not find UFO AlienAppearance node."
+		)
+		return
+
+	var appearance: AlienAppearanceData = null
+
+	var is_new_empty_slot: bool = (
+		GameManager.game_start_mode == GameManager.GameStartMode.NEW_GAME
+		and not SaveManager.slot_has_save(SaveManager.selected_slot)
+	)
+
+	if not is_new_empty_slot:
+		# Load the selected slot's saved appearance.
+		if SaveManager.load_players_for_lobby():
+			var appearance_data: Dictionary = (
+				SaveManager.get_single_player_appearance()
+			)
+
+			if not appearance_data.is_empty():
+				appearance = AlienAppearanceData.from_dict(appearance_data)
+		else:
+			print(
+				"MAIN MENU: No saved player data found. "
+				+ "Using default appearance."
+			)
+
+	# Use the default character for empty slots or missing appearance data.
+	if appearance == null:
+		appearance = AlienAppearanceData.new()
+
+		appearance.body_weight = appearance_node.default_weight
+		appearance.skin_color = appearance_node.default_skin_color
+		appearance.pattern_color = appearance_node.default_pattern_color
+		appearance.pattern_index = appearance_node.default_skin_pattern
+		appearance.pupil_color = appearance_node.default_pupil_color
+		appearance.lips_use_skin_color = appearance_node.lips_use_skin_color
+		appearance.lip_color = appearance_node.default_lip_color
+		appearance.eyelashes_enabled = appearance_node.default_eyelashes
+
+		appearance.top_color = AlienAppearance.ClothingColor.ORANGE
+		appearance.bottom_color = AlienAppearance.ClothingColor.DBLUE
+		appearance.feet_color = AlienAppearance.ClothingColor.BROWN
+		appearance.sole_color = AlienAppearance.ClothingColor.BLACK
+
+	appearance_node.apply_appearance(appearance)
+
+	print(
+		"MAIN MENU: Successfully refreshed UFO character preview "
+		+ "for Slot ",
+		SaveManager.selected_slot
+	)
+
+
+func _apply_default_ufo_character_preview() -> void:
+	var appearance_node: AlienAppearance = (
+		space_ufo.find_child("AlienAppearance", true, false)
+		as AlienAppearance
+	)
+
+	if appearance_node == null:
+		push_warning(
+			"MAIN MENU: Could not find UFO AlienAppearance node."
+		)
+		return
+
+	var appearance: AlienAppearanceData = AlienAppearanceData.new()
+
+	appearance.body_weight = appearance_node.default_weight
+	appearance.skin_color = appearance_node.default_skin_color
+	appearance.pattern_color = appearance_node.default_pattern_color
+	appearance.pattern_index = appearance_node.default_skin_pattern
+	appearance.pupil_color = appearance_node.default_pupil_color
+	appearance.lips_use_skin_color = appearance_node.lips_use_skin_color
+	appearance.lip_color = appearance_node.default_lip_color
+	appearance.eyelashes_enabled = appearance_node.default_eyelashes
+
+	appearance.top_color = AlienAppearance.ClothingColor.ORANGE
+	appearance.bottom_color = AlienAppearance.ClothingColor.DBLUE
+	appearance.feet_color = AlienAppearance.ClothingColor.BROWN
+	appearance.sole_color = AlienAppearance.ClothingColor.BLACK
+
+	appearance_node.apply_appearance(appearance)
+
+	print("MAIN MENU: Applied default UFO character appearance.")
+
+
+func _open_single_player_customization() -> void:
+	if customization_scene != null:
+		return
+
+	customization_scene = ALIEN_PREVIEW_SCENE.instantiate() as Node3D
+
+	if customization_scene == null:
+		push_error("MAIN MENU: Failed to instantiate alien customization.")
+		return
+
+	customization_scene.customization_confirmed.connect(
+		_on_single_player_customization_confirmed
+	)
+
+	customization_scene.customization_cancelled.connect(
+		_on_single_player_customization_cancelled
+	)
+
+	_set_main_menu_focus_enabled(false)
+	get_viewport().gui_release_focus()
+
+	play_mode_panel.hide()
+
+	# Add customization as a sibling of the main menu.
+	get_tree().root.add_child(customization_scene)
+
+	# Hide the entire main menu while customization is open.
+	hide()
+
+	print("MAIN MENU: Single-player alien customization opened.")
+
+
+func _on_single_player_customization_confirmed(
+	appearance: AlienAppearanceData
+) -> void:
+	if appearance == null:
+		return
+
+	if is_transitioning_to_game:
+		return
+
+	print(
+		"MAIN MENU: Single-player character confirmed | Skin: ",
+		appearance.skin_color.to_html(),
+		" | Weight: ",
+		appearance.body_weight
+	)
+
+	# Save the appearance to the currently selected save slot.
+	LobbyManager.request_set_appearance(
+		appearance.duplicate(true) as AlienAppearanceData
+	)
+
+	# Immediately update the alien inside the main menu UFO.
+	var ufo_appearance_node: AlienAppearance = (
+		space_ufo.find_child("AlienAppearance", true, false)
+		as AlienAppearance
+	)
+
+	if ufo_appearance_node != null:
+		ufo_appearance_node.apply_appearance(
+			appearance.duplicate(true) as AlienAppearanceData
+		)
+		print("MAIN MENU: UFO character appearance updated.")
+	else:
+		push_warning(
+			"MAIN MENU: Could not find UFO AlienAppearance node."
+		)
+
+	# Initial customization has now been completed.
+	NetworkManager.requires_initial_customization = false
+	NetworkManager.open_customization_when_lobby_opens = false
+
+	# There is no lobby ready-up screen in single-player.
+	LobbyManager.request_set_ready(true)
+
+	if customization_scene != null:
+		customization_scene.queue_free()
+		customization_scene = null
+
+	is_transitioning_to_game = true
+
+	# Restore the main menu so the UFO can be seen departing.
+	show()
+
+	_set_main_menu_focus_enabled(false)
+	get_viewport().gui_release_focus()
+
+	# Hide the menu buttons and other UI for the departure animation.
+	_hide_menu_ui_for_transition()
+
+	# Give the customization scene a frame to disappear.
+	await get_tree().process_frame
+
+	# Play the UFO departure before starting gameplay.
+	await space_ufo.call("begin_warp_departure")
+
+	GameManager.start_game()
+
+
+func _on_single_player_customization_cancelled() -> void:
+	print("MAIN MENU: Single-player customization cancelled.")
+
+	if customization_scene != null:
+		customization_scene.queue_free()
+		customization_scene = null
+
+	NetworkManager.requires_initial_customization = false
+	NetworkManager.open_customization_when_lobby_opens = false
+
+	# Restore the main menu.
+	show()
+
+	_set_main_menu_focus_enabled(true)
+
+	_show_play_mode()

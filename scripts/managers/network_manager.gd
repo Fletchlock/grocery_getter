@@ -16,9 +16,12 @@ var pending_late_join: bool = false
 
 # ==== Single PLayer Mode ====
 var is_single_player: bool = false
+var steam_initialized: bool = false
+var open_customization_when_lobby_opens: bool = false
+var requires_initial_customization: bool = false
 
 
-func start_single_player() -> void:
+func start_single_player(require_customization: bool = false) -> void:
 	print("NetworkManager: Starting single-player session.")
 
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
@@ -26,25 +29,74 @@ func start_single_player() -> void:
 	current_lobby_id = 0
 	is_single_player = true
 
+	open_customization_when_lobby_opens = require_customization
+	requires_initial_customization = require_customization
+
 	LobbyManager.clear_players()
 
 	var local_peer_id: int = multiplayer.get_unique_id()
+	var local_steam_id: int = 0
+
+	if steam_initialized:
+		local_steam_id = Steam.getSteamID()
+
+	# Do not create a new PlayerData record here.
+	# Single-player appearance is stored independently in SaveManager,
+	# associated with the currently selected save slot.
 
 	LobbyManager.add_player(local_peer_id)
-	LobbyManager.set_player_name(local_peer_id, "Player", 0)
-	LobbyManager.set_ready(local_peer_id, true)
+
+	LobbyManager.set_player_name(
+		local_peer_id,
+		"Player",
+		local_steam_id
+	)
+
+	# New games must finish customization before becoming ready.
+	if not require_customization:
+		LobbyManager.set_ready(local_peer_id, true)
 
 	print("NetworkManager: Offline player registered: ", local_peer_id)
+	print("NetworkManager: Local Steam ID: ", local_steam_id)
+	print("NetworkManager: Customization required: ", require_customization)
 
 
 func _ready() -> void:
-	Steam.initRelayNetworkAccess()
+	# Check whether GodotSteam initialized automatically.
+	var init_result: Dictionary = Steam.get_steam_init_result()
 
-	Steam.lobby_created.connect(_on_lobby_created)
-	Steam.lobby_joined.connect(_on_lobby_joined)
-	Steam.join_requested.connect(_on_join_requested)
-	Steam.lobby_chat_update.connect(_on_lobby_chat_update)
+	steam_initialized = (
+		int(init_result.get("status", -1))
+		== Steam.STEAM_API_INIT_RESULT_OK
+	)
 
+	# GodotSteam automatic initialization does not run when launched
+	# from the editor, so try initializing manually if necessary.
+	if not steam_initialized:
+		init_result = Steam.steamInitEx(480, false)
+
+		steam_initialized = (
+			int(init_result.get("status", -1))
+			== Steam.STEAM_API_INIT_RESULT_OK
+		)
+
+	if steam_initialized:
+		print("NetworkManager: Steam initialized successfully.")
+
+		Steam.initRelayNetworkAccess()
+
+		Steam.lobby_created.connect(_on_lobby_created)
+		Steam.lobby_joined.connect(_on_lobby_joined)
+		Steam.join_requested.connect(_on_join_requested)
+		Steam.lobby_chat_update.connect(_on_lobby_chat_update)
+	else:
+		push_warning(
+			"NetworkManager: Steam unavailable. "
+			+ "Continuing in offline mode. "
+			+ str(init_result.get("verbal", "Unknown initialization error"))
+		)
+
+	# These Godot multiplayer signals are needed in both modes.
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
@@ -52,7 +104,8 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	Steam.run_callbacks()
+	if steam_initialized:
+		Steam.run_callbacks()
 
 
 func host_lobby(_lobby_type: Steam.LobbyType = LOBBY_TYPE) -> void:

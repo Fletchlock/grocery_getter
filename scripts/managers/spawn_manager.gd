@@ -128,12 +128,41 @@ func _spawn_player(data: Variant) -> Node:
 
 	player.name = str(peer_id)
 	player.set_multiplayer_authority(peer_id)
-	
+
 	var appearance_data: Dictionary = spawn_data.get("appearance", {})
 
 	if not appearance_data.is_empty():
-		var appearance_node: AlienAppearance = player.get_node("AlienAppearance") as AlienAppearance
-		appearance_node.appearance_data = AlienAppearanceData.from_dict(appearance_data)
+		var appearance_node: AlienAppearance = (
+			player.get_node_or_null("AlienAppearance")
+			as AlienAppearance
+		)
+
+		if appearance_node != null:
+			var saved_appearance: AlienAppearanceData = (
+				AlienAppearanceData.from_dict(appearance_data)
+			)
+
+			appearance_node.appearance_data = saved_appearance
+
+			# Apply the appearance after the player enters the scene tree.
+			appearance_node.call_deferred(
+				"apply_appearance",
+				saved_appearance
+			)
+
+			print(
+				"SpawnManager: Queued saved appearance for player ",
+				peer_id
+			)
+		else:
+			push_warning(
+				"SpawnManager: AlienAppearance node not found on player."
+			)
+	else:
+		print(
+			"SpawnManager: No appearance data received for player ",
+			peer_id
+		)
 
 	if spawn_index < 0 or spawn_index >= spawn_points.size():
 		push_error("SpawnManager: Invalid spawn index!")
@@ -142,8 +171,10 @@ func _spawn_player(data: Variant) -> Node:
 
 	var spawn_point: Marker3D = spawn_points[spawn_index]
 
-	# Player will be added under the Players node.
-	player.transform = players.global_transform.affine_inverse() * spawn_point.global_transform
+	player.transform = (
+		players.global_transform.affine_inverse()
+		* spawn_point.global_transform
+	)
 
 	print(
 		"SpawnManager: Created player ",

@@ -35,14 +35,15 @@ var local_alien_appearance: AlienAppearanceData = null
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
 	LobbyManager.lobby_player_added.connect(_on_player_changed)
 	LobbyManager.lobby_player_removed.connect(_on_player_changed)
 	LobbyManager.lobby_player_updated.connect(_on_player_changed)
 	LobbyManager.lobby_state_changed.connect(_update_play_button)
 	LobbyManager.player_avatar_loaded.connect(_on_player_avatar_loaded)
+
 	NetworkManager.lobby_joined.connect(_on_network_lobby_joined)
 
-	
 	if multiplayer.multiplayer_peer == null:
 		play_button.hide()
 	else:
@@ -53,13 +54,20 @@ func _ready() -> void:
 
 	if multiplayer.multiplayer_peer != null:
 		_refresh_player_list()
-	
+
 	_update_character_displays()
 	_update_ready_button()
+
 	lobby_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	lobby_camera.make_current()
+
 	_setup_lobby_focus()
 	ready_button.grab_focus.call_deferred()
+
+	# Automatically open character customization when requested.
+	if NetworkManager.open_customization_when_lobby_opens:
+		NetworkManager.open_customization_when_lobby_opens = false
+		_on_customize_button_pressed.call_deferred()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -264,7 +272,11 @@ func _update_ready_button() -> void:
 	var is_ready: bool = LobbyManager.is_ready(peer_id)
 
 	ready_button.text = "Unready" if is_ready else "Ready"
-	ready_button.disabled = is_ready and _is_late_join_waiting()
+
+	ready_button.disabled = (
+		NetworkManager.requires_initial_customization
+		or (is_ready and _is_late_join_waiting())
+	)
 
 	customize_button.disabled = is_ready
 
@@ -346,11 +358,14 @@ func _on_customization_confirmed(appearance: AlienAppearanceData) -> void:
 		" | Weight: ",
 		appearance.body_weight
 	)
-	
+
 	local_alien_appearance = appearance.duplicate(true) as AlienAppearanceData
+
 	LobbyManager.request_set_appearance(local_alien_appearance)
 
-	
+	# Initial customization has now been completed.
+	NetworkManager.requires_initial_customization = false
+
 	var display: Node3D = _get_local_player_display()
 
 	if display != null:
@@ -358,7 +373,6 @@ func _on_customization_confirmed(appearance: AlienAppearanceData) -> void:
 	else:
 		push_warning("LOBBY: Could not find local player display.")
 
-	
 	if customization_scene != null:
 		customization_scene.queue_free()
 		customization_scene = null
