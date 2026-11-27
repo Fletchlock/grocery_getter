@@ -15,6 +15,32 @@ var reset_creation_date_on_save: bool = false
 var players: Dictionary = {}
 var preserve_lobby_players: bool = false
 
+# Single-player appearance belongs to the selected save slot.
+var single_player_appearance: Dictionary = {}
+
+func _ready() -> void:
+	var config := ConfigFile.new()
+	var error := config.load("user://last_played_slot.cfg")
+
+	if error == OK:
+		var saved_slot: int = int(
+			config.get_value("save", "last_played_slot", 1)
+		)
+
+		if saved_slot >= 1 and saved_slot <= MAX_SAVE_SLOTS:
+			selected_slot = saved_slot
+
+
+func remember_last_played_slot() -> void:
+	var config := ConfigFile.new()
+
+	config.set_value("save", "last_played_slot", selected_slot)
+
+	var error := config.save("user://last_played_slot.cfg")
+
+	if error != OK:
+		push_warning("Could not save last played slot.")
+
 func get_slot_path(slot: int) -> String:
 	if slot < 1 or slot > MAX_SAVE_SLOTS:
 		return ""
@@ -84,7 +110,7 @@ func get_slot_info(slot: int) -> Dictionary:
 func save_game() -> bool:
 	if not multiplayer.is_server():
 		return false
-	
+
 	var save_path: String = get_slot_path(selected_slot)
 
 	if save_path.is_empty():
@@ -113,7 +139,8 @@ func save_game() -> bool:
 		"day": DayManager.get_save_data(),
 		"reputation": ReputationManager.get_save_data(),
 		"product_unlocks": ProductUnlockManager.get_save_data(),
-		"players": _get_players_save_data()
+		"players": _get_players_save_data(),
+		"single_player_appearance": single_player_appearance.duplicate(true)
 	}
 
 	var file: FileAccess = FileAccess.open_encrypted(
@@ -144,7 +171,7 @@ func save_game() -> bool:
 func load_game() -> bool:
 	if not multiplayer.is_server():
 		return false
-	
+
 	var save_path: String = get_slot_path(selected_slot)
 
 	if save_path.is_empty():
@@ -199,7 +226,7 @@ func load_game() -> bool:
 	DayManager.load_save_data(
 		save_data.get("day", {})
 	)
-	
+
 	ReputationManager.load_save_data(
 		save_data.get("reputation", {})
 	)
@@ -207,11 +234,14 @@ func load_game() -> bool:
 	ProductUnlockManager.load_save_data(
 		save_data.get("product_unlocks", {})
 	)
-	
+
 	if not preserve_lobby_players:
 		_load_players_save_data(
 			save_data.get("players", {})
 		)
+
+	# This is independent of the multiplayer player records.
+	_load_single_player_appearance(save_data)
 
 	StoreManager.sync_finances()
 
@@ -226,7 +256,6 @@ func load_game() -> bool:
 
 
 func load_players_for_lobby() -> bool:
-	
 	var save_path: String = get_slot_path(selected_slot)
 
 	if save_path.is_empty() or not FileAccess.file_exists(save_path):
@@ -256,7 +285,11 @@ func load_players_for_lobby() -> bool:
 		push_error("PLAYER DATA: Unsupported save version.")
 		return false
 
-	_load_players_save_data(save_data.get("players", {}))
+	_load_players_save_data(
+		save_data.get("players", {})
+	)
+
+	_load_single_player_appearance(save_data)
 
 	print(
 		"PLAYER DATA: Loaded ",
@@ -366,7 +399,7 @@ func get_player(steam_id: int) -> PlayerData:
 
 
 func add_player(player: PlayerData) -> void:
-	if player == null or player.steam_id <= 0:
+	if player == null:
 		return
 
 	players[str(player.steam_id)] = player
@@ -374,6 +407,7 @@ func add_player(player: PlayerData) -> void:
 
 func clear_players() -> void:
 	players.clear()
+	single_player_appearance.clear()
 
 
 func _get_players_save_data() -> Dictionary:
@@ -390,9 +424,6 @@ func _get_players_save_data() -> Dictionary:
 
 func save_player_appearance(steam_id: int) -> bool:
 	if not multiplayer.is_server():
-		return false
-
-	if steam_id <= 0:
 		return false
 
 	var save_path: String = get_slot_path(selected_slot)
@@ -428,12 +459,9 @@ func save_player_appearance(steam_id: int) -> bool:
 
 	var saved_players: Dictionary = save_data.get("players", {})
 	var player_key: String = str(steam_id)
+	var player_save_data: Dictionary = player.get_save_data()
 
-	if not saved_players.has(player_key):
-		saved_players[player_key] = player.get_save_data()
-	else:
-		saved_players[player_key]["appearance"] = player.appearance.to_dict()
-
+	saved_players[player_key] = player_save_data
 	save_data["players"] = saved_players
 
 	file = FileAccess.open_encrypted(
@@ -466,3 +494,127 @@ func _load_players_save_data(data: Dictionary) -> void:
 		player.steam_id = int(steam_id)
 
 		players[steam_id] = player
+
+
+func get_single_player_appearance() -> Dictionary:
+	return single_player_appearance.duplicate(true)
+
+
+func set_single_player_appearance(data: Dictionary) -> void:
+	single_player_appearance = data.duplicate(true)
+
+
+func save_single_player_appearance(data: Dictionary) -> bool:
+	if not multiplayer.is_server():
+		return false
+
+	# Always update memory first. A brand-new game might not have
+	# created its first save file yet.
+	single_player_appearance = data.duplicate(true)
+
+	var save_path: String = get_slot_path(selected_slot)
+
+	if save_path.is_empty():
+		return false
+
+	# The first full game save will write this appearance.
+	if not FileAccess.file_exists(save_path):
+		print(
+			"SINGLE PLAYER APPEARANCE: Cached for Slot ",
+			selected_slot
+		)
+		return true
+
+	var file: FileAccess = FileAccess.open_encrypted(
+		save_path,
+		FileAccess.READ,
+		_get_encryption_key()
+	)
+
+	if file == null:
+		push_error("SINGLE PLAYER APPEARANCE: Could not read save slot.")
+		return false
+
+	var json: JSON = JSON.new()
+	var error: Error = json.parse(file.get_as_text())
+	file.close()
+
+	if error != OK or not json.data is Dictionary:
+		push_error("SINGLE PLAYER APPEARANCE: Invalid save data.")
+		return false
+
+	var save_data: Dictionary = json.data
+
+	if int(save_data.get("save_version", 0)) != SAVE_VERSION:
+		push_error("SINGLE PLAYER APPEARANCE: Unsupported save version.")
+		return false
+
+	save_data["single_player_appearance"] = (
+		single_player_appearance.duplicate(true)
+	)
+
+	file = FileAccess.open_encrypted(
+		save_path,
+		FileAccess.WRITE,
+		_get_encryption_key()
+	)
+
+	if file == null:
+		push_error("SINGLE PLAYER APPEARANCE: Could not write save slot.")
+		return false
+
+	file.store_string(JSON.stringify(save_data, "\t"))
+	file.close()
+
+	print(
+		"SINGLE PLAYER APPEARANCE SAVED: Slot ",
+		selected_slot
+	)
+
+	return true
+
+
+func _load_single_player_appearance(save_data: Dictionary) -> void:
+	var saved_appearance: Variant = save_data.get(
+		"single_player_appearance",
+		{}
+	)
+
+	if saved_appearance is Dictionary and not saved_appearance.is_empty():
+		single_player_appearance = saved_appearance.duplicate(true)
+
+		print(
+			"SINGLE PLAYER APPEARANCE: Loaded from Slot ",
+			selected_slot
+		)
+		return
+
+	# Backward compatibility:
+	# Older saves stored appearance inside the Steam-ID player records.
+	# Try ID 0, then the current Steam ID, then a sole existing player.
+	var legacy_player: PlayerData = get_player(0)
+
+	if legacy_player == null and NetworkManager.steam_initialized:
+		legacy_player = get_player(Steam.getSteamID())
+
+	if legacy_player == null and players.size() == 1:
+		var only_player: Variant = players.values()[0]
+
+		if only_player is PlayerData:
+			legacy_player = only_player
+
+	if legacy_player != null and legacy_player.appearance != null:
+		single_player_appearance = (
+			legacy_player.appearance.to_dict()
+		)
+
+		print(
+			"SINGLE PLAYER APPEARANCE: Recovered from legacy player data."
+		)
+	else:
+		single_player_appearance.clear()
+
+		print(
+			"SINGLE PLAYER APPEARANCE: No saved appearance in Slot ",
+			selected_slot
+		)
