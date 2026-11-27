@@ -57,7 +57,7 @@ script = ExtResource("3_g06os")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=179912516]
 current = true
-fov = 32.5
+fov = 37.849285
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1324881360]
 environment = SubResource("Environment_a3hrp")
@@ -68,9 +68,22 @@ material_override = SubResource("ShaderMaterial_ioqbr")
 mesh = SubResource("SphereMesh_umdtr")
 
 [node name="SpaceKeyLight" type="DirectionalLight3D" parent="." unique_id=917859904]
-transform = Transform3D(0.90630776, 0.29883623, -0.29883623, 0, 0.70710677, 0.70710677, 0.42261827, -0.6408563, 0.6408563, 0, 0, 0)
-light_color = Color(0.5411765, 0.85490197, 1, 1)
-light_energy = 3.375
+transform = Transform3D(0.8100919, 0.3061369, -0.50003153, 0.16896093, 0.6947769, 0.69909734, 0.56142986, -0.6508189, 0.51110786, 0, 0, 0)
+light_color = Color(0.66252464, 0.8278322, 0.98902494, 1)
+light_energy = 6.0
+shadow_enabled = true
+
+[node name="SpaceFillLight" type="DirectionalLight3D" parent="." unique_id=18548575]
+transform = Transform3D(0.7089124, 0.61313117, 0.3485882, -0.29529208, 0.7068598, -0.64276886, -0.64050484, 0.35273126, 0.6821544, 0, 0, 0)
+light_color = Color(0.66252464, 0.8278322, 0.98902494, 1)
+light_energy = 4.0
+shadow_enabled = true
+
+[node name="SpaceBackLight" type="DirectionalLight3D" parent="." unique_id=1796438246]
+transform = Transform3D(0.986325, 0.16395643, 0.016771019, 0.16168416, -0.98231405, 0.09443103, 0.031957116, -0.09042815, -0.99539006, 0, 0, 0)
+visible = false
+light_color = Color(0.66252464, 0.8278322, 0.98902494, 1)
+light_energy = 5.0
 shadow_enabled = true
 
 [node name="ShootingStars" type="Node3D" parent="." unique_id=506913232]
