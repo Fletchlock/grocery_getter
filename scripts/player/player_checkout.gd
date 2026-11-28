@@ -414,6 +414,13 @@ func update_checkout_pointer(
 	if not is_instance_valid(checkout_pointer):
 		return
 
+	if (
+		is_instance_valid(active_checkout)
+		and active_checkout.snake_game_open
+	):
+		checkout_pointer.hide()
+		return
+
 	checkout_pointer.visible = (
 		not holding_checkout_product
 		and not rotating_held_product
@@ -972,6 +979,10 @@ func update_checkout_hover() -> void:
 	if not is_instance_valid(active_checkout):
 		return
 
+	if active_checkout.snake_game_open:
+		active_checkout.clear_checkout_hover_outlines()
+		return
+
 	var mouse_position: Vector2 = (
 		_get_checkout_hover_position()
 	)
@@ -1040,6 +1051,54 @@ func _update_checkout_auto_bag(
 		checkout_auto_bag_hover_active = false
 
 
+func handle_snake_input(event: InputEvent) -> bool:
+	if not checkout_mode_active:
+		return false
+
+	if not is_instance_valid(active_checkout):
+		return false
+
+	if not active_checkout.snake_game_open:
+		return false
+
+	# ESC, Q, or controller B closes Snake
+	# without exiting scanner mode.
+	if (
+		(
+			event is InputEventKey
+			and event.pressed
+			and not event.echo
+			and (
+				event.keycode == KEY_ESCAPE
+				or event.keycode == KEY_Q
+			)
+		)
+		or event.is_action_pressed("ui_cancel")
+	):
+		active_checkout.request_snake_game_close(player)
+		return true
+
+	var direction: Vector2i = Vector2i.ZERO
+
+	if event.is_action_pressed("ui_up"):
+		direction = Vector2i.UP
+	elif event.is_action_pressed("ui_down"):
+		direction = Vector2i.DOWN
+	elif event.is_action_pressed("ui_left"):
+		direction = Vector2i.LEFT
+	elif event.is_action_pressed("ui_right"):
+		direction = Vector2i.RIGHT
+
+	if direction != Vector2i.ZERO:
+		active_checkout.request_snake_direction(
+			player,
+			direction
+		)
+
+	# Consume other input while Snake is open.
+	return true
+
+
 # ============================================================
 # CHECKOUT INTERACTION
 # ============================================================
@@ -1054,6 +1113,16 @@ func handle_checkout_interaction() -> void:
 	var mouse_position: Vector2 = (
 		checkout_virtual_mouse_position
 	)
+
+	# Open Snake when the player clicks the checkout screen.
+	if (
+		player.held_item == null
+		and active_checkout.is_mouse_over_checkout_screen(
+			mouse_position
+		)
+	):
+		active_checkout.request_snake_game_open(player)
+		return
 
 	# Handle a product already held by the player.
 	if player.held_item != null:

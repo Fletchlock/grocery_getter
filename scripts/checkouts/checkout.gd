@@ -51,6 +51,31 @@ var checkout_active: bool = false
 
 var scanner_user_peer_id: int = 0
 
+# Snake Mini-Game
+const SNAKE_COLUMNS: int = 28
+const SNAKE_ROWS: int = 18
+
+const SNAKE_START_INTERVAL: float = 0.336
+const SNAKE_NORMAL_INTERVAL: float = 0.112
+const SNAKE_ACCELERATION_DURATION: float = 1.0
+
+@onready var checkout_display_panel: Control = (
+	$CheckoutViewport/CheckoutUI/PanelContainer
+)
+
+var snake_game: SnakeGame = null
+
+var snake_customer_present: bool = false
+var snake_game_open: bool = false
+
+var snake_body: Array[Vector2i] = []
+var snake_direction: Vector2i = Vector2i.RIGHT
+var snake_queued_direction: Vector2i = Vector2i.RIGHT
+var snake_food: Vector2i = Vector2i.ZERO
+var snake_score: int = 0
+
+var snake_move_accumulator: float = 0.0
+var snake_ramp_elapsed: float = 0.0
 
 func _ready() -> void:
 	add_to_group("checkout")
@@ -68,10 +93,26 @@ func _ready() -> void:
 
 	checkout_screen.material_override = material
 
+	# Create the shared Snake display.
+	snake_game = SnakeGame.new()
+	snake_game.name = "SnakeGame"
+	snake_game.set_anchors_and_offsets_preset(
+		Control.PRESET_FULL_RECT
+	)
 
-func _process(_delta: float) -> void:
+	checkout_display.add_child(snake_game)
+	snake_game.hide()
+
+	checkout_display_panel.show()
+
+	if multiplayer.is_server():
+		_reset_snake_state()
+
+
+func _process(delta: float) -> void:
 	if multiplayer.is_server():
 		_check_checkout_bell()
+		_process_snake_game(delta)
 
 
 func get_interaction_prompt(player: CharacterBody3D) -> String:
@@ -178,6 +219,363 @@ func is_mouse_over_scanner(mouse_position: Vector2) -> bool:
 		return false
 
 	return result.get("collider") == scan_area
+
+
+#region Snake Functions
+func is_mouse_over_checkout_screen(
+	mouse_position: Vector2
+) -> bool:
+	if checkout_screen == null or checkout_screen.mesh == null:
+		return false
+
+	var camera: Camera3D = checkout_camera
+
+	if camera == null:
+		return false
+
+	var origin: Vector3 = camera.project_ray_origin(
+		mouse_position
+	)
+
+	var direction: Vector3 = camera.project_ray_normal(
+		mouse_position
+	)
+
+	var normal: Vector3 = (
+		checkout_screen.global_basis.z.normalized()
+	)
+
+	var denominator: float = direction.dot(normal)
+
+	if absf(denominator) < 0.0001:
+		return false
+
+	var distance: float = (
+		checkout_screen.global_position - origin
+	).dot(normal) / denominator
+
+	if distance < 0.0:
+		return false
+
+	var hit_position: Vector3 = (
+		origin + direction * distance
+	)
+
+	var local_position: Vector3 = (
+		checkout_screen.to_local(hit_position)
+	)
+
+	var screen_bounds: AABB = (
+		checkout_screen.mesh.get_aabb().grow(0.02)
+	)
+
+	return screen_bounds.has_point(local_position)
+
+
+func request_snake_game_open(
+	player: CharacterBody3D
+) -> void:
+	if player == null or not player.is_multiplayer_authority():
+		return
+
+	if multiplayer.is_server():
+		_server_open_snake_game(
+			player,
+			player.get_multiplayer_authority()
+		)
+	else:
+		request_snake_game_open_rpc.rpc_id(
+			1,
+			player.get_path()
+		)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_snake_game_open_rpc(
+	player_path: NodePath
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var peer_id: int = multiplayer.get_remote_sender_id()
+
+	var player: CharacterBody3D = (
+		get_node_or_null(player_path) as CharacterBody3D
+	)
+
+	_server_open_snake_game(player, peer_id)
+
+
+func _server_open_snake_game(
+	player: CharacterBody3D,
+	peer_id: int
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if player == null:
+		return
+
+	if player.get_multiplayer_authority() != peer_id:
+		return
+
+	if scanner_user_peer_id != peer_id:
+		return
+
+	if snake_customer_present or snake_game_open:
+		return
+
+	if snake_body.is_empty():
+		_reset_snake_state()
+
+	snake_game_open = true
+	snake_move_accumulator = 0.0
+	snake_ramp_elapsed = 0.0
+	snake_queued_direction = snake_direction
+
+	sync_snake_game_state.rpc(
+		true,
+		snake_body,
+		snake_food,
+		snake_score
+	)
+
+
+func request_snake_game_close(
+	player: CharacterBody3D
+) -> void:
+	if player == null or not player.is_multiplayer_authority():
+		return
+
+	if multiplayer.is_server():
+		_server_close_snake_game()
+	else:
+		request_snake_game_close_rpc.rpc_id(1)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_snake_game_close_rpc() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var peer_id: int = multiplayer.get_remote_sender_id()
+
+	if peer_id != scanner_user_peer_id:
+		return
+
+	_server_close_snake_game()
+
+
+func _server_close_snake_game() -> void:
+	if not multiplayer.is_server():
+		return
+
+	if not snake_game_open:
+		return
+
+	snake_game_open = false
+	snake_move_accumulator = 0.0
+
+	sync_snake_game_state.rpc(
+		false,
+		snake_body,
+		snake_food,
+		snake_score
+	)
+
+
+@rpc("authority", "call_local", "reliable")
+func sync_snake_game_state(
+	is_open: bool,
+	new_body: Array[Vector2i],
+	new_food: Vector2i,
+	new_score: int
+) -> void:
+	snake_game_open = is_open
+	snake_body = new_body.duplicate()
+	snake_food = new_food
+	snake_score = new_score
+
+	checkout_display_panel.visible = not is_open
+	snake_game.visible = is_open
+
+	snake_game.set_game_state(
+		snake_body,
+		snake_food,
+		snake_score
+	)
+
+
+func request_snake_direction(
+	player: CharacterBody3D,
+	direction: Vector2i
+) -> void:
+	if player == null or not player.is_multiplayer_authority():
+		return
+
+	if multiplayer.is_server():
+		_server_set_snake_direction(
+			player.get_multiplayer_authority(),
+			direction
+		)
+	else:
+		request_snake_direction_rpc.rpc_id(1, direction)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_snake_direction_rpc(
+	direction: Vector2i
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	_server_set_snake_direction(
+		multiplayer.get_remote_sender_id(),
+		direction
+	)
+
+
+func _server_set_snake_direction(
+	peer_id: int,
+	direction: Vector2i
+) -> void:
+	if not multiplayer.is_server():
+		return
+
+	if peer_id != scanner_user_peer_id or not snake_game_open:
+		return
+
+	if absi(direction.x) + absi(direction.y) != 1:
+		return
+
+	if direction == -snake_direction:
+		return
+
+	if direction == -snake_queued_direction:
+		return
+
+	snake_queued_direction = direction
+
+
+func _process_snake_game(delta: float) -> void:
+	if not snake_game_open:
+		return
+
+	if snake_customer_present:
+		_server_close_snake_game()
+		return
+
+	snake_ramp_elapsed = minf(
+		snake_ramp_elapsed + delta,
+		SNAKE_ACCELERATION_DURATION
+	)
+
+	var progress: float = clampf(
+		snake_ramp_elapsed / SNAKE_ACCELERATION_DURATION,
+		0.0,
+		1.0
+	)
+
+	# Smoothstep acceleration.
+	progress = progress * progress * (3.0 - 2.0 * progress)
+
+	var movement_interval: float = lerpf(
+		SNAKE_START_INTERVAL,
+		SNAKE_NORMAL_INTERVAL,
+		progress
+	)
+
+	snake_move_accumulator += delta
+
+	while snake_move_accumulator >= movement_interval:
+		snake_move_accumulator -= movement_interval
+
+		if _advance_snake():
+			break
+
+
+func _advance_snake() -> bool:
+	snake_direction = snake_queued_direction
+
+	var next_head: Vector2i = (
+		snake_body[0] + snake_direction
+	)
+
+	var eating_food: bool = next_head == snake_food
+
+	var hit_wall: bool = (
+		next_head.x < 0
+		or next_head.x >= SNAKE_COLUMNS
+		or next_head.y < 0
+		or next_head.y >= SNAKE_ROWS
+	)
+
+	var hit_body: bool = (
+		snake_body.has(next_head)
+		and (
+			eating_food
+			or next_head != snake_body.back()
+		)
+	)
+
+	# Losing immediately restarts the game.
+	if hit_wall or hit_body:
+		_reset_snake_state()
+
+		snake_move_accumulator = 0.0
+
+		sync_snake_game_state.rpc(
+			true,
+			snake_body,
+			snake_food,
+			snake_score
+		)
+
+		return true
+
+	snake_body.insert(0, next_head)
+
+	if eating_food:
+		snake_score += 1
+		_spawn_snake_food()
+	else:
+		snake_body.pop_back()
+
+	sync_snake_game_state.rpc(
+		true,
+		snake_body,
+		snake_food,
+		snake_score
+	)
+
+	return false
+
+
+func _reset_snake_state() -> void:
+	snake_body = [
+		Vector2i(8, 9),
+		Vector2i(7, 9),
+		Vector2i(6, 9)
+	]
+
+	snake_direction = Vector2i.RIGHT
+	snake_queued_direction = Vector2i.RIGHT
+	snake_score = 0
+
+	_spawn_snake_food()
+
+
+func _spawn_snake_food() -> void:
+	while true:
+		var candidate := Vector2i(
+			randi_range(0, SNAKE_COLUMNS - 1),
+			randi_range(0, SNAKE_ROWS - 1)
+		)
+
+		if not snake_body.has(candidate):
+			snake_food = candidate
+			return
+#endregion
 
 
 func is_barcode_aligned(
@@ -473,9 +871,12 @@ func _server_release_scanner_access(peer_id: int) -> void:
 	if not multiplayer.is_server():
 		return
 
-	# Only the player currently using the scanner can release it.
+	# Only the current scanner user can release access.
 	if scanner_user_peer_id != peer_id:
 		return
+
+	# Hide Snake and preserve its current state.
+	_server_close_snake_game()
 
 	scanner_user_peer_id = 0
 	sync_scanner_user.rpc(0)
@@ -573,6 +974,9 @@ func customer_arrived_at_checkout(customer: ShopperAI) -> void:
 	if customer != checkout_customer:
 		return
 	
+	snake_customer_present = true
+	_server_close_snake_game()
+	
 	unscanned_items = customer.purchased_items.duplicate()
 	_reset_checkout_display.rpc()
 	_clear_grid(checkout_grid)
@@ -613,6 +1017,7 @@ func customer_arrived_at_bag_point(customer: ShopperAI) -> void:
 	
 	# Release checkout for the next shopper.
 	checkout_customer = null
+	snake_customer_present = false
 
 	if waiting_customers.is_empty():
 		return

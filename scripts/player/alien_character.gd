@@ -488,6 +488,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	
 	if checkout_mode_active:
+		if player_checkout.handle_snake_input(event):
+			get_viewport().set_input_as_handled()
+			return
 		if event.is_action_pressed("checkout_exit"):
 			exit_checkout_mode()
 			get_viewport().set_input_as_handled()

@@ -1,10 +1,8 @@
 [gd_scene format=3 uid="uid://c8nis4qdppl3y"]
 
-[ext_resource type="Texture2D" uid="uid://bwxudgsbrxk3s" path="res://assets/images/order_notify_bg_blue_100.png" id="1_11q54"]
 [ext_resource type="Script" uid="uid://bslm3xvaa1epx" path="res://scripts/UI/barcode_hud.gd" id="1_gxxt4"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xiw3s"]
-texture = ExtResource("1_11q54")
 texture_margin_left = 13.0
 texture_margin_top = 13.0
 texture_margin_right = 13.0
@@ -12,15 +10,9 @@ texture_margin_bottom = 13.0
 
 [node name="BardcodeHud" type="PanelContainer" unique_id=1388157964]
 custom_minimum_size = Vector2(220, 0)
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -141.0
-offset_top = -16.5
-offset_right = 141.0
-offset_bottom = 16.5
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 offset_transform_enabled = true
@@ -31,7 +23,8 @@ script = ExtResource("1_gxxt4")
 [node name="ArrowContainer" type="HBoxContainer" parent="." unique_id=1625439134]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_constants/separation = 6
+size_flags_vertical = 4
+theme_override_constants/separation = 250
 
 [node name="Label" type="Label" parent="." unique_id=1164776408]
 visible = false
