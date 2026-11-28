@@ -144,12 +144,6 @@ func _spawn_player(data: Variant) -> Node:
 
 			appearance_node.appearance_data = saved_appearance
 
-			# Apply the appearance after the player enters the scene tree.
-			appearance_node.call_deferred(
-				"apply_appearance",
-				saved_appearance
-			)
-
 			print(
 				"SpawnManager: Queued saved appearance for player ",
 				peer_id
