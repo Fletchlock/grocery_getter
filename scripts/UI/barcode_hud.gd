@@ -34,6 +34,14 @@ const ARROW_TEXTURES := {
 	},
 }
 const HALF_STEP_MULTIPLIER := 0.05946
+const KEYPRESS_SOUNDS := [
+	preload("res://assets/sounds/keypress1.wav"),
+	preload("res://assets/sounds/keypress2.wav"),
+	preload("res://assets/sounds/keypress3.wav"),
+	preload("res://assets/sounds/keypress4.wav"),
+	preload("res://assets/sounds/keypress5.wav"),
+]
+const KEYPRESS_VOLUME_DB := -15.0
 
 var product_code := ""
 var entered_count := 0
@@ -67,12 +75,29 @@ func update_display(new_product_code: String) -> void:
 	for child in arrow_container.get_children():
 		child.queue_free()
 
-	for _i in range(product_code.length()):
+	for i in range(product_code.length()):
+		var slot := Control.new()
+		slot.custom_minimum_size = Vector2(48, 48)
+		arrow_container.add_child(slot)
+
 		var arrow := TextureRect.new()
 		arrow.custom_minimum_size = Vector2(48, 48)
+		arrow.size = Vector2(500, 500)
+		arrow.position = Vector2(-226, 300) # Start just below its slot
+		arrow.modulate.a = 0.0
 		arrow.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
 		arrow.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		arrow_container.add_child(arrow)
+		slot.add_child(arrow)
+
+		var tween := create_tween()
+		tween.set_parallel(true)
+		tween.tween_property(arrow, "position:y", 0.0, 0.12)\
+			.set_delay(i * 0.04)\
+			.set_trans(Tween.TRANS_CUBIC)\
+			.set_ease(Tween.EASE_OUT)
+
+		tween.tween_property(arrow, "modulate:a", 1.0, 0.12)\
+			.set_delay(i * 0.04)
 
 	_update_arrows()
 	visible = not product_code.is_empty()
@@ -104,6 +129,8 @@ func _check_direction(direction: String) -> void:
 	if entered_count >= product_code.length():
 		return
 
+	_play_random_keypress()
+
 	if direction == product_code.substr(entered_count, 1):
 		var note_index := entered_count
 		entered_count += 1
@@ -112,20 +139,17 @@ func _check_direction(direction: String) -> void:
 			correct_sound.stop()
 			correct_sound.pitch_scale = Scales.selected_scale[note_index]
 			correct_sound.play()
-
 			_update_arrows()
-
 		else:
 			correct_sound.stop()
 			correct_sound.pitch_scale = (1 + scan_combo * HALF_STEP_MULTIPLIER) * Scales.selected_scale[note_index]
 			correct_sound.play()
-
 			_update_arrows()
 
 		if entered_count == product_code.length():
 			scan_combo += 1
 			completing_code = true
-			
+
 	else:
 		error_sound.stop()
 		error_sound.pitch_scale = 1.0
@@ -149,7 +173,7 @@ func _update_arrows() -> void:
 		elif i == entered_count:
 			state = "active"
 
-		var arrow := arrow_container.get_child(i) as TextureRect
+		var arrow := arrow_container.get_child(i).get_child(0) as TextureRect
 		arrow.texture = ARROW_TEXTURES[direction][state]
 
 
@@ -163,3 +187,44 @@ func _on_correct_sound_finished() -> void:
 	if completing_code:
 		completing_code = false
 		code_completed.emit(product_code)
+
+
+func _play_random_keypress() -> void:
+	var sound_player := AudioStreamPlayer.new()
+	sound_player.stream = KEYPRESS_SOUNDS.pick_random()
+	sound_player.volume_db = KEYPRESS_VOLUME_DB
+	sound_player.bus = "SFX"
+
+	add_child(sound_player)
+
+	sound_player.finished.connect(sound_player.queue_free)
+	sound_player.play()
+
+
+func _animate_arrow_press(index: int, correct: bool) -> void:
+	if index >= arrow_container.get_child_count():
+		return
+
+	var arrow := arrow_container.get_child(index).get_child(0) as TextureRect
+
+	# Stop any existing press animation on this arrow.
+	if arrow.has_meta("press_tween"):
+		var previous_tween := arrow.get_meta("press_tween") as Tween
+		if previous_tween and previous_tween.is_running():
+			previous_tween.kill()
+
+	# Correct inputs stay slightly depressed.
+	var resting_position := 10.0 if correct else 0.0
+
+	var tween := arrow.create_tween()
+	arrow.set_meta("press_tween", tween)
+
+	# Quick downward press.
+	tween.tween_property(arrow, "position:y", 20.0, 0.045)\
+		.set_trans(Tween.TRANS_QUAD)\
+		.set_ease(Tween.EASE_IN)
+
+	# Slower release back to resting position.
+	tween.tween_property(arrow, "position:y", resting_position, 0.10)\
+		.set_trans(Tween.TRANS_CUBIC)\
+		.set_ease(Tween.EASE_OUT)

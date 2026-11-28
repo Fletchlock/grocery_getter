@@ -8,7 +8,7 @@ extends Node3D
 
 @export_group("Base Traffic")
 @export var spawn_interval_min: float = 60.0
-@export var spawn_interval_max: float = 90.0
+@export var spawn_interval_max: float = 80.0
 @export var minimum_spawn_interval: float = 20.0
 
 @export_group("Day Scaling")
