@@ -133,24 +133,30 @@ func _check_direction(direction: String) -> void:
 
 	if direction == product_code.substr(entered_count, 1):
 		var note_index := entered_count
+
+		# Animate the correctly entered arrow.
+		_animate_arrow_press(note_index, true)
+
 		entered_count += 1
 
+		correct_sound.stop()
+
 		if scan_combo == 0:
-			correct_sound.stop()
 			correct_sound.pitch_scale = Scales.selected_scale[note_index]
-			correct_sound.play()
-			_update_arrows()
 		else:
-			correct_sound.stop()
 			correct_sound.pitch_scale = (1 + scan_combo * HALF_STEP_MULTIPLIER) * Scales.selected_scale[note_index]
-			correct_sound.play()
-			_update_arrows()
+
+		correct_sound.play()
+		_update_arrows()
 
 		if entered_count == product_code.length():
 			scan_combo += 1
 			completing_code = true
 
 	else:
+		# Animate the current arrow, returning it to its original height.
+		_animate_arrow_press(entered_count, false)
+
 		error_sound.stop()
 		error_sound.pitch_scale = 1.0
 		error_sound.play()
