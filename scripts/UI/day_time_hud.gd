@@ -111,6 +111,10 @@ func _get_barcode_order() -> OrderData:
 	if not is_instance_valid(barcode_checkout):
 		return null
 
+	# Regular customer checkouts have no online order.
+	if barcode_checkout is Checkout:
+		return null
+
 	var player: CharacterBody3D = (
 		get_tree().get_first_node_in_group("local_player")
 		as CharacterBody3D
@@ -678,6 +682,10 @@ func show_barcode_hud(product_code: String) -> void:
 
 func _check_barcode_order_status() -> void:
 	if not is_instance_valid(barcode_hud):
+		return
+
+	# Online order changes must not affect customer checkouts.
+	if barcode_checkout is Checkout:
 		return
 
 	if barcode_order_id < 0:
